@@ -1,0 +1,1210 @@
+  
+  Runtime:       PHP 8.2.12
+  Configuration: C:\Users\User\ahhc-portal\phpunit.xml
+  
+  .....F.F........                                                  16 / 16 (100%)
+  
+  Time: 00:02.479, Memory: 56.00 MB
+  
+  There were 2 failures:
+  
+> 1) Tests\Feature\AuthControllerTest::test_dashboard_displays_worker_specific_content
+> Failed asserting that '<!DOCTYPE html>\r\n
+  <html lang="en">\r\n
+  <head>\r\n
+      <meta charset="UTF-8">\r\n
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">\r\n
+      <title>AHHC Portal -+ Care Hub</title>\r\n
+      <meta name="description" content="Manage participants, workers, invoices, approvals, documents, and compliance in one secure portal.">\r\n
+      <link rel="icon" href="http://localhost/favicon.ico">\r\n
+      <meta name="theme-color" content="#0E3863">\r\n
+      <meta name="mobile-web-app-capable" content="yes">\r\n
+      <meta name="csrf-token" content="vallkDqM2T4RG5UTIKlcbqzbbTsg643BcENTYWrI">\r\n
+  \r\n
+      <!-- Top Navigation Bar -->\r\n
+      <nav class="navbar-portal">\r\n
+          <div class="container-fluid">\r\n
+              <div class="d-flex justify-content-between align-items-center w-100 h-100">\r\n
+                  <!-- Left: Menu Toggle & Brand -->\r\n
+                  <div class="d-flex align-items-center gap-3">\r\n
+                      <button class="portal-menu-btn" id="portalMenuToggle" aria-label="Toggle menu">\r\n
+                          <i class="bi bi-list fs-4"></i>\r\n
+                      </button>\r\n
+>                     <a class="navbar-brand" href="http://localhost/portal/dashboard">\r\n
+                                                      <i class="bi bi-heart-pulse-fill"></i>\r\n
+                                                  <span class="d-none d-sm-inline">AHHC Portal</span>\r\n
+                      </a>\r\n
+                  </div>\r\n
+  \r\n
+                  <!-- Right: Actions -->\r\n
+                  <div class="navbar-actions">\r\n
+                      <!-- Notifications -->\r\n
+                      <div class="notification-menu">\r\n
+                          <button class="notification-toggle" id="portalNotificationToggle" aria-label="Notifications" aria-expanded="false">\r\n
+                              <div class="notification-footer">\r\n
+                                  <a href="http://localhost/portal/notifications">\r\n
+                                      <i class="bi bi-list-ul me-1"></i>View all\r\n
+                                  </a>\r\n
+                                                              </div>\r\n
+                          </div>\r\n
+                      </div>\r\n
+  \r\n
+                      <!-- Messages -->\r\n
+                      <div class="notification-menu">\r\n
+>                         <button class="notification-toggle" id="portalMessageToggle" aria-label="Messages" aria-expanded="false">\r\n
+                              <i class="bi bi-envelope-fill"></i>\r\n
+                                                      </button>\r\n
+                          <div class="notification-dropdown" id="portalMessageDropdown">\r\n
+                              <div class="notification-header">\r\n
+                                  <h6>Messages</h6>\r\n
+                              </div>\r\n
+                              <div class="notification-list">\r\n
+                                                                      <div class="notification-item text-center text-muted py-4">\r\n
+                                          <i class="bi bi-envelope fs-1 d-block mb-2"></i>\r\n
+                                          <div>No messages yet</div>\r\n
+                              <i class="bi bi-chevron-down d-none d-md-inline small"></i>\r\n
+                          </a>\r\n
+                          <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="portalUserDropdown" style="border-radius: var(--radius-lg); min-width: 200px;">\r\n
+                              <li>\r\n
+                                  <a class="dropdown-item py-2 px-3" href="http://localhost/portal/profile">\r\n
+                                      <i class="bi bi-person me-2"></i>Profile\r\n
+                                  </a>\r\n
+                              </li>\r\n
+                                                          <li><hr class="dropdown-divider my-1"></li>\r\n
+                              <li>\r\n
+>                                 <form method="POST" action="http://localhost/portal/logout" class="m-0">\r\n
+                                      <input type="hidden" name="_token" value="vallkDqM2T4RG5UTIKlcbqzbbTsg643BcENTYWrI" autocomplete="off">                                    <button type="submit" class="dropdown-item py-2 px-3 text-danger">\r\n
+                                          <i class="bi bi-box-arrow-right me-2"></i>Logout\r\n
+                                      </button>\r\n
+                                  </form>\r\n
+                              </li>\r\n
+                          </ul>\r\n
+                      </div>\r\n
+                  </div>\r\n
+              </div>\r\n
+          </div>\r\n
+                              Hi, Worker Dashboard\r\n
+                          </div>\r\n
+                      </div>\r\n
+                      <button class="portal-menu-close" id="portalSidebarClose" aria-label="Close sidebar">\r\n
+                          <i class="bi bi-x-lg"></i>\r\n
+                      </button>\r\n
+                  </div>\r\n
+  \r\n
+                  <div class="nav-menu">\r\n
+                                              <!-- Worker Navigation -->\r\n
+>                         <a href="http://localhost/portal/worker/dashboard" \r\n
+                             class="nav-link-custom active">\r\n
+                              <i class="bi bi-house-fill nav-icon"></i>\r\n
+                              <span>My Dashboard</span>\r\n
+                          </a>\r\n
+  \r\n
+                          <div class="nav-section-title">=ÉÊ— Participants</div>\r\n
+                          <a href="http://localhost/portal/worker/participants" \r\n
+                             class="nav-link-custom ">\r\n
+                              <i class="bi bi-people-fill nav-icon"></i>\r\n
+                              <span>Assigned Participants</span>\r\n
+  </style>\r\n
+  \r\n
+                      </div>\r\n
+                  </div>\r\n
+              </main>\r\n
+          </div>\r\n
+      </div>\r\n
+  \r\n
+      <!-- Mobile Bottom Navigation -->\r\n
+      <div class="mobile-bottom-nav">\r\n
+>                     <a href="http://localhost/portal/worker/dashboard" class="active">\r\n
+                  <i class="bi bi-house-door-fill"></i>\r\n
+                  <span>Home</span>\r\n
+              </a>\r\n
+              <a href="http://localhost/portal/worker/participants" class="">\r\n
+                  <i class="bi bi-people-fill"></i>\r\n
+                  <span>Team</span>\r\n
+              </a>\r\n
+              <a href="http://localhost/portal/messages/inbox" class="">\r\n
+                  <i class="bi bi-chat-left-dots-fill"></i>\r\n
+                  <span>Messages</span>\r\n
+                          `;\r\n
+                      }\r\n
+                  }\r\n
+  \r\n
+                  notificationHTML += `\r\n
+                      <div class="d-flex justify-content-end gap-2">\r\n
+                          <a href="http://localhost/portal/notifications" class="btn btn-primary">Open notifications</a>\r\n
+                      </div>\r\n
+                  `;\r\n
+  \r\n
+>                 const notificationSummary = document.getElementById('portalNotificationSummaryContent');\r\n
+>                 const notificationModalElement = document.getElementById('portalNotificationsModal');\r\n
+  \r\n
+                  const cleanupModalBackdrops = () => {\r\n
+                      document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());\r\n
+                      document.querySelectorAll('.modal.show').forEach(modal => {\r\n
+                          modal.classList.remove('show');\r\n
+                          modal.style.display = 'none';\r\n
+                          modal.setAttribute('aria-hidden', 'true');\r\n
+                          modal.removeAttribute('aria-modal');\r\n
+                      });\r\n
+                      document.body.classList.remove('modal-open');\r\n
+                          backdrop: false\r\n
+                      });\r\n
+                      notificationModal.show();\r\n
+  \r\n
+                      notificationModalElement.addEventListener('hidden.bs.modal', function() {\r\n
+                          cleanupModalBackdrops();\r\n
+                      });\r\n
+                  }\r\n
+              }\r\n
+  \r\n
+>             const sidebar = document.getElementById('portalSidebar');\r\n
+>             const overlay = document.getElementById('portalOverlay');\r\n
+>             const menuToggle = document.getElementById('portalMenuToggle');\r\n
+>             const sidebarClose = document.getElementById('portalSidebarClose');\r\n
+  \r\n
+              function openSidebar() {\r\n
+                  sidebar.classList.add('show');\r\n
+                  overlay.classList.add('show');\r\n
+                  document.body.style.overflow = 'hidden';\r\n
+              }\r\n
+  \r\n
+              function closeSidebar() {\r\n
+                  sidebar.classList.remove('show');\r\n
+                  overlay.classList.remove('show');\r\n
+              // Close sidebar on escape key\r\n
+              document.addEventListener('keydown', function(e) {\r\n
+                  if (e.key === 'Escape' && sidebar.classList.contains('show')) {\r\n
+                      closeSidebar();\r\n
+                  }\r\n
+              });\r\n
+  \r\n
+              // ========================================\r\n
+              // NOTIFICATION & MESSAGE DROPDOWNS\r\n
+              // ========================================\r\n
+>             const notificationToggle = document.getElementById('portalNotificationToggle');\r\n
+>             const notificationDropdown = document.getElementById('portalNotificationDropdown');\r\n
+>             const messageToggle = document.getElementById('portalMessageToggle');\r\n
+>             const messageDropdown = document.getElementById('portalMessageDropdown');\r\n
+  \r\n
+              function closeAllDropdowns() {\r\n
+                  if (notificationDropdown) notificationDropdown.classList.remove('show');\r\n
+                  if (messageDropdown) messageDropdown.classList.remove('show');\r\n
+              }\r\n
+  \r\n
+              if (notificationToggle && notificationDropdown) {\r\n
+                  notificationToggle.addEventListener('click', function(e) {\r\n
+                      e.stopPropagation();\r\n
+                      const isOpen = notificationDropdown.classList.contains('show');\r\n
+                      closeAllDropdowns();\r\n
+                      if (!isOpen) {\r\n
+                          notificationDropdown.classList.add('show');\r\n
+                          notificationToggle.setAttribute('aria-expanded', 'true');\r\n
+                      } else {\r\n
+                          notificationToggle.setAttribute('aria-expanded', 'false');\r\n
+                      }\r\n
+                  });\r\n
+              }\r\n
+  \r\n
+>             if (messageToggle && messageDropdown) {\r\n
+>                 messageToggle.addEventListener('click', function(e) {\r\n
+                      e.stopPropagation();\r\n
+                      const isOpen = messageDropdown.classList.contains('show');\r\n
+                      closeAllDropdowns();\r\n
+                      if (!isOpen) {\r\n
+                          messageDropdown.classList.add('show');\r\n
+>                         messageToggle.setAttribute('aria-expanded', 'true');\r\n
+                      } else {\r\n
+>                         messageToggle.setAttribute('aria-expanded', 'false');\r\n
+                      }\r\n
+                  });\r\n
+              }\r\n
+  \r\n
+              // Close dropdowns when clicking outside\r\n
+              document.addEventListener('click', function(e) {\r\n
+>                 if (!e.target.closest('.notification-menu')) {\r\n
+                      closeAllDropdowns();\r\n
+                      if (notificationToggle) notificationToggle.setAttribute('aria-expanded', 'false');\r\n
+>                     if (messageToggle) messageToggle.setAttribute('aria-expanded', 'false');\r\n
+                  }\r\n
+              });\r\n
+  \r\n
+              // Close dropdowns on escape key\r\n
+              document.addEventListener('keydown', function(e) {\r\n
+                  if (e.key === 'Escape') {\r\n
+                      closeAllDropdowns();\r\n
+                  }\r\n
+              });\r\n
+  \r\n
+              \r\n
+              // Add fade-in animation to cards\r\n
+              const observerOptions = {\r\n
+                  threshold: 0.1,\r\n
+                  rootMargin: '0px 0px -50px 0px'\r\n
+              };\r\n
+  \r\n
+              const observer = new IntersectionObserver(function(entries) {\r\n
+                              entries.forEach(entry => {\r\n
+                      if (entry.isIntersecting) {\r\n
+>                         entry.target.style.opacity = '1';\r\n
+>                         entry.target.style.transform = 'translateY(0)';\r\n
+                      }\r\n
+                  });\r\n
+              }, observerOptions);\r\n
+  \r\n
+              // Observe all cards and panels\r\n
+              document.querySelectorAll('.portal-card, .status-card, .dashboard-action-card').forEach(el => {\r\n
+                  el.style.opacity = '0';\r\n
+                  el.style.transform = 'translateY(20px)';\r\n
+                  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';\r\n
+                  observer.observe(el);\r\n
+              });\r\n
+  \r\n
+              // ========================================\r\n
+              // ACTIVE NAV LINK HIGHLIGHTING\r\n
+              // ========================================\r\n
+              const currentPath = window.location.pathname;\r\n
+              document.querySelectorAll('.mobile-bottom-nav a').forEach(link => {\r\n
+>                 if (link.getAttribute('href') === currentPath) {\r\n
+                      link.classList.add('active');\r\n
+                  }\r\n
+              });\r\n
+          });\r\n
+  \r\n
+          // ========================================\r\n
+          // PWA SUPPORT CHAT FUNCTION\r\n
+          // ========================================\r\n
+          window.openPortalSupportChat = function(event, fallbackHref) {\r\n
+              event.preventDefault();\r\n
+  \r\n
+              var openTawk = function() {\r\n
+                  if (window.Tawk_API) {\r\n
+                      if (typeof window.Tawk_API.maximize === 'function') {\r\n
+                          window.Tawk_API.maximize();\r\n
+                          return true;\r\n
+                      }\r\n
+>                     if (typeof window.Tawk_API.showWidget === 'function') {\r\n
+>                         window.Tawk_API.showWidget();\r\n
+                          return true;\r\n
+                      }\r\n
+                      if (typeof window.Tawk_API.toggle === 'function') {\r\n
+                          window.Tawk_API.toggle();\r\n
+                          return true;\r\n
+                      }\r\n
+                  }\r\n
+                  return false;\r\n
+              };\r\n
+  \r\n
+          });\r\n
+  \r\n
+          // ========================================\r\n
+          // PWA SERVICE WORKER & INSTALL PROMPT\r\n
+          // ========================================\r\n
+          const PWA_ENABLED = false;\r\n
+  \r\n
+          function updateOfflineState() {\r\n
+              if (navigator.onLine) {\r\n
+                  document.body.classList.remove('offline-state');\r\n
+>                 const offlineBanner = document.getElementById('offlineBanner');\r\n
+                  if (offlineBanner) offlineBanner.style.display = 'none';\r\n
+              } else {\r\n
+                  document.body.classList.add('offline-state');\r\n
+                  showOfflineBanner();\r\n
+              }\r\n
+          }\r\n
+  \r\n
+          function showOfflineBanner() {\r\n
+>             let banner = document.getElementById('offlineBanner');\r\n
+              if (!banner) {\r\n
+                  banner = document.createElement('div');\r\n
+                  banner.id = 'offlineBanner';\r\n
+                  banner.className = 'alert alert-warning position-fixed top-0 start-50 translate-middle-x mt-3 shadow-lg d-flex align-items-center gap-2';\r\n
+                  banner.style.cssText = 'z-index: 9999; border-radius: 12px; min-width: 300px;';\r\n
+                  banner.innerHTML = '<i class="bi bi-wifi-off fs-5"></i><strong>You are offline</strong><span class="ms-auto small text-muted">Some features may be limited</span>';\r\n
+                  document.body.appendChild(banner);\r\n
+              }\r\n
+              banner.style.display = 'flex';\r\n
+          }\r\n
+  \r\n
+          function unregisterServiceWorkers() {\r\n
+              if ('serviceWorker' in navigator) {\r\n
+>                 navigator.serviceWorker.getRegistrations().then(function(registrations) {\r\n
+                      registrations.forEach(function(registration) {\r\n
+                          registration.unregister().catch(function(error) {\r\n
+                              console.log('Failed to unregister service worker:', error);\r\n
+                          });\r\n
+                      });\r\n
+                  });\r\n
+              }\r\n
+          }\r\n
+  \r\n
+                      const PUSH_PUBLIC_KEY_ENDPOINT = "http://localhost/portal/push/public-key";\r\n
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');\r\n
+      const rawData = window.atob(base64);\r\n
+      const outputArray = new Uint8Array(rawData.length);\r\n
+  \r\n
+      for (let i = 0; i < rawData.length; ++i) {\r\n
+          outputArray[i] = rawData.charCodeAt(i);\r\n
+      }\r\n
+      return outputArray;\r\n
+  }\r\n
+  \r\n
+> function getCsrfToken() {\r\n
+      const meta = document.querySelector('meta[name="csrf-token"]');\r\n
+>     return meta ? meta.getAttribute('content') : null;\r\n
+  }\r\n
+  \r\n
+  async function sendPushSubscription(subscription) {\r\n
+>     const csrfToken = getCsrfToken();\r\n
+      if (!csrfToken || !subscription) {\r\n
+          return;\r\n
+      }\r\n
+  \r\n
+      await fetch(PUSH_SUBSCRIPTION_SAVE_ENDPOINT, {\r\n
+>         method: 'POST',\r\n
+          headers: {\r\n
+              'Content-Type': 'application/json',\r\n
+              'X-CSRF-TOKEN': csrfToken,\r\n
+              'Accept': 'application/json',\r\n
+          },\r\n
+          credentials: 'same-origin',\r\n
+          body: JSON.stringify(subscription.toJSON ? subscription.toJSON() : subscription),\r\n
+      });\r\n
+  }\r\n
+  \r\n
+  async function removePushSubscription(subscription) {\r\n
+>     const csrfToken = getCsrfToken();\r\n
+      if (!csrfToken || !subscription) {\r\n
+          return;\r\n
+      }\r\n
+  \r\n
+      await fetch(PUSH_SUBSCRIPTION_DELETE_ENDPOINT, {\r\n
+          method: 'DELETE',\r\n
+          headers: {\r\n
+              'Content-Type': 'application/json',\r\n
+              'X-CSRF-TOKEN': csrfToken,\r\n
+              'Accept': 'application/json',\r\n
+      try {\r\n
+          const response = await fetch(PUSH_PUBLIC_KEY_ENDPOINT, { credentials: 'include' });\r\n
+          const payload = await response.json();\r\n
+          const publicKey = payload.publicKey;\r\n
+  \r\n
+          if (!publicKey) {\r\n
+              console.warn('VAPID public key is not configured. Push subscription is disabled.');\r\n
+              return;\r\n
+          }\r\n
+  \r\n
+>         const existingSubscription = await registration.pushManager.getSubscription();\r\n
+          if (existingSubscription) {\r\n
+              await sendPushSubscription(existingSubscription);\r\n
+              return;\r\n
+          }\r\n
+  \r\n
+          const permission = await Notification.requestPermission();\r\n
+          if (permission !== 'granted') {\r\n
+              console.log('Notification permission was not granted.');\r\n
+              return;\r\n
+          }\r\n
+              applicationServerKey: urlBase64ToUint8Array(publicKey),\r\n
+          });\r\n
+  \r\n
+          await sendPushSubscription(subscription);\r\n
+      } catch (error) {\r\n
+          console.error('Failed to initialize push subscription:', error);\r\n
+      }\r\n
+  }\r\n
+  \r\n
+  function addPushMessageListener() {\r\n
+>     if (!('serviceWorker' in navigator) || !('postMessage' in MessageEvent.prototype)) {\r\n
+          return;\r\n
+      }\r\n
+  \r\n
+      navigator.serviceWorker.addEventListener('message', function(event) {\r\n
+          const message = event.data;\r\n
+          if (!message || message.type !== 'push-notification') {\r\n
+              return;\r\n
+          }\r\n
+  \r\n
+          updateNotificationUi(message.notification);\r\n
+                      });\r\n
+                  } else {\r\n
+                      unregisterServiceWorkers();\r\n
+                  }\r\n
+              });\r\n
+          } else {\r\n
+              window.addEventListener('load', updateOfflineState);\r\n
+          }\r\n
+  \r\n
+          var deferredPwaPrompt;\r\n
+>         var pwaInstallBanner = document.getElementById('pwaInstallBanner');\r\n
+>         var pwaInstallButton = document.getElementById('pwaInstallButton');\r\n
+>         var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');\r\n
+  \r\n
+          window.addEventListener('beforeinstallprompt', function(event) {\r\n
+              if (!PWA_ENABLED) {\r\n
+                  event.preventDefault();\r\n
+                  return;\r\n
+              }\r\n
+  \r\n
+              event.preventDefault();\r\n
+              deferredPwaPrompt = event;\r\n
+              if (pwaInstallBanner) {\r\n
+          }\r\n
+      </style>\r\n
+  </body>\r\n
+  </html>' [UTF-8](length: 159053) contains "You are logged in as Worker" [ASCII](length: 27).
+  
+  C:\Users\User\ahhc-portal\vendor\laravel\framework\src\Illuminate\Testing\TestResponseAssert.php:45
+  C:\Users\User\ahhc-portal\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:710
+  C:\Users\User\ahhc-portal\tests\Feature\AuthControllerTest.php:110
+  
+  2) Tests\Feature\AuthControllerTest::test_login_redirects_each_role_to_their_dashboard
+> Failed asserting that '<!DOCTYPE html>\r\n
+  <html lang="en">\r\n
+  <head>\r\n
+      <meta charset="UTF-8">\r\n
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">\r\n
+      <title>AHHC Portal -+ Care Hub</title>\r\n
+      <meta name="description" content="Manage participants, workers, invoices, approvals, documents, and compliance in one secure portal.">\r\n
+      <link rel="icon" href="http://localhost/favicon.ico">\r\n
+      <meta name="theme-color" content="#0E3863">\r\n
+      <meta name="mobile-web-app-capable" content="yes">\r\n
+      <meta name="csrf-token" content="VLtUI1pqldTw2tFBaYva2ySNLY22ghAd1LgoKXco">\r\n
+  \r\n
+      <!-- Top Navigation Bar -->\r\n
+      <nav class="navbar-portal">\r\n
+          <div class="container-fluid">\r\n
+              <div class="d-flex justify-content-between align-items-center w-100 h-100">\r\n
+                  <!-- Left: Menu Toggle & Brand -->\r\n
+                  <div class="d-flex align-items-center gap-3">\r\n
+                      <button class="portal-menu-btn" id="portalMenuToggle" aria-label="Toggle menu">\r\n
+                          <i class="bi bi-list fs-4"></i>\r\n
+                      </button>\r\n
+>                     <a class="navbar-brand" href="http://localhost/portal/dashboard">\r\n
+                                                      <i class="bi bi-heart-pulse-fill"></i>\r\n
+                                                  <span class="d-none d-sm-inline">AHHC Portal</span>\r\n
+                      </a>\r\n
+                  </div>\r\n
+  \r\n
+                  <!-- Right: Actions -->\r\n
+                  <div class="navbar-actions">\r\n
+                      <!-- Notifications -->\r\n
+                      <div class="notification-menu">\r\n
+                          <button class="notification-toggle" id="portalNotificationToggle" aria-label="Notifications" aria-expanded="false">\r\n
+                              <div class="notification-footer">\r\n
+                                  <a href="http://localhost/portal/notifications">\r\n
+                                      <i class="bi bi-list-ul me-1"></i>View all\r\n
+                                  </a>\r\n
+                                                              </div>\r\n
+                          </div>\r\n
+                      </div>\r\n
+  \r\n
+                      <!-- Messages -->\r\n
+                      <div class="notification-menu">\r\n
+>                         <button class="notification-toggle" id="portalMessageToggle" aria-label="Messages" aria-expanded="false">\r\n
+                              <i class="bi bi-envelope-fill"></i>\r\n
+                                                      </button>\r\n
+                          <div class="notification-dropdown" id="portalMessageDropdown">\r\n
+                              <div class="notification-header">\r\n
+                                  <h6>Messages</h6>\r\n
+                              </div>\r\n
+                              <div class="notification-list">\r\n
+                                                                      <div class="notification-item text-center text-muted py-4">\r\n
+                                          <i class="bi bi-envelope fs-1 d-block mb-2"></i>\r\n
+                                          <div>No messages yet</div>\r\n
+                              <i class="bi bi-chevron-down d-none d-md-inline small"></i>\r\n
+                          </a>\r\n
+                          <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="portalUserDropdown" style="border-radius: var(--radius-lg); min-width: 200px;">\r\n
+                              <li>\r\n
+                                  <a class="dropdown-item py-2 px-3" href="http://localhost/portal/profile">\r\n
+                                      <i class="bi bi-person me-2"></i>Profile\r\n
+                                  </a>\r\n
+                              </li>\r\n
+                                                          <li><hr class="dropdown-divider my-1"></li>\r\n
+                              <li>\r\n
+>                                 <form method="POST" action="http://localhost/portal/logout" class="m-0">\r\n
+                                      <input type="hidden" name="_token" value="VLtUI1pqldTw2tFBaYva2ySNLY22ghAd1LgoKXco" autocomplete="off">                                    <button type="submit" class="dropdown-item py-2 px-3 text-danger">\r\n
+                                          <i class="bi bi-box-arrow-right me-2"></i>Logout\r\n
+                                      </button>\r\n
+                                  </form>\r\n
+                              </li>\r\n
+                          </ul>\r\n
+                      </div>\r\n
+                  </div>\r\n
+              </div>\r\n
+          </div>\r\n
+                              Hi, Participant Login\r\n
+                          </div>\r\n
+                      </div>\r\n
+                      <button class="portal-menu-close" id="portalSidebarClose" aria-label="Close sidebar">\r\n
+                          <i class="bi bi-x-lg"></i>\r\n
+                      </button>\r\n
+                  </div>\r\n
+  \r\n
+                  <div class="nav-menu">\r\n
+                                              <!-- Participant Navigation -->\r\n
+>                         <a href="http://localhost/portal/dashboard" \r\n
+                             class="nav-link-custom active">\r\n
+                              <i class="bi bi-house-fill nav-icon"></i>\r\n
+                              <span>Dashboard</span>\r\n
+                          </a>\r\n
+  \r\n
+>                         <div class="nav-section-title">=É∆¶ Budget & Finance</div>\r\n
+>                         <a href="http://localhost/portal/participant/budget" \r\n
+                             class="nav-link-custom ">\r\n
+                              <i class="bi bi-wallet2 nav-icon"></i>\r\n
+>                             <span>My Budget</span>\r\n
+                          </a>\r\n
+                          <a href="http://localhost/portal/participant/pre-approvals" \r\n
+                             class="nav-link-custom ">\r\n
+                              <i class="bi bi-check2-circle-fill nav-icon"></i>\r\n
+                              <span>Pre-Approvals</span>\r\n
+                          </a>\r\n
+                          <a href="http://localhost/portal/participant/invoices" \r\n
+                             class="nav-link-custom ">\r\n
+                              <i class="bi bi-receipt-fill nav-icon"></i>\r\n
+                              <span>Submit Invoice</span>\r\n
+              <div class="notification-card-content">\r\n
+                  <p class="notification-card-label">Email preferences</p>\r\n
+                  <h3 class="notification-card-value">Manage</h3>\r\n
+                  <small class="notification-card-hint">Update notification delivery</small>\r\n
+              </div>\r\n
+              <i class="bi bi-chevron-right notification-card-arrow"></i>\r\n
+          </a>\r\n
+      </div>\r\n
+  \r\n
+      \r\n
+>     <!-- Top Row: Budget + Services -->\r\n
+      <div class="dashboard-top-row">\r\n
+>         <!-- Card 1: Quarterly Budget -->\r\n
+>         <div class="dash-card budget-card">\r\n
+              <div class="dash-card-header">\r\n
+                  <div class="card-badge">1</div>\r\n
+                  <div class="card-heading">\r\n
+>                     <h2 class="card-title">Quarterly Budget</h2>\r\n
+                      <span class="card-subtitle">1 Jul 2026 G«Ù 30 Sep 2026</span>\r\n
+                  </div>\r\n
+                  <div class="card-arrows">\r\n
+                      <button class="arrow-btn" aria-label="Previous"><i class="bi bi-chevron-left"></i></button>\r\n
+                      <button class="arrow-btn" aria-label="Next"><i class="bi bi-chevron-right"></i></button>\r\n
+                  </div>\r\n
+              </div>\r\n
+  \r\n
+>             <div class="budget-body">\r\n
+>                 <div class="budget-stats">\r\n
+>                     <div class="budget-stat">\r\n
+>                         <span class="budget-stat-label">Total Budget</span>\r\n
+>                         <span class="budget-stat-value">$0.00</span>\r\n
+                      </div>\r\n
+>                     <div class="budget-stat">\r\n
+>                         <span class="budget-stat-label">Used</span>\r\n
+>                         <span class="budget-stat-value stat-used">$0.00</span>\r\n
+                      </div>\r\n
+>                     <div class="budget-stat">\r\n
+>                         <span class="budget-stat-label">Committed / Pending</span>\r\n
+>                         <span class="budget-stat-value stat-committed">$0.00</span>\r\n
+                      </div>\r\n
+>                     <div class="budget-stat">\r\n
+>                         <span class="budget-stat-label">Remaining</span>\r\n
+>                         <span class="budget-stat-value stat-remaining">$0.00</span>\r\n
+                      </div>\r\n
+                  </div>\r\n
+  \r\n
+>                 <div class="budget-chart-area">\r\n
+                      <div class="donut-chart" data-percent="0">\r\n
+                          <svg viewBox="0 0 120 120" class="donut-svg">\r\n
+                              <circle class="donut-bg" cx="60" cy="60" r="50"></circle>\r\n
+                              <circle class="donut-fill" cx="60" cy="60" r="50"\r\n
+                                  stroke-dasharray="0 314.16"\r\n
+                                  transform="rotate(-90 60 60)"></circle>\r\n
+                          </svg>\r\n
+                          <div class="donut-center">\r\n
+                              <span class="donut-percent">0%</span>\r\n
+                              <span class="donut-label">Used</span>\r\n
+                          </div>\r\n
+                      </div>\r\n
+                      <div class="chart-tags">\r\n
+>                         <span class="live-tag"><i class="bi bi-circle-fill"></i> Live Budget Update</span>\r\n
+                          <span class="updated-tag">Updated: 14 May 2026 <i class="bi bi-info-circle"></i></span>\r\n
+                      </div>\r\n
+                  </div>\r\n
+              </div>\r\n
+          </div>\r\n
+  \r\n
+          <!-- Card 2: Upcoming Services -->\r\n
+          <div class="dash-card services-card">\r\n
+              <div class="dash-card-header">\r\n
+                  <div class="card-badge">2</div>\r\n
+                  </div>\r\n
+              </div>\r\n
+              <div class="summary-body">\r\n
+                  <div class="action-box">\r\n
+                      <i class="bi bi-chat-square-heart action-icon action-icon-success"></i>\r\n
+                      <div class="action-text">\r\n
+                          <span class="action-label">We're here to support you</span>\r\n
+                      </div>\r\n
+                  </div>\r\n
+                  <a href="http://localhost/portal/participant/complaints" class="summary-link">\r\n
+>                     Get help / Give feedback <i class="bi bi-arrow-right"></i>\r\n
+                  </a>\r\n
+              </div>\r\n
+          </div>\r\n
+      </div>\r\n
+  </div>\r\n
+  \r\n
+  <!-- Notification Alert Modal -->\r\n
+  \r\n
+  <style>\r\n
+      /* ===== CSS Variables ===== */\r\n
+      }\r\n
+  \r\n
+      /* ===== Top Row ===== */\r\n
+      .dashboard-top-row {\r\n
+          display: grid;\r\n
+          grid-template-columns: 1.4fr 1fr;\r\n
+          gap: 1.5rem;\r\n
+          margin-bottom: 1.75rem;\r\n
+      }\r\n
+  \r\n
+>     /* ===== Budget Card ===== */\r\n
+>     .budget-card {\r\n
+          position: relative;\r\n
+          overflow: hidden;\r\n
+          background: linear-gradient(180deg, rgba(22, 153, 161, 0.08) 0%, var(--bg-surface) 100%);\r\n
+      }\r\n
+  \r\n
+>     .budget-card::after {\r\n
+          content: '';\r\n
+          position: absolute;\r\n
+          top: -40px;\r\n
+          right: -40px;\r\n
+          width: 160px;\r\n
+          height: 160px;\r\n
+          background: radial-gradient(circle, rgba(22, 153, 161, 0.12) 0%, transparent 70%);\r\n
+          border-radius: 50%;\r\n
+      }\r\n
+  \r\n
+>     .budget-body {\r\n
+          display: flex;\r\n
+          gap: 2rem;\r\n
+          align-items: center;\r\n
+          position: relative;\r\n
+          z-index: 1;\r\n
+      }\r\n
+  \r\n
+>     .budget-stats {\r\n
+          flex: 1;\r\n
+          display: grid;\r\n
+          grid-template-columns: repeat(2, minmax(0, 1fr));\r\n
+          gap: 1rem;\r\n
+      }\r\n
+  \r\n
+>     .budget-stat {\r\n
+          display: flex;\r\n
+          flex-direction: column;\r\n
+          gap: 0.35rem;\r\n
+          padding: 1rem 1.25rem;\r\n
+          background: rgba(255, 255, 255, 0.98);\r\n
+          border-radius: var(--radius-lg);\r\n
+          border: 1px solid var(--border-light);\r\n
+          transition: var(--transition);\r\n
+      }\r\n
+  \r\n
+>     .budget-stat:hover {\r\n
+          border-color: var(--accent);\r\n
+          transform: translateY(-2px);\r\n
+          box-shadow: var(--shadow-sm);\r\n
+      }\r\n
+  \r\n
+>     .budget-stat-label {\r\n
+          font-size: 0.8rem;\r\n
+          color: var(--text-muted);\r\n
+          font-weight: 500;\r\n
+      }\r\n
+  \r\n
+>     .budget-stat-value {\r\n
+          font-size: 1.1rem;\r\n
+          font-weight: 800;\r\n
+          color: var(--text-dark);\r\n
+      }\r\n
+  \r\n
+      .stat-used { color: var(--danger); }\r\n
+      .stat-committed { color: var(--warning); }\r\n
+      .stat-remaining { color: var(--success); }\r\n
+  \r\n
+>     .budget-chart-area {\r\n
+          display: flex;\r\n
+          flex-direction: column;\r\n
+          align-items: center;\r\n
+          gap: 1rem;\r\n
+          min-width: 180px;\r\n
+      }\r\n
+  \r\n
+      .donut-chart {\r\n
+          position: relative;\r\n
+          width: 160px;\r\n
+              padding: 2.5rem;\r\n
+          }\r\n
+      }\r\n
+  \r\n
+      /* Tablets and small desktops (992px - 1199px) */\r\n
+      @media (max-width: 1199.98px) {\r\n
+          .dashboard-top-row {\r\n
+              grid-template-columns: 1fr;\r\n
+          }\r\n
+  \r\n
+>         .budget-body {\r\n
+              flex-direction: column;\r\n
+              gap: 1.5rem;\r\n
+          }\r\n
+  \r\n
+>         .budget-chart-area {\r\n
+              min-width: 100%;\r\n
+          }\r\n
+      }\r\n
+  \r\n
+      /* Tablets (768px - 991px) */\r\n
+      @media (max-width: 991.98px) {\r\n
+          .dashboard-page {\r\n
+              padding: 1.5rem;\r\n
+          }\r\n
+  \r\n
+          }\r\n
+  \r\n
+          .dashboard-summary-row {\r\n
+              grid-template-columns: repeat(2, minmax(0, 1fr));\r\n
+          }\r\n
+  \r\n
+          .greeting-title {\r\n
+              font-size: 1.75rem;\r\n
+          }\r\n
+  \r\n
+>         .budget-stats {\r\n
+              grid-template-columns: repeat(2, minmax(0, 1fr));\r\n
+          }\r\n
+      }\r\n
+  \r\n
+      /* Mobile devices (576px - 767px) */\r\n
+      @media (max-width: 767.98px) {\r\n
+          .dashboard-page {\r\n
+              padding: 1.25rem;\r\n
+          }\r\n
+  \r\n
+          }\r\n
+  \r\n
+          .dash-card {\r\n
+              padding: 1.5rem;\r\n
+          }\r\n
+  \r\n
+          .greeting-title {\r\n
+              font-size: 1.5rem;\r\n
+          }\r\n
+  \r\n
+>         .budget-stats {\r\n
+              grid-template-columns: 1fr;\r\n
+          }\r\n
+  \r\n
+>         .budget-stat {\r\n
+              flex-direction: row;\r\n
+              justify-content: space-between;\r\n
+              align-items: center;\r\n
+          }\r\n
+  \r\n
+          .donut-chart {\r\n
+              width: 140px;\r\n
+              height: 140px;\r\n
+          }\r\n
+  \r\n
+          }\r\n
+  \r\n
+          .user-name {\r\n
+              font-size: 0.85rem;\r\n
+          }\r\n
+  \r\n
+          .user-role {\r\n
+              font-size: 0.7rem;\r\n
+          }\r\n
+  \r\n
+>         .budget-stat {\r\n
+              padding: 0.85rem 1rem;\r\n
+          }\r\n
+  \r\n
+>         .budget-stat-label {\r\n
+              font-size: 0.75rem;\r\n
+          }\r\n
+  \r\n
+>         .budget-stat-value {\r\n
+              font-size: 1rem;\r\n
+          }\r\n
+  \r\n
+          .donut-chart {\r\n
+              width: 120px;\r\n
+              height: 120px;\r\n
+          }\r\n
+  \r\n
+          .donut-percent {\r\n
+              font-size: 1.5rem;\r\n
+          .icon-btn {\r\n
+              width: 38px;\r\n
+              height: 38px;\r\n
+          }\r\n
+  \r\n
+          .user-avatar {\r\n
+              width: 34px;\r\n
+              height: 34px;\r\n
+          }\r\n
+  \r\n
+>         .budget-stat {\r\n
+              padding: 0.75rem 0.875rem;\r\n
+          }\r\n
+  \r\n
+          .donut-chart {\r\n
+              width: 110px;\r\n
+              height: 110px;\r\n
+          }\r\n
+  \r\n
+          .donut-percent {\r\n
+              font-size: 1.35rem;\r\n
+  </style>\r\n
+  \r\n
+                      </div>\r\n
+                  </div>\r\n
+              </main>\r\n
+          </div>\r\n
+      </div>\r\n
+  \r\n
+      <!-- Mobile Bottom Navigation -->\r\n
+      <div class="mobile-bottom-nav">\r\n
+>                     <a href="http://localhost/portal/dashboard" class="active">\r\n
+                  <i class="bi bi-house-door-fill"></i>\r\n
+                  <span>Home</span>\r\n
+              </a>\r\n
+              <a href="http://localhost/portal/participant/services" class="">\r\n
+                  <i class="bi bi-calendar-check-fill"></i>\r\n
+                  <span>Services</span>\r\n
+              </a>\r\n
+              <a href="http://localhost/portal/messages/inbox" class="">\r\n
+                  <i class="bi bi-chat-left-dots-fill"></i>\r\n
+                  <span>Messages</span>\r\n
+                          `;\r\n
+                      }\r\n
+                  }\r\n
+  \r\n
+                  notificationHTML += `\r\n
+                      <div class="d-flex justify-content-end gap-2">\r\n
+                          <a href="http://localhost/portal/notifications" class="btn btn-primary">Open notifications</a>\r\n
+                      </div>\r\n
+                  `;\r\n
+  \r\n
+>                 const notificationSummary = document.getElementById('portalNotificationSummaryContent');\r\n
+>                 const notificationModalElement = document.getElementById('portalNotificationsModal');\r\n
+  \r\n
+                  const cleanupModalBackdrops = () => {\r\n
+                      document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());\r\n
+                      document.querySelectorAll('.modal.show').forEach(modal => {\r\n
+                          modal.classList.remove('show');\r\n
+                          modal.style.display = 'none';\r\n
+                          modal.setAttribute('aria-hidden', 'true');\r\n
+                          modal.removeAttribute('aria-modal');\r\n
+                      });\r\n
+                      document.body.classList.remove('modal-open');\r\n
+                          backdrop: false\r\n
+                      });\r\n
+                      notificationModal.show();\r\n
+  \r\n
+                      notificationModalElement.addEventListener('hidden.bs.modal', function() {\r\n
+                          cleanupModalBackdrops();\r\n
+                      });\r\n
+                  }\r\n
+              }\r\n
+  \r\n
+>             const sidebar = document.getElementById('portalSidebar');\r\n
+>             const overlay = document.getElementById('portalOverlay');\r\n
+>             const menuToggle = document.getElementById('portalMenuToggle');\r\n
+>             const sidebarClose = document.getElementById('portalSidebarClose');\r\n
+  \r\n
+              function openSidebar() {\r\n
+                  sidebar.classList.add('show');\r\n
+                  overlay.classList.add('show');\r\n
+                  document.body.style.overflow = 'hidden';\r\n
+              }\r\n
+  \r\n
+              function closeSidebar() {\r\n
+                  sidebar.classList.remove('show');\r\n
+                  overlay.classList.remove('show');\r\n
+              // Close sidebar on escape key\r\n
+              document.addEventListener('keydown', function(e) {\r\n
+                  if (e.key === 'Escape' && sidebar.classList.contains('show')) {\r\n
+                      closeSidebar();\r\n
+                  }\r\n
+              });\r\n
+  \r\n
+              // ========================================\r\n
+              // NOTIFICATION & MESSAGE DROPDOWNS\r\n
+              // ========================================\r\n
+>             const notificationToggle = document.getElementById('portalNotificationToggle');\r\n
+>             const notificationDropdown = document.getElementById('portalNotificationDropdown');\r\n
+>             const messageToggle = document.getElementById('portalMessageToggle');\r\n
+>             const messageDropdown = document.getElementById('portalMessageDropdown');\r\n
+  \r\n
+              function closeAllDropdowns() {\r\n
+                  if (notificationDropdown) notificationDropdown.classList.remove('show');\r\n
+                  if (messageDropdown) messageDropdown.classList.remove('show');\r\n
+              }\r\n
+  \r\n
+              if (notificationToggle && notificationDropdown) {\r\n
+                  notificationToggle.addEventListener('click', function(e) {\r\n
+                      e.stopPropagation();\r\n
+                      const isOpen = notificationDropdown.classList.contains('show');\r\n
+                      closeAllDropdowns();\r\n
+                      if (!isOpen) {\r\n
+                          notificationDropdown.classList.add('show');\r\n
+                          notificationToggle.setAttribute('aria-expanded', 'true');\r\n
+                      } else {\r\n
+                          notificationToggle.setAttribute('aria-expanded', 'false');\r\n
+                      }\r\n
+                  });\r\n
+              }\r\n
+  \r\n
+>             if (messageToggle && messageDropdown) {\r\n
+>                 messageToggle.addEventListener('click', function(e) {\r\n
+                      e.stopPropagation();\r\n
+                      const isOpen = messageDropdown.classList.contains('show');\r\n
+                      closeAllDropdowns();\r\n
+                      if (!isOpen) {\r\n
+                          messageDropdown.classList.add('show');\r\n
+>                         messageToggle.setAttribute('aria-expanded', 'true');\r\n
+                      } else {\r\n
+>                         messageToggle.setAttribute('aria-expanded', 'false');\r\n
+                      }\r\n
+                  });\r\n
+              }\r\n
+  \r\n
+              // Close dropdowns when clicking outside\r\n
+              document.addEventListener('click', function(e) {\r\n
+>                 if (!e.target.closest('.notification-menu')) {\r\n
+                      closeAllDropdowns();\r\n
+                      if (notificationToggle) notificationToggle.setAttribute('aria-expanded', 'false');\r\n
+>                     if (messageToggle) messageToggle.setAttribute('aria-expanded', 'false');\r\n
+                  }\r\n
+              });\r\n
+  \r\n
+              // Close dropdowns on escape key\r\n
+              document.addEventListener('keydown', function(e) {\r\n
+                  if (e.key === 'Escape') {\r\n
+                      closeAllDropdowns();\r\n
+                  }\r\n
+              });\r\n
+  \r\n
+              \r\n
+              // Add fade-in animation to cards\r\n
+              const observerOptions = {\r\n
+                  threshold: 0.1,\r\n
+                  rootMargin: '0px 0px -50px 0px'\r\n
+              };\r\n
+  \r\n
+              const observer = new IntersectionObserver(function(entries) {\r\n
+                              entries.forEach(entry => {\r\n
+                      if (entry.isIntersecting) {\r\n
+>                         entry.target.style.opacity = '1';\r\n
+>                         entry.target.style.transform = 'translateY(0)';\r\n
+                      }\r\n
+                  });\r\n
+              }, observerOptions);\r\n
+  \r\n
+              // Observe all cards and panels\r\n
+              document.querySelectorAll('.portal-card, .status-card, .dashboard-action-card').forEach(el => {\r\n
+                  el.style.opacity = '0';\r\n
+                  el.style.transform = 'translateY(20px)';\r\n
+                  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';\r\n
+                  observer.observe(el);\r\n
+              });\r\n
+  \r\n
+              // ========================================\r\n
+              // ACTIVE NAV LINK HIGHLIGHTING\r\n
+              // ========================================\r\n
+              const currentPath = window.location.pathname;\r\n
+              document.querySelectorAll('.mobile-bottom-nav a').forEach(link => {\r\n
+>                 if (link.getAttribute('href') === currentPath) {\r\n
+                      link.classList.add('active');\r\n
+                  }\r\n
+              });\r\n
+          });\r\n
+  \r\n
+          // ========================================\r\n
+          // PWA SUPPORT CHAT FUNCTION\r\n
+          // ========================================\r\n
+          window.openPortalSupportChat = function(event, fallbackHref) {\r\n
+              event.preventDefault();\r\n
+  \r\n
+              var openTawk = function() {\r\n
+                  if (window.Tawk_API) {\r\n
+                      if (typeof window.Tawk_API.maximize === 'function') {\r\n
+                          window.Tawk_API.maximize();\r\n
+                          return true;\r\n
+                      }\r\n
+>                     if (typeof window.Tawk_API.showWidget === 'function') {\r\n
+>                         window.Tawk_API.showWidget();\r\n
+                          return true;\r\n
+                      }\r\n
+                      if (typeof window.Tawk_API.toggle === 'function') {\r\n
+                          window.Tawk_API.toggle();\r\n
+                          return true;\r\n
+                      }\r\n
+                  }\r\n
+                  return false;\r\n
+              };\r\n
+  \r\n
+          });\r\n
+  \r\n
+          // ========================================\r\n
+          // PWA SERVICE WORKER & INSTALL PROMPT\r\n
+          // ========================================\r\n
+          const PWA_ENABLED = false;\r\n
+  \r\n
+          function updateOfflineState() {\r\n
+              if (navigator.onLine) {\r\n
+                  document.body.classList.remove('offline-state');\r\n
+>                 const offlineBanner = document.getElementById('offlineBanner');\r\n
+                  if (offlineBanner) offlineBanner.style.display = 'none';\r\n
+              } else {\r\n
+                  document.body.classList.add('offline-state');\r\n
+                  showOfflineBanner();\r\n
+              }\r\n
+          }\r\n
+  \r\n
+          function showOfflineBanner() {\r\n
+>             let banner = document.getElementById('offlineBanner');\r\n
+              if (!banner) {\r\n
+                  banner = document.createElement('div');\r\n
+                  banner.id = 'offlineBanner';\r\n
+                  banner.className = 'alert alert-warning position-fixed top-0 start-50 translate-middle-x mt-3 shadow-lg d-flex align-items-center gap-2';\r\n
+                  banner.style.cssText = 'z-index: 9999; border-radius: 12px; min-width: 300px;';\r\n
+                  banner.innerHTML = '<i class="bi bi-wifi-off fs-5"></i><strong>You are offline</strong><span class="ms-auto small text-muted">Some features may be limited</span>';\r\n
+                  document.body.appendChild(banner);\r\n
+              }\r\n
+              banner.style.display = 'flex';\r\n
+          }\r\n
+  \r\n
+          function unregisterServiceWorkers() {\r\n
+              if ('serviceWorker' in navigator) {\r\n
+>                 navigator.serviceWorker.getRegistrations().then(function(registrations) {\r\n
+                      registrations.forEach(function(registration) {\r\n
+                          registration.unregister().catch(function(error) {\r\n
+                              console.log('Failed to unregister service worker:', error);\r\n
+                          });\r\n
+                      });\r\n
+                  });\r\n
+              }\r\n
+          }\r\n
+  \r\n
+                      const PUSH_PUBLIC_KEY_ENDPOINT = "http://localhost/portal/push/public-key";\r\n
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');\r\n
+      const rawData = window.atob(base64);\r\n
+      const outputArray = new Uint8Array(rawData.length);\r\n
+  \r\n
+      for (let i = 0; i < rawData.length; ++i) {\r\n
+          outputArray[i] = rawData.charCodeAt(i);\r\n
+      }\r\n
+      return outputArray;\r\n
+  }\r\n
+  \r\n
+> function getCsrfToken() {\r\n
+      const meta = document.querySelector('meta[name="csrf-token"]');\r\n
+>     return meta ? meta.getAttribute('content') : null;\r\n
+  }\r\n
+  \r\n
+  async function sendPushSubscription(subscription) {\r\n
+>     const csrfToken = getCsrfToken();\r\n
+      if (!csrfToken || !subscription) {\r\n
+          return;\r\n
+      }\r\n
+  \r\n
+      await fetch(PUSH_SUBSCRIPTION_SAVE_ENDPOINT, {\r\n
+>         method: 'POST',\r\n
+          headers: {\r\n
+              'Content-Type': 'application/json',\r\n
+              'X-CSRF-TOKEN': csrfToken,\r\n
+              'Accept': 'application/json',\r\n
+          },\r\n
+          credentials: 'same-origin',\r\n
+          body: JSON.stringify(subscription.toJSON ? subscription.toJSON() : subscription),\r\n
+      });\r\n
+  }\r\n
+  \r\n
+  async function removePushSubscription(subscription) {\r\n
+>     const csrfToken = getCsrfToken();\r\n
+      if (!csrfToken || !subscription) {\r\n
+          return;\r\n
+      }\r\n
+  \r\n
+      await fetch(PUSH_SUBSCRIPTION_DELETE_ENDPOINT, {\r\n
+          method: 'DELETE',\r\n
+          headers: {\r\n
+              'Content-Type': 'application/json',\r\n
+              'X-CSRF-TOKEN': csrfToken,\r\n
+              'Accept': 'application/json',\r\n
+      try {\r\n
+          const response = await fetch(PUSH_PUBLIC_KEY_ENDPOINT, { credentials: 'include' });\r\n
+          const payload = await response.json();\r\n
+          const publicKey = payload.publicKey;\r\n
+  \r\n
+          if (!publicKey) {\r\n
+              console.warn('VAPID public key is not configured. Push subscription is disabled.');\r\n
+              return;\r\n
+          }\r\n
+  \r\n
+>         const existingSubscription = await registration.pushManager.getSubscription();\r\n
+          if (existingSubscription) {\r\n
+              await sendPushSubscription(existingSubscription);\r\n
+              return;\r\n
+          }\r\n
+  \r\n
+          const permission = await Notification.requestPermission();\r\n
+          if (permission !== 'granted') {\r\n
+              console.log('Notification permission was not granted.');\r\n
+              return;\r\n
+          }\r\n
+              applicationServerKey: urlBase64ToUint8Array(publicKey),\r\n
+          });\r\n
+  \r\n
+          await sendPushSubscription(subscription);\r\n
+      } catch (error) {\r\n
+          console.error('Failed to initialize push subscription:', error);\r\n
+      }\r\n
+  }\r\n
+  \r\n
+  function addPushMessageListener() {\r\n
+>     if (!('serviceWorker' in navigator) || !('postMessage' in MessageEvent.prototype)) {\r\n
+          return;\r\n
+      }\r\n
+  \r\n
+      navigator.serviceWorker.addEventListener('message', function(event) {\r\n
+          const message = event.data;\r\n
+          if (!message || message.type !== 'push-notification') {\r\n
+              return;\r\n
+          }\r\n
+  \r\n
+          updateNotificationUi(message.notification);\r\n
+                      });\r\n
+                  } else {\r\n
+                      unregisterServiceWorkers();\r\n
+                  }\r\n
+              });\r\n
+          } else {\r\n
+              window.addEventListener('load', updateOfflineState);\r\n
+          }\r\n
+  \r\n
+          var deferredPwaPrompt;\r\n
+>         var pwaInstallBanner = document.getElementById('pwaInstallBanner');\r\n
+>         var pwaInstallButton = document.getElementById('pwaInstallButton');\r\n
+>         var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');\r\n
+  \r\n
+          window.addEventListener('beforeinstallprompt', function(event) {\r\n
+              if (!PWA_ENABLED) {\r\n
+                  event.preventDefault();\r\n
+                  return;\r\n
+              }\r\n
+  \r\n
+              event.preventDefault();\r\n
+              deferredPwaPrompt = event;\r\n
+              if (pwaInstallBanner) {\r\n

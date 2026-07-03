@@ -1,0 +1,128 @@
+@extends('layouts.admin')
+
+@section('content')
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1">Review Onboarding Submission</h1>
+            <p class="text-muted">Review the participant's onboarding package before approving or requesting changes.</p>
+        </div>
+        <a href="{{ route('admin.onboarding.index') }}" class="btn btn-outline-secondary">Back to submissions</a>
+    </div>
+
+    <div class="row gy-4">
+        <div class="col-xl-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Participant Details</h2>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Name</strong>
+                            <p class="mb-0">{{ $participant->first_name }} {{ $participant->last_name }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Email</strong>
+                            <p class="mb-0">{{ $participant->email }}</p>
+                        </div>
+                    </div>
+
+                    <h3 class="h6 mt-4 mb-3">Onboarding Data</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Emergency Contact</strong>
+                            <p class="mb-0">{{ $submission->personal_data['emergency_contact_name'] ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Contact Phone</strong>
+                            <p class="mb-0">{{ $submission->personal_data['emergency_contact_phone'] ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Relationship</strong>
+                            <p class="mb-0">{{ $submission->personal_data['emergency_contact_relationship'] ?? 'N/A' }}</p>
+                        </div>
+                    </div>
+
+                    <h3 class="h6 mt-4 mb-3">Uploaded Documents</h3>
+                    @if($submission->uploaded_documents && count($submission->uploaded_documents))
+                        <ul class="list-group list-group-flush mb-0">
+                            @foreach($submission->uploaded_documents as $document)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>{{ $document['name'] }}</span>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary">Download</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-muted">No documents uploaded.</p>
+                    @endif
+
+                    <h3 class="h6 mt-4 mb-3">Agreements</h3>
+                    @if($participant->agreements && $participant->agreements->count())
+                        <div class="list-group">
+                            @foreach($participant->agreements as $agreement)
+                                <div class="list-group-item py-3">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="mb-1">{{ $agreement->title }}</h5>
+                                            <p class="mb-1 text-muted small">{{ $agreement->description }}</p>
+                                        </div>
+                                        <span class="badge bg-{{ $participant->signedAgreements()->where('agreement_id', $agreement->id)->exists() ? 'success' : 'secondary' }} text-white">
+                                            {{ $participant->signedAgreements()->where('agreement_id', $agreement->id)->exists() ? 'Signed' : 'Pending' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-muted">No agreements assigned.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6 mb-3">Submission Summary</h3>
+                    <dl class="row">
+                        <dt class="col-5 text-muted">Status</dt>
+                        <dd class="col-7">{{ ucfirst(str_replace('_', ' ', $submission->status)) }}</dd>
+                        <dt class="col-5 text-muted">Submitted</dt>
+                        <dd class="col-7">{{ optional($submission->submitted_at)->format('d M Y H:i') }}</dd>
+                        <dt class="col-5 text-muted">Review notes</dt>
+                        <dd class="col-7">{{ $submission->admin_comments ?? 'None' }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6 mb-3">Actions</h3>
+
+                    <form action="{{ route('admin.onboarding.approve', $submission) }}" method="POST" class="mb-3">
+                        @csrf
+                        <button type="submit" class="btn btn-success w-100">Approve</button>
+                    </form>
+
+                    <form action="{{ route('admin.onboarding.request_changes', $submission) }}" method="POST" class="mb-3">
+                        @csrf
+                        <div class="mb-3">
+                            <textarea name="admin_comments" class="form-control" rows="4" placeholder="Explain required changes" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Request Changes</button>
+                    </form>
+
+                    <form action="{{ route('admin.onboarding.reject', $submission) }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <textarea name="rejection_reason" class="form-control" rows="4" placeholder="Reason for rejection" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">Reject</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

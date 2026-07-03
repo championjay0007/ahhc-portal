@@ -1,0 +1,90 @@
+======================================================================
+ALLEGANCE HEART & HOME CARE - WORKER / SUPPLIER OPERATION FLOW
+======================================================================
+
+IMPORTANT ACCESS RULES FOR WORKERS:
+- Workers/suppliers must ONLY see the participant’s name, preferred name, address, mobile number, and shifts they are assigned to.
+- They MUST NOT see full funding details, unrelated clinical documents, or management-only records.
+- Workers only gain access to participant details AFTER AHHC officially assigns them.
+- Immediate deactivation and removal from participant assignment occurs when no longer approved.
+
+
+1. WORKER ONBOARDING & COMPLIANCE WORKFLOW
+----------------------------------------------------------------------
+Step 1: Invitation / Sourcing
+- System records if the worker is sourced by AHHC, the participant directly, a marketplace (e.g., Mable), or another provider.
+- AHHC sends an invite or participant nominates the worker for approval.
+
+Step 2: Profile & Compliance Upload
+- Worker uploads mandatory compliance documents: ABN, police check/worker screening, insurance, qualifications/registration, training, first aid/CPR, and marketplace agreements.
+
+Step 3: AHHC Review & Expiry Tracking
+- AHHC reviews and approves/rejects compliance documents.
+- System tracks document expiry dates and triggers non-compliance alerts/reminders.
+
+Step 4: Sign Declarations
+- Worker electronically signs mandatory declarations: Privacy, incident/complaint reporting, care note requirements, and agreement not to commence work before approval.
+
+Step 5: Service Approval & Participant Assignment
+- AHHC approves the worker for specific service types.
+- AHHC assigns the worker to a specific participant. (Worker dashboard remains empty of client data until this step).
+
+
+2. DAILY SHIFT & CARE NOTE WORKFLOW
+----------------------------------------------------------------------
+Step 1: Login & Dashboard Check
+- Worker logs in and views their dashboard: Today’s shifts, notes due, compliance status, and alerts.
+
+Step 2: View Assigned Shifts
+- Worker views scheduled/approved shifts, including service type, start/end time, location, and specific service instructions/risks relevant to safe delivery.
+
+Step 3: Deliver Service & Submit Care Note
+- Worker submits a care note strictly against their assigned participant/shift (auto-filled by the system; cannot select unrelated participants).
+- Required Care Note Captures:
+  * Service date/time (Start/finish time, total hours, category).
+  * Tasks completed (Tick list and free text aligned to care plan).
+  * Participant presentation (General wellbeing, changes, concerns).
+  * Risks/incidents (Prompts for falls, missed services, escalations).
+  * Evidence/attachments (Optional photo/receipt/timesheet if consented).
+
+Step 4: Worker Declaration
+- Worker digitally confirms the note is accurate and the service was delivered as stated.
+
+
+3. INCIDENT & RISK REPORTING WORKFLOW
+----------------------------------------------------------------------
+Step 1: Identify Event
+- During or after a shift, worker identifies an incident, near miss, hazard, or change in the participant's condition.
+
+Step 2: Submit Digital Form
+- Worker submits the specific form via the portal (Incident, Falls, Near Miss, Hazard/Risk, or Change in Condition).
+- Form captures details like location, immediate action taken, injury status, and escalation.
+
+Step 3: Immediate Alert Trigger
+- System immediately triggers a notification to authorized AHHC care/quality/management staff.
+- Worker follows up with any required photo evidence or witness details.
+
+
+4. INVOICE SUBMISSION WORKFLOW (For Supplier Roles)
+----------------------------------------------------------------------
+Step 1: Submit Invoice
+- Supplier submits invoice/receipt, linking it to the specific participant, service date, and service category.
+
+Step 2: Attach Evidence
+- Attaches mandatory evidence: care notes, timesheets, quotes, or Mable booking agreements.
+
+Step 3: Await AHHC Review
+- Invoice status shows as "Submitted/Pending".
+- AHHC checks budget availability, care plan alignment, and worker compliance before approving payment.
+
+
+5. WORKER DASHBOARD OPERATIONS & MENUS
+----------------------------------------------------------------------
+- My Dashboard: Snapshot of assigned shifts, notes due, compliance status, and alerts.
+- Assigned Participants: View only assigned participants and approved limited service information.
+- My Shifts: View scheduled/approved shifts, times, and locations.
+- Submit Care Note: Log tasks, observations, and declarations for completed shifts.
+- Incident/Risk Forms: Submit falls, hazards, injuries, or change-in-condition reports.
+- Upload Documents: Upload/renew police checks, insurance, qualifications, and training evidence.
+- Forms to Sign: Sign worker declarations, privacy agreements, and third-party worker agreements.
+- My Profile: Manage contact details, ABN, service types, compliance expiry dates, and notification preferences.

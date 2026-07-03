@@ -1,0 +1,56 @@
+======================================================================
+ALLEGANCE HEART & HOME CARE - PARTICIPANT OPERATION FLOW
+======================================================================
+
+
+2. PRE-APPROVAL WORKFLOW
+----------------------------------------------------------------------
+Step 1: Submit Request
+- Participant/support person selects service type/category, supplier/worker, estimated amount, date range and attaches quote/evidence.
+
+Step 2: System Checks (AHHC)
+- AHHC checks support plan/care plan, allowable service, budget availability, contribution implications and worker compliance.
+
+Step 3: Approval Decision (AHHC)
+- AHHC to approve, approve with conditions, request more info, decline or cancel.
+
+Step 4: Budget Commitment
+- Approved pre-approval creates committed amount and reduces live available balance.
+
+Step 5: Expiry / Review
+- Pre-approval has expiry date or service period; expired/cancelled approvals release committed amount.
+
+Step 6: Audit Log
+- Record decision maker, date/time, amount, documents and reason/notes.
+
+
+3. INVOICE SUBMISSION AND APPROVAL WORKFLOW
+----------------------------------------------------------------------
+Step 1: Submit Invoice
+- Participant submits invoice/receipt, service date, service type, amount, GST, supplier, attachments and comments.
+
+Step 2: Attach Evidence
+- Attach care note, timesheet, quote, Mable booking/agreement, service evidence where required.
+
+Step 3: AHHC Review
+- Admin checks allowable service, budget available, care plan alignment, delivery evidence, worker compliance, duplicate invoice check.
+
+Step 4: Approve / Reject
+- Status options include Submitted, awaiting info, approved, rejected, paid, claimed, cancelled.
+
+Step 5: Pay / Claim & Update Budget
+- Submitted invoices show pending; approved/paid invoices reduce available budget; rejected invoices release funds.
+
+
+4. PARTICIPANT DASHBOARD OPERATIONS & MENUS
+----------------------------------------------------------------------
+- Dashboard: Snapshot of budget, pending actions, upcoming reviews, notifications and quick links.
+- My Budget: Live quarterly budget with start/end dates, opening budget, carry-over, committed amount, approved/paid spend and remaining balance.
+- Pre-Approvals: Submit request, attach quotes, select service category, view status and AHHC decision.
+- Submit Invoice: Submit invoice/receipt, service date, service type, amount, GST, supplier, attachments and comments.
+- Documents: Upload/view documents according to permissions: care plan, agreements, quotes, support plan, receipts.
+- Forms to Sign: View assigned forms, sign electronically, download signed copies.
+- Workers/Suppliers: View onboarded/approved workers/suppliers and their compliance status. Participants can onboard workers of their choice.
+- Incidents/Feedback: Submit complaint, feedback, incident, risk, near miss, hazard or change in condition.
+- Messages: Secure communication with AHHC.
+- My Profile: Contact details, support person authority, communication preferences and emergency contacts.

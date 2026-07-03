@@ -1,0 +1,36 @@
+  
+  .....F.F........                                                  16 / 16 (100%)
+  
+  Time: 00:02.479, Memory: 56.00 MB
+  
+> There were 2 failures:
+  
+  1) Tests\Feature\AuthControllerTest::test_dashboard_displays_worker_specific_content
+> Failed asserting that '<!DOCTYPE html>\r\n
+  <html lang="en">\r\n
+  <head>\r\n
+      <meta charset="UTF-8">\r\n
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">\r\n
+      <title>AHHC Portal -+ Care Hub</title>\r\n
+  C:\Users\User\ahhc-portal\vendor\laravel\framework\src\Illuminate\Testing\TestResponseAssert.php:45
+  C:\Users\User\ahhc-portal\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:710
+  C:\Users\User\ahhc-portal\tests\Feature\AuthControllerTest.php:110
+  
+  2) Tests\Feature\AuthControllerTest::test_login_redirects_each_role_to_their_dashboard
+> Failed asserting that '<!DOCTYPE html>\r\n
+  <html lang="en">\r\n
+  <head>\r\n
+      <meta charset="UTF-8">\r\n
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">\r\n
+      <title>AHHC Portal -+ Care Hub</title>\r\n
+          .toast-custom.info {\r\n
+              border-left: 4px solid var(--info);\r\n
+          }\r\n
+      </style>\r\n
+  </body>\r\n
+> </html>' [UTF-8](length: 168095) contains "Welcome," [ASCII](length: 8).
+  
+  C:\Users\User\ahhc-portal\vendor\laravel\framework\src\Illuminate\Testing\TestResponseAssert.php:45
+  C:\Users\User\ahhc-portal\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:710
+  C:\Users\User\ahhc-portal\tests\Feature\AuthControllerTest.php:179
+  

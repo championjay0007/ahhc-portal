@@ -1,0 +1,85 @@
+﻿AHHC Portal Admin User Manual
+
+This manual explains how administrators navigate the AHHC Portal, manage user accounts, handle support, and configure system settings.
+
+1. ADMIN PORTAL OVERVIEW
+
+The admin portal is the secure back office interface for administrators. Admins log in using their admin credentials and access the portal dashboard.
+
+Primary sections:
+- Dashboard: The first page after login. Provides quick access to support, users, system notifications, portal status, budget summaries, and preapproval workflows.
+- Users: Manage accounts for participants, workers, and fellow admins. Use this section to create, update, deactivate, and view profiles.
+- Support: Review and respond to support tickets and live chat conversations.
+- Financials: Manage budgets, review authorizations, and handle preapproval requests for services or equipment.
+- Settings: Update website configuration, branding, email settings, notification settings, and clear cached application data.
+
+2. NAVIGATING THE ADMIN PORTAL
+
+Dashboard:
+- Use the dashboard to confirm system health and see recent activity.
+- The dashboard surface typically includes support counts, recent tickets, open conversations, unread message counts, budget summaries, and preapproval status.
+- Look for widgets or panels that show:
+  - New support tickets waiting for review.
+  - Active live chat conversations from the public website widget.
+  - Notifications or alerts about system messages.
+  - Budget usage and approved funding levels.
+  - Pending preapproval requests and authorization status.
+  - Quick links to open support tickets, conversations, and user management.
+- Use the dashboard panels to jump directly to urgent items without searching through menus.
+- The dashboard may also show recent admin actions, system notices, financial alerts, and quick status summaries.
+
+Users section:
+- Open Users from the navigation.
+- Use filters or search to locate participants, workers, or admins.
+- Click a user to view details and edit profile information.
+- Deactivate or update account status for users no longer active.
+
+Support section:
+- Tickets: View support requests submitted by participants or visitors.
+  - Click a ticket to see messages and add responses.
+  - Change ticket status, priority, and category as needed.
+- Conversations: See live chat conversations from the website support widget.
+  - The unread chat count appears on the support icon and in the dropdown.
+  - Click a conversation to reply and keep the chat thread active.
+
+Settings section:
+- Update site-wide defaults such as website name, description, colors, and email sender information.
+- Configure SMTP host, port, credentials, and email templates.
+- Manage the portal logo, favicon, and PWA icon uploads.
+- Use the "Clear cache" button to flush app cache, config cache, route cache, and view cache from the UI.
+
+3. ADMIN SUPPORT WORKFLOW
+
+Handling support tickets:
+- Check new support ticket notifications on the dashboard.
+- Respond promptly to open tickets.
+- Change ticket status to in-progress, resolved, or closed when resolved.
+
+Handling public chat conversations:
+- Monitor live chat conversations from the support dropdown or the conversations area.
+- Reply directly in the conversation thread.
+- The visitor can continue the chat through the public widget and see when replies arrive.
+
+Budget and preapprovals:
+- Use the Budget or Financial section on the dashboard to review approved and pending budgets.
+- Track preapproval requests from participants, workers, or external partners.
+- Approve or decline requests based on policy and available funds.
+- Ensure any changes to budgets or preapprovals are clearly documented in the support/system notes.
+
+4. SYSTEM MAINTENANCE
+
+Clearing cache:
+- Navigate to Settings.
+- Click the "Clear cache" button in the system maintenance section.
+- This refreshes the application cache without using the terminal.
+
+Updating push notifications:
+- Use the VAPID key generator if applicable.
+- Keep the VAPID public/private keys and subject configured for browser push delivery.
+
+5. BEST PRACTICES
+
+- Always keep admin account credentials secure.
+- Respond quickly to support conversations and tickets.
+- Update portal branding and contact information when organizational details change.
+- Clear cache after major settings updates if UI values do not refresh.

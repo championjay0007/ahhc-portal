@@ -1,0 +1,1486 @@
+================================================================================
+AHHC APPLICATION ASSESSMENT & APPROVAL WORKFLOW
+Complete Flow Documentation
+================================================================================
+
+This document describes how the complete assessment workflow operates from 
+inquiry submission to active participant portal access.
+
+================================================================================
+1. ENQUIRY SUBMISSION PHASE
+================================================================================
+
+TRIGGER: Public website form submission
+
+PARTICIPANTS INVOLVED:
+  - Prospective Participant (fills form)
+  - System (auto-creates assessment)
+
+PROCESS FLOW:
+
+  1.1 Participant Fills Enquiry Form
+      ├─ Name, email, contact details
+      ├─ Support needs description
+      ├─ Funding source information
+      └─ Support person details (optional)
+
+  1.2 System Validates Form
+      ├─ Required fields present?
+      ├─ Email format valid?
+      ├─ Contact number valid?
+      └─ If invalid → Show error, form not submitted
+
+  1.3 Assessment Record Created
+      ├─ Status: "New Enquiry"
+      ├─ Create empty AssessmentChecklist (34 items all false)
+      ├─ Create status history entry (audit trail)
+      ├─ Assign unique assessment ID
+      └─ Log created_by_user_id, created_at, ip_address
+
+  1.4 Notification Sent
+      ├─ AHHC staff receives: "New Application" notification
+      ├─ Include: Applicant name, contact, assessment ID
+      └─ Link to: admin.assessments.dashboard
+
+  1.5 Confirmation Email Sent to Participant
+      ├─ "Thank you for your enquiry"
+      ├─ "We will review your application"
+      ├─ "We'll contact you within 5 business days"
+      └─ Include: Reference number for tracking
+
+
+================================================================================
+2. ASSIGNMENT PHASE (AHHC Staff)
+================================================================================
+
+TRIGGER: AHHC admin clicks "Assign" on assessment
+
+PARTICIPANTS INVOLVED:
+  - AHHC Admin (assigns assessment)
+  - AHHC Reviewer (assigned to review)
+  - System
+
+PROCESS FLOW:
+
+  2.1 Admin Navigates to Dashboard
+      ├─ Route: /portal/admin/assessments
+      ├─ Displays all assessments by status
+      ├─ New Enquiry queue shows first
+      └─ Lists: Name, date submitted, contact info
+
+  2.2 Admin Selects Assessment
+      ├─ Click on assessment name/ID
+      ├─ Route: /portal/admin/assessments/{id}
+      ├─ Shows full enquiry details
+      ├─ Shows empty checklist (0% complete)
+      └─ Displays available actions
+
+  2.3 Admin Clicks "Assign to Reviewer"
+      ├─ Modal/form appears
+      ├─ Dropdown lists available AHHC staff
+      ├─ Select reviewer
+      └─ Click "Confirm"
+
+  2.4 System Updates Assessment
+      ├─ assigned_to_user_id = selected reviewer
+      ├─ status = "Under Review"
+      ├─ Create status history entry:
+      │  └─ from: "New Enquiry" → to: "Under Review"
+      ├─ Log: who assigned, when, from where
+      └─ Log: ip_address, timestamp, user_id
+
+  2.5 Notifications Sent
+      ├─ Reviewer receives: "Assessment assigned to you"
+      │  └─ Link: /portal/admin/assessments/{id}/review
+      ├─ Admin receives: "Assessment assigned successfully"
+      └─ Participant receives: Nothing (yet)
+
+
+================================================================================
+3. ELIGIBILITY ASSESSMENT PHASE (Reviewer)
+================================================================================
+
+TRIGGER: Reviewer navigates to assessment review form
+
+PARTICIPANTS INVOLVED:
+  - AHHC Reviewer
+  - Assessment System
+  - Database
+
+PROCESS FLOW:
+
+  3.1 Reviewer Opens Assessment
+      ├─ Route: /portal/admin/assessments/{id}/review
+      ├─ Form displayed with tabs:
+      │  ├─ Eligibility (current tab)
+      │  ├─ Suitability
+      │  ├─ Funding
+      │  ├─ Documents
+      │  └─ Notes
+      └─ Displays enquiry details for reference
+
+  3.2 Eligibility Checklist
+      Shows 5 checkboxes:
+      ├─ ☐ Identity confirmed (document verified)
+      ├─ ☐ Contact details verified (phone/email contacted)
+      ├─ ☐ Address verified (address validated)
+      ├─ ☐ Support at Home eligibility confirmed
+      └─ ☐ Program eligibility confirmed
+
+  3.3 Reviewer Completes Checks
+      ├─ Verifies identity document
+      ├─ Calls/emails to verify contact details
+      ├─ Looks up address on file
+      ├─ Reviews Support at Home criteria met
+      ├─ Checks program eligibility against criteria
+      └─ Checks boxes as items verified
+
+  3.4 Reviewer Adds Eligibility Notes
+      ├─ Optional: Add notes about each item
+      ├─ Example: "Identity verified via driver's license"
+      ├─ Example: "Contacted on 2026-06-15, confirmed details"
+      └─ Notes marked as internal (staff only)
+
+  3.5 Reviewer Saves Eligibility Section
+      ├─ POST /portal/admin/assessments/{id}/eligibility
+      ├─ Data sent: which boxes are checked + notes
+      └─ Click "Save Progress"
+
+  3.6 System Updates Checklist
+      ├─ AssessmentChecklist updated:
+      │  ├─ identity_confirmed = true/false
+      │  ├─ contact_details_verified = true/false
+      │  ├─ address_verified = true/false
+      │  ├─ support_at_home_eligibility_confirmed = true/false
+      │  └─ program_eligibility_confirmed = true/false
+      ├─ Calculate completion_percentage:
+      │  └─ (items_checked / 34_total_items) * 100
+      ├─ Store notes in AssessmentNote table
+      ├─ Log: who updated, when, from where
+      └─ Display: "Progress saved (12% complete)"
+
+  3.7 Eligibility Outcome Determined
+      IF all 5 eligibility items checked:
+      ├─ Set eligibility_outcome = "ELIGIBLE"
+      └─ Assessment moves toward next phase
+      
+      IF some items missing:
+      ├─ Set eligibility_outcome = "FURTHER_INFORMATION"
+      └─ Reviewer may request info from participant
+
+
+================================================================================
+4. SUITABILITY ASSESSMENT PHASE (Reviewer)
+================================================================================
+
+TRIGGER: Reviewer moves to Suitability tab
+
+PARTICIPANTS INVOLVED:
+  - AHHC Reviewer
+  - Assessment System
+
+PROCESS FLOW:
+
+  4.1 Reviewer Navigates to Suitability Tab
+      ├─ Route: /portal/admin/assessments/{id}/review
+      ├─ Click "Suitability" tab
+      └─ Shows 5 assessment checkboxes
+
+  4.2 Suitability Checklist
+      Assesses whether participant can self-manage:
+      ├─ ☐ Can manage workers (hire, direct, evaluate)
+      ├─ ☐ Can make service decisions (which services needed)
+      ├─ ☐ Can approve invoices (review and pay bills)
+      ├─ ☐ Can review spending (track budget usage)
+      └─ ☐ Understands responsibilities (legal obligations)
+
+  4.3 Reviewer Conducts Phone Interview
+      ├─ Calls participant
+      ├─ Discusses self-management capacity
+      ├─ Asks scenario questions:
+      │  ├─ "What would you do if a worker doesn't show up?"
+      │  ├─ "How would you handle invoice disputes?"
+      │  ├─ "Do you understand your legal responsibilities?"
+      │  └─ etc.
+      └─ Takes detailed notes
+
+  4.4 Reviewer Evaluates Responses
+      ├─ Check boxes based on answers
+      ├─ If all 5 checked → SUITABLE
+      ├─ If 3-4 checked → SUITABLE_WITH_SUPPORT (flag support person needed)
+      └─ If <3 checked → NOT_SUITABLE (may need to reject)
+
+  4.5 Reviewer Adds Suitability Notes
+      ├─ Summarize phone conversation
+      ├─ Example: "Participant confident in worker management"
+      ├─ Example: "Needs support for invoice approval process"
+      ├─ Mark which items require support
+      └─ Add to AssessmentNote as internal note
+
+  4.6 System Updates Checklist
+      ├─ Update suitability checkboxes
+      ├─ If SUITABLE_WITH_SUPPORT:
+      │  └─ Set assessment.support_person_required = true
+      ├─ Update completion_percentage
+      └─ Log changes with timestamp and user
+
+
+================================================================================
+5. INFORMATION REQUEST PHASE (If Needed)
+================================================================================
+
+TRIGGER: Reviewer finds missing information
+
+PARTICIPANTS INVOLVED:
+  - AHHC Reviewer
+  - Participant
+  - System
+
+PROCESS FLOW:
+
+  5.1 Reviewer Clicks "Request Information"
+      ├─ Form appears with text area
+      ├─ Type message explaining what's needed
+      ├─ Example: "Please provide copy of care plan"
+      ├─ Example: "Need to clarify funding source"
+      └─ Click "Send Request"
+
+  5.2 System Updates Status
+      ├─ Status changed from "Under Review" → "Awaiting Information"
+      ├─ Create status history entry with reason
+      ├─ Store note as type: "information_request"
+      ├─ Mark note as requires_action = true
+      └─ Log: who requested, when, what was requested
+
+  5.3 Participant Receives Notification
+      ├─ Email sent: "AHHC has requested information"
+      ├─ Include: Specific information requested
+      ├─ Include: Instructions for submitting
+      ├─ Include: Deadline (typically 5-7 days)
+      └─ Include: Contact email for questions
+
+  5.4 Participant Submits Information
+      ├─ Participant uploads documents to portal
+      ├─ Or sends email with requested information
+      ├─ System records: received_at timestamp
+      └─ Reviewer receives notification
+
+  5.5 Reviewer Reviews Information & Continues
+      ├─ Reviewer checks information provided
+      ├─ Updates relevant checklist items
+      ├─ Status returns to "Under Review"
+      ├─ Moves forward through remaining phases
+      └─ Assessment continues toward approval
+
+
+================================================================================
+6. FUNDING VERIFICATION PHASE (Reviewer)
+================================================================================
+
+TRIGGER: Reviewer completes eligibility & suitability
+
+PARTICIPANTS INVOLVED:
+  - AHHC Reviewer
+  - Funding Source (NBN, NDIS, etc.)
+  - Assessment System
+
+PROCESS FLOW:
+
+  6.1 Reviewer Navigates to Funding Tab
+      ├─ Route: /portal/admin/assessments/{id}/review
+      ├─ Click "Funding" tab
+      └─ Form displayed
+
+  6.2 Funding Verification Checklist
+      ├─ ☐ Funding verified with funding source
+      ├─ ☐ Funding documentation received
+      └─ ☐ Budget confirmed
+
+  6.3 Reviewer Verifies Funding
+      ├─ Contacts NDIS/NBN/other funding provider
+      ├─ Confirms:
+      │  ├─ Participant eligibility for funding
+      │  ├─ Funding approved for self-management
+      │  ├─ Budget amount and payment terms
+      │  └─ Funding commencement date
+      ├─ Requests documentation:
+      │  ├─ Funding letter/approval
+      │  ├─ Budget details
+      │  └─ Payment instructions
+      └─ Files uploaded to assessment.documents
+
+  6.4 Reviewer Enters Funding Details
+      ├─ Form fields:
+      │  ├─ Funding Source: "NDIS", "NBN", etc.
+      │  ├─ Funding Type: "Self-managed", "Agency-managed", etc.
+      │  ├─ Budget Allocation: "$15,000.00"
+      │  └─ Funding Start Date: "2026-07-01"
+      ├─ Checks all 3 verification boxes
+      └─ Adds notes about funding conversation
+
+  6.5 System Updates Assessment
+      ├─ Update fields:
+      │  ├─ assessment.funding_source
+      │  ├─ assessment.funding_type
+      │  ├─ assessment.budget_allocation
+      │  └─ assessment.checklist.funding_verified = true
+      ├─ Update checklist completion_percentage
+      └─ Log all changes with audit trail
+
+
+================================================================================
+7. PROFILE & PLAN SETUP PHASE (AHHC Staff)
+================================================================================
+
+TRIGGER: Assessment progresses through eligibility/suitability/funding
+
+PARTICIPANTS INVOLVED:
+  - AHHC Data Entry Staff
+  - Participant (provides information)
+  - Assessment System
+
+PROCESS FLOW:
+
+  7.1 AHHC Staff Creates Participant Profile
+      ├─ If participant record doesn't exist:
+      │  ├─ Create new Participant record
+      │  ├─ Link to Assessment: assessment.participant_id
+      │  └─ Populate with enquiry data
+      ├─ Staff completes/verifies:
+      │  ├─ Personal information (name, DOB, etc.)
+      │  ├─ Contact information (phone, email)
+      │  ├─ Emergency contact details
+      │  ├─ Support person information
+      │  └─ Communication preferences
+      └─ Set checklist.participant_profile_completed = true
+
+  7.2 AHHC Staff Uploads/Creates Care Plan
+      ├─ Care plan provided by participant or created by staff
+      ├─ Upload to: assessment.documents with category "care_plan"
+      ├─ Document status: "received"
+      └─ Set checklist.care_plan_created = true
+
+  7.3 AHHC Staff Uploads/Creates Support Plan
+      ├─ Support plan provided by participant or created by staff
+      ├─ Upload to: assessment.documents with category "support_plan"
+      ├─ Document status: "received"
+      └─ Set checklist.support_plan_created = true
+
+  7.4 System Updates Progress
+      ├─ Update completion_percentage
+      ├─ Status progression:
+      │  ├─ Status: "Profile Setup Complete"
+      │  ├─ Status: "Care Plan Created"
+      │  └─ Status: "Support Plan Created"
+      └─ Create status history entries
+
+
+================================================================================
+8. BUDGET CONFIGURATION PHASE (AHHC Finance)
+================================================================================
+
+TRIGGER: Participant approved for funding
+
+PARTICIPANTS INVOLVED:
+  - AHHC Finance Staff
+  - Participant
+  - Assessment System
+  - Budget System
+
+PROCESS FLOW:
+
+  8.1 Finance Staff Navigates to Budget Setup
+      ├─ Route: /portal/admin/assessments/{id}
+      ├─ Section: "Budget Configuration"
+      └─ Form displayed
+
+  8.2 Quarter Configuration
+      ├─ Select financial year: 2026
+      ├─ Select quarter: Q3
+      ├─ Dates auto-calculated:
+      │  ├─ Quarter start: 2026-07-01
+      │  └─ Quarter end: 2026-09-30
+      └─ Or manually enter custom dates
+
+  8.3 Budget Allocation
+      ├─ Enter opening budget: "$15,000.00"
+      ├─ Enter carry-over from previous quarter (if any): "$0.00"
+      ├─ System calculates: total_available = 15000 + 0 = "$15,000.00"
+      └─ Set initial remaining_budget = "$15,000.00"
+
+  8.4 Budget Categories (Optional)
+      ├─ Allocate budget across categories:
+      │  ├─ "Worker Wages": $10,000.00
+      │  ├─ "Admin & Supplies": $2,000.00
+      │  ├─ "Equipment": $2,000.00
+      │  └─ "Other": $1,000.00
+      └─ Or leave unallocated (flexible)
+
+  8.5 System Creates Budget Record
+      ├─ New ParticipantBudgetSetup record created
+      ├─ Fields populated:
+      │  ├─ assessment_id
+      │  ├─ participant_id
+      │  ├─ financial_year = 2026
+      │  ├─ quarter = 3
+      │  ├─ opening_budget = 15000.00
+      │  ├─ total_available_budget = 15000.00
+      │  ├─ remaining_budget = 15000.00
+      │  └─ is_current = true
+      ├─ Update checklist.budget_configured = true
+      └─ Log: who configured, when, from where
+
+  8.6 Participant Notified
+      ├─ Email: "Your budget has been configured"
+      ├─ Include: Budget amount, quarter dates, categories
+      └─ Participant can now submit invoices
+
+
+================================================================================
+9. DOCUMENT COLLECTION PHASE (Reviewer)
+================================================================================
+
+TRIGGER: Ongoing throughout assessment + specific requirements
+
+PARTICIPANTS INVOLVED:
+  - Participant (submits documents)
+  - AHHC Reviewer (verifies documents)
+  - Assessment System
+
+PROCESS FLOW:
+
+  9.1 Reviewer Requests Required Documents
+      ├─ Assessment requires documents in categories:
+      │  ├─ Referral Documents
+      │  ├─ Care Plan
+      │  ├─ Support Plan
+      │  ├─ Authority Documents
+      │  ├─ Funding Documents
+      │  └─ Participant Documents
+      └─ Reviewer checks what's already received
+
+  9.2 Participant Uploads Documents
+      ├─ Participant logs into portal
+      ├─ Navigates to Documents section
+      ├─ Uploads documents for each category:
+      │  ├─ Selects category (e.g., "Identification")
+      │  ├─ Uploads file (PDF, JPG, PNG, DOC, DOCX)
+      │  ├─ Max 10MB per file
+      │  ├─ Adds optional notes
+      │  └─ Click "Upload"
+      ├─ System stores in secure storage
+      ├─ Creates AssessmentDocument record:
+      │  ├─ document_category
+      │  ├─ file_name
+      │  ├─ mime_type
+      │  ├─ file_size
+      │  ├─ storage_path
+      │  └─ status = "pending" (awaiting review)
+      └─ Reviewer receives notification
+
+  9.3 Reviewer Reviews Documents
+      ├─ Reviewer checks each document
+      ├─ Verifies:
+      │  ├─ File is readable and complete
+      │  ├─ Content matches category requirements
+      │  ├─ Information is current and valid
+      │  └─ No missing pages or data
+      └─ Two outcomes:
+
+      OUTCOME A: Document Approved
+      ├─ Reviewer clicks "Approve"
+      ├─ Document status changed: "received"
+      ├─ Reviewer may add note explaining verification
+      └─ Completes that category
+
+      OUTCOME B: Document Rejected
+      ├─ Reviewer clicks "Reject"
+      ├─ Form appears for rejection reason
+      ├─ Example: "Page 2 is missing from care plan"
+      ├─ Example: "Identification expired"
+      ├─ Example: "Unclear/unreadable copy"
+      ├─ Document status: "rejected"
+      ├─ Participant receives notification with reason
+      └─ Participant must resubmit
+
+  9.4 Mandatory Documents Checklist
+      Three documents MUST be received to proceed:
+      ├─ Care Plan (status = "received")
+      ├─ Support Plan (status = "received")
+      └─ Identification (status = "received")
+
+      Additional documents required by category:
+      ├─ Referral documents (funding approval letter)
+      ├─ Authority documents (guardianship papers if applicable)
+      └─ Funding documents (funding letter/approval)
+
+  9.5 Assessment Document Status Updated
+      ├─ Whenever document approved/rejected:
+      │  ├─ Update AssessmentDocument.status
+      │  ├─ Log who reviewed, when
+      │  └─ Create audit trail entry
+      ├─ Calculate document completion:
+      │  ├─ Count received documents by category
+      │  ├─ Compare to required count
+      │  └─ Update completion_percentage
+      └─ Reviewer may move to next phase if all required docs received
+
+
+================================================================================
+10. AGREEMENT ASSIGNMENT PHASE (AHHC Legal/Compliance)
+================================================================================
+
+TRIGGER: Assessment progressing well, ready for agreements
+
+PARTICIPANTS INVOLVED:
+  - AHHC Compliance Officer
+  - Assessment System
+  - Agreement System
+
+PROCESS FLOW:
+
+  10.1 Compliance Officer Reviews Assessment Status
+       ├─ Assessment at ~70-80% complete
+       ├─ All core assessment phases finished
+       ├─ Documents received
+       └─ Time to assign agreements
+
+  10.2 Agreements to Assign (4 Required)
+       ├─ ☐ Self-Management Agreement (participant responsibilities)
+       ├─ ☐ Privacy Consent (data handling agreement)
+       ├─ ☐ Responsibilities Agreement (legal obligations)
+       └─ ☐ Terms and Conditions (portal terms)
+
+  10.3 System Assigns Agreements
+       ├─ Create Agreement records linked to assessment
+       ├─ Status: "assigned" (waiting for signature)
+       ├─ Set checklist.agreements_assigned = true
+       ├─ Generate unique agreement IDs for tracking
+       └─ Store in assessment.agreements relationship
+
+  10.4 Participant Receives Agreements
+       ├─ Email sent: "Agreements ready for review and signing"
+       ├─ Include: Links to each agreement
+       ├─ Include: Instructions for e-signing
+       ├─ Include: Deadline to sign (typically 5 days)
+       └─ Participant can preview before signing
+
+  10.5 Participant Signs Agreements
+       ├─ Participant logs in to portal
+       ├─ Navigates to Agreements section
+       ├─ Reviews each agreement (4 total)
+       ├─ For each agreement:
+       │  ├─ Reads full text
+       │  ├─ Checks "I agree to these terms"
+       │  ├─ Electronically signs (name + date)
+       │  └─ System records signature with timestamp
+       ├─ All 4 agreements signed
+       └─ System notifies AHHC
+
+  10.6 Compliance Officer Verifies Signatures
+       ├─ Reviewer checks: All 4 agreements signed?
+       ├─ Verifies: Signature timestamps recorded?
+       ├─ Verifies: Signatures not forged/manipulated?
+       ├─ If yes: Set checklist item checked
+       ├─ If no: Send rejection, request re-sign
+       └─ Update completion_percentage
+
+
+================================================================================
+11. ASSESSMENT COMPLETION & DECISION PHASE
+================================================================================
+
+TRIGGER: All checklist items completed
+
+PARTICIPANTS INVOLVED:
+  - Assessment System (Decision Engine)
+  - AHHC Reviewer/Decision Maker
+  - Participant
+
+PROCESS FLOW:
+
+  11.1 Decision Engine Evaluates All Requirements
+       ├─ Checks ALL 12 mandatory items:
+       │  ├─ ✓ Identity confirmed
+       │  ├─ ✓ Contact details verified
+       │  ├─ ✓ Support at Home eligibility confirmed
+       │  ├─ ✓ Program eligibility confirmed
+       │  ├─ ✓ Can manage workers
+       │  ├─ ✓ Funding verified
+       │  ├─ ✓ Participant profile completed
+       │  ├─ ✓ Care plan created
+       │  ├─ ✓ Support plan created
+       │  ├─ ✓ Budget configured
+       │  ├─ ✓ Referral documents collected
+       │  └─ ✓ Agreements assigned
+       └─ Result: READY_FOR_APPROVAL or INCOMPLETE
+
+  11.2 Reviewer Navigates to Approval Form
+       ├─ Route: /portal/admin/assessments/{id}/approve
+       ├─ Page displays:
+       │  ├─ Completion percentage: 100%
+       │  ├─ All 12 items shown as ✓ COMPLETE
+       │  ├─ Decision summary: "ALL REQUIREMENTS MET"
+       │  ├─ Eligibility outcome: "ELIGIBLE"
+       │  ├─ Suitability outcome: "SUITABLE" or "SUITABLE_WITH_SUPPORT"
+       │  ├─ Funding outcome: "VERIFIED"
+       │  └─ Documents outcome: "ALL RECEIVED"
+       └─ Textarea: Optional approval notes
+
+  11.3 Reviewer Approves Assessment
+       ├─ Adds optional notes (e.g., "Excellent candidate, well prepared")
+       ├─ Clicks "APPROVE ASSESSMENT" button
+       ├─ Confirmation dialog appears:
+       │  └─ "Are you sure? This will send invitation to participant."
+       ├─ Clicks "Confirm"
+       └─ System processes approval
+
+  11.4 System Processes Approval
+       ├─ Update Assessment record:
+       │  ├─ status = "approved"
+       │  ├─ overall_decision = "approved"
+       │  ├─ approved_at = now()
+       │  ├─ approved_by_user_id = reviewer_id
+       │  ├─ approval_notes = entered text
+       │  └─ completion_percentage = 100%
+       ├─ Create status history entry:
+       │  ├─ from_status: (previous status)
+       │  ├─ to_status: "approved"
+       │  ├─ transition_reason: "Assessment approved by reviewer"
+       │  ├─ changed_by_user_id: reviewer_id
+       │  ├─ ip_address: logged
+       │  └─ timestamp: now()
+       ├─ Log in audit trail:
+       │  └─ "Assessment approved: eligibility OK, suitability OK, funding OK, documents OK"
+       └─ Enable "Send Invitation" button
+
+  11.5 Alternative: Request More Information
+       ├─ If items not quite complete:
+       ├─ Reviewer clicks "Request More Information"
+       ├─ Status changes: → "Awaiting Information"
+       ├─ Participant gets notification
+       ├─ Loop back to Phase 5 (wait for info)
+       └─ Reassess when info received
+
+  11.6 Alternative: Reject Assessment
+       ├─ If significant issues found:
+       ├─ Reviewer clicks "REJECT ASSESSMENT"
+       ├─ Form appears: "Reason for rejection (required)"
+       ├─ Enter detailed reason explaining rejection
+       ├─ Example: "Self-management suitability concerns"
+       ├─ Example: "Funding source cannot be verified"
+       ├─ Click "Confirm Rejection"
+       ├─ System updates:
+       │  ├─ status = "rejected"
+       │  ├─ overall_decision = "rejected"
+       │  ├─ rejection_reason = entered text
+       │  ├─ rejected_at = now()
+       │  ├─ rejected_by_user_id = reviewer_id
+       │  └─ Create status history entry
+       ├─ Participant notified:
+       │  ├─ Email: "Your application has not been approved"
+       │  ├─ Include: Specific rejection reasons
+       │  ├─ Include: How to appeal or reapply
+       │  └─ Include: Contact for questions
+       └─ Assessment ends (Status: "rejected" / "closed")
+
+
+================================================================================
+12. INVITATION PHASE (AHHC Admin)
+================================================================================
+
+TRIGGER: Assessment approved
+
+PARTICIPANTS INVOLVED:
+  - AHHC Admin (sends invitation)
+  - Participant (receives invitation)
+  - Assessment System
+  - Email System
+
+PROCESS FLOW:
+
+  12.1 Admin Navigates to Assessment
+       ├─ Route: /portal/admin/assessments/{id}
+       ├─ Assessment status: "APPROVED"
+       ├─ Shows green banner: "Ready for invitation"
+       └─ Button available: "SEND INVITATION"
+
+  12.2 Admin Sends Invitation
+       ├─ Clicks "SEND INVITATION" button
+       ├─ Optional: Add personal message to participant
+       ├─ Click "Send"
+       └─ System processes
+
+  12.3 System Generates Invitation Token
+       ├─ Create 64-character random token
+       │  └─ Example: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+       ├─ Set expiration: 30 days from now
+       ├─ Store in assessment.invitation_token
+       ├─ Store expiry time: assessment.invitation_expires_at
+       ├─ Update status: "invitation_sent"
+       ├─ Record sent_at timestamp
+       └─ Create status history entry
+
+  12.4 Invitation Email Sent to Participant
+       ├─ Subject: "Your AHHC Portal Access is Ready"
+       ├─ Body includes:
+       │  ├─ Greeting with participant name
+       │  ├─ "Congratulations! Your application has been approved"
+       │  ├─ "Your portal access is now ready"
+       │  ├─ Personalized message (if added by admin)
+       │  ├─ Unique invitation link:
+       │  │  └─ https://ahhcportal.com.au/portal/onboarding/{token}
+       │  ├─ "Click the link above to get started"
+       │  ├─ "This link expires in 30 days"
+       │  ├─ "You'll complete an 8-step setup wizard"
+       │  └─ "Contact us at support@ahhc.com.au with questions"
+       └─ Sent to participant email
+
+  12.5 Participant Receives Invitation
+       ├─ Receives email notification
+       ├─ Clicks unique invitation link
+       ├─ Routed to: /portal/onboarding/{token}
+       └─ Proceed to Phase 13 (Onboarding)
+
+
+================================================================================
+13. ONBOARDING PHASE (Participant)
+================================================================================
+
+TRIGGER: Participant clicks invitation link
+
+PARTICIPANTS INVOLVED:
+  - Participant (completes onboarding)
+  - Assessment System
+  - Authentication System
+  - MFA System
+
+PROCESS FLOW:
+
+  13.1 System Validates Invitation Token
+       ├─ Extract token from URL
+       ├─ Look up in database: assessment.invitation_token
+       ├─ Check: Token exists in database?
+       │  └─ If not → "Invalid or expired link"
+       ├─ Check: invitation_expires_at > current time?
+       │  └─ If not → "Invitation expired (30 days). Contact support."
+       ├─ Check: invitation_accepted_at is NULL?
+       │  └─ If not → "Invitation already used"
+       └─ If all checks pass: Update status → "Onboarding In Progress"
+
+  13.2 Onboarding Wizard - Step 1: Welcome
+       ├─ Display: Welcome message with applicant name
+       ├─ "Welcome Jane! Let's set up your portal account"
+       ├─ Show: 8-step progress bar (Step 1/8)
+       ├─ Button: "Continue to Step 2"
+       └─ No data entry required
+
+  13.3 Onboarding Wizard - Step 2: Create Password
+       ├─ Display: "Create a secure password"
+       ├─ Show: 8-step progress bar (Step 2/8)
+       ├─ Form fields:
+       │  ├─ Email (pre-filled, read-only): jane@example.com
+       │  ├─ Password (required, min 12 chars, complexity rules)
+       │  ├─ Confirm Password (must match)
+       │  └─ Show password requirements
+       ├─ Participant enters password
+       ├─ Click "Continue"
+       ├─ System validates: Password meets requirements?
+       │  └─ If not: Show errors, stay on page
+       └─ If valid: Create User account, hash password
+
+  13.4 Onboarding Wizard - Step 3: Enable MFA
+       ├─ Display: "Set up two-factor authentication"
+       ├─ Show: 8-step progress bar (Step 3/8)
+       ├─ Explanation: "2FA adds extra security to your account"
+       ├─ Two options:
+       │  ├─ Option A: Authenticator app (Google Authenticator, Authy)
+       │  │  ├─ Display QR code
+       │  │  ├─ Participant scans with phone app
+       │  │  ├─ App shows 6-digit code
+       │  │  ├─ Participant enters code to verify
+       │  │  └─ System confirms: "2FA enabled"
+       │  └─ Option B: SMS text messages
+       │     ├─ Participant confirms phone number
+       │     ├─ System sends 6-digit code via SMS
+       │     ├─ Participant enters code
+       │     └─ System confirms: "SMS 2FA enabled"
+       ├─ Generate backup recovery codes (8 codes)
+       ├─ Display: "Save these codes in a safe place"
+       ├─ Participant confirms understanding
+       └─ Click "Continue"
+
+  13.5 Onboarding Wizard - Step 4: Confirm Profile
+       ├─ Display: "Verify your information"
+       ├─ Show: 8-step progress bar (Step 4/8)
+       ├─ Pre-filled from assessment:
+       │  ├─ Full name: Jane Smith
+       │  ├─ Email: jane@example.com
+       │  ├─ Phone: 0412 345 678
+       │  ├─ Address: 123 Main St, Melbourne VIC 3000
+       │  ├─ Date of birth: 1985-06-15
+       │  └─ Preferred name (if different)
+       ├─ Participant verifies each field
+       ├─ Can edit if information changed
+       ├─ Participant confirms accuracy
+       └─ Click "Continue"
+
+  13.6 Onboarding Wizard - Step 5: Emergency Contact
+       ├─ Display: "Emergency contact person"
+       ├─ Show: 8-step progress bar (Step 5/8)
+       ├─ Form fields:
+       │  ├─ Contact name
+       │  ├─ Relationship (dropdown: spouse, sibling, friend, etc.)
+       │  ├─ Phone number
+       │  └─ Email address (optional)
+       ├─ Participant fills in emergency contact
+       ├─ System validates phone/email formats
+       └─ Click "Continue"
+
+  13.7 Onboarding Wizard - Step 6: Support Person
+       ├─ Display: "Support person confirmation"
+       ├─ Show: 8-step progress bar (Step 6/8)
+       ├─ If no support person required:
+       │  └─ "You won't have a support person" (informational)
+       ├─ If support person required:
+       │  ├─ Pre-filled from assessment:
+       │  │  ├─ Support person name
+       │  │  ├─ Relationship
+       │  │  ├─ Contact details
+       │  │  └─ Authority level
+       │  ├─ Participant confirms this person
+       │  └─ Can request changes
+       └─ Click "Continue"
+
+  13.8 Onboarding Wizard - Step 7: Document Upload
+       ├─ Display: "Upload required documents"
+       ├─ Show: 8-step progress bar (Step 7/8)
+       ├─ [NOTE: This is the document upload center we built earlier]
+       ├─ Three mandatory documents:
+       │  ├─ Care Plan (upload or previous provided)
+       │  ├─ Support Plan (upload or previous provided)
+       │  └─ Identification (upload or previous provided)
+       ├─ Upload interface:
+       │  ├─ Drag-and-drop zones
+       │  ├─ File browser button
+       │  ├─ Progress bar showing upload status
+       │  ├─ File size validation (max 10MB)
+       │  ├─ File type validation
+       │  └─ Display uploaded files with timestamps
+       ├─ Completion checklist:
+       │  ├─ ✓ Care Plan: Uploaded
+       │  ├─ ✓ Support Plan: Uploaded
+       │  ├─ ✓ Identification: Uploaded
+       │  ├─ Progress: 100%
+       │  └─ "All required documents uploaded!"
+       ├─ Optional: Add more documents in other categories
+       └─ Click "Continue"
+
+  13.9 Onboarding Wizard - Step 8: Sign Agreements
+       ├─ Display: "Review and sign agreements"
+       ├─ Show: 8-step progress bar (Step 8/8)
+       ├─ Four agreements to sign:
+       │  ├─ 1. Self-Management Agreement
+       │  ├─ 2. Privacy Consent
+       │  ├─ 3. Responsibilities Agreement
+       │  └─ 4. Terms and Conditions
+       ├─ For each agreement:
+       │  ├─ Display full agreement text
+       │  ├─ Participant reads agreement
+       │  ├─ Checkbox: "I have read and agree to..."
+       │  ├─ Signature field (name + date)
+       │  └─ Electronic signature captured
+       ├─ All 4 must be signed
+       ├─ Submit button appears only when all 4 signed
+       └─ Click "Submit All Signatures"
+
+  13.10 System Processes Onboarding Completion
+        ├─ Validate all 8 steps completed:
+        │  ├─ User account created? ✓
+        │  ├─ MFA enabled? ✓
+        │  ├─ Profile confirmed? ✓
+        │  ├─ Emergency contact entered? ✓
+        │  ├─ Support person confirmed? ✓
+        │  ├─ Documents uploaded? ✓
+        │  └─ All agreements signed? ✓
+        ├─ Update Assessment record:
+        │  ├─ onboarding_completed_at = now()
+        │  ├─ invitation_accepted_at = now()
+        │  ├─ status = "final_review"
+        │  ├─ checklist.all_onboarding_steps_completed = true
+        │  └─ Create status history entry
+        ├─ Update Participant record:
+        │  ├─ status = "onboarding_complete"
+        │  └─ portal_access_enabled = true
+        └─ Notify AHHC: "Onboarding completed by participant"
+
+
+================================================================================
+14. FINAL REVIEW PHASE (AHHC Staff)
+================================================================================
+
+TRIGGER: Participant completes onboarding
+
+PARTICIPANTS INVOLVED:
+  - AHHC Reviewer (performs final review)
+  - Assessment System
+  - Participant
+
+PROCESS FLOW:
+
+  14.1 Reviewer Receives Notification
+       ├─ Notification: "Onboarding completed for Jane Smith"
+       ├─ Include: Link to assessment
+       ├─ Priority: Final review required before activation
+       └─ Deadline: Usually same day or next day
+
+  14.2 Reviewer Navigates to Final Review
+       ├─ Route: /portal/admin/assessments/{id}
+       ├─ Status shown: "FINAL REVIEW"
+       ├─ Tab: "Final Review Checklist"
+       ├─ Shows 6 checkboxes:
+       │  ├─ ☐ MFA enabled and verified
+       │  ├─ ☐ Profile confirmed and complete
+       │  ├─ ☐ Documents uploaded and readable
+       │  ├─ ☐ Emergency contact confirmed
+       │  ├─ ☐ All agreements signed and dated
+       │  └─ ☐ Support person contacted (if applicable)
+       └─ View submission details
+
+  14.3 Reviewer Verifies Onboarding Completion
+       ├─ Check MFA:
+       │  ├─ Login to test account (optional)
+       │  ├─ Verify 2FA code required at login
+       │  ├─ Verify backup codes stored
+       │  └─ Check: MFA enabled? ✓
+       ├─ Check Profile:
+       │  ├─ Review all profile fields
+       │  ├─ Verify information matches assessment
+       │  ├─ Check: Name, email, phone, address all filled
+       │  └─ Check: Profile complete? ✓
+       ├─ Check Documents:
+       │  ├─ Review all uploaded documents
+       │  ├─ Open each to verify readable
+       │  ├─ Verify all 3 mandatory docs present:
+       │  │  ├─ Care Plan
+       │  │  ├─ Support Plan
+       │  │  └─ Identification
+       │  └─ Check: Documents uploaded? ✓
+       ├─ Check Agreements:
+       │  ├─ Verify all 4 agreements signed
+       │  ├─ Check signature dates are recent
+       │  ├─ Verify participant consent captured
+       │  └─ Check: All agreements signed? ✓
+       ├─ Check Support Person (if required):
+       │  ├─ Support person was assigned
+       │  ├─ Reviewer may call/email to confirm
+       │  └─ Check: Support person approved? ✓
+       └─ All items check out ✓
+
+  14.4 Reviewer Approves Final Review
+       ├─ Clicks "COMPLETE FINAL REVIEW" button
+       ├─ Optional: Add final review notes
+       ├─ Example: "All requirements met. Onboarding excellent."
+       ├─ Click "Approve & Activate Portal"
+       ├─ Confirmation dialog:
+       │  └─ "Are you sure? This will activate participant portal access."
+       └─ Click "Confirm"
+
+  14.5 System Processes Final Review Completion
+       ├─ Update Assessment:
+       │  ├─ final_review_completed_at = now()
+       │  ├─ status = "portal_activated"
+       │  ├─ activated_at = now()
+       │  ├─ activated_by_user_id = reviewer_id
+       │  ├─ Create status history:
+       │  │  └─ "Final Review" → "Portal Activated"
+       │  └─ Overall result: 100% COMPLETE ✓
+       ├─ Update Participant:
+       │  ├─ status = "active"
+       │  ├─ portal_active = true
+       │  ├─ portal_activated_at = now()
+       │  └─ participant.user.active = true
+       ├─ Grant Portal Access:
+       │  ├─ Unlock all participant features
+       │  ├─ Enable dashboard access
+       │  ├─ Enable budget viewing
+       │  ├─ Enable pre-approval submissions
+       │  ├─ Enable invoice submissions
+       │  ├─ Enable document management
+       │  ├─ Enable worker nominations
+       │  ├─ Enable messages/support
+       │  └─ Enable incident reporting
+       └─ Create final audit trail entry
+
+
+================================================================================
+15. PORTAL ACTIVATION & ACTIVE STATUS
+================================================================================
+
+TRIGGER: Final review approved
+
+PARTICIPANTS INVOLVED:
+  - Participant (gains portal access)
+  - Assessment System
+  - Portal System
+
+PROCESS FLOW:
+
+  15.1 Participant Receives Activation Email
+       ├─ Subject: "Your AHHC Portal is Now Active!"
+       ├─ Body includes:
+       │  ├─ Congratulations message
+       │  ├─ "Your portal is ready to use"
+       │  ├─ "Welcome to self-management support"
+       │  ├─ Link to portal login: https://ahhcportal.com.au/portal/login
+       │  ├─ Quick start guide
+       │  └─ Support contact information
+       └─ Sent to participant
+
+  15.2 Assessment Status: ACTIVE PARTICIPANT
+       ├─ Assessment Record:
+       │  ├─ status = "active_participant"
+       │  ├─ overall_decision = "approved"
+       │  ├─ completion_percentage = 100%
+       │  ├─ All checklist items = true
+       │  └─ Created status history entry
+       └─ Assessment closed (workflow complete)
+
+  15.3 Participant Logs In to Portal
+       ├─ Navigate to: /portal/login
+       ├─ Enter credentials:
+       │  ├─ Email: jane@example.com
+       │  ├─ Password: (created during onboarding)
+       │  └─ Click "Login"
+       ├─ 2FA Challenge:
+       │  ├─ "Enter 6-digit code from your authenticator app"
+       │  ├─ Participant enters code
+       │  └─ Click "Verify"
+       ├─ System validates 2FA
+       ├─ Login successful
+       └─ Redirected to Dashboard
+
+  15.4 Participant Dashboard Access
+       ├─ Dashboard displays:
+       │  ├─ Welcome section with participant name
+       │  ├─ Budget status card:
+       │  │  ├─ "Q3 2026 Budget: $15,000.00"
+       │  │  ├─ "Approved Invoices: $2,350.75"
+       │  │  ├─ "Remaining: $12,649.25"
+       │  │  └─ Progress bar showing usage
+       │  ├─ Recent activity feed
+       │  ├─ Quick action buttons:
+       │  │  ├─ "Submit Invoice"
+       │  │  ├─ "Nominate Worker"
+       │  │  ├─ "Request Pre-Approval"
+       │  │  ├─ "Upload Document"
+       │  │  ├─ "Message Support"
+       │  │  └─ "Report Incident"
+       │  ├─ Documents section
+       │  ├─ Workers section
+       │  ├─ Agreements section
+       │  ├─ Messages section
+       │  └─ Support resources section
+       ├─ All features fully enabled
+       └─ Participant can now manage their support
+
+  15.5 Assessment Workflow Complete
+       ├─ Status: "ACTIVE PARTICIPANT" ✓
+       ├─ Decision: "APPROVED" ✓
+       ├─ All 19 status transitions completed ✓
+       ├─ Audit trail recorded ✓
+       ├─ Portal access granted ✓
+       ├─ Participant fully onboarded ✓
+       └─ Ready for ongoing support and management
+
+
+================================================================================
+16. REJECTION PATHWAY (Alternative Scenario)
+================================================================================
+
+TRIGGER: Assessment fails at any review phase
+
+PARTICIPANTS INVOLVED:
+  - AHHC Reviewer (makes rejection decision)
+  - Participant (receives notification)
+  - Assessment System
+
+PROCESS FLOW:
+
+  16.1 Reviewer Identifies Issues
+       ├─ During assessment review:
+       │  ├─ Eligibility not confirmed (missing documents)
+       │  ├─ Suitability concerns (insufficient self-management capacity)
+       │  ├─ Funding cannot be verified (source unavailable)
+       │  ├─ Support person issues (unable to locate)
+       │  └─ Or other significant barriers
+       └─ Decides to reject application
+
+  16.2 Rejection Process
+       ├─ Route: /portal/admin/assessments/{id}/reject
+       ├─ Form displayed:
+       │  ├─ "Reason for Rejection (required)"
+       │  ├─ Text area (min 20 characters)
+       │  └─ Dropdown: Category of rejection
+       ├─ Reviewer enters detailed reason:
+       │  └─ Example: "Applicant self-assessment indicates inadequate capacity 
+       │             for independent invoice approval and budget management. 
+       │             Strong support person engagement recommended. 
+       │             Please reapply with designated support person."
+       ├─ Reviewer selects category:
+       │  ├─ "Eligibility Issues"
+       │  ├─ "Suitability Concerns"
+       │  ├─ "Funding Unavailable"
+       │  ├─ "Incomplete Information"
+       │  └─ "Other Barriers"
+       └─ Click "Confirm Rejection"
+
+  16.3 System Records Rejection
+       ├─ Update Assessment:
+       │  ├─ status = "rejected"
+       │  ├─ overall_decision = "rejected"
+       │  ├─ rejection_reason = entered text
+       │  ├─ rejected_at = now()
+       │  ├─ rejected_by_user_id = reviewer_id
+       │  └─ Create status history:
+       │     └─ (previous status) → "rejected"
+       ├─ Assessment closes
+       └─ Create audit trail entry
+
+  16.4 Participant Receives Rejection Email
+       ├─ Subject: "Your AHHC Application - Final Decision"
+       ├─ Body includes:
+       │  ├─ "Thank you for your application"
+       │  ├─ "We regret to inform you..."
+       │  ├─ Specific rejection reason provided
+       │  ├─ "Why this decision was made" (detailed explanation)
+       │  ├─ "Next steps" (reapply process, appeal option)
+       │  ├─ "How to address concerns" (suggestions)
+       │  ├─ "Contact us" for questions or appeals
+       │  └─ Support contact information
+       └─ Professional, empathetic tone
+
+  16.5 Options for Participant
+       ├─ Option A: Reapply
+       │  ├─ Address concerns mentioned in rejection
+       │  ├─ Provide additional information
+       │  ├─ If required: Secure support person
+       │  ├─ Submit new enquiry
+       │  └─ Restart workflow (go to Phase 1)
+       ├─ Option B: Appeal Decision
+       │  ├─ Contact AHHC office
+       │  ├─ Request review by different staff member
+       │  ├─ Provide additional context/arguments
+       │  └─ Escalated review process (not detailed here)
+       └─ Option C: Seek Alternative Support
+           ├─ AHHC provides referrals to other providers
+           └─ Suggest alternative support models
+
+
+================================================================================
+17. GUARD RAILS & SECURITY FEATURES
+================================================================================
+
+PARTICIPANT ACCESS PREVENTION:
+
+  17.1 Middleware Enforcement
+       ├─ EVERY request to participant portal checked:
+       │  ├─ Is user authenticated? → If no: redirect to login
+       │  ├─ Does user have assessment? → If no: logout + error
+       │  ├─ Is assessment status = "PORTAL_ACTIVATED"? → If no: logout + error
+       │  ├─ Is participant status = "active"? → If no: logout + error
+       │  └─ All checks pass? → Allow access
+       ├─ Bypassing impossible:
+       │  ├─ Cannot use direct URL to access features
+       │  ├─ Cannot skip to dashboard without completion
+       │  ├─ Cannot access budget without activation
+       │  └─ Cannot submit invoices without portal active
+       └─ Result: NO BACKDOORS FOR PARTICIPANT ACCESS
+
+  17.2 Approval Requirements (Cannot Bypass)
+       ├─ 12 mandatory items must ALL be checked:
+       │  ├─ Missing even 1 item? → Cannot approve
+       │  ├─ Skipped a phase? → Cannot approve
+       │  ├─ Documents rejected? → Must resubmit
+       │  ├─ Information incomplete? → Request more
+       │  └─ All 12 complete → ONLY THEN can approve
+       ├─ System validation in DecisionEngine:
+       │  ├─ canApprove() checks all 12 items
+       │  ├─ Returns errors if any missing
+       │  ├─ Prevents approval if requirements not met
+       │  └─ Detailed reasons why not ready
+       └─ Result: NO WORKFLOW SHORTCUTS
+
+  17.3 Status Immutability
+       ├─ Once status changes:
+       │  ├─ Old status recorded in history
+       │  ├─ Never deleted or modified
+       │  ├─ Includes timestamp and user who changed
+       │  ├─ Includes IP address (IP tracking)
+       │  └─ Cannot revert or edit
+       ├─ AssessmentStatusHistory table:
+       │  ├─ One row per status transition
+       │  ├─ Immutable (never updated)
+       │  ├─ Audit trail complete
+       │  └─ Compliance ready
+       └─ Result: COMPLETE AUDIT TRAIL
+
+  17.4 Authorization Enforcement
+       ├─ Reviewer can only:
+       │  ├─ View assigned assessments (or all if admin)
+       │  ├─ Cannot view unassigned assessments
+       │  ├─ Cannot approve own assessments (manager approval)
+       │  ├─ Cannot reject without approval
+       │  └─ Cannot modify rejected assessments
+       ├─ Admin can:
+       │  ├─ View all assessments
+       │  ├─ Assign assessments
+       │  ├─ Override decisions
+       │  └─ Access final audit trail
+       ├─ System Admin can:
+       │  ├─ Delete assessments (rejected/closed only)
+       │  ├─ Generate reports
+       │  ├─ Export audit trail
+       │  └─ System administration
+       └─ Result: ROLE-BASED ACCESS CONTROL
+
+
+================================================================================
+18. AUDIT TRAIL & COMPLIANCE
+================================================================================
+
+COMPLETE LOGGING:
+
+  18.1 Assessment Creation
+       ├─ Log: "Assessment created from enquiry"
+       ├─ Record: Assessment ID, date, source
+       ├─ Record: Created by: system/user
+       ├─ Record: IP address of submission
+       └─ Record: All enquiry details captured
+
+  18.2 Assessment Transitions
+       ├─ Log: Every status change
+       ├─ Record: From status, to status, timestamp
+       ├─ Record: Who made change, from where (IP)
+       ├─ Record: Reason for change
+       ├─ Record: Old values, new values
+       └─ Example: "New Enquiry → Under Review, 2026-06-15 10:23:45, Admin Jane, 192.168.1.1"
+
+  18.3 Review Activities
+       ├─ Log: Eligibility assessment completed
+       ├─ Record: Which items checked, by whom, when
+       ├─ Log: Suitability assessment completed
+       ├─ Record: Interview notes, decisions, date
+       ├─ Log: Funding verification completed
+       ├─ Record: Funding source contacted, verified date
+       └─ All activities timestamped with user
+
+  18.4 Document Collection
+       ├─ Log: Document uploaded
+       ├─ Record: Document name, category, size, type
+       ├─ Record: Uploaded by (participant), uploaded date
+       ├─ Log: Document reviewed
+       ├─ Record: Reviewed by (reviewer), review date
+       ├─ Log: Document approved/rejected
+       ├─ Record: Approval status, rejection reason (if any)
+       └─ Complete document history maintained
+
+  18.5 Approval/Rejection
+       ├─ Log: Assessment approved
+       ├─ Record: Approved by, approval date, approval notes
+       ├─ Record: All 12 requirements met/confirmed
+       ├─ Log: Assessment rejected
+       ├─ Record: Rejected by, rejection date, reason
+       └─ Example: "Assessment #A001 approved by Admin Jane on 2026-06-15 14:30:22"
+
+  18.6 Invitation & Onboarding
+       ├─ Log: Invitation sent
+       ├─ Record: Invitation token, expiry date, sent date
+       ├─ Log: Invitation accepted
+       ├─ Record: Acceptance date, user account created
+       ├─ Log: Onboarding completed
+       ├─ Record: All 8 steps completed, dates of each
+       └─ Complete onboarding history
+
+  18.7 Final Review & Activation
+       ├─ Log: Final review completed
+       ├─ Record: Final review date, reviewer, all checks passed
+       ├─ Log: Portal activated
+       ├─ Record: Activation date, activated by, status changed to "active"
+       └─ Final status: "ACTIVE PARTICIPANT"
+
+  18.8 Compliance Readiness
+       ├─ All data timestamped (audit timestamps)
+       ├─ All users tracked (who/when)
+       ├─ All locations tracked (IP addresses)
+       ├─ Immutable history (cannot be modified)
+       ├─ Complete decision documentation
+       ├─ All agreements captured (electronic signatures)
+       ├─ Budget tracking (every transaction logged)
+       └─ Ready for government/regulatory audit
+
+
+================================================================================
+19. ERROR SCENARIOS & RECOVERY
+================================================================================
+
+SCENARIO A: Participant Loses Invitation Link
+  ├─ Participant accidentally deletes email
+  ├─ Tries to reopen invitation link (expires)
+  ├─ Contacts AHHC support
+  ├─ AHHC admin regenerates invitation token
+  ├─ New 30-day token created
+  ├─ New email sent with link
+  └─ Participant completes onboarding with new link
+
+SCENARIO B: Participant Starts Onboarding, Never Completes
+  ├─ Participant starts 8-step wizard
+  ├─ Completes steps 1-6
+  ├─ Stops (doesn't return)
+  ├─ After 7 days: Reminder email sent
+  ├─ After 30 days: Invitation token expires
+  ├─ AHHC can contact participant or send new link
+  ├─ Or if no contact: Assessment marked "Stalled"
+  └─ May require restart of assessment
+
+SCENARIO C: Participant Requests Information Rejected
+  ├─ Reviewer rejects uploaded document
+  ├─ Example: "Identification expired"
+  ├─ System sends rejection email to participant
+  ├─ Participant provides new/updated document
+  ├─ Reviewer re-reviews
+  ├─ Accepts new document
+  ├─ Assessment continues
+  └─ Can happen multiple times until accepted
+
+SCENARIO D: Reviewer Discovers Eligibility Issue Mid-Assessment
+  ├─ During eligibility review: Find identity cannot be verified
+  ├─ Reviewer clicks "Request Information"
+  ├─ Status changes to "Awaiting Information"
+  ├─ Assessment pauses while info requested
+  ├─ Can proceed to other phases if wanted
+  ├─ Once info received: Return to review
+  ├─ Continue assessment
+  └─ Or reject if issue cannot be resolved
+
+SCENARIO E: Funding Source Changes During Assessment
+  ├─ Participant's funding source changes (e.g., NDIS → Private Pay)
+  ├─ Reviewer must reverify funding
+  ├─ Status may revert to "Awaiting Information"
+  ├─ Participant provides new funding documentation
+  ├─ Reviewer re-verifies new funding source
+  ├─ Assessment continues with updated budget
+  └─ All changes logged in audit trail
+
+
+================================================================================
+20. SYSTEM NOTIFICATIONS & COMMUNICATIONS
+================================================================================
+
+AUTOMATIC NOTIFICATIONS SENT AT EACH PHASE:
+
+  Phase 1: Enquiry Submitted
+    ├─ → AHHC Staff: "New Application: Jane Smith"
+    └─ → Participant: "Thank you for your enquiry"
+
+  Phase 2: Assessment Assigned
+    ├─ → Reviewer: "Assessment assigned to you: Jane Smith"
+    └─ → No participant notification
+
+  Phase 3-5: Assessment Review
+    ├─ → If requesting info: "Additional information needed"
+    └─ → No notification if just progressing
+
+  Phase 6-7: Profile & Plans
+    ├─ → No automatic notification
+    └─ → AHHC staff internally managing
+
+  Phase 8: Budget Setup
+    ├─ → Participant: "Your budget has been configured"
+    └─ → Include budget amount and dates
+
+  Phase 9: Assessment Complete
+    ├─ → AHHC: "Assessment ready for approval decision"
+    ├─ → Participant: Nothing yet
+    └─ → Awaiting admin decision
+
+  Phase 11: Assessment Approved
+    ├─ → AHHC: "Assessment approved by [Reviewer]"
+    └─ → Participant: Nothing yet
+
+  Phase 12: Invitation Sent
+    ├─ → AHHC: "Invitation sent to Jane Smith"
+    └─ → Participant: "Your portal access is ready - click link to start"
+
+  Phase 13: Onboarding Started
+    ├─ → AHHC: No immediate notification
+    └─ → Participant: "Welcome to onboarding - complete 8 steps"
+
+  Phase 13: Onboarding Complete
+    ├─ → AHHC: "Jane Smith completed onboarding - ready for final review"
+    ├─ → Participant: "Onboarding complete, awaiting final review"
+    └─ → Next: AHHC final review
+
+  Phase 14: Portal Activated
+    ├─ → AHHC: "Jane Smith portal activated"
+    └─ → Participant: "Your portal is now active! Welcome aboard."
+
+  Phase 16: Rejected
+    ├─ → AHHC: "Application rejected"
+    └─ → Participant: "Your application - decision notification" (detailed reason)
+
+
+================================================================================
+21. COMPLETION TRACKING & METRICS
+================================================================================
+
+ASSESSMENT COMPLETION PERCENTAGE:
+
+  Calculation Method:
+  ├─ Total checklist items: 34
+  ├─ Completed items: (count of true checkboxes)
+  ├─ Percentage = (completed / 34) * 100
+  └─ Range: 0% → 100%
+
+  Completion Thresholds:
+  ├─ 0-25%: Early assessment phases (eligibility, suitability)
+  ├─ 25-50%: Mid assessment (funding, profile, plans)
+  ├─ 50-75%: Late assessment (documents, agreements)
+  ├─ 75-99%: Final review phase
+  └─ 100%: Assessment complete - portal active
+
+  Dashboard Displays:
+  ├─ Overall completion: "68% Complete"
+  ├─ Progress bar: Visual representation
+  ├─ Current phase: "Awaiting Information"
+  ├─ Next required action: "Submit care plan copy"
+  └─ Items completed / total items: "23 of 34 items complete"
+
+  Tracking Over Time:
+  ├─ Assessment started: 2026-06-15
+  ├─ Days elapsed: 5 days
+  ├─ Average completion rate: 13.6% per day
+  ├─ Estimated completion: 2026-06-22 (7 days total)
+  └─ Benchmark: Most assessments complete in 5-10 business days
+
+
+================================================================================
+END OF WORKFLOW DOCUMENTATION
+================================================================================
+
+This document describes the complete AHHC Application Assessment & Approval
+Workflow from initial enquiry through portal activation.
+
+Key Principles:
+✓ NO participant can bypass assessment
+✓ NO shortcuts through workflow phases
+✓ ALL requirements must be met before approval
+✓ COMPLETE audit trail of every action
+✓ Multiple review gates prevent errors
+✓ Clear communication at every step
+
+Total Status Transitions: 19 possible states
+Required Documents: 3 mandatory (Care Plan, Support Plan, Identification)
+Required Agreements: 4 (Self-Management, Privacy, Responsibilities, T&C)
+Estimated Timeline: 5-10 business days
+Approval Rate: Determined by eligibility assessment outcomes

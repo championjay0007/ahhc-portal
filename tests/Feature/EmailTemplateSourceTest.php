@@ -1,0 +1,76 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\EmailTemplate;
+use App\Models\PortalSetting;
+use App\Services\EmailTemplateService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class EmailTemplateSourceTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_code_mode_uses_the_default_message_instead_of_database_template(): void
+    {
+        PortalSetting::query()->where('key', 'email_template_source')->delete();
+        PortalSetting::create([
+            'key' => 'email_template_source',
+            'value' => 'code',
+        ]);
+
+        EmailTemplate::create([
+            'name' => 'Example Template',
+            'slug' => 'example-template',
+            'subject' => 'Database subject',
+            'html_body' => '<p>Hello {{name}}</p>',
+            'text_body' => 'Hello {{name}}',
+            'category' => 'General',
+            'is_active' => true,
+        ]);
+
+        $rendered = EmailTemplateService::renderTemplate(
+            'example-template',
+            ['name' => 'Jane'],
+            'Default subject',
+            '<p>Default html for Jane</p>',
+            'Default text for Jane',
+            'Example Template',
+            'General'
+        );
+
+        $this->assertSame('Default subject', $rendered['subject']);
+        $this->assertStringContainsString('Default html for Jane', $rendered['html']);
+        $this->assertSame('Default text for Jane', $rendered['text']);
+    }
+
+    public function test_missing_template_source_setting_defaults_to_database_templates(): void
+    {
+        PortalSetting::query()->where('key', 'email_template_source')->delete();
+
+        EmailTemplate::create([
+            'name' => 'Example Template',
+            'slug' => 'example-template',
+            'subject' => 'Database subject',
+            'html_body' => '<p>Hello {{name}}</p>',
+            'text_body' => 'Hello {{name}}',
+            'category' => 'General',
+            'is_active' => true,
+        ]);
+
+        $rendered = EmailTemplateService::renderTemplate(
+            'example-template',
+            ['name' => 'Jane'],
+            'Default subject',
+            '<p>Default html for Jane</p>',
+            'Default text for Jane',
+            'Example Template',
+            'General'
+        );
+
+        $this->assertSame('Database subject', $rendered['subject']);
+        $this->assertStringContainsString('Hello Jane', $rendered['html']);
+        $this->assertSame('Hello Jane', $rendered['text']);
+    }
+}

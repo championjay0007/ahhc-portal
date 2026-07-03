@@ -1,0 +1,87 @@
+AHHC Participant Onboarding Flow
+
+Overview
+--------
+This describes the new 7-step participant onboarding workflow implemented in the AHHC portal. The design is simple, clear, and impossible to bypass.
+
+7-Step Workflow
+---------------
+1. Public Website Application
+   - Route: GET /apply
+   - Controller: ApplicationController@show
+   - View: resources/views/public/application/form.blade.php
+   - Purpose: Collect applicant info and create ParticipantApplication record with status NEW_APPLICATION.
+
+2. Admin Invitation
+   - Route: POST /portal/admin/applications/{application}/approve
+   - Controller: AdminApplicationsController@approve
+   - Purpose: Admin approves the application, creates a Participant + User account, generates an onboarding token, assigns onboarding status INVITATION_SENT, and sends invitation email.
+
+3. Participant Onboarding
+   - Route: GET /onboarding/{token}
+   - Controller: OnboardingController@show
+   - View: resources/views/participant/onboarding/form.blade.php
+   - Purpose: Token-based onboarding form where the participant sets a password, enters personal details, uploads documents, and signs agreements.
+
+4. Submit
+   - Route: POST /onboarding/{token}/submit
+   - Controller: OnboardingController@submit
+   - Purpose: Save onboarding data into OnboardingSubmission, update participant status to PENDING_REVIEW, and clear the onboarding token.
+
+5. Admin Review
+   - Route: GET /portal/admin/onboarding/{submission}
+   - Controller: AdminOnboardingController@show
+   - View: resources/views/admin/onboarding/show.blade.php
+   - Purpose: Admin checks the submission, documents, and agreement signatures.
+
+6. Admin Decision
+   - Approve: POST /portal/admin/onboarding/{submission}/approve
+   - Request Changes: POST /portal/admin/onboarding/{submission}/request-changes
+   - Reject: POST /portal/admin/onboarding/{submission}/reject
+   - Controller: AdminOnboardingController
+   - Purpose: Admin either approves onboarding, requests corrections with a new token, or rejects the onboarding.
+
+7. Full Portal Activation
+   - Route: POST /portal/admin/onboarding/participant/{participant}/activate
+   - Controller: AdminOnboardingController@activate
+   - Purpose: Activate the participant account after approval and grant full portal access.
+
+Participant Status
+------------------
+- The participant status page is available at GET /onboarding-status
+- Controller: OnboardingController@status
+- View: resources/views/participant/onboarding/status.blade.php
+- Purpose: Show current onboarding progress, checklist, latest submission summary, and next actions.
+
+Access Control
+--------------
+- Participants cannot access the portal dashboard until their onboarding is ACTIVATED.
+- The onboarding route uses a secure token with a 14-day expiry.
+- The workflow enforces stage transitions and prevents bypassing the review/approval process.
+
+Key Files
+---------
+- routes/web.php: New public, token, and admin onboarding routes.
+- app/Http/Controllers/ApplicationController.php
+- app/Http/Controllers/AdminApplicationsController.php
+- app/Http/Controllers/OnboardingController.php
+- app/Http/Controllers/AdminOnboardingController.php
+- app/Models/ParticipantApplication.php
+- app/Models/OnboardingSubmission.php
+- resources/views/public/application/form.blade.php
+- resources/views/public/application/success.blade.php
+- resources/views/participant/onboarding/form.blade.php
+- resources/views/participant/onboarding/status.blade.php
+- resources/views/admin/applications/index.blade.php
+- resources/views/admin/applications/show.blade.php
+- resources/views/admin/onboarding/index.blade.php
+- resources/views/admin/onboarding/show.blade.php
+
+Summary
+-------
+This flow creates a strict, stage-gated onboarding process:
+- Applicants enter via the public website.
+- Admin approves and invites only qualified applicants.
+- Participants can only continue through a secure token-based onboarding form.
+- Admin review is required before activation.
+- Full portal access is blocked until final activation.

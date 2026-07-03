@@ -1,0 +1,1414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Feature\ParticipantPortalTest" file="C:\Users\User\ahhc-portal\tests\Feature\ParticipantPortalTest.php" tests="2" assertions="9" errors="0" failures="1" skipped="0" time="2.102014">
+    <testcase name="test_participant_can_upload_a_document" file="C:\Users\User\ahhc-portal\tests\Feature\ParticipantPortalTest.php" line="17" class="Tests\Feature\ParticipantPortalTest" classname="Tests.Feature.ParticipantPortalTest" assertions="5" time="1.606932"/>
+    <testcase name="test_document_form_shows_inline_validation_feedback" file="C:\Users\User\ahhc-portal\tests\Feature\ParticipantPortalTest.php" line="58" class="Tests\Feature\ParticipantPortalTest" classname="Tests.Feature.ParticipantPortalTest" assertions="4" time="0.495082">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Feature\ParticipantPortalTest::test_document_form_shows_inline_validation_feedback&#13;
+Failed asserting that '&lt;!DOCTYPE html&gt;\r\n
+&lt;html lang="en"&gt;\r\n
+&lt;head&gt;\r\n
+    &lt;meta charset="UTF-8"&gt;\r\n
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;\r\n
+    &lt;title&gt;AHHC Portal&lt;/title&gt;\r\n
+    &lt;meta name="description" content="Manage participants, workers, invoices, approvals, documents, and compliance in one secure portal."&gt;\r\n
+    &lt;link rel="icon" href="http://localhost/favicon.ico"&gt;\r\n
+    &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;\r\n
+    &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"&gt;\r\n
+    &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"&gt;\r\n
+    &lt;style&gt;\r\n
+       :root {\r\n
+    --primary: #0E3863;\r\n
+    --primary-dark: #0B2F52;\r\n
+    --accent: #1699A1;\r\n
+\r\n
+    --bg-app: #F5F8FA;\r\n
+    --bg-surface: #ffffff;\r\n
+    --text-dark: #102a43;\r\n
+    --text-muted: #64748b;\r\n
+    --sidebar-hover: rgba(22, 153, 161, 0.12);\r\n
+    --card-shadow: 0 18px 40px rgba(14, 56, 99, 0.08);\r\n
+    --transition: all 0.25s ease;\r\n
+}\r\n
+\r\n
+* {\r\n
+    margin: 0;\r\n
+    padding: 0;\r\n
+    box-sizing: border-box;\r\n
+}\r\n
+\r\n
+body {\r\n
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;\r\n
+    background: var(--bg-app);\r\n
+    min-height: 100vh;\r\n
+    color: var(--text-dark);\r\n
+}\r\n
+\r\n
+.navbar-portal {\r\n
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));\r\n
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);\r\n
+    padding: 1rem 0;\r\n
+    box-shadow: 0 14px 30px rgba(14, 56, 99, 0.16);\r\n
+}\r\n
+\r\n
+.navbar-brand {\r\n
+    font-weight: 700;\r\n
+    font-size: 1.5rem;\r\n
+    color: white;\r\n
+    letter-spacing: -0.25px;\r\n
+}\r\n
+\r\n
+.navbar-brand i {\r\n
+    font-size: 1.35rem;\r\n
+}\r\n
+\r\n
+.user-greeting {\r\n
+    display: inline-flex;\r\n
+    align-items: center;\r\n
+    gap: 0.65rem;\r\n
+    padding: 0.65rem 1rem;\r\n
+    background: rgba(255, 255, 255, 0.14);\r\n
+    border: 1px solid rgba(255, 255, 255, 0.2);\r\n
+    border-radius: 999px;\r\n
+    color: white;\r\n
+}\r\n
+\r\n
+.btn-logout {\r\n
+    background: rgba(255, 255, 255, 0.14);\r\n
+    border: 1px solid rgba(255, 255, 255, 0.2);\r\n
+    color: white;\r\n
+    border-radius: 999px;\r\n
+    padding: 0.65rem 1.2rem;\r\n
+    transition: var(--transition);\r\n
+}\r\n
+\r\n
+.btn-logout:hover {\r\n
+    background: rgba(255, 255, 255, 0.22);\r\n
+    transform: translateY(-1px);\r\n
+}\r\n
+\r\n
+    .portal-menu-btn {\r\n
+        display: none;\r\n
+        border-radius: 12px;\r\n
+        width: 44px;\r\n
+        height: 44px;\r\n
+        border: 1px solid rgba(255,255,255,0.18);\r\n
+        color: white;\r\n
+        background: rgba(255,255,255,0.08);\r\n
+        transition: var(--transition);\r\n
+    }\r\n
+\r\n
+    .portal-menu-btn:hover {\r\n
+        background: rgba(255,255,255,0.18);\r\n
+    }\r\n
+\r\n
+    .portal-overlay {\r\n
+        position: fixed;\r\n
+        inset: 0;\r\n
+        background: rgba(0, 0, 0, 0.45);\r\n
+        opacity: 0;\r\n
+        pointer-events: none;\r\n
+        transition: opacity 0.25s ease;\r\n
+        z-index: 1040;\r\n
+    }\r\n
+\r\n
+    .portal-overlay.show {\r\n
+        opacity: 1;\r\n
+        pointer-events: auto;\r\n
+    }\r\n
+\r\n
+    .portal-sidebar {\r\n
+        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);\r\n
+        color: white;\r\n
+        min-height: 100vh;\r\n
+        border-right: 1px solid rgba(255, 255, 255, 0.08);\r\n
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);\r\n
+        transition: transform 0.25s ease;\r\n
+    }\r\n
+\r\n
+    .portal-sidebar.hide {\r\n
+        transform: translateX(-110%);\r\n
+    }\r\n
+\r\n
+    .portal-sidebar.show {\r\n
+        transform: translateX(0);\r\n
+    }\r\n
+\r\n
+    .mobile-bottom-nav {\r\n
+        display: none;\r\n
+        position: fixed;\r\n
+        bottom: 0;\r\n
+        left: 0;\r\n
+        right: 0;\r\n
+        background: white;\r\n
+        border-top: 1px solid rgba(14, 56, 99, 0.08);\r\n
+        padding: 0.45rem 0.75rem;\r\n
+        z-index: 1050;\r\n
+        box-shadow: 0 -12px 30px rgba(14, 56, 99, 0.08);\r\n
+        justify-content: space-between;\r\n
+        gap: 0.5rem;\r\n
+    }\r\n
+\r\n
+    /* Mobile sidebar behavior */\r\n
+    @media (max-width: 992px) {\r\n
+        .portal-sidebar {\r\n
+            position: fixed;\r\n
+            top: 0;\r\n
+            left: 0;\r\n
+            height: 100vh;\r\n
+            width: 280px;\r\n
+            transform: translateX(-110%);\r\n
+            transition: transform 0.28s ease, box-shadow 0.28s ease;\r\n
+            z-index: 1060;\r\n
+            will-change: transform;\r\n
+        }\r\n
+\r\n
+        .portal-sidebar.show {\r\n
+            transform: translateX(0);\r\n
+            box-shadow: 8px 0 40px rgba(2,6,23,0.12);\r\n
+        }\r\n
+\r\n
+        .portal-overlay {\r\n
+            display: block;\r\n
+        }\r\n
+\r\n
+        .portal-menu-btn {\r\n
+            display: inline-flex;\r\n
+        }\r\n
+\r\n
+        .portal-menu-close {\r\n
+            background: transparent;\r\n
+            border: none;\r\n
+            color: rgba(255,255,255,0.9);\r\n
+            font-size: 1.1rem;\r\n
+        }\r\n
+    }\r\n
+\r\n
+    .mobile-bottom-nav a,\r\n
+    .mobile-bottom-nav form button {\r\n
+        flex: 1;\r\n
+        display: inline-flex;\r\n
+        flex-direction: column;\r\n
+        align-items: center;\r\n
+        justify-content: center;\r\n
+        gap: 0.35rem;\r\n
+        padding: 0.75rem 0.5rem;\r\n
+        border-radius: 18px;\r\n
+        color: var(--text-dark);\r\n
+        text-decoration: none;\r\n
+        font-size: 0.75rem;\r\n
+        background: rgba(14, 56, 99, 0.03);\r\n
+        border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+        transition: var(--transition);\r\n
+    }\r\n
+\r\n
+    .mobile-bottom-nav a:hover,\r\n
+    .mobile-bottom-nav form button:hover {\r\n
+        background: rgba(22, 153, 161, 0.12);\r\n
+        transform: translateY(-1px);\r\n
+    }\r\n
+\r\n
+    .mobile-bottom-nav i {\r\n
+        font-size: 1.2rem;\r\n
+    }\r\n
+\r\n
+    .portal-sidebar .nav-section-title {\r\n
+        padding-left: 1rem;\r\n
+        padding-right: 1rem;\r\n
+    }\r\n
+\r\n
+    .sidebar-title {\r\n
+        font-size: 0.8rem;\r\n
+    text-transform: uppercase;\r\n
+    letter-spacing: 1.4px;\r\n
+    color: rgba(255, 255, 255, 0.72);\r\n
+    font-weight: 600;\r\n
+    margin-bottom: 0.65rem;\r\n
+}\r\n
+\r\n
+.sidebar-welcome {\r\n
+    color: white;\r\n
+    font-size: 1rem;\r\n
+    font-weight: 600;\r\n
+}\r\n
+\r\n
+.nav-menu {\r\n
+    padding: 1rem 0.75rem;\r\n
+}\r\n
+\r\n
+.nav-section-title {\r\n
+    font-size: 0.75rem;\r\n
+    text-transform: uppercase;\r\n
+    letter-spacing: 1.2px;\r\n
+    color: rgba(255, 255, 255, 0.5);\r\n
+    font-weight: 700;\r\n
+    padding: 1rem 1rem 0.5rem;\r\n
+    margin-top: 0.5rem;\r\n
+}\r\n
+\r\n
+.nav-link-custom {\r\n
+    display: flex;\r\n
+    align-items: center;\r\n
+    gap: 0.9rem;\r\n
+    padding: 0.95rem 1rem;\r\n
+    margin-bottom: 0.35rem;\r\n
+    border-radius: 16px;\r\n
+    color: rgba(255, 255, 255, 0.75);\r\n
+    text-decoration: none;\r\n
+    transition: var(--transition);\r\n
+    font-weight: 500;\r\n
+    position: relative;\r\n
+}\r\n
+\r\n
+.nav-link-custom:hover {\r\n
+    background: var(--sidebar-hover);\r\n
+    color: white;\r\n
+    transform: translateX(2px);\r\n
+}\r\n
+\r\n
+.nav-link-custom.active {\r\n
+    background: rgba(22, 153, 161, 0.18);\r\n
+    color: white;\r\n
+    border-left: 4px solid var(--accent);\r\n
+}\r\n
+\r\n
+.nav-icon {\r\n
+    font-size: 1.25rem;\r\n
+    width: 28px;\r\n
+    text-align: center;\r\n
+}\r\n
+\r\n
+.main-content {\r\n
+    background: var(--bg-app);\r\n
+    min-height: 100vh;\r\n
+}\r\n
+\r\n
+.content-wrapper {\r\n
+    padding: 2rem;\r\n
+    min-height: calc(100vh - 84px);\r\n
+}\r\n
+\r\n
+.alert-custom {\r\n
+    border-radius: 18px;\r\n
+    border: none;\r\n
+    box-shadow: 0 14px 30px rgba(14, 56, 99, 0.08);\r\n
+    animation: slideDown 0.3s ease-out;\r\n
+}\r\n
+\r\n
+@keyframes slideDown {\r\n
+    from {\r\n
+        opacity: 0;\r\n
+        transform: translateY(-10px);\r\n
+    }\r\n
+    to {\r\n
+        opacity: 1;\r\n
+        transform: translateY(0);\r\n
+    }\r\n
+}\r\n
+\r\n
+.portal-card {\r\n
+    background: var(--bg-surface);\r\n
+    border-radius: 20px;\r\n
+    box-shadow: var(--card-shadow);\r\n
+    border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+    transition: var(--transition);\r\n
+}\r\n
+\r\n
+.portal-card:hover {\r\n
+    transform: translateY(-2px);\r\n
+    box-shadow: 0 24px 40px rgba(14, 56, 99, 0.12);\r\n
+}\r\n
+\r\n
+.dashboard-stat-card {\r\n
+    border-radius: 20px;\r\n
+}\r\n
+\r\n
+.dashboard-stat-card:hover {\r\n
+    transform: translateY(-5px);\r\n
+    box-shadow: 0 26px 42px rgba(14, 56, 99, 0.14);\r\n
+}\r\n
+\r\n
+.icon-circle {\r\n
+    width: 52px;\r\n
+    height: 52px;\r\n
+    border-radius: 18px;\r\n
+    display: inline-flex;\r\n
+    align-items: center;\r\n
+    justify-content: center;\r\n
+    color: white;\r\n
+    background: linear-gradient(135deg, var(--accent), var(--primary));\r\n
+}\r\n
+\r\n
+.bg-soft-primary {\r\n
+    background: rgba(22, 153, 161, 0.14);\r\n
+    color: var(--primary-dark);\r\n
+    border-radius: 999px;\r\n
+    padding: 0.35rem 0.8rem;\r\n
+    font-size: 0.78rem;\r\n
+    font-weight: 600;\r\n
+}\r\n
+\r\n
+.btn-soft-primary {\r\n
+    background: rgba(22, 153, 161, 0.14);\r\n
+    color: var(--primary-dark);\r\n
+    border: 1px solid rgba(22, 153, 161, 0.22);\r\n
+    transition: var(--transition);\r\n
+}\r\n
+\r\n
+.btn-soft-primary:hover {\r\n
+    background: rgba(22, 153, 161, 0.2);\r\n
+    transform: translateY(-1px);\r\n
+}\r\n
+\r\n
+.btn-accent {\r\n
+    background: var(--accent);\r\n
+    color: white;\r\n
+    border: none;\r\n
+    box-shadow: 0 14px 30px rgba(22, 153, 161, 0.18);\r\n
+    transition: var(--transition);\r\n
+}\r\n
+\r\n
+.btn-accent:hover {\r\n
+    background: #0f7c88;\r\n
+}\r\n
+\r\n
+    .dashboard-hero &gt; div {\r\n
+        background: var(--bg-surface);\r\n
+        border-radius: 24px;\r\n
+        padding: 1.75rem;\r\n
+        box-shadow: var(--card-shadow);\r\n
+        border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+    }\r\n
+\r\n
+    .dashboard-action-grid {\r\n
+        display: grid;\r\n
+        grid-template-columns: repeat(3, minmax(0, 1fr));\r\n
+        gap: 1rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-action-card {\r\n
+        display: inline-flex;\r\n
+        align-items: center;\r\n
+        gap: 0.9rem;\r\n
+        padding: 1.15rem 1.2rem;\r\n
+        border-radius: 20px;\r\n
+        background: var(--bg-surface);\r\n
+        border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+        color: var(--text-dark);\r\n
+        text-decoration: none;\r\n
+        font-weight: 700;\r\n
+        box-shadow: var(--card-shadow);\r\n
+        transition: var(--transition);\r\n
+    }\r\n
+\r\n
+    .dashboard-action-card:hover {\r\n
+        transform: translateY(-3px);\r\n
+        box-shadow: 0 24px 40px rgba(14, 56, 99, 0.12);\r\n
+    }\r\n
+\r\n
+    .dashboard-action-card-danger {\r\n
+        background: rgba(220, 53, 69, 0.08);\r\n
+        border-color: rgba(220, 53, 69, 0.12);\r\n
+        color: #9b1c28;\r\n
+    }\r\n
+\r\n
+    .dashboard-action-card-warning {\r\n
+        background: rgba(255, 193, 7, 0.12);\r\n
+        border-color: rgba(255, 193, 7, 0.16);\r\n
+        color: #7a5a00;\r\n
+    }\r\n
+\r\n
+    .dashboard-action-card-info {\r\n
+        background: rgba(13, 110, 253, 0.08);\r\n
+        border-color: rgba(13, 110, 253, 0.12);\r\n
+        color: #0d6efd;\r\n
+    }\r\n
+\r\n
+    .dashboard-action-card i {\r\n
+        font-size: 1.3rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-action-card span {\r\n
+        flex: 1;\r\n
+        text-align: left;\r\n
+    }\r\n
+\r\n
+    .dashboard-hero .bg-soft-primary {\r\n
+        display: inline-flex;\r\n
+        padding: 0.7rem 1rem;\r\n
+        border-radius: 999px;\r\n
+        font-weight: 700;\r\n
+        letter-spacing: 0.01em;\r\n
+        text-transform: uppercase;\r\n
+        background: rgba(22, 153, 161, 0.14);\r\n
+        color: var(--primary-dark);\r\n
+    }\r\n
+\r\n
+    .portal-welcome-card {\r\n
+        background: linear-gradient(135deg, rgba(22, 153, 161, 0.15), rgba(255,255,255,0.85));\r\n
+        border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+    }\r\n
+\r\n
+    .portal-info-card {\r\n
+        background: var(--bg-surface);\r\n
+        border-radius: 24px;\r\n
+        box-shadow: var(--card-shadow);\r\n
+        border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+    }\r\n
+\r\n
+    .portal-info-card .card-body {\r\n
+        padding: 1.5rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-summary-card {\r\n
+        background: var(--bg-surface);\r\n
+        border-radius: 24px;\r\n
+        border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+        box-shadow: var(--card-shadow);\r\n
+        padding: 1.5rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-summary-card h5 {\r\n
+        margin-bottom: 0.75rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-summary-card .text-muted {\r\n
+        color: var(--text-muted);\r\n
+    }\r\n
+\r\n
+    .dashboard-summary-row {\r\n
+        display: grid;\r\n
+        grid-template-columns: repeat(2, minmax(0, 1fr));\r\n
+        gap: 1rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-summary-row .summary-item {\r\n
+        padding: 1rem;\r\n
+        border-radius: 18px;\r\n
+        background: #f8fbfb;\r\n
+        border: 1px solid rgba(22, 153, 161, 0.12);\r\n
+    }\r\n
+\r\n
+    .dashboard-summary-row .summary-item strong {\r\n
+        display: block;\r\n
+        margin-bottom: 0.35rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-table-card {\r\n
+        background: var(--bg-surface);\r\n
+        border-radius: 24px;\r\n
+        box-shadow: var(--card-shadow);\r\n
+        border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+        padding: 1.5rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-table-card .table-responsive {\r\n
+        margin-top: 1rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-table-card table {\r\n
+        border-collapse: separate;\r\n
+        border-spacing: 0 0.6rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-table-card tbody tr {\r\n
+        background: #fff;\r\n
+        border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+        border-radius: 18px;\r\n
+        overflow: hidden;\r\n
+    }\r\n
+\r\n
+    .dashboard-table-card td,\r\n
+    .dashboard-table-card th {\r\n
+        border: 0;\r\n
+        vertical-align: middle;\r\n
+        padding: 1rem 0.85rem;\r\n
+    }\r\n
+\r\n
+    .dashboard-table-card thead th {\r\n
+        color: var(--text-muted);\r\n
+        font-size: 0.78rem;\r\n
+        text-transform: uppercase;\r\n
+        letter-spacing: 0.08em;\r\n
+        border-bottom: none;\r\n
+    }\r\n
+\r\n
+    .dashboard-table-card tbody tr:hover {\r\n
+        background: #f4f8fb;\r\n
+    }\r\n
+\r\n
+    .dashboard-summary-footer {\r\n
+        display: grid;\r\n
+        gap: 0.85rem;\r\n
+    }\r\n
+\r\n
+    @media (max-width: 992px) {\r\n
+        .dashboard-action-grid {\r\n
+            grid-template-columns: repeat(2, minmax(0, 1fr));\r\n
+        }\r\n
+\r\n
+        .dashboard-summary-row {\r\n
+            grid-template-columns: 1fr;\r\n
+        }\r\n
+    }\r\n
+\r\n
+    @media (max-width: 768px) {\r\n
+        .dashboard-hero {\r\n
+            grid-template-columns: 1fr;\r\n
+        }\r\n
+\r\n
+        .dashboard-action-grid,\r\n
+        .dashboard-summary-row {\r\n
+            grid-template-columns: 1fr;\r\n
+        }\r\n
+\r\n
+        .dashboard-action-card {\r\n
+            width: 100%;\r\n
+        }\r\n
+    }\r\n
+\r\n
+    @media (max-width: 576px) {\r\n
+        .dashboard-hero h1 {\r\n
+            font-size: 2rem;\r\n
+        }\r\n
+    }\r\n
+\r\n
+    border: 1px solid rgba(22, 153, 161, 0.12);\r\n
+    margin-bottom: 0.9rem;\r\n
+    transition: var(--transition);\r\n
+}\r\n
+\r\n
+.notification-item:hover {\r\n
+    background: #eef7f8;\r\n
+}\r\n
+\r\n
+.card-small {\r\n
+    border-radius: 20px;\r\n
+    background: white;\r\n
+    box-shadow: var(--card-shadow);\r\n
+    border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+}\r\n
+\r\n
+.table-card-heading {\r\n
+    display: flex;\r\n
+    align-items: center;\r\n
+    justify-content: space-between;\r\n
+    gap: 1rem;\r\n
+    flex-wrap: wrap;\r\n
+}\r\n
+\r\n
+.table-card-heading h5 {\r\n
+    margin-bottom: 0;\r\n
+}\r\n
+\r\n
+.border-left-accent {\r\n
+    border-left: 4px solid var(--accent) !important;\r\n
+}\r\n
+\r\n
+.border-left-warning {\r\n
+    border-left: 4px solid #f59e0b !important;\r\n
+}\r\n
+\r\n
+.dashboard-hero {\r\n
+    display: grid;\r\n
+    gap: 1.5rem;\r\n
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);\r\n
+    align-items: start;\r\n
+    margin-bottom: 2rem;\r\n
+}\r\n
+\r\n
+.dashboard-hero h1 {\r\n
+    font-size: 2.65rem;\r\n
+    line-height: 1.05;\r\n
+    margin-bottom: 0.6rem;\r\n
+}\r\n
+\r\n
+.dashboard-hero p {\r\n
+    color: var(--text-muted);\r\n
+    font-size: 0.95rem;\r\n
+}\r\n
+\r\n
+.status-cards {\r\n
+    display: grid;\r\n
+    grid-template-columns: repeat(4, minmax(0, 1fr));\r\n
+    gap: 1rem;\r\n
+    margin-bottom: 2rem;\r\n
+}\r\n
+\r\n
+.dashboard-grid {\r\n
+    display: grid;\r\n
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);\r\n
+    gap: 1.5rem;\r\n
+    margin-bottom: 1rem;\r\n
+}\r\n
+\r\n
+.status-card {\r\n
+    background: var(--bg-surface);\r\n
+    border-radius: 24px;\r\n
+    border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+    box-shadow: var(--card-shadow);\r\n
+    padding: 1.5rem;\r\n
+    min-height: 150px;\r\n
+    display: flex;\r\n
+    flex-direction: column;\r\n
+    justify-content: space-between;\r\n
+}\r\n
+\r\n
+.status-card .status-top {\r\n
+    display: flex;\r\n
+    justify-content: space-between;\r\n
+    gap: 0.75rem;\r\n
+    align-items: center;\r\n
+    margin-bottom: 1rem;\r\n
+}\r\n
+\r\n
+.status-card .status-label {\r\n
+    font-size: 0.85rem;\r\n
+    color: var(--text-muted);\r\n
+    font-weight: 700;\r\n
+    text-transform: uppercase;\r\n
+    letter-spacing: 0.14em;\r\n
+}\r\n
+\r\n
+.status-card .status-value {\r\n
+    font-size: 2.25rem;\r\n
+    font-weight: 700;\r\n
+    color: var(--text-dark);\r\n
+}\r\n
+\r\n
+.panel {\r\n
+    background: var(--bg-surface);\r\n
+    border-radius: 24px;\r\n
+    border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+    box-shadow: var(--card-shadow);\r\n
+    padding: 1.75rem;\r\n
+}\r\n
+\r\n
+.panel-header {\r\n
+    display: flex;\r\n
+    justify-content: space-between;\r\n
+    align-items: center;\r\n
+    flex-wrap: wrap;\r\n
+    gap: 1rem;\r\n
+    margin-bottom: 1.5rem;\r\n
+}\r\n
+\r\n
+.panel-header h2 {\r\n
+    margin: 0;\r\n
+    font-size: 1.3rem;\r\n
+}\r\n
+\r\n
+.panel-header p {\r\n
+    margin: 0;\r\n
+    color: var(--text-muted);\r\n
+}\r\n
+\r\n
+.shift-table {\r\n
+    min-width: 100%;\r\n
+}\r\n
+\r\n
+.shift-table tbody tr {\r\n
+    border-bottom: 1px solid rgba(14, 56, 99, 0.08);\r\n
+}\r\n
+\r\n
+.shift-table td,\r\n
+.shift-table th {\r\n
+    vertical-align: middle;\r\n
+    border: 0;\r\n
+    padding: 0.85rem 0.85rem;\r\n
+}\r\n
+\r\n
+.shift-table thead th {\r\n
+    color: var(--text-muted);\r\n
+    font-size: 0.85rem;\r\n
+    text-transform: uppercase;\r\n
+    letter-spacing: 0.08em;\r\n
+    border-bottom: 1px solid rgba(14, 56, 99, 0.08);\r\n
+}\r\n
+\r\n
+.shift-label {\r\n
+    font-size: 0.8rem;\r\n
+    color: #0e3863;\r\n
+    font-weight: 700;\r\n
+    display: inline-flex;\r\n
+    align-items: center;\r\n
+    gap: 0.5rem;\r\n
+}\r\n
+\r\n
+.risk-chip {\r\n
+    display: inline-flex;\r\n
+    align-items: center;\r\n
+    font-size: 0.8rem;\r\n
+    padding: 0.45rem 0.75rem;\r\n
+    border-radius: 999px;\r\n
+    background: rgba(248, 113, 113, 0.14);\r\n
+    color: #b91c1c;\r\n
+    font-weight: 700;\r\n
+}\r\n
+\r\n
+.quick-actions {\r\n
+    display: grid;\r\n
+    gap: 1rem;\r\n
+    margin-bottom: 1.75rem;\r\n
+}\r\n
+\r\n
+.quick-action-btn {\r\n
+    display: inline-flex;\r\n
+    align-items: center;\r\n
+    justify-content: center;\r\n
+    gap: 0.75rem;\r\n
+    border-radius: 18px;\r\n
+    border: none;\r\n
+    padding: 1rem 1.25rem;\r\n
+    color: white;\r\n
+    font-weight: 700;\r\n
+    text-decoration: none;\r\n
+    transition: var(--transition);\r\n
+}\r\n
+\r\n
+.quick-action-btn:hover {\r\n
+    transform: translateY(-2px);\r\n
+}\r\n
+\r\n
+.btn-action-start { background: linear-gradient(135deg, #26c0b8, #0e8a97); }\r\n
+.btn-action-submit { background: linear-gradient(135deg, #0a6d97, #10456f); }\r\n
+.btn-action-report { background: linear-gradient(135deg, #dc3545, #b02a37); }\r\n
+.btn-action-upload { background: linear-gradient(135deg, #6f42c1, #4f2a90); }\r\n
+\r\n
+.workflow {\r\n
+    background: rgba(14, 56, 99, 0.04);\r\n
+    border-radius: 24px;\r\n
+    padding: 1.5rem;\r\n
+}\r\n
+\r\n
+.workflow-header {\r\n
+    display: flex;\r\n
+    align-items: baseline;\r\n
+    justify-content: space-between;\r\n
+    gap: 1rem;\r\n
+    margin-bottom: 1rem;\r\n
+}\r\n
+\r\n
+.workflow-header h3 {\r\n
+    margin: 0;\r\n
+    font-size: 1.15rem;\r\n
+}\r\n
+\r\n
+.workflow-header p {\r\n
+    margin: 0;\r\n
+    color: var(--text-muted);\r\n
+}\r\n
+\r\n
+.workflow-list {\r\n
+    display: grid;\r\n
+    grid-template-columns: repeat(5, minmax(0, 1fr));\r\n
+    gap: 1rem;\r\n
+}\r\n
+\r\n
+.workflow-step {\r\n
+    background: white;\r\n
+    border-radius: 20px;\r\n
+    padding: 1rem;\r\n
+    border: 1px solid rgba(14, 56, 99, 0.08);\r\n
+    box-shadow: var(--card-shadow);\r\n
+    text-align: center;\r\n
+}\r\n
+\r\n
+.step-badge {\r\n
+    width: 34px;\r\n
+    height: 34px;\r\n
+    line-height: 34px;\r\n
+    border-radius: 50%;\r\n
+    display: inline-flex;\r\n
+    align-items: center;\r\n
+    justify-content: center;\r\n
+    background: linear-gradient(135deg, var(--accent), var(--primary));\r\n
+    color: white;\r\n
+    font-weight: 700;\r\n
+    margin-bottom: 0.85rem;\r\n
+}\r\n
+\r\n
+.workflow-step p {\r\n
+    margin: 0;\r\n
+    color: var(--text-muted);\r\n
+    font-size: 0.95rem;\r\n
+}\r\n
+\r\n
+@media (max-width: 1200px) {\r\n
+    .dashboard-hero {\r\n
+        grid-template-columns: 1fr;\r\n
+    }\r\n
+\r\n
+    .status-cards {\r\n
+        grid-template-columns: repeat(2, minmax(0, 1fr));\r\n
+    }\r\n
+\r\n
+    .workflow-list {\r\n
+        grid-template-columns: repeat(2, minmax(0, 1fr));\r\n
+    }\r\n
+}\r\n
+\r\n
+@media (max-width: 768px) {\r\n
+    .status-cards,\r\n
+    .dashboard-hero,\r\n
+    .workflow-list,\r\n
+    .quick-actions {\r\n
+        grid-template-columns: 1fr;\r\n
+    }\r\n
+}\r\n
+\r\n
+@media (max-width: 576px) {\r\n
+    .dashboard-hero h1 {\r\n
+        font-size: 2rem;\r\n
+    }\r\n
+}\r\n
+\r\n
+@media (max-width: 1400px) {\r\n
+    .col-xl-2-4 {\r\n
+        flex: 0 0 calc(50% - 0.75rem);\r\n
+    }\r\n
+}\r\n
+\r\n
+@media (min-width: 1400px) {\r\n
+    .col-xl-2-4 {\r\n
+        flex: 0 0 calc(20% - 0.75rem);\r\n
+    }\r\n
+}\r\n
+\r\n
+.progress {\r\n
+    background-color: rgba(14, 56, 99, 0.1);\r\n
+}\r\n
+\r\n
+.progress-bar {\r\n
+    background: linear-gradient(90deg, var(--accent), var(--primary)) !important;\r\n
+}\r\n
+\r\n
+\r\n
+@media (max-width: 992px) {\r\n
+    .content-wrapper {\r\n
+        padding: 1.5rem;\r\n
+    }\r\n
+\r\n
+    .sidebar-header {\r\n
+        padding: 1.5rem 1rem 1rem;\r\n
+    }\r\n
+}\r\n
+\r\n
+@media (max-width: 768px) {\r\n
+    .portal-sidebar {\r\n
+        min-height: auto;\r\n
+    }\r\n
+\r\n
+    .nav-link-custom {\r\n
+        padding: 0.8rem;\r\n
+    }\r\n
+\r\n
+    .content-wrapper {\r\n
+        padding: 1rem;\r\n
+    }\r\n
+\r\n
+    .navbar-brand {\r\n
+        font-size: 1.25rem;\r\n
+    }\r\n
+\r\n
+    .navbar-portal .user-greeting {\r\n
+        display: none;\r\n
+    }\r\n
+\r\n
+    .btn-logout {\r\n
+        padding: 0.55rem 0.95rem;\r\n
+    }\r\n
+}\r\n
+\r\n
+.portal-sidebar::-webkit-scrollbar {\r\n
+    width: 6px;\r\n
+}\r\n
+\r\n
+.portal-sidebar::-webkit-scrollbar-track {\r\n
+    background: rgba(255, 255, 255, 0.05);\r\n
+}\r\n
+\r\n
+.portal-sidebar::-webkit-scrollbar-thumb {\r\n
+    background: rgba(255, 255, 255, 0.25);\r\n
+    border-radius: 3px;\r\n
+}\r\n
+\r\n
+.portal-sidebar::-webkit-scrollbar-thumb:hover {\r\n
+    background: rgba(255, 255, 255, 0.4);\r\n
+}\r\n
+    \r\n
+    .notification-menu {\r\n
+        position: relative;\r\n
+    }\r\n
+\r\n
+    .notification-toggle {\r\n
+        position: relative;\r\n
+        display: inline-flex;\r\n
+        align-items: center;\r\n
+        justify-content: center;\r\n
+        width: 44px;\r\n
+        height: 44px;\r\n
+        border-radius: 12px;\r\n
+        border: 1px solid rgba(255, 255, 255, 0.18);\r\n
+        background: rgba(255, 255, 255, 0.08);\r\n
+        color: #ffffff;\r\n
+    }\r\n
+\r\n
+    .notification-toggle .notification-badge {\r\n
+        position: absolute;\r\n
+        top: 6px;\r\n
+        right: 6px;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown {\r\n
+        position: absolute;\r\n
+        top: 100%;\r\n
+        right: 0;\r\n
+        width: min(360px, calc(100vw - 2rem));\r\n
+        max-height: 420px;\r\n
+        overflow: hidden;\r\n
+        background: #ffffff;\r\n
+        color: #1d2124;\r\n
+        border: 1px solid rgba(14, 56, 99, 0.12);\r\n
+        border-radius: 18px;\r\n
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);\r\n
+        padding: 0.75rem;\r\n
+        display: none;\r\n
+        z-index: 1050;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown.show {\r\n
+        display: block;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-header {\r\n
+        font-weight: 700;\r\n
+        padding: 0.85rem 1rem;\r\n
+        border-bottom: 1px solid rgba(14, 56, 99, 0.08);\r\n
+        margin-bottom: 0.35rem;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-list {\r\n
+        max-height: 300px;\r\n
+        overflow-y: auto;\r\n
+        padding-right: 0.25rem;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-item {\r\n
+        display: block;\r\n
+        padding: 0.85rem 0.95rem;\r\n
+        border-radius: 14px;\r\n
+        text-decoration: none;\r\n
+        color: inherit;\r\n
+        transition: background 0.2s ease;\r\n
+        margin-bottom: 0.4rem;\r\n
+        border: 1px solid transparent;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-item:hover {\r\n
+        background: #f4f7fb;\r\n
+        border-color: rgba(14, 56, 99, 0.08);\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-item.unread {\r\n
+        background: #edf4ff;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-title {\r\n
+        font-weight: 700;\r\n
+        margin-bottom: 0.35rem;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-message {\r\n
+        font-size: 0.95rem;\r\n
+        color: #4b5663;\r\n
+        line-height: 1.4;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-meta {\r\n
+        margin-top: 0.45rem;\r\n
+        font-size: 0.8rem;\r\n
+        color: #6c757d;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-footer {\r\n
+        display: flex;\r\n
+        align-items: center;\r\n
+        justify-content: space-between;\r\n
+        gap: 0.5rem;\r\n
+        padding-top: 0.75rem;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-footer a,\r\n
+    .notification-dropdown .notification-footer button {\r\n
+        border: none;\r\n
+        background: transparent;\r\n
+        color: #0d6efd;\r\n
+        text-decoration: none;\r\n
+        font-weight: 700;\r\n
+        padding: 0;\r\n
+    }\r\n
+\r\n
+    .notification-dropdown .notification-footer button:hover,\r\n
+    .notification-dropdown .notification-footer a:hover {\r\n
+        opacity: 0.85;\r\n
+    }\r\n
+    &lt;/style&gt;\r\n
+&lt;/head&gt;\r\n
+&lt;body&gt;\r\n
+    &lt;!-- Enhanced Top Navigation --&gt;\r\n
+    &lt;nav class="navbar-portal"&gt;\r\n
+        &lt;div class="container-fluid"&gt;\r\n
+            &lt;div class="d-flex justify-content-between align-items-center w-100 px-3"&gt;\r\n
+                &lt;div class="d-flex align-items-center gap-2"&gt;\r\n
+                    &lt;button class="portal-menu-btn d-md-none" type="button" id="portalMenuToggle"&gt;\r\n
+                        &lt;i class="bi bi-list"&gt;&lt;/i&gt;\r\n
+                    &lt;/button&gt;\r\n
+                    &lt;a class="navbar-brand d-flex align-items-center gap-2" href="http://localhost/portal/dashboard"&gt;\r\n
+                                                    &lt;i class="bi bi-heart-pulse-fill"&gt;&lt;/i&gt;\r\n
+                                                AHHC Portal\r\n
+                    &lt;/a&gt;\r\n
+                &lt;/div&gt;\r\n
+                &lt;div class="d-flex align-items-center gap-3"&gt;\r\n
+                    &lt;div class="notification-menu"&gt;\r\n
+                        &lt;button class="notification-toggle" type="button" id="portalNotificationToggle" aria-expanded="false" aria-label="Notifications"&gt;\r\n
+                            &lt;i class="bi bi-bell"&gt;&lt;/i&gt;\r\n
+                                                    &lt;/button&gt;\r\n
+                        &lt;div class="notification-dropdown" id="portalNotificationDropdown"&gt;\r\n
+                            &lt;div class="notification-header"&gt;Notifications&lt;/div&gt;\r\n
+                            &lt;div class="notification-list"&gt;\r\n
+                                                                    &lt;div class="notification-item text-muted"&gt;No notifications yet.&lt;/div&gt;\r\n
+                                                            &lt;/div&gt;\r\n
+                            &lt;div class="notification-footer"&gt;\r\n
+                                &lt;a href="http://localhost/portal/notifications"&gt;View all&lt;/a&gt;\r\n
+                                                            &lt;/div&gt;\r\n
+                        &lt;/div&gt;\r\n
+                    &lt;/div&gt;\r\n
+                    &lt;div class="notification-menu"&gt;\r\n
+                        &lt;button class="notification-toggle" type="button" id="portalMessageToggle" aria-expanded="false" aria-label="Messages"&gt;\r\n
+                            &lt;i class="bi bi-envelope"&gt;&lt;/i&gt;\r\n
+                                                    &lt;/button&gt;\r\n
+                        &lt;div class="notification-dropdown" id="portalMessageDropdown"&gt;\r\n
+                            &lt;div class="notification-header"&gt;Messages&lt;/div&gt;\r\n
+                            &lt;div class="notification-list"&gt;\r\n
+                                                                    &lt;div class="notification-item text-muted"&gt;No messages yet.&lt;/div&gt;\r\n
+                                                            &lt;/div&gt;\r\n
+                            &lt;div class="notification-footer"&gt;\r\n
+                                &lt;a href="http://localhost/portal/messages/inbox"&gt;View all messages&lt;/a&gt;\r\n
+                            &lt;/div&gt;\r\n
+                        &lt;/div&gt;\r\n
+                    &lt;/div&gt;\r\n
+                    &lt;div class="dropdown"&gt;\r\n
+                        &lt;a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" id="portalUserDropdown" data-bs-toggle="dropdown" aria-expanded="false"&gt;\r\n
+                            &lt;img src="https://ui-avatars.com/api/?name=Participant+Validation&amp;amp;background=0E3863&amp;amp;color=fff&amp;amp;rounded=true" alt="avatar" width="36" height="36" class="rounded-circle me-2"&gt;\r\n
+                            &lt;span class="d-none d-md-inline"&gt;Participant Validation&lt;/span&gt;\r\n
+                        &lt;/a&gt;\r\n
+                        &lt;ul class="dropdown-menu dropdown-menu-end" aria-labelledby="portalUserDropdown"&gt;\r\n
+                                                            &lt;li&gt;&lt;a class="dropdown-item" href="http://localhost/portal/profile"&gt;Profile&lt;/a&gt;&lt;/li&gt;\r\n
+                                                                                        &lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Settings&lt;/a&gt;&lt;/li&gt;\r\n
+                                                        &lt;li&gt;&lt;hr class="dropdown-divider"&gt;&lt;/li&gt;\r\n
+                            &lt;li&gt;\r\n
+                                &lt;form method="POST" action="http://localhost/portal/logout" class="m-0"&gt;\r\n
+                                    &lt;input type="hidden" name="_token" value="RavBDeECX6aalVbKx67HNCwoh8jkw0bZmm06lh6j" autocomplete="off"&gt;                                    &lt;button type="submit" class="dropdown-item text-danger"&gt;Logout&lt;/button&gt;\r\n
+                                &lt;/form&gt;\r\n
+                            &lt;/li&gt;\r\n
+                        &lt;/ul&gt;\r\n
+                    &lt;/div&gt;\r\n
+                &lt;/div&gt;\r\n
+            &lt;/div&gt;\r\n
+        &lt;/div&gt;\r\n
+    &lt;/nav&gt;\r\n
+\r\n
+    &lt;div class="portal-overlay" id="portalOverlay"&gt;&lt;/div&gt;\r\n
+\r\n
+    &lt;div class="container-fluid p-0"&gt;\r\n
+        &lt;div class="row g-0"&gt;\r\n
+            &lt;!-- Enhanced Sidebar --&gt;\r\n
+            &lt;aside class="col-12 col-md-3 col-xl-2 portal-sidebar"&gt;\r\n
+                &lt;div class="sidebar-header d-flex justify-content-between align-items-start"&gt;\r\n
+                    &lt;div&gt;\r\n
+                        &lt;div class="sidebar-title"&gt;\r\n
+                                                            Participant Portal\r\n
+                                                    &lt;/div&gt;\r\n
+                        &lt;div class="sidebar-welcome"&gt;Welcome, Participant Validation&lt;/div&gt;\r\n
+                    &lt;/div&gt;\r\n
+                    &lt;div&gt;\r\n
+                        &lt;button class="portal-menu-close d-md-none" id="portalSidebarClose" aria-label="Close sidebar"&gt;&lt;i class="bi bi-x-lg"&gt;&lt;/i&gt;&lt;/button&gt;\r\n
+                    &lt;/div&gt;\r\n
+                &lt;/div&gt;\r\n
+\r\n
+                &lt;div class="nav-menu"&gt;\r\n
+                                            &lt;!-- Core --&gt;\r\n
+                        &lt;a href="http://localhost/portal/dashboard" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-house-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            Dashboard\r\n
+                        &lt;/a&gt;\r\n
+\r\n
+                        &lt;!-- Budget &amp; Finance --&gt;\r\n
+                        &lt;div class="nav-section-title"&gt;💰 Budget &amp; Finance&lt;/div&gt;\r\n
+                        &lt;a href="http://localhost/portal/participant/budget" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-wallet2 nav-icon"&gt;&lt;/i&gt;\r\n
+                            My Budget\r\n
+                        &lt;/a&gt;\r\n
+                        \r\n
+                        &lt;a href="http://localhost/portal/participant/pre-approvals" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-check2-circle-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            Pre-Approvals\r\n
+                        &lt;/a&gt;\r\n
+                        \r\n
+                        &lt;a href="http://localhost/portal/participant/invoices" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-receipt-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            Submit Invoice\r\n
+                        &lt;/a&gt;\r\n
+\r\n
+                        &lt;!-- Documents &amp; Forms --&gt;\r\n
+                        &lt;div class="nav-section-title"&gt;📁 Documents &amp; Forms&lt;/div&gt;\r\n
+                        &lt;a href="http://localhost/portal/participant/documents" \r\n
+                           class="nav-link-custom active"&gt;\r\n
+                            &lt;i class="bi bi-file-earmark-text-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            Documents\r\n
+                        &lt;/a&gt;\r\n
+                        \r\n
+                        &lt;a href="http://localhost/portal/participant/documents/pending" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-pen-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            Forms to Sign\r\n
+                        &lt;/a&gt;\r\n
+\r\n
+                        &lt;!-- People &amp; Services --&gt;\r\n
+                        &lt;div class="nav-section-title"&gt;👥 People &amp; Services&lt;/div&gt;\r\n
+                        &lt;a href="http://localhost/portal/participant/team" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-people-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            Workers / Suppliers\r\n
+                        &lt;/a&gt;\r\n
+                                                &lt;a href="http://localhost/portal/participant/team" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-chat-right-text nav-icon"&gt;&lt;/i&gt;\r\n
+                            Chat Assigned Worker\r\n
+                        &lt;/a&gt;\r\n
+                        &lt;a href="http://localhost/portal/participant/services" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-calendar-check-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            My Services / Shifts\r\n
+                        &lt;/a&gt;\r\n
+                        \r\n
+                        &lt;a href="http://localhost/portal/participant/care-notes" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-clipboard-check nav-icon"&gt;&lt;/i&gt;\r\n
+                            Care Notes\r\n
+                        &lt;/a&gt;\r\n
+\r\n
+                        &lt;!-- Support &amp; Reporting --&gt;\r\n
+                        &lt;div class="nav-section-title"&gt;⚠️ Support &amp; Reporting&lt;/div&gt;\r\n
+                        &lt;a href="http://localhost/portal/participant/complaints" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-exclamation-triangle-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            Incidents / Feedback\r\n
+                        &lt;/a&gt;\r\n
+                        &lt;a href="http://localhost/portal/support" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-headset nav-icon"&gt;&lt;/i&gt;\r\n
+                            Contact Support\r\n
+                        &lt;/a&gt;\r\n
+                        &lt;a href="http://localhost/portal/support/conversations" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-chat-dots nav-icon"&gt;&lt;/i&gt;\r\n
+                            Live Chat\r\n
+                        &lt;/a&gt;\r\n
+\r\n
+                        &lt;!-- Messaging --&gt;\r\n
+                        &lt;div class="nav-section-title"&gt;💬 Messaging&lt;/div&gt;\r\n
+                        &lt;a href="http://localhost/portal/messages/inbox" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-chat-left-dots-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            Inbox\r\n
+                                                    &lt;/a&gt;\r\n
+\r\n
+                        &lt;!-- Account --&gt;\r\n
+                        &lt;div class="nav-section-title"&gt;⚙️ Account&lt;/div&gt;\r\n
+                        &lt;a href="http://localhost/portal/profile" \r\n
+                           class="nav-link-custom "&gt;\r\n
+                            &lt;i class="bi bi-person-fill nav-icon"&gt;&lt;/i&gt;\r\n
+                            My Profile\r\n
+                        &lt;/a&gt;\r\n
+                                    &lt;/div&gt;\r\n
+            &lt;/aside&gt;\r\n
+\r\n
+            &lt;!-- Main Content Area --&gt;\r\n
+            &lt;main class="col-12 col-md-9 col-xl-10 main-content"&gt;\r\n
+                &lt;div class="content-wrapper"&gt;\r\n
+                                        \r\n
+                                            &lt;div class="alert alert-danger alert-custom" role="alert"&gt;\r\n
+                            &lt;div class="d-flex align-items-center mb-2"&gt;\r\n
+                                &lt;i class="bi bi-exclamation-triangle-fill me-2"&gt;&lt;/i&gt;\r\n
+                                &lt;strong&gt;Please fix the following errors:&lt;/strong&gt;\r\n
+                            &lt;/div&gt;\r\n
+                            &lt;ul class="mb-0 ps-4"&gt;\r\n
+                                                                    &lt;li&gt;The title field is required.&lt;/li&gt;\r\n
+                                                                    &lt;li&gt;The document type field is required.&lt;/li&gt;\r\n
+                                                                    &lt;li&gt;The file field is required.&lt;/li&gt;\r\n
+                                                            &lt;/ul&gt;\r\n
+                        &lt;/div&gt;\r\n
+                    \r\n
+                    &lt;div class="portal-card p-4"&gt;\r\n
+                            &lt;div class="d-flex justify-content-between align-items-center mb-4"&gt;\r\n
+        &lt;div&gt;\r\n
+            &lt;h2&gt;Documents&lt;/h2&gt;\r\n
+            &lt;p class="text-muted"&gt;Upload, review and sign documents linked to your care plan.&lt;/p&gt;\r\n
+        &lt;/div&gt;\r\n
+    &lt;/div&gt;\r\n
+\r\n
+    &lt;div class="card portal-card mb-4 p-4"&gt;\r\n
+        &lt;h5 class="mb-3"&gt;Upload a new document&lt;/h5&gt;\r\n
+        &lt;form method="POST" action="http://localhost/portal/participant/documents" enctype="multipart/form-data"&gt;\r\n
+            &lt;input type="hidden" name="_token" value="RavBDeECX6aalVbKx67HNCwoh8jkw0bZmm06lh6j" autocomplete="off"&gt;            &lt;div class="row g-3"&gt;\r\n
+                &lt;div class="col-md-4"&gt;\r\n
+                    &lt;label class="form-label"&gt;Title&lt;/label&gt;\r\n
+                    &lt;input type="text" name="title" class="form-control" value="" required&gt;\r\n
+                &lt;/div&gt;\r\n
+                &lt;div class="col-md-4"&gt;\r\n
+                    &lt;label class="form-label"&gt;Type&lt;/label&gt;\r\n
+                    &lt;input type="text" name="document_type" class="form-control" value="" required&gt;\r\n
+                &lt;/div&gt;\r\n
+                &lt;div class="col-md-4"&gt;\r\n
+                    &lt;label class="form-label"&gt;File&lt;/label&gt;\r\n
+                    &lt;input type="file" name="file" class="form-control" required&gt;\r\n
+                &lt;/div&gt;\r\n
+            &lt;/div&gt;\r\n
+            &lt;button type="submit" class="btn btn-primary mt-3"&gt;Upload document&lt;/button&gt;\r\n
+        &lt;/form&gt;\r\n
+    &lt;/div&gt;\r\n
+\r\n
+    &lt;div class="card portal-card p-4"&gt;\r\n
+        &lt;h5 class="mb-3"&gt;My documents&lt;/h5&gt;\r\n
+                    &lt;p class="text-muted"&gt;No documents uploaded yet.&lt;/p&gt;\r\n
+            &lt;/div&gt;\r\n
+                    &lt;/div&gt;\r\n
+                &lt;/div&gt;\r\n
+            &lt;/main&gt;\r\n
+        &lt;/div&gt;\r\n
+    &lt;/div&gt;\r\n
+\r\n
+    &lt;div class="mobile-bottom-nav"&gt;\r\n
+                    &lt;a href="http://localhost/portal/dashboard"&gt;\r\n
+                &lt;i class="bi bi-house-door-fill"&gt;&lt;/i&gt;\r\n
+                &lt;span&gt;Home&lt;/span&gt;\r\n
+            &lt;/a&gt;\r\n
+            &lt;a href="http://localhost/portal/participant/services"&gt;\r\n
+                &lt;i class="bi bi-calendar-check-fill"&gt;&lt;/i&gt;\r\n
+                &lt;span&gt;Services&lt;/span&gt;\r\n
+            &lt;/a&gt;\r\n
+            &lt;a href="http://localhost/portal/messages/inbox"&gt;\r\n
+                &lt;i class="bi bi-chat-left-dots-fill"&gt;&lt;/i&gt;\r\n
+                &lt;span&gt;Messages\r\n
+                                    &lt;/span&gt;\r\n
+            &lt;/a&gt;\r\n
+            &lt;a href="http://localhost/portal/support"&gt;\r\n
+                &lt;i class="bi bi-headset"&gt;&lt;/i&gt;\r\n
+                &lt;span&gt;Support&lt;/span&gt;\r\n
+            &lt;/a&gt;\r\n
+            &lt;a href="http://localhost/portal/profile"&gt;\r\n
+                &lt;i class="bi bi-person-circle"&gt;&lt;/i&gt;\r\n
+                &lt;span&gt;Profile&lt;/span&gt;\r\n
+            &lt;/a&gt;\r\n
+            &lt;/div&gt;\r\n
+\r\n
+    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;\r\n
+    \r\n
+    &lt;!-- Add subtle animations --&gt;\r\n
+    &lt;script&gt;\r\n
+        document.addEventListener('DOMContentLoaded', function() {\r\n
+            const navLinks = document.querySelectorAll('.nav-link-custom');\r\n
+            const menuToggle = document.getElementById('portalMenuToggle');\r\n
+            const sidebar = document.querySelector('.portal-sidebar');\r\n
+            const overlay = document.getElementById('portalOverlay');\r\n
+\r\n
+            navLinks.forEach(link =&gt; {\r\n
+                link.addEventListener('mouseenter', function() {\r\n
+                    if (!this.classList.contains('active')) {\r\n
+                        this.style.transform = 'translateX(8px)';\r\n
+                    }\r\n
+                });\r\n
+\r\n
+                link.addEventListener('mouseleave', function() {\r\n
+                    if (!this.classList.contains('active')) {\r\n
+                        this.style.transform = 'translateX(0)';\r\n
+                    }\r\n
+                });\r\n
+\r\n
+                link.addEventListener('click', function() {\r\n
+                    if (sidebar &amp;&amp; sidebar.classList.contains('show')) {\r\n
+                        sidebar.classList.remove('show');\r\n
+                        overlay.classList.remove('show');\r\n
+                    }\r\n
+                });\r\n
+            });\r\n
+\r\n
+            if (menuToggle) {\r\n
+                menuToggle.addEventListener('click', function() {\r\n
+                    sidebar.classList.toggle('show');\r\n
+                    overlay.classList.toggle('show');\r\n
+                });\r\n
+            }\r\n
+\r\n
+            if (overlay) {\r\n
+                overlay.addEventListener('click', function() {\r\n
+                    sidebar.classList.remove('show');\r\n
+                    overlay.classList.remove('show');\r\n
+                });\r\n
+                const sidebarClose = document.getElementById('portalSidebarClose');\r\n
+                if (sidebarClose) {\r\n
+                    sidebarClose.addEventListener('click', function() {\r\n
+                        sidebar.classList.remove('show');\r\n
+                        overlay.classList.remove('show');\r\n
+                    });\r\n
+                }\r\n
+            }\r\n
+\r\n
+            const portalNotificationToggle = document.getElementById('portalNotificationToggle');\r\n
+            const portalNotificationDropdown = document.getElementById('portalNotificationDropdown');\r\n
+            const portalMessageToggle = document.getElementById('portalMessageToggle');\r\n
+            const portalMessageDropdown = document.getElementById('portalMessageDropdown');\r\n
+\r\n
+            if (portalNotificationToggle &amp;&amp; portalNotificationDropdown) {\r\n
+                portalNotificationToggle.addEventListener('click', function(event) {\r\n
+                    event.stopPropagation();\r\n
+                    portalNotificationDropdown.classList.toggle('show');\r\n
+                    if (portalMessageDropdown) portalMessageDropdown.classList.remove('show');\r\n
+                });\r\n
+\r\n
+                document.addEventListener('click', function(event) {\r\n
+                    if (!portalNotificationDropdown.contains(event.target) &amp;&amp; !portalNotificationToggle.contains(event.target)) {\r\n
+                        portalNotificationDropdown.classList.remove('show');\r\n
+                    }\r\n
+                });\r\n
+            }\r\n
+\r\n
+            if (portalMessageToggle &amp;&amp; portalMessageDropdown) {\r\n
+                portalMessageToggle.addEventListener('click', function(event) {\r\n
+                    event.stopPropagation();\r\n
+                    portalMessageDropdown.classList.toggle('show');\r\n
+                    if (portalNotificationDropdown) portalNotificationDropdown.classList.remove('show');\r\n
+                });\r\n
+\r\n
+                document.addEventListener('click', function(event) {\r\n
+                    if (!portalMessageDropdown.contains(event.target) &amp;&amp; !portalMessageToggle.contains(event.target)) {\r\n
+                        portalMessageDropdown.classList.remove('show');\r\n
+                    }\r\n
+                });\r\n
+            }\r\n
+        });\r\n
+    &lt;/script&gt;\r\n
+&lt;/body&gt;\r\n
+&lt;/html&gt;' [UTF-8](length: 42921) contains "border-rose-400" [ASCII](length: 15).
+&#13;
+C:\Users\User\ahhc-portal\vendor\laravel\framework\src\Illuminate\Testing\TestResponseAssert.php:45
+C:\Users\User\ahhc-portal\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:710
+C:\Users\User\ahhc-portal\tests\Feature\ParticipantPortalTest.php:90</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

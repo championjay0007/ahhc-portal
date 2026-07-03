@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\PortalNotification;
+use App\Models\PushSubscription;
+use App\Models\User;
+use App\Models\UserNotificationPreference;
+use Illuminate\Support\Facades\Mail;
+use Minishlink\WebPush\Subscription as WebPushSubscription;
+use Minishlink\WebPush\WebPush;
+
+class NotificationService
+{
+    public static function notify(array $attrs): PortalNotification
+    {
+        $attrs['title'] = $attrs['title'] ?? $attrs['data']['title'] ?? null;
+        $attrs['message'] = $attrs['message'] ?? $attrs['data']['message'] ?? null;
+        $attrs['channel'] = $attrs['channel'] ?? 'in_app';
+        $attrs['type'] = $attrs['type'] ?? 'info';
+
+        $notification = PortalNotification::create($attrs);
+
+        if (! empty($attrs['user_id'])) {
+            $user = User::find($attrs['user_id']);
+            $preference = UserNotificationPreference::firstOrCreate(
+                ['user_id' => $attrs['user_id']],
+                ['channel_email' => true, 'channel_in_app' => true, 'channel_push' => true, 'channel_sms' => false]
+            );
+
+            if ($preference->channel_email && $user && $user->email && ($notification->title || $notification->message)) {
+                $body = trim($notification->message ?: $notification->title ?: 'You have a new notification.');
+
+                if (! empty($attrs['data']['url'])) {
+                    $body .= "\n\n".$attrs['data']['url'];
+                }
+
+                try {
+                    Mail::raw($body, function ($message) use ($user, $notification) {
+                        $message->to($user->email)
+                            ->subject($notification->title ?? config('app.name').' Notification');
+                    });
+                } catch (\Exception $e) {
+                    // ignore mail failures for now
+                }
+            }
+
+            if ($preference->channel_push && $user) {
+                self::sendPushNotification($user->id, $notification);
+            }
+        }
+
+        return $notification;
+    }
+
+    private static function sendPushNotification(int $userId, PortalNotification $notification): void
+    {
+        $publicKey = is_callable(config('push.vapid.public_key')) ? call_user_func(config('push.vapid.public_key')) : config('push.vapid.public_key');
+        $privateKey = is_callable(config('push.vapid.private_key')) ? call_user_func(config('push.vapid.private_key')) : config('push.vapid.private_key');
+
+        if (empty($publicKey) || empty($privateKey)) {
+            return;
+        }
+
+        $subscriptions = PushSubscription::where('user_id', $userId)->get();
+        if ($subscriptions->isEmpty()) {
+            return;
+        }
+
+        $subject = is_callable(config('push.vapid.subject')) ? call_user_func(config('push.vapid.subject')) : config('push.vapid.subject');
+        $webPush = new WebPush([
+            'VAPID' => [
+                'subject' => $subject,
+                'publicKey' => $publicKey,
+                'privateKey' => $privateKey,
+            ],
+        ]);
+
+        $payload = json_encode([
+            'title' => $notification->title ?? config('app.name'),
+            'body' => $notification->message ?? '',
+            'icon' => asset('icons/icon-192.png'),
+            'badge' => asset('icons/icon-192.png'),
+            'data' => [
+                'url' => $notification->data['url'] ?? route('portal.notifications'),
+            ],
+        ]);
+
+        foreach ($subscriptions as $subscription) {
+            try {
+                $webPush->queueNotification(
+                    WebPushSubscription::create([
+                        'endpoint' => $subscription->endpoint,
+                        'publicKey' => $subscription->public_key,
+                        'authToken' => $subscription->auth_token,
+                        'contentEncoding' => $subscription->content_encoding,
+                    ]),
+                    $payload
+                );
+            } catch (\Throwable $e) {
+                // ignore invalid subscriptions but do not stop other deliveries
+            }
+        }
+
+        foreach ($webPush->flush() as $report) {
+            if (! $report->isSuccess()) {
+                // optionally log failed push subscriptions
+            }
+        }
+    }
+
+    public static function forUser($userId)
+    {
+        return PortalNotification::where('user_id', $userId)->orderBy('created_at', 'desc')->get();
+    }
+}

@@ -1,0 +1,610 @@
+================================================================================
+AHHC SELF-MANAGEMENT SUPPORT SYSTEM
+WORKER / SUPPLIER ONBOARDING WORKFLOW
+Document Control: Build Brief Reference Section 14
+Date: 14 May 2026
+Last Updated: 20 June 2026
+================================================================================
+
+OVERVIEW
+--------
+The worker/supplier onboarding workflow is a 6-stage process that ensures AHHC 
+maintains compliance oversight while allowing participants/support persons to 
+choose and arrange their own workers/suppliers. Workers must complete all stages 
+before gaining access to participant details and commencing service delivery.
+
+IMPORTANT: This is a self-management support system. AHHC does not roster or 
+assign shifts like a provider-managed service. Participants/support persons 
+choose and arrange workers/suppliers and proposed service times. AHHC approves, 
+links, monitors and maintains compliance oversight.
+
+================================================================================
+
+WORKER ONBOARDING FLOW: 6 STAGES
+================================
+
+STAGE 1: INVITE WORKER
+----------------------
+Description: Worker receives invitation to portal and creates account
+Portal Requirements:
+  - System generates unique invitation link for worker
+  - Worker receives email/SMS with login credentials
+  - Worker completes initial profile setup
+  - MFA/2FA enrollment required
+Key Requirements:
+  - Account creation controlled by AHHC (worker cannot self-create full access)
+  - Invitation issued after participant nominates or AHHC sources worker
+  - Worker cannot access any participant or service details until Stage 6
+
+
+STAGE 2: UPLOAD COMPLIANCE DOCUMENTS
+-------------------------------------
+Description: Worker uploads required compliance documentation
+Compliance Documents Required:
+  - ABN (Australian Business Number) - for third-party suppliers/contractors
+  - Police check / Worker screening certificate
+  - Insurance documentation (public liability where applicable)
+  - Qualification / Registration (relevant to service type)
+  - Training evidence (relevant certifications, specializations)
+  - First aid / CPR certification (where relevant to service)
+  - Marketplace agreement (if sourced via Mable or similar platform)
+  - Any other provider-specific requirements
+
+Document Requirements:
+  - PDF, Word, Excel, JPEG, PNG or other approved file types
+  - Maximum 10MB per file
+  - Accepted formats clearly displayed in system
+  - Secure upload with malware scanning
+
+Portal Features:
+  - File upload interface with progress tracking
+  - Clear guidance on each document type required
+  - Help text explaining purpose of each document
+  - Ability to re-upload/update documents
+
+
+STAGE 3: REVIEW DOCUMENTS
+-------------------------
+Description: AHHC admin reviews compliance documents for completeness and validity
+Review Process:
+  - AHHC admin/quality staff review uploaded documents
+  - Verify document authenticity and validity (expiry dates, certification status)
+  - Confirm all required documents present
+  - May request additional information or clarification
+  - Check against compliance requirements for worker type
+
+System Features:
+  - Document status tracking (Received, Under Review, Approved, Rejected, Action Required)
+  - Internal notes/comments for AHHC team
+  - Ability to request document resubmission
+  - Automated expiry tracking and alerts
+  - Audit trail of all reviews and decisions
+
+Action Options for AHHC:
+  - Approve all documents → proceed to Stage 4
+  - Request additional documents → worker uploads, AHHC reviews again
+  - Reject compliance → worker cannot proceed, contact required
+
+
+STAGE 4: SIGN DECLARATIONS
+---------------------------
+Description: Worker signs required declarations before service commencement
+Declarations Required (e-Signature):
+  - Privacy declaration / Privacy policy acknowledgement
+  - Incident and complaint reporting obligation
+  - Care note requirement (must submit notes after each shift)
+  - Prohibition on commencement before approval acknowledgement
+  - Worker code of conduct / behavior standards
+  - Third-party worker agreement (if applicable)
+  - Confidentiality and data protection agreement
+
+System Features:
+  - Forms assigned digitally to worker
+  - Electronic signature capture (date/time stamped)
+  - Audit trail of signatures (signer name, role, date/time, document version)
+  - Signed PDF copy stored and available to both parties
+  - Reminder notifications if forms not signed within timeframe
+  - Re-assignment capability if initial signature not completed
+
+Portal Workflow:
+  - Forms appear in worker's "Forms to Sign" menu
+  - Worker reviews each declaration
+  - Worker electronically signs each form
+  - System generates signed PDF for worker download/record
+  - AHHC can view completion status and signed documents
+
+
+STAGE 5: APPROVE SERVICES
+-------------------------
+Description: AHHC approves the types of services/support worker can provide
+Service Approval:
+  - AHHC admin defines approved service categories for worker
+  - Service types aligned to worker's qualifications/experience
+  - Examples: Personal care, domestic assistance, community access, 
+             shopping, meal preparation, transport, specialized support
+  - Restrictions noted if worker only approved for certain participant needs
+
+System Features:
+  - Service type checkboxes in worker profile
+  - Links to service categories defined in system settings
+  - Notes field for conditions or restrictions
+  - Update capability if skills/certifications change
+  - Audit trail of service approvals and changes
+
+Approval Conditions:
+  - Can be conditional on additional training/certification
+  - Can be time-limited (subject to annual review)
+  - Can be restricted by geographic area or participant group
+  - Worker cannot provide unapproved service types
+
+
+STAGE 6: ASSIGN PARTICIPANT
+---------------------------
+Description: AHHC assigns worker to specific participant(s)
+Assignment Process:
+  - AHHC creates assignment linking worker to participant
+  - Only after all previous stages complete
+  - Can be multiple participant assignments for one worker
+  - Assignment generates access permissions
+
+Access Granted Upon Assignment:
+  - Worker can view ONLY assigned participant(s)
+  - AHHC defines participant access scope:
+    * Participant name / preferred name
+    * Address for service location
+    * Shift/service instructions and schedule
+    * Risks relevant to safe service delivery
+    * Emergency / escalation contact details
+    
+Access DENIED to:
+  - Participant's full funding/budget details
+  - Unrelated clinical/health documents
+  - Management-only records
+  - Other participants' information (unless specifically assigned)
+  - Financial information
+  - Family/personal information not relevant to service
+
+Worker Access Rule (CRITICAL):
+"Workers and suppliers must ONLY see the participants' name, address and 
+mobile number and shifts that they are assigned to. They must NOT see the 
+participants' full funding details, unrelated clinical documents or 
+management-only records."
+
+Assignment Features:
+  - Dashboard shows assigned participants
+  - Shift calendar visible for each participant
+  - Service instructions/care plan accessible
+  - Ability to submit care notes after shifts
+  - Incident report submission for assigned participants
+  - Compliance expiry tracking
+
+
+================================================================================
+
+KEY REQUIREMENTS BY REQUIREMENT TYPE
+====================================
+
+WORKER SOURCE TYPE
+------------------
+System must record source of worker for compliance/oversight purposes:
+  - AHHC-sourced (direct hire, referred, agency)
+  - Participant-nominated (direct arrangement)
+  - Marketplace (Mable, Care Australia, or similar platform)
+  - Other provider arrangement
+Source affects:
+  - Documentation requirements
+  - Approval process
+  - Insurance and liability considerations
+  - Ongoing compliance obligations
+
+
+COMPLIANCE DOCUMENTS
+--------------------
+Document Type: ABN
+  - Required for: Third-party suppliers/contractors
+  - Format: PDF, image
+  - Expiry: No expiry (but verify current business registration)
+  
+Document Type: Police Check / Worker Screening
+  - Required for: All workers
+  - Format: PDF certificate, official document
+  - Expiry: Typically 12 months (jurisdiction dependent)
+  - Must be: Current and valid
+  
+Document Type: Insurance
+  - Required for: Third-party suppliers, contractors
+  - Format: Certificate of currency, policy document
+  - Expiry: Annual renewal required
+  - Coverage: Public liability minimum
+  
+Document Type: Qualifications / Registration
+  - Required for: Service-dependent (nursing, allied health, etc.)
+  - Format: Certificate, registration confirmation
+  - Expiry: Varies by profession (annual, 3-yearly)
+  - Examples: RN registration, allied health registration, aged care qualification
+  
+Document Type: Training Evidence
+  - Required for: Disability support, specialized care
+  - Format: Certificate, record of completion
+  - Expiry: Typically 3 years
+  - Examples: First aid, dementia care, manual handling, mental health first aid
+  
+Document Type: First Aid / CPR
+  - Required for: Personal care, direct support roles
+  - Format: Official training certificate
+  - Expiry: Typically 12 months
+  
+Document Type: Marketplace Agreement
+  - Required for: Workers sourced via Mable or similar
+  - Format: Signed agreement, booking terms
+  - Expiry: As per marketplace terms
+  - Purpose: Evidence of arrangement terms, insurance coverage
+
+
+DOCUMENT EXPIRY TRACKING
+------------------------
+System Features:
+  - Automatic tracking of expiry dates
+  - Alert notifications 30 days before expiry (to AHHC and worker)
+  - Non-compliance status when documents expire
+  - Automated restriction of service access if documents lapsed
+  - Re-submission capability for renewal
+  - Renewal reminders sent to worker
+
+Non-Compliance Alerts:
+  - AHHC dashboard shows expiring/expired compliance
+  - Worker notified of expiry date
+  - Can be condition for continued service provision
+  - Historical record of all compliance statuses
+
+
+DECLARATIONS & AGREEMENTS
+--------------------------
+Declaration 1: Privacy & Confidentiality
+  - Worker acknowledges privacy obligations
+  - Understands data protection requirements
+  - Commits to protecting participant information
+  - Agrees to follow privacy policy
+  
+Declaration 2: Incident & Complaint Reporting
+  - Worker obligated to report incidents immediately
+  - Understands complaint resolution process
+  - Agrees to cooperate with investigations
+  - Must not discourage or obstruct reporting
+  
+Declaration 3: Care Note Requirement
+  - After EACH shift: Worker must submit care note
+  - Note includes: Tasks done, participant status, any concerns
+  - Acknowledgement that notes are required for service record
+  - Understanding that late/missing notes affect payment/approval
+  
+Declaration 4: No Commencement Before Approval
+  - Worker confirms understanding of onboarding process
+  - Acknowledges cannot start work until all stages complete
+  - Agrees to full AHHC approval requirement
+  - Confirms awareness of prohibition on premature commencement
+  
+Declaration 5: Code of Conduct
+  - Professional behavior expectations
+  - Respect for participant autonomy and choice
+  - Adherence to service times and arrangements
+  - Prohibition on financial exploitation or inappropriate relationships
+  
+Declaration 6: Third-Party Worker Agreement
+  - If applicable: Specific terms for marketplace or agency workers
+  - Insurance responsibilities
+  - Liability acknowledgements
+  - Complaint/dispute resolution process
+
+
+ASSIGNMENT CONTROL
+------------------
+Critical Security Feature:
+  - Worker receives NO access until AHHC officially assigns participant
+  - Participant cannot grant access (only AHHC can)
+  - Access limited to assigned participant(s) only
+  - Multiple assignments possible but each must be explicit
+
+Access Granted:
+  - Dashboard shows assigned participant cards
+  - Service instructions/schedule visible
+  - Shift calendar appears
+  - Care note submission enabled
+  - Incident forms available
+
+Access Revoked:
+  - Immediate upon deactivation/termination
+  - No grace period for continued access
+  - Participant records become inaccessible
+  - Historical records remain in audit log
+
+
+ACCESS REMOVAL
+--------------
+Immediate Deactivation Triggers:
+  - Compliance documents expired (critical gaps)
+  - Misconduct / breach of declarations
+  - Participant requests removal
+  - AHHC quality/safety decision
+  - Criminal record / concerning background
+  - Non-compliance with reporting obligations
+
+Process:
+  1. AHHC admin marks worker as Inactive
+  2. System removes access immediately
+  3. Participant notified of removal
+  4. All participant records inaccessible to worker
+  5. Final payment processed (if applicable)
+  6. Audit trail records reason for termination
+
+
+================================================================================
+
+WORKER DASHBOARD FEATURES
+=========================
+(After completion of all 6 onboarding stages)
+
+Top Bar Menu:
+  - Worker name / identification
+  - Number of assigned shifts
+  - Care notes due count
+  - Compliance status indicator
+  - Logout button
+
+Dashboard Cards:
+  - Today's shifts (upcoming)
+  - Notes not submitted (overdue)
+  - Incidents to follow up (pending actions)
+  - Expiring compliance documents (alerts)
+
+Navigation Menu:
+  1. My Dashboard - Snapshot of assigned shifts, notes due, compliance status
+  2. Assigned Participants - View only assigned participants, limited info only
+  3. My Shifts - Scheduled/approved shifts, service type, start/end time, location
+  4. Submit Care Note - Document service delivery against assigned participant/shift
+  5. Incident/Risk Forms - Report incident, near miss, fall, hazard, injury, complaint
+  6. Upload Documents - Upload updated compliance files, training, certifications
+  7. Forms to Sign - Sign declarations, agreements, acknowledgements
+  8. My Profile - Contact details, ABN, service types, compliance expiry dates, preferences
+
+Assigned Participant Detail (Limited Information):
+  - Participant name / preferred name only
+  - Service address for meeting/delivery location
+  - Shift/service instructions and schedule
+  - Risks relevant to SAFE SERVICE DELIVERY ONLY
+    (e.g., mobility risks, communication needs, allergies)
+  - Emergency/escalation contact only
+
+NOT VISIBLE TO WORKER:
+  - Budget/funding details
+  - Medical history
+  - Financial information
+  - Family circumstances (unless relevant to service)
+  - Support person details (unless relevant to service)
+  - Other participants' information
+  - AHHC internal notes/assessments
+
+
+CARE NOTE SUBMISSION
+--------------------
+Requirement: After EVERY assigned shift
+Not Optional: Missing/late notes affects payment and service approval
+
+Care Note Fields:
+  1. Participant / Shift Link
+     - Auto-filled from assigned shift
+     - Worker cannot select unrelated participant
+     
+  2. Service Date/Time
+     - Start and finish time (actual, not estimated)
+     - Total hours worked
+     - Service category (e.g., personal care, domestic, community access)
+     
+  3. Tasks Completed
+     - Tick list aligned to care plan/service instructions
+     - Free text description of work done
+     - Evidence of service delivery
+     
+  4. Participant Presentation
+     - General wellbeing observation
+     - Changes noticed compared to previous shift
+     - Concerns or positive progress noted
+     
+  5. Risks / Incidents
+     - Prompt: Was there an incident, concern, fall, missed service, or escalation?
+     - Description if yes
+     - Action taken at time
+     - Notification made to participant/AHHC
+     
+  6. Evidence / Attachment (Optional)
+     - Photo/receipt/timesheet where appropriate and consented
+     - Proof of service delivery if applicable
+     - File upload (PDF, image format)
+     
+  7. Worker Declaration
+     - "I confirm this note is accurate and the service was delivered as described"
+     - Digital signature / confirmation
+     - Date/time stamp
+
+System Features:
+  - Care note due notifications (24 hrs after shift)
+  - Overdue alerts to worker and AHHC
+  - Searchable/filterable by participant, date, status
+  - AHHC can view all notes for quality assurance
+  - Notes linked to participant record for continuity of care
+
+
+INCIDENT & RISK FORM SUBMISSION
+--------------------------------
+Forms Available to Workers:
+  - Incident Report (injury, accident, property damage)
+  - Fall Report (falls specifically - assessment required)
+  - Near Miss Report (hazard avoided, risk identified)
+  - Hazard/Risk Report (environmental or systemic hazard)
+  - Complaint/Feedback (from participant, family, or worker concern)
+  - Change in Condition (participant health/behavioral change)
+
+Incident Report Fields:
+  - Incident type (injury, accident, property damage, etc.)
+  - Participant involved
+  - Date / time of incident
+  - Location
+  - Detailed description of what happened
+  - Immediate action taken
+  - Any injury sustained (severity)
+  - Witnesses present
+  - Escalation action (notification to family, emergency services, etc.)
+
+System Alert Rule:
+  - Incident and serious concern submissions must trigger IMMEDIATE notification 
+    to authorized AHHC staff
+  - Access to incident records must be restricted by role
+  - Quality/safety staff notified automatically
+  - Urgent incidents escalated for same-day review
+
+Worker Submission Process:
+  - Access Incident Form from dashboard
+  - Complete all required fields
+  - Attach supporting evidence if available
+  - Submit with digital signature
+  - System generates record with timestamp
+  - AHHC receives immediate notification
+
+
+COMPLIANCE EXPIRY TRACKING
+---------------------------
+System Features:
+  - Automated calendar tracking all expiry dates
+  - Alert notification 30 days BEFORE expiry
+  - Dashboard display of upcoming expirations
+  - Non-compliance status when document expires
+  - Restriction of service access if critical documents lapsed
+
+Alert Process:
+  1. 30 days before expiry: Worker and AHHC notified
+  2. On expiry date: Compliance status changes to "Expired"
+  3. Service access: May be restricted depending on document type
+  4. Worker prompted: Re-submission of renewed document
+  5. AHHC reviews: New document processed
+  6. Status updated: Once current document confirmed
+
+Compliance Status Indicators:
+  - Current / Valid (green)
+  - Expiring Soon - Action Required (amber) 
+  - Expired (red)
+  - Not Provided (grey)
+
+Dashboard Alerts:
+  - Expiring documents shown in card on My Dashboard
+  - Urgent alerts if critical compliance missing
+  - Links to upload renewal documents
+
+
+================================================================================
+
+SYSTEM INTEGRATION POINTS
+=========================
+
+Integration with Participant Dashboard:
+  - Participants can view assigned workers
+  - Worker compliance status visible to participant
+  - Ability to provide feedback on worker performance
+  - Notification when worker onboarding complete
+
+Integration with Admin Dashboard:
+  - Compliance expiry alerts for all workers
+  - Non-compliance workers highlighted
+  - Workers/Suppliers menu for admin oversight
+  - Bulk export of worker compliance report
+  - Service approval/restriction controls
+
+Integration with Care Notes:
+  - Worker submitted care notes linked to participant record
+  - Care notes searchable by worker, date, participant
+  - Notes contribute to service delivery evidence
+  - AHHC can review quality of notes
+
+Integration with Incident Management:
+  - Worker-submitted incidents appear in AHHC quality dashboard
+  - Incident trends by worker tracked
+  - Serious incidents escalated to management
+  - Worker accountability through audit trail
+
+
+================================================================================
+
+FUTURE MODIFICATION NOTES
+=========================
+
+Areas for Consideration:
+
+1. Worker Skills/Qualifications Tracking
+   - Create specialization categories (dementia care, mental health, mobility support)
+   - Track evidence of specialized training
+   - Match workers to participant needs
+   - Ongoing training/development records
+
+2. Worker Performance Reviews
+   - Regular assessment mechanism
+   - Participant feedback on worker quality
+   - AHHC quality audits of care notes
+   - Performance-based continued approval
+
+3. Worker Payment Integration
+   - Link care notes to payment processing
+   - Timesheet validation
+   - Invoice reconciliation
+   - Payment status visibility
+
+4. Background Check Automation
+   - Integrate with third-party background check services
+   - Automated updates to compliance status
+   - Electronic document capture from verification services
+
+5. Training & Development Pathway
+   - Mandatory AHHC orientation for all workers
+   - Ongoing professional development requirements
+   - Specialized training courses/certifications
+   - Competency validation
+
+6. Worker Feedback Loop
+   - Worker survey on system usability
+   - Feedback on administrative burden
+   - Suggestions for process improvement
+   - Training support needs
+
+7. Mobile App Integration
+   - Mobile-friendly care note submission
+   - Offline mode for areas with poor connectivity
+   - Push notifications for alerts/reminders
+   - Simplified document upload
+
+8. Analytics & Reporting
+   - Onboarding completion rates and timelines
+   - Compliance status trends
+   - Common audit issues/gaps
+  - Worker retention metrics
+  - Quality metrics based on care notes
+
+9. Internationalization
+   - Support for multiple languages
+   - Regional compliance variations
+   - Different document requirements by location/state
+
+10. Integration with Marketplace Platforms
+    - Mable booking integration
+    - Automatic worker data sync
+    - Payment processing integration
+    - Review/rating system integration
+
+================================================================================
+
+END OF DOCUMENT
+================================================================================
+
+For questions or updates to this document, contact AHHC System Administrator.
+Last reviewed: 20 June 2026
+Next review date: [TO BE DETERMINED]
+Document status: ACTIVE - Reference guide for worker onboarding implementation
+
+================================================================================

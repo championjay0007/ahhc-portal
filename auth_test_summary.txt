@@ -1,0 +1,21 @@
+C:\Users\User\ahhc-portal\auth_test_output.txt:10:There were 2 failures:
+C:\Users\User\ahhc-portal\auth_test_output.txt:13:Failed asserting that '<!DOCTYPE html>\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:1416:                    <!-- Error Alert -->\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:3218:                        registration.unregister().catch(function(error) {\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:3219:                            console.log('Failed to unregister service worker:', error);\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:3323:    } catch (error) {\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:3324:        console.error('Failed to initialize push subscription:', error);\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:3440:                    }).catch(function(error) {\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:3441:                        console.error('PWA service worker registration failed:', error);\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:4870:        .toast-custom.error {\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:4890:Failed asserting that '<!DOCTYPE html>\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:6315:                    <!-- Error Alert -->\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:8475:                        registration.unregister().catch(function(error) {\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:8476:                            console.log('Failed to unregister service worker:', error);\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:8580:    } catch (error) {\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:8581:        console.error('Failed to initialize push subscription:', error);\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:8697:                    }).catch(function(error) {\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:8698:                        console.error('PWA service worker registration failed:', error);\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:10127:        .toast-custom.error {\r\n
+C:\Users\User\ahhc-portal\auth_test_output.txt:10146:FAILURES!
+C:\Users\User\ahhc-portal\auth_test_output.txt:10147:Tests: 16, Assertions: 49, Failures: 2.

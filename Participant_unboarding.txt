@@ -1,0 +1,113 @@
+================================================================================
+ALLEGIANCE HEART & HOME CARE (AHHC)
+PARTICIPANT ONBOARDING PROCESS & WORKFLOW
+Confidential Build Brief Extract
+================================================================================
+
+OVERVIEW
+--------
+The AHHC Self-Management Support portal operates on a strict access control 
+principle. Users cannot self-create full portal accounts. All onboarding must 
+go through an AHHC suitability review and approval process before a secure 
+portal invitation is issued. 
+
+This document outlines the mandatory 6-step onboarding workflow for new 
+participants and their nominated support persons.
+
+================================================================================
+CLIENT ONBOARDING WORKFLOW (6 STEPS)
+================================================================================
+
+STEP 1: ENQUIRY / APPLICATION
+-----------------------------
+- Trigger: A prospective participant or their representative visits the public 
+  AHHC website (allegiancehearthomecare.com.au/self-management-support).
+- Action: The user completes the public Contact/Enquiry Form (capturing name, 
+  email, phone, role, and Support at Home status).
+- System Behavior: The form submission is routed to AHHC admin. 
+- Security Note: No full portal access is created at this stage. It simply 
+  generates an enquiry for AHHC review.
+
+STEP 2: SUITABILITY ASSESSMENT
+------------------------------
+- Trigger: AHHC receives the initial enquiry.
+- Action: AHHC conducts a suitability assessment to determine if the 
+  participant is appropriate for the self-management support model.
+- System Behavior: AHHC staff can either upload a completed suitability 
+  assessment document to the system or assign an assessment form to the 
+  prospective participant for completion.
+
+STEP 3: PARTICIPANT PROFILE SETUP
+---------------------------------
+- Trigger: Suitability assessment is approved.
+- Action: AHHC Admin/Care Manager creates the foundational participant record 
+  in the secure portal.
+- Data Captured: 
+  * Support plan and Care plan
+  * Quarterly budget and quarter dates
+  * Emergency contacts and communication preferences
+  * Support person authority levels (if applicable)
+  * Identified risks
+
+STEP 4: DOCUMENT UPLOAD
+-----------------------
+- Trigger: Profile is created.
+- Action: Required documentation is gathered and securely uploaded to the 
+  participant's file.
+- Documents Required:
+  * Referral / Support plan
+  * Authority documents (e.g., proof of representation)
+  * Service agreements
+  * Participant handbook acknowledgement
+  * Other relevant clinical or administrative records
+- Security Note: All uploads are subject to file type controls, size limits, 
+  and malware scanning.
+
+STEP 5: ELECTRONIC SIGNING (E-SIGN)
+-----------------------------------
+- Trigger: Documents are uploaded and ready for execution.
+- Action: AHHC assigns mandatory legal and consent forms to the participant 
+  and/or support person via the portal's e-Signature module.
+- Forms Required:
+  * Self-Management Agreement
+  * Consent and Privacy documents
+  * Roles and Responsibilities acknowledgements
+- System Behavior: The system tracks pending signatures and stores the final 
+  signed PDF copies with a full audit trail (signer name, role, date/time).
+
+STEP 6: DASHBOARD ACTIVATION & INVITATION
+-----------------------------------------
+- Trigger: All documents are signed, and AHHC grants final approval.
+- Action: The system generates a secure portal invitation.
+- System Behavior: 
+  * The participant/support person receives a secure login invitation link 
+    via email/SMS.
+  * The user sets up their password and configures Multi-Factor 
+    Authentication (MFA/2FA).
+  * The user is granted role-based access to the Participant Dashboard.
+
+================================================================================
+POST-ONBOARDING: PARTICIPANT DASHBOARD CAPABILITIES
+================================================================================
+Once onboarded and activated, the participant/support person can securely log 
+in to the mobile-responsive PWA/Web Portal to:
+
+1. View Live Budget: Track quarterly budget, committed funds, approved/paid 
+   spend, and remaining balance.
+2. Manage Workers/Suppliers: Nominate and onboard their own chosen support 
+   workers or third-party suppliers (subject to AHHC compliance approval).
+3. Submit Pre-Approvals: Request new services, attach quotes, and select 
+   service categories.
+4. Submit Invoices: Upload receipts/invoices and link them to pre-approvals 
+   or care notes.
+5. Manage Documents: Upload and view care plans, agreements, and receipts.
+6. Sign Forms: Complete any ongoing digital forms required by AHHC.
+7. Report Incidents/Feedback: Submit complaints, feedback, or incident reports.
+8. Secure Messaging: Communicate securely with the AHHC care team.
+
+================================================================================
+DOCUMENT CONTROL
+Project: Self-Management Support System
+Business: Allegiance Heart & Home Care Pty Ltd
+Preferred Go-Live: On or before 1 July 2026
+================================================================================

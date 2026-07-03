@@ -1,0 +1,72 @@
+﻿AHHC Portal Participant User Manual
+
+This manual explains how participants navigate the AHHC Portal to manage account tasks, support requests, and portal communications.
+
+1. PARTICIPANT PORTAL OVERVIEW
+
+Participants use the portal to manage personal account details and communicate with support staff.
+
+Primary sections:
+- Dashboard: The main landing page after login. Displays account summary and links to important actions.
+- Support: Submit support tickets and track responses.
+- Messages: View message conversations if direct messaging is available.
+- Profile: Update personal information and contact details.
+
+2. NAVIGATING THE PARTICIPANT PORTAL
+
+Dashboard:
+- Begin on the participant dashboard after logging in.
+- Use the dashboard links to access support and messages quickly.
+- The dashboard generally contains:
+  - A summary of your open support tickets and their current status.
+  - Recent messages or notifications from the admin team.
+  - Current budget authorizations and approved care plan amounts if available.
+  - Pending preapproval requests and the status of any outstanding authorizations.
+  - Quick actions for creating a new ticket or viewing your ticket history.
+  - Important upcoming reminders or announcements from the portal.
+- From the dashboard, you can usually click a card to go directly to the relevant support ticket, request, or authorization detail.
+
+Support section:
+- Open Support or Tickets from the participant navigation.
+- Create a new ticket by entering the subject, category, priority, and description.
+- Review your existing tickets and any admin responses.
+- Add follow-up messages when needed.
+
+Messages section:
+- If the portal offers private messaging, visit Messages to review the conversation list.
+- Click a message thread to read and respond.
+
+Profile section:
+- Update personal contact details and account information.
+- Verify email address and phone number if required.
+
+3. PARTICIPANT SUPPORT WORKFLOW
+
+Submitting support requests:
+- Use the support page to open a new ticket.
+- Choose the correct category and describe the issue clearly.
+- Submit the ticket and wait for an admin response.
+
+Reviewing support replies:
+- Check ticket status and message history.
+- Respond to follow-up questions or clarifications from admins.
+- Close resolved tickets if the portal supports that action.
+
+Budget and preapproval requests:
+- Review your budget or care plan authorizations if these are displayed in your account.
+- Submit preapproval requests for services, equipment, or care changes when required.
+- Attach any supporting documents and include clear justification for the request.
+- Check the status of preapproval requests from the dashboard or support ticket details.
+
+4. COMMON PARTICIPANT ACTIONS
+
+- Reset a password if you cannot log in (use the portal’s password reset flow).
+- Use the Contact or support widget on the public site for general questions if not logged in.
+- Protect your account by logging out after use.
+
+5. BEST PRACTICES
+
+- Keep your profile information up to date.
+- Use clear, concise language in support tickets.
+- Reference ticket numbers when asking for follow-up.
+- Monitor your inbox and notifications for admin replies.

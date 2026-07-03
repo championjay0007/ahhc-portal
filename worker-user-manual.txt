@@ -1,0 +1,105 @@
+﻿AHHC Portal Worker User Manual and Onboarding Guide
+
+This manual explains how workers navigate the AHHC Portal, manage assignments, and complete onboarding steps.
+
+1. WORKER PORTAL OVERVIEW
+
+Workers use the portal to manage assigned participants, shifts, care notes, incidents, and documents.
+
+Primary sections:
+- Dashboard: Worker homepage with assignments, tasks, and status.
+- Assigned Participants: Review participants assigned to the worker and access participant details.
+- Shifts: Confirm, start, and complete shifts.
+- Care Notes: Create care notes and record visit details.
+- Incidents: Report incidents and follow up on issues.
+- Documents: Upload and download forms and participant records.
+- Invoices and Forms: Access invoicing items and documents for review or signature.
+
+2. NAVIGATING THE WORKER PORTAL
+
+Dashboard:
+- The worker dashboard opens after login.
+- Review assigned tasks and quick links to active participants and shifts.
+- The dashboard typically includes:
+  - An overview of today’s shifts and whether they are confirmed, in progress, or completed.
+  - A list of assigned participants and any new care notes or incident tasks for them.
+  - Alerts for urgent items such as unreported incidents, overdue notes, or new assignment changes.
+  - Budget and authorization summaries for assigned participants, if the portal supports these financial details.
+  - Pending preapproval requests for supplies, equipment, or care updates that affect your assignments.
+  - Quick links to start or complete shifts, add care notes, and access participant details.
+- Use the dashboard for a fast summary of your daily responsibilities and to prioritize work.
+
+Assigned Participants:
+- Click Assigned Participants to see the list of people you care for.
+- Open a participant record for details, history, and notes.
+
+Shifts:
+- Open Shifts to view your schedule.
+- Confirm an upcoming shift to accept it.
+- Start a shift when you arrive and complete it when your work is finished.
+- Use shift notes to record important handover information.
+
+Care Notes:
+- Use Care Notes to document observations and care activity.
+- Select the participant and create a new note with the required details.
+- Save the note to maintain a record of your visit.
+
+Incidents:
+- Report incidents promptly through the Incidents section.
+- Complete all required fields and include important context.
+- Follow any incident management guidance from your supervisor.
+
+Budget and Preapprovals:
+- Review the participant budget and authorization details if your role includes care plan or financial oversight.
+- Track preapproval requests for services, equipment, or care changes that require admin authorization.
+- Enter the correct service code, cost estimate, and justification when submitting a request.
+- Check whether preapproval requests are pending, approved, or declined before proceeding with the related work.
+
+Documents and Forms:
+- Upload documents when required by your agency.
+- Download forms to review details or upload completed paperwork.
+- Sign forms if the portal supports worker signatures.
+
+3. WORKER ONBOARDING MANUAL
+
+Overview:
+This onboarding section helps new workers get started with the portal and access essential tools.
+
+Step 1: Receive login credentials
+- Your manager supplies your worker account details and temporary password.
+- Visit the worker login page and sign in using the provided credentials.
+
+Step 2: Set a secure password
+- After first login, reset your password if prompted.
+- Choose a strong password and keep it confidential.
+
+Step 3: Complete profile setup
+- Update your contact information and personal details.
+- Confirm your email and phone number if the portal requires verification.
+
+Step 4: Review your assignments
+- Open Assigned Participants to see your current roster.
+- Familiarize yourself with each participant’s profile and care needs.
+
+Step 5: Learn shift and incident workflows
+- Use the Shifts section to verify your schedule.
+- Practice confirming, starting, and completing shifts.
+- Review Incident reporting so you can submit accurate incident records.
+
+Step 6: Use support if needed
+- If you have portal questions, use the support ticket section or contact your admin.
+- Report technical issues promptly so admins can resolve them.
+
+4. COMMON WORKER ACTIONS
+
+- Confirm and start shifts as soon as you arrive.
+- Use care notes to log tasks, observations, and participant responses.
+- Report incidents immediately after they occur.
+- Keep participant documents organized and upload paperwork as required.
+
+5. BEST PRACTICES
+
+- Always lock your session when away from the computer.
+- Keep participant details and notes accurate.
+- Use the portal’s support tools for technical or account issues.
+- Review the worker dashboard regularly for new assignments or changes.

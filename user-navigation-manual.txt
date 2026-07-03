@@ -1,0 +1,97 @@
+AHHC Portal User Navigation Manual
+
+This manual explains how different users navigate the AHHC Portal website. It covers Admin, Participant, Worker, and Public users.
+
+1. ADMIN USERS
+
+Overview:
+Admins manage the portal, review support requests, configure settings, and monitor users. The admin portal is accessed through the secure admin login.
+
+Key areas:
+- Dashboard: The landing page after login. Shows high-level portal activity and quick links to major sections.
+- Users: Manage participant, worker, and admin accounts. Use this section to view, add, edit, and deactivate users.
+- Support: Access support tickets and live support conversations.
+  - Tickets: View and respond to support tickets submitted by participants or visitors.
+  - Conversations: View the live chat inbox and reply to website visitor chats.
+- Settings: Configure branding, email settings, push notification settings, and system options.
+  - Clear Cache: A button available in settings to flush application cache, route cache, config cache, and view cache.
+- Notifications: Review recent notifications and open relevant support conversations directly.
+
+Typical navigation flow:
+1. Login to the admin portal.
+2. Use the top bar or sidebar to access Dashboard, Users, Support, or Settings.
+3. Open Support > Conversations to see new live chat messages and unread chat count.
+4. Use Settings to update website text, colors, email settings, and clear cache when needed.
+
+2. PARTICIPANT USERS
+
+Overview:
+Participants are people who use the portal to manage their own account, support tickets, and portal tasks.
+
+Key areas:
+- Dashboard: The main participant area after login. Shows personal account status and links to tasks.
+- Support: Participants can submit support tickets and review ticket status.
+  - New Ticket: Create a new support request with subject, category, priority, and description.
+  - Ticket List: Review existing tickets, read responses, and add follow-up messages.
+- Messages: Access direct messages if the portal supports private messaging between participants and admin staff.
+- Profile: Update personal account details and view account settings.
+
+Typical navigation flow:
+1. Login to the participant portal.
+2. From the dashboard, choose the support or messages section.
+3. Submit a support ticket or view previous ticket history.
+4. Check notifications for replies or ticket updates.
+
+3. WORKER USERS
+
+Overview:
+Worker users manage assignments, shifts, care notes, and participant-related tasks. They operate in a worker-specific portal area.
+
+Key areas:
+- Dashboard: Worker homepage with assigned tasks and overview information.
+- Assigned Participants: View participants assigned to the worker and access participant details.
+- Shifts: Review and manage shift schedules. Confirm, start, and complete shifts.
+- Care Notes: Create care notes for participants and submit updates.
+- Incidents: Report and manage incidents.
+- Documents: Upload and download participant documents.
+- Invoices and Forms: Access invoice information and sign or download documents.
+
+Typical navigation flow:
+1. Login to the worker portal.
+2. Use the worker navigation menu to access assigned participants and shifts.
+3. Open a participant profile or shift to complete work and add notes.
+4. Use the forms or documents sections to handle paperwork and downloads.
+
+4. PUBLIC USERS
+
+Overview:
+Public users visit the website without logging in. They can explore information about AHHC services and contact support through the public support widget.
+
+Key areas:
+- Homepage: The first page visitors see. Includes website information, service details, and navigation to content sections.
+- Sections: Discover pages like Aged Care, Eligibility, How It Works, and Contact.
+- Portal Login: Opens the login page for existing participants, workers, or admins.
+- Support widget: A floating help button available on the public website.
+  - Open Chat: Click the headset icon to open the support card.
+  - Send Message: Enter name, email, and message to start a website support conversation.
+  - Live Updates: Continue the chat in the widget if a conversation already exists.
+
+Typical navigation flow:
+1. Visit the public website homepage.
+2. Browse service information and learn about AHHC offerings.
+3. If you need help, open the support widget using the floating headset button.
+4. Enter contact details and send a message.
+5. If the chat continues, use the widget to track replies and send follow-up messages.
+
+Notes:
+- Public users do not need to log in to use the support widget.
+- The support widget creates a secure public conversation link so the visitor can continue the chat.
+
+5. GENERAL NOTES
+
+- Navigation is designed to be role-specific: each user type sees the menu options relevant to their portal access level.
+- Admins have the broadest access and can manage users, support, and site configuration.
+- Participants and workers have dedicated portals for their tasks and support needs.
+- Public visitors can access informational pages and use the live support chat widget.
+
+This manual is intended to help users understand the main portal structure and find the key sections for their role.
