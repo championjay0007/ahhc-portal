@@ -6,16 +6,20 @@
     <title>{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Participant Portal' }} · Care Hub</title>
     <meta name="description" content="{{ $portalSettings['website_description'] ?? 'Participant portal for care, approvals, and documents.' }}">
     <link rel="icon" href="{{ ! empty($portalSettings['favicon_path']) ? asset('storage/' . $portalSettings['favicon_path']) : asset('favicon.ico') }}">
-    <meta name="theme-color" content="#0E3863">
+    @php
+        $dashboardPrimary = $portalSettings['dashboard_primary_color'] ?? $portalSettings['primary_color'] ?? '#0E3863';
+        $dashboardSecondary = $portalSettings['dashboard_secondary_color'] ?? $portalSettings['secondary_color'] ?? '#1699A1';
+    @endphp
+    <meta name="theme-color" content="{{ $dashboardPrimary }}">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Portal' }}">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="msapplication-TileColor" content="#0E3863">
+    <meta name="msapplication-TileColor" content="{{ $dashboardPrimary }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icons/apple-touch-icon.png') }}">
-    <link rel="mask-icon" href="{{ asset('icons/icon-192.png') }}" color="#0E3863">
+    <link rel="mask-icon" href="{{ asset('icons/icon-192.png') }}" color="{{ $dashboardPrimary }}">
     
     <!-- Apple Touch Startup Images -->
     <link rel="apple-touch-startup-image" href="{{ asset('icons/splash-640x1136.png') }}" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)">
@@ -34,13 +38,13 @@
            ======================================== */
         :root {
             /* Primary Colors */
-            --primary: #0E3863;
+            --primary: {{ $dashboardPrimary }};
             --primary-dark: #092B4A;
             --primary-light: #1A4D7F;
             --primary-rgb: 14, 56, 99;
             
             /* Accent Colors */
-            --accent: #1699A1;
+            --accent: {{ $dashboardSecondary }};
             --accent-dark: #0F7C88;
             --accent-light: #1DB5BE;
             --accent-glow: #2DD4BF;

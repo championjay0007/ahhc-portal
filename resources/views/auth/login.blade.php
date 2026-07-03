@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Allegiance Heart & Home Care Portal | Modern Secure Sign In</title>
+    @php
+        $loginPrimary = $portalSettings['dashboard_primary_color'] ?? $portalSettings['primary_color'] ?? '#3358ff';
+        $loginSecondary = $portalSettings['dashboard_secondary_color'] ?? $portalSettings['secondary_color'] ?? '#7d4dff';
+        $logoPath = $portalSettings['logo_path'] ?? null;
+    @endphp
+    <meta name="theme-color" content="{{ $loginPrimary }}">
+    <title>{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Portal' }} | Secure Sign In</title>
     <!-- Google Fonts & Bootstrap Icons + CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -48,14 +54,14 @@
         .orb-1 {
             width: 60vw;
             height: 60vw;
-            background: radial-gradient(circle, #3358ff20, #7d4dff08);
+            background: radial-gradient(circle, {{ $loginPrimary }}20, {{ $loginSecondary }}08);
             top: -20vh;
             right: -10vw;
         }
         .orb-2 {
             width: 50vw;
             height: 50vw;
-            background: radial-gradient(circle, #7d4dff20, #3358ff05);
+            background: radial-gradient(circle, {{ $loginSecondary }}20, {{ $loginPrimary }}05);
             bottom: -25vh;
             left: -15vw;
         }
@@ -86,7 +92,7 @@
 
         /* left side premium gradient */
         .brand-sidebar {
-            background: linear-gradient(145deg, #1e2f6e 0%, #142153 40%, #0a0f2c 100%);
+            background: linear-gradient(145deg, {{ $loginPrimary }} 0%, {{ $loginSecondary }} 40%, {{ $loginPrimary }} 100%);
             position: relative;
             z-index: 1;
             overflow: hidden;
@@ -98,7 +104,7 @@
             left: -20%;
             width: 140%;
             height: 140%;
-            background: radial-gradient(circle at 30% 20%, rgba(125,77,255,0.25), transparent 70%);
+            background: radial-gradient(circle at 30% 20%, {{ $loginSecondary }}33, transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -141,13 +147,13 @@
         }
 
         .form-control:focus {
-            border-color: #3358ff;
+            border-color: {{ $loginPrimary }};
             box-shadow: 0 0 0 4px rgba(51, 88, 255, 0.12);
             background-color: #fff;
         }
 
         .btn-modern {
-            background: linear-gradient(105deg, #3358ff 0%, #5b3eff 100%);
+            background: linear-gradient(105deg, {{ $loginPrimary }} 0%, {{ $loginSecondary }} 100%);
             border: none;
             border-radius: 1.5rem;
             padding: 0.85rem 1.2rem;
@@ -158,7 +164,7 @@
         }
         .btn-modern:hover {
             transform: translateY(-2px);
-            background: linear-gradient(105deg, #274bff 0%, #4c2de0 100%);
+            background: linear-gradient(105deg, {{ $loginSecondary }} 0%, {{ $loginPrimary }} 100%);
             box-shadow: 0 12px 22px rgba(51, 88, 255, 0.32);
         }
         .btn-modern:active {
@@ -166,13 +172,13 @@
         }
 
         .forgot-link, .signup-link {
-            color: #3358ff;
+            color: {{ $loginPrimary }};
             font-weight: 500;
             text-decoration: none;
             transition: color 0.2s;
         }
         .forgot-link:hover, .signup-link:hover {
-            color: #1c36b0;
+            color: {{ $loginSecondary }};
             text-decoration: underline;
         }
 
@@ -206,8 +212,8 @@
             transition: all 0.15s;
         }
         .form-check-input:checked {
-            background-color: #3358ff;
-            border-color: #3358ff;
+            background-color: {{ $loginPrimary }};
+            border-color: {{ $loginPrimary }};
             box-shadow: 0 0 0 1px rgba(51, 88, 255, 0.2);
         }
 
@@ -221,7 +227,7 @@
 
         /* avatar logo modern */
         .logo-avatar {
-            background: linear-gradient(135deg, #3358ff, #7d4dff);
+            background: linear-gradient(135deg, {{ $loginPrimary }}, {{ $loginSecondary }});
             width: 70px;
             height: 70px;
             display: flex;
@@ -231,6 +237,17 @@
             margin: 0 auto 0.8rem auto;
             box-shadow: 0 12px 18px -8px rgba(51,88,255,0.3);
             transition: all 0.2s;
+        }
+        .logo-avatar.logo-avatar-image {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        .logo-avatar.logo-avatar-image img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 1.8rem;
         }
         .logo-avatar i {
             font-size: 2.3rem;
@@ -338,9 +355,15 @@
                         <!-- Right panel: login form (modern + blade-like structure) -->
                         <div class="col-lg-6 bg-white form-panel d-flex flex-column justify-content-center fade-in-up">
                             <div class="text-center mb-3">
-                                <div class="logo-avatar">
-                                    <i class="bi bi-person-badge-fill"></i>
-                                </div>
+                                @if(!empty($logoPath))
+                                    <div class="logo-avatar logo-avatar-image">
+                                        <img src="{{ asset('storage/' . $logoPath) }}" alt="{{ $portalSettings['website_name'] ?? 'Logo' }}">
+                                    </div>
+                                @else
+                                    <div class="logo-avatar">
+                                        <i class="bi bi-person-badge-fill"></i>
+                                    </div>
+                                @endif
                                 <h3 class="fw-bold mb-1" style="color: #0a1a3a;">Welcome back</h3>
                                 <p class="text-muted small">Sign in to access your secure dashboard</p>
                             </div>
