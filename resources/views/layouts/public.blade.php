@@ -495,7 +495,7 @@
 
             <div class="d-flex align-items-center gap-2">
                 <a href="#contact" class="btn-nav-outline d-none d-lg-inline-flex">Apply for Self-Management</a>
-                <a href="{{ $portalUrl }}" target="_blank" rel="noopener" class="btn-nav-primary">
+                <a href="/portal" target="_blank" rel="noopener" class="btn-nav-primary">
                     <i class="bi bi-box-arrow-in-right me-1"></i>Portal Login
                 </a>
                 <button class="btn btn-link d-lg-none text-dark p-0" type="button" data-bs-toggle="collapse" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false">
