@@ -10,6 +10,7 @@
     @endphp
     <meta name="theme-color" content="{{ $loginPrimary }}">
     <title>{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Portal' }} | Secure Sign In</title>
+    <link rel="icon" href="{{ ! empty($logoPath) ? asset('storage/' . $logoPath) : asset('favicon.ico') }}">
     <!-- Google Fonts & Bootstrap Icons + CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">

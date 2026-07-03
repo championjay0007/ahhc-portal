@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Allegiance Heart & Home Care Portal | MFA Setup</title>
+    @php
+        $siteName = $portalSettings['website_name'] ?? 'AHHC Portal';
+        $faviconPath = $portalSettings['favicon_path'] ?? null;
+    @endphp
+    <title>{{ $siteName }} | MFA Setup</title>
+    <link rel="icon" href="{{ ! empty($faviconPath) ? asset('storage/' . $faviconPath) : asset('favicon.ico') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
