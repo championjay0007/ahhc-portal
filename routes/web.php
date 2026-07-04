@@ -40,6 +40,7 @@ use App\Http\Controllers\WorkerOnboardingController;
 use App\Http\Controllers\WorkerPortalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PortalNotification;
 
 Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');
@@ -65,6 +66,22 @@ Route::middleware('auth')->get('/debug-auth', function () {
         'email' => $user?->email,
         'role' => $user?->role,
         'participant_id' => $user?->participant?->id,
+    ]);
+});
+
+// Temporary debug route to inspect a notification's owner and data
+Route::middleware('auth')->get('/debug-notification/{id}', function ($id) {
+    $n = PortalNotification::find($id);
+    if (! $n) {
+        return response()->json(['error' => 'not_found'], 404);
+    }
+
+    return response()->json([
+        'id' => $n->id,
+        'user_id' => $n->user_id,
+        'read_at' => $n->read_at,
+        'data' => $n->data,
+        'created_at' => $n->created_at,
     ]);
 });
 
