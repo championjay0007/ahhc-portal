@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Budget;
+use App\Models\Invoice;
+use App\Models\Participant;
 use App\Models\PortalSetting;
 use App\Models\User;
 use App\Models\Worker;
@@ -130,6 +133,66 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Self-Management Admin Dashboard');
         $response->assertSeeText('Admin Control Centre');
+    }
+
+    public function test_participant_dashboard_uses_budget_service_metrics_for_budget_card(): void
+    {
+        $participantUser = User::create([
+            'name' => 'Participant Dashboard Budget',
+            'email' => 'participant-dashboard-budget@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $participantUser->id,
+            'participant_number' => 'P-'.$participantUser->id,
+            'first_name' => 'Participant',
+            'last_name' => 'Dashboard',
+            'status' => 'active',
+            'phone' => '0400000000',
+            'email' => $participantUser->email,
+            'consent_to_share' => false,
+            'budget_limit_cents' => 100000,
+            'current_budget_used_cents' => 0,
+            'created_by_id' => $participantUser->id,
+            'updated_by_id' => $participantUser->id,
+        ]);
+
+        $period = now()->startOfQuarter();
+
+        Budget::create([
+            'participant_id' => $participant->id,
+            'opening_balance_cents' => 35000,
+            'carry_over_cents' => 0,
+            'quarter_start_date' => $period->toDateString(),
+            'quarter_end_date' => $period->copy()->endOfQuarter()->toDateString(),
+        ]);
+
+        Invoice::create([
+            'participant_id' => $participant->id,
+            'invoice_number' => 'INV-1001',
+            'status' => 'approved',
+            'amount_cents' => 10000,
+            'invoice_date' => $period->copy()->addDays(5)->toDateString(),
+        ]);
+
+        Invoice::create([
+            'participant_id' => $participant->id,
+            'invoice_number' => 'INV-1002',
+            'status' => 'paid',
+            'amount_cents' => 5000,
+            'invoice_date' => $period->copy()->addDays(10)->toDateString(),
+        ]);
+
+        $response = $this->actingAs($participantUser)->get(route('portal.dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertSee('$350.00');
+        $response->assertSee('$200.00');
     }
 
     public function test_login_redirects_each_role_to_their_dashboard(): void

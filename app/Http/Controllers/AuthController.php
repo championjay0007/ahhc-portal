@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Worker;
 use App\Models\WorkerNomination;
 use App\Services\AuditLogService;
+use App\Services\BudgetService;
 use App\Services\MessageService;
 use App\Services\NotificationService;
 use App\Services\OnboardingAgreementService;
@@ -619,8 +620,11 @@ class AuthController extends Controller
         $paidInvoicesCount = 0;
         $budgetLimitCents = 0;
         $usedBudgetCents = 0;
+        $committedBudgetCents = 0;
         $remainingBudgetCents = 0;
         $budgetPercent = 0;
+        $currentQuarterLabel = 'Current quarter';
+        $budgetUpdatedAtLabel = now()->format('j M Y');
         $participantName = $user->name;
         $participantStatus = 'active';
         $supportPerson = null;
@@ -692,12 +696,25 @@ class AuthController extends Controller
             $careNotesCount = $participant->careNotes()->count();
             $workersCount = $workers->count();
 
-            $budgetLimitCents = $participant->budget_limit_cents;
-            $usedBudgetCents = $participant->current_budget_used_cents;
-            $remainingBudgetCents = max(0, $budgetLimitCents - $usedBudgetCents);
+            $budgetService = new BudgetService;
+            $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant, now());
+            $budgetMetrics = $budgetService->getBudgetMetrics($budget);
+
+            $budgetLimitCents = $budgetMetrics['total_available'] > 0
+                ? $budgetMetrics['total_available']
+                : max(0, (int) ($participant->budget_limit_cents ?? 0));
+            $usedBudgetCents = $budgetMetrics['used'] > 0
+                ? $budgetMetrics['used']
+                : max(0, (int) ($participant->current_budget_used_cents ?? 0));
+            $committedBudgetCents = $budgetMetrics['committed'] ?? 0;
+            $remainingBudgetCents = max(0, $budgetMetrics['remaining'] ?? max(0, $budgetLimitCents - $usedBudgetCents));
             $budgetPercent = $budgetLimitCents > 0
                 ? min(100, (int) round(($usedBudgetCents / $budgetLimitCents) * 100))
                 : 0;
+            $currentQuarterLabel = $budget->quarter_start_date && $budget->quarter_end_date
+                ? $budget->quarter_start_date->format('j M Y').' – '.$budget->quarter_end_date->format('j M Y')
+                : 'Q'.ceil(now()->month / 3).' '.now()->year;
+            $budgetUpdatedAtLabel = optional($budget->updated_at ?? $budget->created_at)->format('j M Y') ?? now()->format('j M Y');
             $participantName = $participant->preferred_name ?? $participant->first_name;
             $participantStatus = $participant->status;
             $supportPerson = optional($participant)->supportPerson;
@@ -820,8 +837,11 @@ class AuthController extends Controller
             'workersCount',
             'budgetLimitCents',
             'usedBudgetCents',
+            'committedBudgetCents',
             'remainingBudgetCents',
             'budgetPercent',
+            'currentQuarterLabel',
+            'budgetUpdatedAtLabel',
             'preApprovalsApprovedCount',
             'preApprovalsPendingCount',
             'submittedInvoicesCount',

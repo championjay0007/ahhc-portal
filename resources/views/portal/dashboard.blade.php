@@ -168,7 +168,7 @@
                 <div class="card-badge">1</div>
                 <div class="card-heading">
                     <h2 class="card-title">Quarterly Budget</h2>
-                    <span class="card-subtitle">{{ $currentQuarterLabel ?? '1 Jul 2026 – 30 Sep 2026' }}</span>
+                    <span class="card-subtitle">{{ $currentQuarterLabel ?? 'Current quarter' }}</span>
                 </div>
             </div>
 
@@ -184,7 +184,7 @@
                     </div>
                     <div class="budget-stat">
                         <span class="budget-stat-label">Committed / Pending</span>
-                        <span class="budget-stat-value stat-committed">${{ number_format(max(0, ($budgetLimitCents - $remainingBudgetCents - $usedBudgetCents)) / 100, 2) }}</span>
+                        <span class="budget-stat-value stat-committed">${{ number_format(($committedBudgetCents ?? 0) / 100, 2) }}</span>
                     </div>
                     <div class="budget-stat">
                         <span class="budget-stat-label">Remaining</span>
@@ -207,7 +207,7 @@
                     </div>
                     <div class="chart-tags">
                         <span class="live-tag"><i class="bi bi-circle-fill"></i> Live Budget Update</span>
-                        <span class="updated-tag">Updated: 14 May 2026 <i class="bi bi-info-circle"></i></span>
+                        <span class="updated-tag">Updated: {{ $budgetUpdatedAtLabel ?? now()->format('j M Y') }} <i class="bi bi-info-circle"></i></span>
                     </div>
                 </div>
             </div>

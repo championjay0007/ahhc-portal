@@ -25,6 +25,7 @@ class NotificationCenterService
         'invoice_submitted' => ['title' => 'Invoice Submitted', 'message' => 'An invoice has been submitted for review.'],
         'invoice_needs_more_information' => ['title' => 'Invoice Requires More Information', 'message' => 'Additional information is required to process the invoice.'],
         'invoice_approved' => ['title' => 'Invoice Approved', 'message' => 'Your invoice was approved.'],
+        'invoice_rejected' => ['title' => 'Invoice Rejected', 'message' => 'Your invoice was not approved and requires attention.'],
         'incident_created' => ['title' => 'Incident Submitted', 'message' => 'An incident report has been submitted and will be reviewed by care, quality, and management teams.'],
         'incident_submitted' => ['title' => 'Incident Submitted', 'message' => 'An incident report has been submitted and will be reviewed by care, quality, and management teams.'],
         'incident_escalated' => ['title' => 'Incident Escalated', 'message' => 'An incident has been escalated.'],

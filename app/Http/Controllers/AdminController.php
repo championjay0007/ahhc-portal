@@ -2242,6 +2242,15 @@ class AdminController extends Controller
             if ($invoice->participant && $invoice->pre_approval_id) {
                 $this->budgetService->approveInvoice($invoice);
             }
+
+            if ($invoice->participant && $invoice->participant->user_id) {
+                NotificationCenterService::send('invoice_approved', $invoice->participant->user_id, [
+                    'participant_id' => $invoice->participant_id,
+                    'invoice_id' => $invoice->id,
+                    'message' => 'Your invoice '.$invoice->invoice_number.' has been approved and added to your budget review.',
+                    'url' => route('portal.participant.invoices.index'),
+                ]);
+            }
         });
 
         return back()->with('status', 'Invoice approved.');
@@ -2268,6 +2277,15 @@ class AdminController extends Controller
                 'participant_id' => $invoice->participant_id,
                 'rejected_by' => auth()->id(),
             ]);
+
+            if ($invoice->participant && $invoice->participant->user_id) {
+                NotificationCenterService::send('invoice_rejected', $invoice->participant->user_id, [
+                    'participant_id' => $invoice->participant_id,
+                    'invoice_id' => $invoice->id,
+                    'message' => 'Your invoice '.$invoice->invoice_number.' was not approved and has been returned for review.',
+                    'url' => route('portal.participant.invoices.index'),
+                ]);
+            }
         });
 
         return back()->with('status', 'Invoice rejected.');

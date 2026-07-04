@@ -10,6 +10,7 @@
 
     <div class="card portal-card mb-4 p-4">
         <h5 class="mb-3">Submit a new invoice</h5>
+        <p class="text-muted small mb-3">Submit invoices after services are delivered. Once submitted, Allegiance Heart & Home Care will review the invoice, update your budget status, and let you know when it is approved or paid.</p>
         <form method="POST" action="{{ route('portal.participant.invoices.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="row g-3">
@@ -68,12 +69,25 @@
             <div class="list-group">
                 @foreach($invoices as $invoice)
                     <div class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-start">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
                             <div>
                                 <strong>{{ $invoice->invoice_number }}</strong>
                                 <div class="small text-muted">{{ $invoice->invoice_date->format('Y-m-d') }} • {{ ucfirst($invoice->status) }}</div>
+                                <div class="small text-muted mt-1">
+                                    @if($invoice->status === 'submitted')
+                                        Waiting for Allegiance Heart & Home Care review.
+                                    @elseif($invoice->status === 'approved')
+                                        Approved and included in your budget review.
+                                    @elseif($invoice->status === 'paid')
+                                        Paid and recorded against your budget.
+                                    @elseif($invoice->status === 'rejected')
+                                        Returned for review and resubmission.
+                                    @else
+                                        Status updated by the admin team.
+                                    @endif
+                                </div>
                                 @if($invoice->invoice_file_path || $invoice->attachment_path)
-                                    <div class="mt-1">
+                                    <div class="mt-2">
                                         <a href="{{ route('portal.participant.invoices.download', $invoice->id) }}" class="btn btn-xs btn-outline-secondary">
                                             <i class="bi bi-download me-1"></i>Download attachment
                                         </a>
