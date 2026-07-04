@@ -19,8 +19,14 @@ class AuditLogService
         $userAgent = $request?->userAgent();
         $userAgentMeta = self::parseUserAgent($userAgent);
 
+        $resolvedUserId = $userId ?? Auth::id();
+
+        if ($resolvedUserId !== null && ! self::userExists($resolvedUserId)) {
+            $resolvedUserId = null;
+        }
+
         return AuditLog::create([
-            'user_id' => $userId ?? Auth::id(),
+            'user_id' => $resolvedUserId,
             'action' => $action,
             'subject_type' => $subject?->getMorphClass(),
             'subject_id' => $subject?->getKey(),
@@ -37,6 +43,11 @@ class AuditLogService
             'browser' => $userAgentMeta['browser'],
             'device' => $userAgentMeta['device'],
         ]);
+    }
+
+    private static function userExists(int $userId): bool
+    {
+        return \App\Models\User::whereKey($userId)->exists();
     }
 
     private static function parseUserAgent(?string $userAgent): array
