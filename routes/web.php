@@ -39,6 +39,7 @@ use App\Http\Controllers\WorkerNominationController;
 use App\Http\Controllers\WorkerOnboardingController;
 use App\Http\Controllers\WorkerPortalController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');
@@ -53,6 +54,18 @@ Route::get('/test-post', function () {
 
 Route::post('/test-post', function () {
     return response('ok', 200);
+});
+
+// Temporary debug endpoint to show current authenticated user info
+Route::middleware('auth')->get('/debug-auth', function () {
+    $user = Auth::user();
+
+    return response()->json([
+        'auth_id' => $user?->id,
+        'email' => $user?->email,
+        'role' => $user?->role,
+        'participant_id' => $user?->participant?->id,
+    ]);
 });
 
 Route::get('/portal', [AuthController::class, 'showLogin'])->name('portal.login');
