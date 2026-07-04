@@ -114,7 +114,7 @@ class WorkerNominationController extends Controller
             ]);
         }
 
-        return redirect()->route('portal.participant.nominations.show', $nomination)
+        return redirect()->route('portal.participant.nominations.index')
             ->with('status', 'Worker nomination submitted successfully. AHHC will review it shortly.');
     }
 
