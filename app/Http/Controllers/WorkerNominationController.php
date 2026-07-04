@@ -124,6 +124,11 @@ class WorkerNominationController extends Controller
     public function show(WorkerNomination $nomination)
     {
         $user = Auth::user();
+        // If an admin/system_admin is viewing this URL, redirect to the admin view
+        if (in_array($user->role, ['admin', 'system_admin'], true)) {
+            return redirect()->route('portal.admin.nominations.show', $nomination->id);
+        }
+
         $participant = Participant::where('user_id', $user->id)->firstOrFail();
 
         if ($nomination->participant_id !== $participant->id) {
