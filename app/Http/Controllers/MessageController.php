@@ -284,7 +284,11 @@ class MessageController extends Controller
         if ($user->role === 'participant') {
             $participant = Participant::where('user_id', $user->id)
                 ->with(['assignments.worker.user'])
-                ->firstOrFail();
+                ->first();
+
+            if (! $participant) {
+                return collect();
+            }
 
             return $participant->assignments
                 ->where('status', 'active')
@@ -299,7 +303,11 @@ class MessageController extends Controller
         if ($user->role === 'worker') {
             $worker = Worker::where('user_id', $user->id)
                 ->with(['assignments.participant.user'])
-                ->firstOrFail();
+                ->first();
+
+            if (! $worker) {
+                return collect();
+            }
 
             return $worker->assignments
                 ->where('status', 'active')

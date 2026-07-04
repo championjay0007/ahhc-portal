@@ -191,4 +191,41 @@ class MessageControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Thread access for admin');
     }
+
+    public function test_participant_can_view_their_own_message(): void
+    {
+        $participant = User::create([
+            'name' => 'Participant Owner',
+            'email' => 'participant-owner@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $sender = User::create([
+            'name' => 'Sender Owner',
+            'email' => 'sender-owner@example.com',
+            'role' => 'worker',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $message = Message::create([
+            'sender_id' => $sender->id,
+            'recipient_id' => $participant->id,
+            'subject' => 'Participant owns this message',
+            'body' => 'This should load for the participant.',
+        ]);
+
+        $this->withoutExceptionHandling();
+
+        $response = $this->actingAs($participant)->get(route('portal.participant.messages.show', $message));
+
+        $response->assertStatus(200);
+        $response->assertSee('Participant owns this message');
+    }
 }
