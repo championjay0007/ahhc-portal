@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Http\Controllers\Controller;
 use App\Models\Budget;
 use App\Services\BudgetService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -52,6 +53,21 @@ class BudgetServiceTest extends TestCase
         $aprilPeriod = $service->getQuarterPeriodForDate('2026-04-15');
         $this->assertSame('2026-04-01', $aprilPeriod['quarter_start_date']);
         $this->assertSame('2026-06-30', $aprilPeriod['quarter_end_date']);
+    }
+
+    public function test_fiscal_quarter_labels_use_the_next_fiscal_year_for_july_to_september()
+    {
+        $formatter = new class extends Controller
+        {
+            public function exposeFormatFiscalQuarterLabel($date): string
+            {
+                return $this->formatFiscalQuarterLabel($date);
+            }
+        };
+
+        $this->assertSame('Q1 2027', $formatter->exposeFormatFiscalQuarterLabel('2026-07-15'));
+        $this->assertSame('Q2 2027', $formatter->exposeFormatFiscalQuarterLabel('2026-10-15'));
+        $this->assertSame('Q3 2026', $formatter->exposeFormatFiscalQuarterLabel('2026-01-15'));
     }
 
     public function test_apply_transaction_types_update_budget_correctly()

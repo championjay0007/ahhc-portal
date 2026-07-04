@@ -24,6 +24,8 @@ abstract class Controller extends BaseController
             default => 4,
         };
 
-        return "Q{$quarterNumber} {$dt->year}";
+        $fiscalYear = $month >= 7 ? $dt->year + 1 : $dt->year;
+
+        return "Q{$quarterNumber} {$fiscalYear}";
     }
 }
