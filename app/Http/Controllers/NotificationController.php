@@ -34,7 +34,8 @@ class NotificationController extends Controller
     public function show(Request $request, PortalNotification $notification)
     {
         $user = Auth::user();
-        if ($notification->user_id !== $user->id) {
+        // Allow owners or admins/system_admins to view the notification
+        if ($notification->user_id !== $user->id && ! in_array($user->role, ['admin', 'system_admin'], true)) {
             abort(403);
         }
 
@@ -56,7 +57,7 @@ class NotificationController extends Controller
     public function markRead(Request $request, PortalNotification $notification)
     {
         $user = Auth::user();
-        if ($notification->user_id !== $user->id) {
+        if ($notification->user_id !== $user->id && ! in_array($user->role, ['admin', 'system_admin'], true)) {
             abort(403);
         }
 
@@ -68,7 +69,7 @@ class NotificationController extends Controller
     public function markUnread(Request $request, PortalNotification $notification)
     {
         $user = Auth::user();
-        if ($notification->user_id !== $user->id) {
+        if ($notification->user_id !== $user->id && ! in_array($user->role, ['admin', 'system_admin'], true)) {
             abort(403);
         }
 
