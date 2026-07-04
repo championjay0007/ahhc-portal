@@ -548,6 +548,28 @@ Route::middleware(['auth', 'mfa'])->prefix('/portal/messages')->name('portal.mes
     Route::post('/{message}/delete', [MessageController::class, 'delete'])->name('delete');
 });
 
+Route::middleware(['auth', 'mfa'])->prefix('/portal/participant/messages')->name('portal.participant.messages.')->group(function () {
+    Route::get('/compose/{recipient?}', [MessageController::class, 'compose'])
+        ->where('recipient', '[0-9]+')
+        ->name('compose');
+    Route::get('/chat/{recipient}', [MessageController::class, 'conversation'])
+        ->where('recipient', '[0-9]+')
+        ->name('conversation');
+    Route::get('/chat/{recipient}/messages', [MessageController::class, 'conversationMessages'])
+        ->where('recipient', '[0-9]+')
+        ->name('conversation.messages');
+    Route::post('/chat/{recipient}', [MessageController::class, 'conversationSend'])
+        ->where('recipient', '[0-9]+')
+        ->name('conversation.send');
+    Route::post('/send', [MessageController::class, 'send'])->name('send');
+    Route::get('/inbox', [MessageController::class, 'inbox'])->name('inbox');
+    Route::get('/from-message/{message}', [MessageController::class, 'conversationFromMessage'])->name('conversation.from_message');
+    Route::get('/{message}', [MessageController::class, 'show'])->name('show');
+    Route::post('/{message}/mark-read', [MessageController::class, 'markRead'])->name('mark_read');
+    Route::post('/{message}/mark-unread', [MessageController::class, 'markUnread'])->name('mark_unread');
+    Route::post('/{message}/delete', [MessageController::class, 'delete'])->name('delete');
+});
+
 Route::middleware(['auth', 'mfa', 'role:worker', 'onboarding_complete'])->prefix('/portal/worker')->name('portal.worker.')->group(function () {
     Route::get('/dashboard', [WorkerPortalController::class, 'dashboard'])->name('dashboard');
     Route::get('/participants', [WorkerPortalController::class, 'assignedParticipants'])->name('assigned_participants');
