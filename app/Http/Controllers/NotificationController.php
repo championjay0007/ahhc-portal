@@ -97,7 +97,7 @@ class NotificationController extends Controller
         $url = $data['url'] ?? null;
 
         if (! empty($data['message_id'])) {
-            return route('portal.messages.conversation.from_message', ['message' => $data['message_id']]);
+            return route($this->notificationRoutePrefix().'conversation.from_message', ['message' => $data['message_id']]);
         }
 
         if (empty($url) && ! empty($data['conversation_id'])) {
@@ -105,6 +105,19 @@ class NotificationController extends Controller
         }
 
         return is_string($url) && $url !== '' ? $url : null;
+    }
+
+    private function notificationRoutePrefix(): string
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return 'portal.messages.';
+        }
+
+        return $user->role === 'participant'
+            ? 'portal.participant.messages.'
+            : 'portal.messages.';
     }
 
     public function preferences()

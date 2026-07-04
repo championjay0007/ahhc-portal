@@ -15,7 +15,7 @@
                     <span class="icon-badge">{{ $unreadNotificationCount }}</span>
                 @endif
             </a>
-            <a href="{{ route('portal.messages.inbox') }}" class="icon-btn icon-link" title="Messages">
+            <a href="{{ route($messageRoutePrefix.'inbox') }}" class="icon-btn icon-link" title="Messages">
                 <i class="bi bi-envelope"></i>
                 @if(isset($unreadMessageCount) && $unreadMessageCount > 0)
                     <span class="icon-badge">{{ $unreadMessageCount }}</span>
@@ -49,7 +49,7 @@
                 <small class="notification-card-hint">View portal notifications</small>
             </div>
         </a>
-        <a href="{{ route('portal.messages.inbox') }}" class="notification-card card-link">
+        <a href="{{ route($messageRoutePrefix.'inbox') }}" class="notification-card card-link">
             <div class="notification-card-icon bg-success-gradient">
                 <i class="bi bi-envelope-fill"></i>
             </div>
@@ -350,7 +350,7 @@
             <div class="summary-body">
                 @if($primaryWorker)
                     <p class="summary-lead">Your assigned worker is <strong>{{ $primaryWorker->first_name }} {{ $primaryWorker->last_name }}</strong>.</p>
-                    <a href="{{ route('portal.messages.conversation', $primaryWorker->user_id) }}" class="summary-link">
+                    <a href="{{ route($messageRoutePrefix.'conversation', $primaryWorker->user_id) }}" class="summary-link">
                         Chat with {{ $primaryWorker->first_name }} <i class="bi bi-chat-dots"></i>
                     </a>
                     <a href="{{ route('portal.participant.team') }}" class="summary-link">

@@ -39,7 +39,7 @@
                                 <td>{{ Str::limit($message->subject, 50) }}</td>
                                 <td>{{ $message->created_at->diffForHumans() }}</td>
                                 <td class="text-end">
-                                    <a href="{{ route('portal.messages.show', $message) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route($messageRoutePrefix.'show', $message) }}" class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye"></i> View
                                     </a>
                                 </td>

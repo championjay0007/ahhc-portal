@@ -43,7 +43,12 @@ class AppServiceProvider extends ServiceProvider
             $unreadSupportConversationCount = 0;
             $portalSettings = $this->loadSettings();
 
+            $messageRoutePrefix = 'portal.messages.';
             if (Auth::check()) {
+                $messageRoutePrefix = Auth::user()->role === 'participant'
+                    ? 'portal.participant.messages.'
+                    : 'portal.messages.';
+
                 $portalNotifications = PortalNotification::where('user_id', Auth::id())
                     ->orderByDesc('created_at')
                     ->take(8)
@@ -80,7 +85,7 @@ class AppServiceProvider extends ServiceProvider
                     ->get();
             }
 
-            $view->with(compact('portalNotifications', 'portalUnreadNotifications', 'portalMessages', 'supportConversations', 'unreadNotificationCount', 'portalSettings', 'unreadMessageCount', 'unreadSupportConversationCount'));
+            $view->with(compact('portalNotifications', 'portalUnreadNotifications', 'portalMessages', 'supportConversations', 'unreadNotificationCount', 'portalSettings', 'unreadMessageCount', 'unreadSupportConversationCount', 'messageRoutePrefix'));
         });
 
         View::share('portalSettings', $this->loadSettings());

@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-xl-8">
             <div class="mb-4">
-                <a href="{{ route('portal.messages.inbox') }}" class="btn btn-outline-secondary">
+                <a href="{{ route($messageRoutePrefix.'inbox') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back to Inbox
                 </a>
             </div>
@@ -22,7 +22,7 @@
                             No assigned chat contacts were found. Please contact your administrator if you need to message your care team.
                         </div>
                     @else
-                        <form action="{{ route('portal.messages.send') }}" method="POST">
+                        <form action="{{ route($messageRoutePrefix.'send') }}" method="POST">
                             @csrf
 
                             @if($selectedRecipient)
@@ -65,7 +65,7 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">
-                                <a href="{{ route('portal.messages.inbox') }}" class="btn btn-outline-secondary">Cancel</a>
+                                <a href="{{ route($messageRoutePrefix.'inbox') }}" class="btn btn-outline-secondary">Cancel</a>
                                 <button type="submit" class="btn btn-primary">Send Message</button>
                             </div>
                         </form>

@@ -40,7 +40,7 @@
                             <td>
                                 <div class="d-flex gap-2 justify-content-end">
                                     @if($assignment->participant->user)
-                                        <a href="{{ route('portal.messages.compose', $assignment->participant->user->id) }}" class="btn btn-sm btn-primary">Chat</a>
+                                        <a href="{{ route($messageRoutePrefix.'compose', $assignment->participant->user->id) }}" class="btn btn-sm btn-primary">Chat</a>
                                     @endif
                                     <a href="{{ route('portal.worker.participants.show', $assignment->participant) }}" class="btn btn-sm btn-outline-primary">View</a>
                                 </div>

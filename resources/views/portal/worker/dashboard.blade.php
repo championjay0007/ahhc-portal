@@ -28,7 +28,7 @@
                 <small class="notification-card-hint">Open portal notifications</small>
             </div>
         </a>
-        <a href="{{ route('portal.messages.inbox') }}" class="notification-card card-link">
+        <a href="{{ route($messageRoutePrefix.'inbox') }}" class="notification-card card-link">
             <div class="notification-card-icon bg-success-gradient">
                 <i class="bi bi-envelope-fill"></i>
             </div>
@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <div class="chat-actions">
-                        <a href="{{ route('portal.messages.conversation', $primaryParticipant->user_id) }}" class="btn-modern btn-primary-modern">
+                        <a href="{{ route($messageRoutePrefix.'conversation', $primaryParticipant->user_id) }}" class="btn-modern btn-primary-modern">
                             <i class="bi bi-chat-dots-fill"></i> Chat with {{ $primaryParticipant->first_name }}
                         </a>
                         <a href="{{ route('portal.worker.assigned_participants') }}" class="btn-modern btn-outline-modern">

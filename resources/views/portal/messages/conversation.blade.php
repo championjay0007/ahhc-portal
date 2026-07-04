@@ -28,7 +28,7 @@
                     @endforeach
                 </div>
 
-                <form id="chatForm" action="{{ route('portal.messages.conversation.send', $recipient->id) }}" method="POST" class="chat-form">
+                <form id="chatForm" action="{{ route($messageRoutePrefix.'conversation.send', $recipient->id) }}" method="POST" class="chat-form">
                     @csrf
                     <div class="input-group chat-input-group">
                         <textarea id="messageInput" name="message" class="form-control chat-input" rows="2" placeholder="Type your message..." autocomplete="off" required></textarea>
@@ -47,8 +47,8 @@
     const chatWindow = document.getElementById('chatWindow');
     const chatForm = document.getElementById('chatForm');
     const messageInput = document.getElementById('messageInput');
-    const messagesEndpoint = '{{ route('portal.messages.conversation.messages', $recipient->id) }}';
-    const sendEndpoint = '{{ route('portal.messages.conversation.send', $recipient->id) }}';
+    const messagesEndpoint = '{{ route($messageRoutePrefix.'conversation.messages', $recipient->id) }}';
+    const sendEndpoint = '{{ route($messageRoutePrefix.'conversation.send', $recipient->id) }}';
     const csrfToken = '{{ csrf_token() }}';
 
     function scrollChatToBottom() {

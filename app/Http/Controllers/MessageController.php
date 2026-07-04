@@ -340,6 +340,28 @@ class MessageController extends Controller
         abort(403, 'You are not authorized to chat with this user.');
     }
 
+    protected function canDirectChatWith(User $recipient): bool
+    {
+        $user = Auth::user();
+
+        if (! $user || $recipient->id === $user->id) {
+            return false;
+        }
+
+        if (in_array($user->role, ['admin', 'system_admin'], true)) {
+            return true;
+        }
+
+        $allowed = $this->getDirectChatRecipients()->pluck('id');
+        $hasThreadAccess = Message::where(function ($query) use ($user, $recipient) {
+            $query->where('sender_id', $user->id)->where('recipient_id', $recipient->id);
+        })->orWhere(function ($query) use ($user, $recipient) {
+            $query->where('sender_id', $recipient->id)->where('recipient_id', $user->id);
+        })->exists();
+
+        return $allowed->contains($recipient->id) || $hasThreadAccess;
+    }
+
     public function conversation(User $recipient)
     {
         $this->authorizeDirectChatRecipient($recipient);
@@ -446,7 +468,7 @@ class MessageController extends Controller
             ]], 201);
         }
 
-        return redirect()->route('portal.messages.conversation', $recipient->id)->with('status', 'Message sent successfully.');
+        return redirect()->route($this->messageRoutePrefix().'conversation', $recipient->id)->with('status', 'Message sent successfully.');
     }
 
     public function send(Request $request)
@@ -495,8 +517,19 @@ class MessageController extends Controller
 
         MessageService::sendMessage(Auth::id(), $recipientId, $validated['subject'], $validated['body']);
 
-        return redirect()->route('portal.messages.inbox')
+        return redirect()->route($this->messageRoutePrefix().'inbox')
             ->with('status', 'Your message has been sent.');
+    }
+
+    protected function messageRoutePrefix(): string
+    {
+        if (! Auth::check()) {
+            return 'portal.messages.';
+        }
+
+        return Auth::user()->role === 'participant'
+            ? 'portal.participant.messages.'
+            : 'portal.messages.';
     }
 
     public function inbox()
@@ -540,9 +573,21 @@ class MessageController extends Controller
             $message->markAsRead();
         }
 
+        $replyTarget = $message->sender_id === $user->id ? $message->recipient : $message->sender;
+
+        if (in_array($user->role, ['admin', 'system_admin'], true)
+            && $message->recipient_id !== $user->id
+            && $message->sender_id !== $user->id
+        ) {
+            $replyTarget = $message->sender;
+        }
+
+        $canChat = $this->canDirectChatWith($replyTarget);
+        $replyEmailUrl = 'mailto:'.rawurlencode($replyTarget->email).'?subject='.rawurlencode('Re: '.$message->subject);
+
         $view = $user->role === 'admin' ? 'portal.admin.messages.show' : 'portal.messages.show';
 
-        return view($view, compact('message'));
+        return view($view, compact('message', 'replyTarget', 'canChat', 'replyEmailUrl'));
     }
 
     public function markRead(Message $message)

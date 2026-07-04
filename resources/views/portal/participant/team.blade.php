@@ -135,7 +135,7 @@
                                         <div class="btn-group" role="group" aria-label="Actions">
                                             <a href="mailto:{{ $worker->email }}" class="btn btn-sm btn-outline-secondary">Contact</a>
                                             @if($worker->user_id)
-                                                <a href="{{ route('portal.messages.compose', $worker->user_id) }}" class="btn btn-sm btn-primary">Chat</a>
+                                                <a href="{{ route($messageRoutePrefix.'compose', $worker->user_id) }}" class="btn btn-sm btn-primary">Chat</a>
                                             @endif
                                             <a href="{{ route('portal.participant.documents.index') }}" class="btn btn-sm btn-outline-primary">View docs</a>
                                         </div>
@@ -328,7 +328,7 @@
                                         <i class="bi bi-envelope me-1"></i>Send Message
                                     </a>
                                     @if($worker->user_id)
-                                        <a href="{{ route('portal.messages.compose', $worker->user_id) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route($messageRoutePrefix.'compose', $worker->user_id) }}" class="btn btn-sm btn-primary">
                                             <i class="bi bi-chat-dots me-1"></i>Chat
                                         </a>
                                     @endif

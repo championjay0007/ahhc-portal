@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-8 mx-auto">
             <div class="mb-3">
-                <a href="{{ route('portal.messages.inbox') }}" class="btn btn-outline-secondary">
+                <a href="{{ route($messageRoutePrefix.'inbox') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back to Inbox
                 </a>
             </div>
@@ -35,6 +35,30 @@
                 </div>
 
                 <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            @if(auth()->id() === $message->sender_id)
+                                <p class="mb-1"><strong>You sent this message to {{ $message->recipient->name }}.</strong></p>
+                            @elseif(auth()->id() === $message->recipient_id)
+                                <p class="mb-1"><strong>{{ $message->sender->name }} sent this message to you.</strong></p>
+                            @else
+                                <p class="mb-1"><strong>This message was sent by {{ $message->sender->name }} to {{ $message->recipient->name }}.</strong></p>
+                            @endif
+                            <p class="text-muted small mb-0">Reply target: {{ $replyTarget->name }} &lt;{{ $replyTarget->email }}&gt;</p>
+                        </div>
+                        <div>
+                            @if($canChat)
+                                <a href="{{ route($messageRoutePrefix.'conversation', $replyTarget->id) }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-chat-left-text"></i> Reply in portal
+                                </a>
+                            @else
+                                <a href="{{ $replyEmailUrl }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-envelope"></i> Reply by email
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="message-content">
                         @if($message->template_id)
                             {!! $message->body !!}
@@ -47,14 +71,14 @@
                 <div class="card-footer bg-light">
                     <div class="btn-group" role="group">
                         @if(is_null($message->read_at))
-                            <form action="{{ route('portal.messages.mark_read', $message) }}" method="POST" class="d-inline">
+                            <form action="{{ route($messageRoutePrefix.'mark_read', $message) }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-envelope-open"></i> Mark as Read
                                 </button>
                             </form>
                         @else
-                            <form action="{{ route('portal.messages.mark_unread', $message) }}" method="POST" class="d-inline">
+                            <form action="{{ route($messageRoutePrefix.'mark_unread', $message) }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-envelope"></i> Mark as Unread
@@ -63,7 +87,7 @@
                         @endif
 
                         @if($message->recipient_id === auth()->id() || $message->sender_id === auth()->id())
-                            <form action="{{ route('portal.messages.delete', $message) }}" method="POST" class="d-inline">
+                            <form action="{{ route($messageRoutePrefix.'delete', $message) }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this message?')">
                                     <i class="bi bi-trash"></i> Delete

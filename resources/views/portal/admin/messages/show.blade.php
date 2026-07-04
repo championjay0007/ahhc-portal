@@ -35,6 +35,30 @@
                 </div>
 
                 <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            @if(auth()->id() === $message->sender_id)
+                                <p class="mb-1"><strong>You sent this message to {{ $message->recipient->name }}.</strong></p>
+                            @elseif(auth()->id() === $message->recipient_id)
+                                <p class="mb-1"><strong>{{ $message->sender->name }} sent this message to you.</strong></p>
+                            @else
+                                <p class="mb-1"><strong>This message was sent by {{ $message->sender->name }} to {{ $message->recipient->name }}.</strong></p>
+                            @endif
+                            <p class="text-muted small mb-0">Reply target: {{ $replyTarget->name }} &lt;{{ $replyTarget->email }}&gt;</p>
+                        </div>
+                        <div>
+                            @if($canChat)
+                                <a href="{{ route('portal.messages.conversation', $replyTarget->id) }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-chat-left-text"></i> Reply in portal
+                                </a>
+                            @else
+                                <a href="{{ $replyEmailUrl }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-envelope"></i> Reply by email
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="message-content">
                         @if($message->template_id)
                             {!! $message->body !!}

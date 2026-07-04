@@ -105,7 +105,11 @@ class MessageControllerTest extends TestCase
 
         $response = $this->actingAs($recipient)->get(route('portal.notifications.show', $notification));
 
-        $response->assertRedirect(route('portal.messages.conversation.from_message', ['message' => $message->id]));
+        $expectedRoute = $recipient->role === 'participant'
+            ? route('portal.participant.messages.conversation.from_message', ['message' => $message->id])
+            : route('portal.messages.conversation.from_message', ['message' => $message->id]);
+
+        $response->assertRedirect($expectedRoute);
     }
 
     public function test_admin_can_open_conversation_from_message_thread(): void

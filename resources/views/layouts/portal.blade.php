@@ -1293,7 +1293,7 @@
                             </div>
                             <div class="notification-list">
                                 @forelse($portalMessages ?? [] as $message)
-                                    <a href="{{ route('portal.messages.show', $message) }}" class="notification-item {{ $message->read_at === null ? 'unread' : '' }}">
+                                    <a href="{{ route($messageRoutePrefix.'show', $message) }}" class="notification-item {{ $message->read_at === null ? 'unread' : '' }}">
                                         <div class="notification-title">{{ $message->sender->name ?? 'Unknown' }}</div>
                                         <div class="notification-message">{{ Str::limit($message->body ?? $message->message, 60) }}</div>
                                         <div class="notification-meta">
@@ -1309,7 +1309,7 @@
                                 @endforelse
                             </div>
                             <div class="notification-footer">
-                                <a href="{{ route('portal.messages.inbox') }}">
+                                <a href="{{ route($messageRoutePrefix.'inbox') }}">
                                     <i class="bi bi-inbox me-1"></i>View all messages
                                 </a>
                             </div>
@@ -1424,8 +1424,8 @@
                         @php
                             $assignedChatParticipant = optional(optional(auth()->user()->worker)->assignments()->where('status', 'active')->with('participant')->first())->participant;
                         @endphp
-                        <a href="{{ $assignedChatParticipant ? route('portal.messages.conversation', $assignedChatParticipant->user_id) : route('portal.worker.assigned_participants') }}" 
-                           class="nav-link-custom {{ request()->routeIs('portal.messages.conversation') ? 'active' : '' }}">
+                        <a href="{{ $assignedChatParticipant ? route($messageRoutePrefix.'conversation', $assignedChatParticipant->user_id) : route('portal.worker.assigned_participants') }}" 
+                           class="nav-link-custom {{ request()->routeIs($messageRoutePrefix.'conversation') ? 'active' : '' }}">
                             <i class="bi bi-chat-right-text nav-icon"></i>
                             <span>Chat Participant</span>
                         </a>
@@ -1448,8 +1448,8 @@
                         </a>
 
                         <div class="nav-section-title">💬 Messaging</div>
-                        <a href="{{ route('portal.messages.inbox') }}" 
-                           class="nav-link-custom {{ request()->routeIs('portal.messages.*') ? 'active' : '' }}">
+                        <a href="{{ route($messageRoutePrefix.'inbox') }}" 
+                           class="nav-link-custom {{ request()->routeIs($messageRoutePrefix.'*') ? 'active' : '' }}">
                             <i class="bi bi-chat-left-dots-fill nav-icon"></i>
                             <span>Inbox</span>
                             @if(isset($unreadMessageCount) && $unreadMessageCount > 0)
@@ -1539,18 +1539,6 @@
                             <i class="bi bi-people-fill nav-icon"></i>
                             <span>Workers / Suppliers</span>
                         </a>
-                        @php
-                            $assignedChatWorker = null;
-                            $participant = auth()->user()->participant;
-                            if ($participant) {
-                                $assignedChatWorker = optional($participant->assignments()->where('status', 'active')->with('worker')->first())->worker;
-                            }
-                        @endphp
-                        <a href="{{ $assignedChatWorker ? route('portal.messages.conversation', $assignedChatWorker->user_id) : route('portal.participant.team') }}" 
-                           class="nav-link-custom {{ request()->routeIs('portal.messages.conversation') ? 'active' : '' }}">
-                            <i class="bi bi-chat-right-text nav-icon"></i>
-                            <span>Chat Assigned Worker</span>
-                        </a>
                         <a href="{{ route('portal.participant.services') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.participant.services') ? 'active' : '' }}">
                             <i class="bi bi-calendar-check-fill nav-icon"></i>
@@ -1574,15 +1562,10 @@
                             <i class="bi bi-headset nav-icon"></i>
                             <span>Contact Support</span>
                         </a>
-                        <a href="{{ route('portal.support.conversations.index') }}" 
-                           class="nav-link-custom {{ request()->routeIs('portal.support.conversations.*') ? 'active' : '' }}">
-                            <i class="bi bi-chat-dots nav-icon"></i>
-                            <span>Live Chat</span>
-                        </a>
 
                         <div class="nav-section-title">💬 Messaging</div>
-                        <a href="{{ route('portal.messages.inbox') }}" 
-                           class="nav-link-custom {{ request()->routeIs('portal.messages.*') ? 'active' : '' }}">
+                        <a href="{{ route($messageRoutePrefix.'inbox') }}" 
+                           class="nav-link-custom {{ request()->routeIs($messageRoutePrefix.'*') ? 'active' : '' }}">
                             <i class="bi bi-chat-left-dots-fill nav-icon"></i>
                             <span>Inbox</span>
                             @if(isset($unreadMessageCount) && $unreadMessageCount > 0)
@@ -1647,7 +1630,7 @@
                 <i class="bi bi-people-fill"></i>
                 <span>Team</span>
             </a>
-            <a href="{{ route('portal.messages.inbox') }}" class="{{ request()->routeIs('portal.messages.*') ? 'active' : '' }}">
+            <a href="{{ route($messageRoutePrefix.'inbox') }}" class="{{ request()->routeIs($messageRoutePrefix.'*') ? 'active' : '' }}">
                 <i class="bi bi-chat-left-dots-fill"></i>
                 <span>Messages</span>
                 @if(isset($unreadMessageCount) && $unreadMessageCount > 0)
@@ -1671,7 +1654,7 @@
                 <i class="bi bi-calendar-check-fill"></i>
                 <span>Services</span>
             </a>
-            <a href="{{ route('portal.messages.inbox') }}" class="{{ request()->routeIs('portal.messages.*') ? 'active' : '' }}">
+            <a href="{{ route($messageRoutePrefix.'inbox') }}" class="{{ request()->routeIs($messageRoutePrefix.'*') ? 'active' : '' }}">
                 <i class="bi bi-chat-left-dots-fill"></i>
                 <span>Messages</span>
                 @if(isset($unreadMessageCount) && $unreadMessageCount > 0)
