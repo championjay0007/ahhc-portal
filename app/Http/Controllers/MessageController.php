@@ -316,8 +316,28 @@ class MessageController extends Controller
 
     protected function authorizeDirectChatRecipient(User $recipient)
     {
+        $user = Auth::user();
+
+        if (! $user) {
+            abort(403, 'You must be signed in to access this conversation.');
+        }
+
+        if (in_array($user->role, ['admin', 'system_admin'], true)) {
+            return;
+        }
+
         $allowed = $this->getDirectChatRecipients()->pluck('id');
-        abort_unless($allowed->contains($recipient->id), 403, 'You are not authorized to chat with this user.');
+        $hasThreadAccess = Message::where(function ($query) use ($user, $recipient) {
+            $query->where('sender_id', $user->id)->where('recipient_id', $recipient->id);
+        })->orWhere(function ($query) use ($user, $recipient) {
+            $query->where('sender_id', $recipient->id)->where('recipient_id', $user->id);
+        })->exists();
+
+        if ($allowed->contains($recipient->id) || $hasThreadAccess) {
+            return;
+        }
+
+        abort(403, 'You are not authorized to chat with this user.');
     }
 
     public function conversation(User $recipient)

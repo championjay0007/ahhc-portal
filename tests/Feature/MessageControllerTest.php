@@ -107,4 +107,39 @@ class MessageControllerTest extends TestCase
 
         $response->assertRedirect(route('portal.messages.conversation.from_message', ['message' => $message->id]));
     }
+
+    public function test_admin_can_open_conversation_from_message_thread(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Thread Viewer',
+            'email' => 'admin-thread-viewer@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = User::create([
+            'name' => 'Participant Thread Viewer',
+            'email' => 'participant-thread-viewer@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $message = Message::create([
+            'sender_id' => $participant->id,
+            'recipient_id' => $admin->id,
+            'subject' => 'Admin conversation access',
+            'body' => 'Admin should be able to reply here.',
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('portal.messages.conversation.from_message', ['message' => $message->id]));
+
+        $response->assertStatus(200);
+        $response->assertSee('Live chat with your assigned support contact');
+    }
 }
