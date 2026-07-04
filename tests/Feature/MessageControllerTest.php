@@ -142,4 +142,49 @@ class MessageControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Live chat with your assigned support contact');
     }
+
+    public function test_admin_can_open_conversation_from_message_thread_when_not_directly_involved(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Thread Viewer 2',
+            'email' => 'admin-thread-viewer-2@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $sender = User::create([
+            'name' => 'Sender Thread Viewer',
+            'email' => 'sender-thread-viewer@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $recipient = User::create([
+            'name' => 'Recipient Thread Viewer',
+            'email' => 'recipient-thread-viewer@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $message = Message::create([
+            'sender_id' => $sender->id,
+            'recipient_id' => $recipient->id,
+            'subject' => 'Thread access for admin',
+            'body' => 'Admin should still be able to view this message.',
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('portal.messages.conversation.from_message', ['message' => $message->id]));
+
+        $response->assertStatus(200);
+        $response->assertSee('Thread access for admin');
+    }
 }

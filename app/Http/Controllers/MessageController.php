@@ -371,8 +371,18 @@ class MessageController extends Controller
             abort(403);
         }
 
-        if ($message->recipient_id !== $user->id && $message->sender_id !== $user->id) {
+        if (! in_array($user->role, ['admin', 'system_admin'], true)
+            && $message->recipient_id !== $user->id
+            && $message->sender_id !== $user->id
+        ) {
             abort(403);
+        }
+
+        if (in_array($user->role, ['admin', 'system_admin'], true)
+            && $message->recipient_id !== $user->id
+            && $message->sender_id !== $user->id
+        ) {
+            return $this->show($message);
         }
 
         $recipientId = $message->sender_id === $user->id ? $message->recipient_id : $message->sender_id;
