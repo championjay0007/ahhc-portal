@@ -709,27 +709,15 @@ class BudgetService
         $metrics = $this->getBudgetMetrics($budget);
 
         if ($metrics['is_overcommitted']) {
-            $alerts[] = [
-                'level' => 'danger',
-                'message' => 'Budget is overcommitted by $'.number_format(abs($metrics['remaining']) / 100, 2),
-                'icon' => 'exclamation-triangle',
-            ];
+            $alerts[] = 'Budget is overcommitted by $'.number_format(abs($metrics['remaining']) / 100, 2);
         }
 
         if ($metrics['is_low_balance']) {
-            $alerts[] = [
-                'level' => 'warning',
-                'message' => 'Budget is running low. Only $'.number_format($metrics['remaining'] / 100, 2).' remaining',
-                'icon' => 'exclamation-circle',
-            ];
+            $alerts[] = 'Budget is running low. Only $'.number_format($metrics['remaining'] / 100, 2).' remaining';
         }
 
         if ($metrics['utilization_percent'] >= 75) {
-            $alerts[] = [
-                'level' => 'info',
-                'message' => $metrics['utilization_percent'].'% of budget allocated',
-                'icon' => 'info-circle',
-            ];
+            $alerts[] = $metrics['utilization_percent'].'% of budget allocated';
         }
 
         return $alerts;

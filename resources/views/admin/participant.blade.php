@@ -452,7 +452,7 @@
                     <div class="alert alert-warning">
                         <ul class="mb-0">
                             @foreach($budgetAlerts as $alert)
-                                <li>{{ $alert }}</li>
+                                <li>{{ is_array($alert) ? ($alert['message'] ?? json_encode($alert)) : $alert }}</li>
                             @endforeach
                         </ul>
                     </div>

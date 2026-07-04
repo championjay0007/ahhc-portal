@@ -12,6 +12,27 @@ class BudgetServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_budget_alerts_are_returned_as_plain_strings()
+    {
+        $service = $this->app->make(BudgetService::class);
+
+        $budget = Budget::create([
+            'participant_id' => null,
+            'quarter_start_date' => now()->startOfQuarter()->toDateString(),
+            'quarter_end_date' => now()->endOfQuarter()->toDateString(),
+            'opening_balance_cents' => 0,
+            'carry_over_cents' => 0,
+            'committed_cents' => 1000,
+            'approved_spend_cents' => 0,
+            'paid_spend_cents' => 0,
+        ]);
+
+        $alerts = $service->getBudgetAlerts($budget);
+
+        $this->assertNotEmpty($alerts);
+        $this->assertContainsOnly('string', $alerts);
+    }
+
     public function test_apply_transaction_types_update_budget_correctly()
     {
         $service = $this->app->make(BudgetService::class);
