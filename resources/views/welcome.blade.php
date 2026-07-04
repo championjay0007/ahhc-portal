@@ -2011,13 +2011,13 @@
 
             @php
                 $steps = [
-                    ['Submit Self-Management Enquiry', 'Submit a self-management enquiry so Allegiance Heart &amp; Home Care can understand your support needs, goals and preferred self-management arrangements.', 'bi-person-check', 1],
-                    ['Suitability Review', 'Allegiance Heart &amp; Home Care reviews your enquiry to confirm whether self-management support is suitable and appropriate.', 'bi-file-earmark-text', 2],
+                    ['Submit Self-Management Enquiry', 'Submit a self-management enquiry so Allegiance Heart & Home Care can understand your support needs, goals and preferred self-management arrangements.', 'bi-person-check', 1],
+                    ['Suitability Review', 'Allegiance Heart & Home Care reviews your enquiry to confirm whether self-management support is suitable and appropriate.', 'bi-file-earmark-text', 2],
                     ['Service Agreement, Consent and Responsibilities', 'Before portal access is activated, the required service agreement, consent forms and self-management responsibilities are reviewed and signed.', 'bi-laptop', 3],
-                    ['Portal Setup', 'Allegiance Heart &amp; Home Care creates your secure portal account after approval, with login security, MFA where required and role-based access.', 'bi-people-fill', 4],
-                    ['Worker and Service Approval', 'Submit your chosen workers, suppliers or services for Allegiance Heart &amp; Home Care review and approval before services commence.', 'bi-receipt', 5],
-                    ['Documentation and Service Evidence', 'Upload invoices, care notes, service evidence and supporting documents through the portal for Allegiance Heart &amp; Home Care review.', 'bi-calendar-check', 6],
-                    ['Ongoing Monthly Review', 'Allegiance Heart &amp; Home Care reviews care arrangements, budget use, compliance, incidents, documentation and support need monthly to help maintain quality and safety.', 'bi-arrow-repeat', 7],
+                    ['Portal Setup', 'Allegiance Heart & Home Care creates your secure portal account after approval, with login security, MFA where required and role-based access.', 'bi-people-fill', 4],
+                    ['Worker and Service Approval', 'Submit your chosen workers, suppliers or services for Allegiance Heart & Home Care review and approval before services commence.', 'bi-receipt', 5],
+                    ['Documentation and Service Evidence', 'Upload invoices, care notes, service evidence and supporting documents through the portal for Allegiance Heart & Home Care review.', 'bi-calendar-check', 6],
+                    ['Ongoing Monthly Review', 'Allegiance Heart & Home Care reviews care arrangements, budget use, compliance, incidents, documentation and support need monthly to help maintain quality and safety.', 'bi-arrow-repeat', 7],
                 ];
             @endphp
 
@@ -2274,11 +2274,11 @@
             $faqs = [
                 [
                     'q' => 'Am I eligible for self-management support?',
-                    'a' => 'Eligibility requires a suitability assessment and formal approval from Allegiance Heart & Home Care. You can apply through our website, and our team will review your application to ensure self-management is the right fit for your care needs before creating your portal account.'
+                    'a' => 'Self management support is available to approved support at home participants who wants more choice and control over their care management. You can register your interest through our website, and we will contact you to discuss next steps.'
                 ],
                 [
                     'q' => 'How much does self-management cost?',
-                    'a' => 'The cost depends on your specific care needs and funding arrangements (such as Support at Home packages). Allegiance Heart & Home Care will discuss any applicable management fees or contribution implications with you transparently during the suitability assessment and onboarding process.'
+                    'a' => 'Under self-management support, you may choose your preferred workers or suppliers and agree on their service rates directly with them. These costs must fit within your approved Support at Home budget and any contribution requirements. Allegiance Heart & Home Care will review submitted workers, suppliers, quotes and invoices before approval or payment to support budget monitoring, compliance and service oversight.'
                 ],
                 [
                     'q' => 'Can I use third-party workers or Mable workers?',
@@ -2290,7 +2290,7 @@
                 ],
                 [
                     'q' => 'Is my information secure?',
-                    'a' => 'Absolutely. Our secure portal is hosted entirely on Australian servers. We use strict encryption, role-based access controls (so people only see what they need to), and maintain comprehensive audit logs to protect your personal and health information.'
+                    'a' => 'Absolutely. We use strict encryption, role-based access controls (so people only see what they need to), and maintain comprehensive audit logs to protect your personal and health information.'
                 ],
                 [
                     'q' => 'Is two-factor authentication (2FA) required?',
@@ -2302,11 +2302,11 @@
                 ],
                 [
                     'q' => 'What happens after I submit an enquiry?',
-                    'a' => 'Submitting an enquiry does not automatically create an account. Instead, it creates a secure ticket for our Allegiance Heart & Home Care team. We will review your details, contact you to discuss your needs, and guide you through the suitability assessment process.'
+                    'a' => 'Submitting an enquiry does not automatically create a portal account. It sends your request to Allegiance Heart & Home Care for review. Our team will contact you to discuss your preferred self-management setup, responsibilities, worker or supplier arrangements, and next steps before portal access is created.'
                 ],
                 [
                     'q' => 'What is the onboarding process?',
-                    'a' => 'Our onboarding involves 6 simple steps: 1) Enquiry & Application, 2) Suitability Assessment, 3) Profile Setup (care plan & budget), 4) Document Upload, 5) Electronic Signing of agreements, and 6) Dashboard Activation where you receive your secure login.'
+                    'a' => 'The process follows 7 steps: 1) submit a self-management enquiry, 2) review your enquiry with Allegiance Heart & Home Care, 3) complete the service agreement, consent and responsibilities, 4) set up your portal access, 5) submit workers or services for approval, 6) upload documentation and service evidence, and 7) continue with ongoing monthly reviews.'
                 ],
                 [
                     'q' => 'What documents are required for onboarding?',
@@ -2740,7 +2740,7 @@
                             <a href="/portal" style="color: white; text-decoration: underline;">
                                 Portal Login
                             </a>
-                            <br><small style="opacity: 0.7;">Submitting this form does not create portal access. Allegiance Heart &amp; Home Care will review your enquiry first.</small>
+                            <br><small style="opacity: 0.7;">Submitting this form does not create portal access. A team member from Allegiance Heart Home Care will contact you about your request.</small>
                         </div>
                     </div>
                 </div>
@@ -2765,7 +2765,7 @@
                         Submit an Enquiry
                     </h4>
                     <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">
-                        This form creates an enquiry for Allegiance Heart & Home Care review — it does <strong>not</strong> create a portal account automatically.
+                        This form creates an enquiry for Allegiance Heart & Home Care review. It does <strong>not</strong> create a portal account automatically.
                     </p>
 
                     <form method="POST" action="{{ route('public.enquiries.store') }}" novalidate>
@@ -2873,7 +2873,7 @@
                                            {{ old('consent') ? 'checked' : '' }} 
                                            required>
                                     <span style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
-                                        I consent to Allegiance Heart & Home Care contacting me about my enquiry and understand that submitting this form does <strong>not</strong> create a portal account. I acknowledge that Allegiance Heart & Home Care will assess my suitability before any account is created.
+                                        I consent to Allegiance Heart Home Care contacting me about my enquiry and understand that submitting this form does <strong>not</strong> create a portal account.
                                         <span style="color: #ef4444;">*</span>
                                     </span>
                                 </label>

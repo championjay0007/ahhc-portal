@@ -83,7 +83,7 @@ class PublicWebsiteController extends Controller
                 );
             }
 
-            return redirect()->back()->with('status', 'Thank you for your enquiry. An AHHC team member will contact you for assessment and approval.');
+            return redirect()->back()->with('status', 'Thank you for your enquiry. A team member from Allegiance Heart Home care will contact you to discuss your self-management support request and next steps.');
         } catch (\Exception $e) {
             \Log::error('Enquiry submission failed: '.$e->getMessage(), ['exception' => $e]);
 

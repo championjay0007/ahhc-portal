@@ -579,9 +579,10 @@
                 <h6>Explore</h6>
                 <ul>
                     <li><a href="#home">Home</a></li>
-                    <li><a href="#aged-care">Aged Care</a></li>
-                    <li><a href="#eligibility">Eligibility</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#support-at-home">Support at Home</a></li>
+                    <li><a href="#who-its-for">Who It’s For</a></li>
+                    <li><a href="#how-self-management-works">How Self-Management Works</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
                 </ul>
             </div>
             <div class="col-6 col-lg-3">
