@@ -21,7 +21,7 @@ class StorePreApprovalRequest extends FormRequest
             'purpose' => ['required_without:description', 'string', 'max:2000'],
             'requested_amount' => ['required_without:requested_amount_cents', 'numeric', 'min:0.01'],
             'requested_amount_cents' => ['required_without:requested_amount', 'integer', 'min:1'],
-            'supplier_id' => ['nullable', 'integer', 'exists:workers,id'],
+            'supplier_id' => ['nullable', 'integer'],
             'start_date' => ['required', 'date', 'before_or_equal:end_date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'expiry_date' => ['nullable', 'date', 'after_or_equal:start_date'],

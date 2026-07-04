@@ -9,6 +9,7 @@ use App\Models\PreApprovalAttachment;
 use App\Models\PreApprovalComment;
 use App\Models\PreApprovalRequest;
 use App\Models\User;
+use App\Models\Worker;
 use App\Services\AuditLogService;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
@@ -47,11 +48,14 @@ class PreApprovalController extends Controller
             ? (int) $request->input('requested_amount_cents')
             : (int) round($request->input('requested_amount') * 100);
 
+        $workerId = $this->resolveOptionalForeignKey($request->input('worker_id'));
+        $supplierId = $this->resolveOptionalForeignKey($request->input('supplier_id'));
+
         $preApproval = PreApprovalRequest::create([
             'participant_id' => $participant->id,
             'support_person_id' => $participant->assigned_support_person_id,
-            'worker_id' => $request->input('worker_id'),
-            'supplier_id' => $request->input('supplier_id'),
+            'worker_id' => $workerId,
+            'supplier_id' => $supplierId,
             'request_number' => 'PA-'.now()->format('YmdHis').'-'.$user->id,
             'service_type' => $serviceType,
             'service_category' => $serviceCategory,
@@ -100,6 +104,21 @@ class PreApprovalController extends Controller
         });
 
         return redirect()->route('portal.dashboard')->with('status', 'Pre-approval request submitted successfully.');
+    }
+
+    private function resolveOptionalForeignKey($value): ?int
+    {
+        if ($value === null || $value === '' || $value === 'null') {
+            return null;
+        }
+
+        $id = filter_var($value, FILTER_VALIDATE_INT);
+
+        if ($id === false) {
+            return null;
+        }
+
+        return Worker::whereKey($id)->exists() ? $id : null;
     }
 
     public function downloadQuote(PreApprovalRequest $preApprovalRequest)
