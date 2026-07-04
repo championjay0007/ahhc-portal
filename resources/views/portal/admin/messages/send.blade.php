@@ -171,8 +171,10 @@ function buildTemplateWrapperPreview(themeHtml, bodyContent) {
         return bodyContent;
     }
 
-    if (themeHtml.includes('{{body}}')) {
-        return themeHtml.replace(/\{\{body\}\}/g, bodyContent);
+    const placeholder = '{' + '{body' + '}' + '}';
+
+    if (themeHtml.includes(placeholder)) {
+        return themeHtml.replace(new RegExp('\\{\\{body\\}\\}', 'g'), bodyContent);
     }
 
     return themeHtml + bodyContent;
