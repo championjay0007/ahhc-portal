@@ -43,6 +43,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');
 
+// Temporary test endpoint to verify POST handling (CSRF + session)
+Route::get('/test-post', function () {
+    return '<!doctype html><html><head><meta charset="utf-8"><title>Test POST</title></head><body>'
+        . '<form method="POST" action="/test-post">'.csrf_field()
+        . '<input type="text" name="sample" value="hello">'
+        . '<button type="submit">Send POST</button></form></body></html>';
+});
+
+Route::post('/test-post', function () {
+    return response('ok', 200);
+});
+
 Route::get('/portal', [AuthController::class, 'showLogin'])->name('portal.login');
 Route::get('/portal/login', function () {
     return redirect()->route('portal.login');
@@ -600,7 +612,9 @@ Route::middleware(['auth', 'mfa', 'onboarding_complete', 'assessment_workflow'])
     Route::get('/portal/participant/feedback', [ParticipantPortalController::class, 'showComplaints'])->name('portal.participant.feedback');
 
     // Worker Nominations (Participant routes)
-    Route::prefix('/portal/participant/nominations')->name('portal.participant.nominations.')->group(function () {
+    // Restrict to auth + mfa only to avoid middleware (onboarding/assessment)
+    // unintentionally blocking participant nominations on some hosts.
+    Route::prefix('/portal/participant/nominations')->name('portal.participant.nominations.')->middleware(['auth', 'mfa'])->group(function () {
         Route::get('/', [WorkerNominationController::class, 'index'])->name('index');
         Route::get('/create', [WorkerNominationController::class, 'create'])->name('create');
         Route::post('/', [WorkerNominationController::class, 'store'])->name('store');
