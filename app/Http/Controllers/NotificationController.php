@@ -47,7 +47,11 @@ class NotificationController extends Controller
         $data = $notification->data ?? [];
         $url = $this->resolveNotificationUrl($data);
 
-        return redirect()->to(is_string($url) && $url !== '' ? $url : route('portal.dashboard'));
+        if (is_string($url) && $url !== '') {
+            return redirect()->to($url);
+        }
+
+        return redirect()->route('portal.dashboard');
     }
 
     public function markRead(Request $request, PortalNotification $notification)

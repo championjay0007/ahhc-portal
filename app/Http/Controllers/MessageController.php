@@ -512,15 +512,25 @@ class MessageController extends Controller
 
     public function show(Message $message)
     {
-        if (! $this->canAccessMessage($message)) {
+        $user = Auth::user();
+
+        if (! $user) {
             abort(403);
         }
 
-        if ($message->recipient_id === Auth::id()) {
+        if (! $this->canAccessMessage($message)) {
+            if (in_array($user->role, ['admin', 'system_admin'], true)) {
+                return redirect()->route('portal.messages.conversation.from_message', ['message' => $message->id]);
+            }
+
+            abort(403);
+        }
+
+        if ($message->recipient_id === $user->id) {
             $message->markAsRead();
         }
 
-        $view = Auth::user()->role === 'admin' ? 'portal.admin.messages.show' : 'portal.messages.show';
+        $view = $user->role === 'admin' ? 'portal.admin.messages.show' : 'portal.messages.show';
 
         return view($view, compact('message'));
     }
