@@ -250,7 +250,7 @@ class ParticipantPortalController extends Controller
         $remainingBudgetCents = $budgetMetrics['remaining'];
         $budgetPercent = $limitBudgetCents ? round(($usedBudgetCents / $limitBudgetCents) * 100, 1) : 0;
         $overBudget = $usedBudgetCents > $limitBudgetCents;
-        $currentQuarterLabel = 'Q'.ceil(now()->month / 3).' '.now()->year;
+        $currentQuarterLabel = $this->formatFiscalQuarterLabel(now());
 
         $pendingPreApprovalsCents = $participant->preApprovalRequests->where('status', 'submitted')->sum('requested_amount_cents');
         $approvedPreApprovalsCents = $participant->preApprovalRequests->where('status', 'approved')->sum('requested_amount_cents');

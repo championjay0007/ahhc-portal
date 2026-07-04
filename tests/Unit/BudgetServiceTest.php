@@ -33,6 +33,27 @@ class BudgetServiceTest extends TestCase
         $this->assertContainsOnly('string', $alerts);
     }
 
+    public function test_fiscal_quarter_mapping_uses_jul_to_jun_periods()
+    {
+        $service = $this->app->make(BudgetService::class);
+
+        $julyPeriod = $service->getQuarterPeriodForDate('2026-07-15');
+        $this->assertSame('2026-07-01', $julyPeriod['quarter_start_date']);
+        $this->assertSame('2026-09-30', $julyPeriod['quarter_end_date']);
+
+        $octoberPeriod = $service->getQuarterPeriodForDate('2026-10-15');
+        $this->assertSame('2026-10-01', $octoberPeriod['quarter_start_date']);
+        $this->assertSame('2026-12-31', $octoberPeriod['quarter_end_date']);
+
+        $januaryPeriod = $service->getQuarterPeriodForDate('2026-01-15');
+        $this->assertSame('2026-01-01', $januaryPeriod['quarter_start_date']);
+        $this->assertSame('2026-03-31', $januaryPeriod['quarter_end_date']);
+
+        $aprilPeriod = $service->getQuarterPeriodForDate('2026-04-15');
+        $this->assertSame('2026-04-01', $aprilPeriod['quarter_start_date']);
+        $this->assertSame('2026-06-30', $aprilPeriod['quarter_end_date']);
+    }
+
     public function test_apply_transaction_types_update_budget_correctly()
     {
         $service = $this->app->make(BudgetService::class);

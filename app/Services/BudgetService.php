@@ -21,8 +21,21 @@ class BudgetService
     {
         $dt = Carbon::parse($date);
         $month = $dt->month;
-        $quarter = (int) ceil($month / 3);
-        $startMonth = ($quarter - 1) * 3 + 1;
+
+        $quarter = match (true) {
+            in_array($month, [7, 8, 9], true) => 1,
+            in_array($month, [10, 11, 12], true) => 2,
+            in_array($month, [1, 2, 3], true) => 3,
+            default => 4,
+        };
+
+        $startMonth = match ($quarter) {
+            1 => 7,
+            2 => 10,
+            3 => 1,
+            default => 4,
+        };
+
         $start = $dt->copy()->startOfMonth()->month($startMonth)->startOfMonth();
         $end = $start->copy()->addMonths(2)->endOfMonth();
 

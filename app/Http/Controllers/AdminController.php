@@ -235,7 +235,7 @@ class AdminController extends Controller
         $totalRemaining = max(0, $totalBudget - $totalUsed);
         $overBudgetCount = $budgetQuery->whereRaw('committed_cents + approved_spend_cents > opening_balance_cents + carry_over_cents')->count();
 
-        $currentQuarterLabel = 'Q'.ceil($currentQuarter->month / 3).' '.$currentQuarter->year;
+        $currentQuarterLabel = $this->formatFiscalQuarterLabel($currentQuarter);
 
         return view('admin.budgets', compact('participants', 'totalBudget', 'totalUsed', 'totalRemaining', 'overBudgetCount', 'currentQuarterLabel'));
     }

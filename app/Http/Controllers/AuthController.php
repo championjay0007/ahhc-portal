@@ -713,7 +713,7 @@ class AuthController extends Controller
                 : 0;
             $currentQuarterLabel = $budget->quarter_start_date && $budget->quarter_end_date
                 ? $budget->quarter_start_date->format('j M Y').' – '.$budget->quarter_end_date->format('j M Y')
-                : 'Q'.ceil(now()->month / 3).' '.now()->year;
+                : $this->formatFiscalQuarterLabel(now());
             $budgetUpdatedAtLabel = optional($budget->updated_at ?? $budget->created_at)->format('j M Y') ?? now()->format('j M Y');
             $participantName = $participant->preferred_name ?? $participant->first_name;
             $participantStatus = $participant->status;
