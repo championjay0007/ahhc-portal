@@ -470,8 +470,7 @@ class MessageController extends Controller
 
     public function show(Message $message)
     {
-        // Check authorization
-        if ($message->recipient_id !== Auth::id() && $message->sender_id !== Auth::id()) {
+        if (! $this->canAccessMessage($message)) {
             abort(403);
         }
 
@@ -486,7 +485,7 @@ class MessageController extends Controller
 
     public function markRead(Message $message)
     {
-        if ($message->recipient_id !== Auth::id()) {
+        if (! $this->canAccessMessage($message)) {
             abort(403);
         }
 
@@ -497,7 +496,7 @@ class MessageController extends Controller
 
     public function markUnread(Message $message)
     {
-        if ($message->recipient_id !== Auth::id()) {
+        if (! $this->canAccessMessage($message)) {
             abort(403);
         }
 
@@ -508,13 +507,28 @@ class MessageController extends Controller
 
     public function delete(Message $message)
     {
-        if ($message->recipient_id !== Auth::id() && $message->sender_id !== Auth::id()) {
+        if (! $this->canAccessMessage($message)) {
             abort(403);
         }
 
         $message->delete();
 
         return back()->with('status', 'Message deleted.');
+    }
+
+    private function canAccessMessage(Message $message): bool
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return false;
+        }
+
+        if (in_array($user->role, ['admin', 'system_admin'], true)) {
+            return true;
+        }
+
+        return $message->recipient_id === $user->id || $message->sender_id === $user->id;
     }
 
     // ===== ADMIN MESSAGE BROADCAST =====
