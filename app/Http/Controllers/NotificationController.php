@@ -92,6 +92,10 @@ class NotificationController extends Controller
     {
         $url = $data['url'] ?? null;
 
+        if (! empty($data['message_id'])) {
+            return route('portal.messages.conversation.from_message', ['message' => $data['message_id']]);
+        }
+
         if (empty($url) && ! empty($data['conversation_id'])) {
             return route('portal.admin.support.conversation.show', ['conversation' => $data['conversation_id']]);
         }

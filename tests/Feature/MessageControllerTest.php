@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Message;
+use App\Models\PortalNotification;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -62,5 +63,48 @@ class MessageControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Message access test');
+    }
+
+    public function test_notification_opens_message_conversation_page(): void
+    {
+        $sender = User::create([
+            'name' => 'Sender User',
+            'email' => 'sender-user@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $recipient = User::create([
+            'name' => 'Recipient User',
+            'email' => 'recipient-user@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $message = Message::create([
+            'sender_id' => $sender->id,
+            'recipient_id' => $recipient->id,
+            'subject' => 'Conversation notification test',
+            'body' => 'Please reply in-app from this conversation view.',
+        ]);
+
+        $notification = PortalNotification::create([
+            'user_id' => $recipient->id,
+            'title' => 'New message',
+            'message' => 'You have a new message.',
+            'type' => 'info',
+            'channel' => 'in_app',
+            'data' => ['message_id' => $message->id],
+        ]);
+
+        $response = $this->actingAs($recipient)->get(route('portal.notifications.show', $notification));
+
+        $response->assertRedirect(route('portal.messages.conversation.from_message', ['message' => $message->id]));
     }
 }

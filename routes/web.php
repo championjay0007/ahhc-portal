@@ -641,6 +641,7 @@ Route::middleware(['auth', 'mfa', 'onboarding_complete', 'assessment_workflow'])
             ->name('conversation.send');
         Route::post('/send', [MessageController::class, 'send'])->name('send');
         Route::get('/inbox', [MessageController::class, 'inbox'])->name('inbox');
+        Route::get('/from-message/{message}', [MessageController::class, 'conversationFromMessage'])->name('conversation.from_message');
         Route::get('/{message}', [MessageController::class, 'show'])->name('show');
         Route::post('/{message}/mark-read', [MessageController::class, 'markRead'])->name('mark_read');
         Route::post('/{message}/mark-unread', [MessageController::class, 'markUnread'])->name('mark_unread');
