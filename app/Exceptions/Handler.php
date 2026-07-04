@@ -2,14 +2,15 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -40,52 +41,30 @@ class Handler extends ExceptionHandler
                 ->with('error', 'Uploaded content is too large. Please choose a smaller file and try again.');
         });
 
-        // Handle generic HTTP exceptions (403, 404) to provide friendlier redirects
-        $this->renderable(function (HttpExceptionInterface $e, Request $request) {
-            $status = $e->getStatusCode();
-
-            // Log details for remote debugging
-            $user = Auth::user();
-            $context = [
-                'status' => $status,
-                'path' => $request->path(),
-                'method' => $request->method(),
-                'user_id' => $user?->id,
-                'user_role' => $user?->role,
-                'ip' => $request->ip(),
-            ];
-
-            Log::warning('HTTP exception intercepted', $context);
-
-            if ($status === 403) {
-                // If admin or system_admin, send to admin dashboard instead of showing 403
-                if ($user && in_array($user->role, ['admin', 'system_admin'], true)) {
-                    return redirect()->route('portal.dashboard');
-                }
-
-                // If authenticated participant or worker, redirect to their dashboard
-                if ($user) {
-                    return redirect()->route('portal.dashboard')
-                        ->withErrors(['access' => 'You do not have permission to access that page.']);
-                }
-
-                // Unauthenticated: redirect to login
-                return redirect()->route('portal.login')
-                    ->withErrors(['access' => 'Please sign in to access that page.']);
+        $this->renderable(function (AuthorizationException|AccessDeniedHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Forbidden.'], 403);
             }
 
-            if ($status === 404) {
-                // Redirect authenticated users to dashboard on missing pages to reduce dead-ends
-                if ($user) {
-                    return redirect()->route('portal.dashboard')
-                        ->with('status', 'Page not found; redirected to your dashboard.');
-                }
-
-                // For guests, redirect to public home
-                return redirect()->route('public.home');
+            if (Auth::check()) {
+                return redirect()->route('portal.dashboard')
+                    ->with('error', 'You do not have access to that page.');
             }
 
-            return null; // let default handling proceed for other statuses
+            return redirect()->route('portal.login');
+        });
+
+        $this->renderable(function (NotFoundHttpException|ModelNotFoundException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Not found.'], 404);
+            }
+
+            if (Auth::check()) {
+                return redirect()->route('portal.dashboard')
+                    ->with('error', 'The page you requested could not be found.');
+            }
+
+            return redirect()->route('public.home');
         });
     }
 }

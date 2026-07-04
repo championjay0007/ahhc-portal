@@ -38,71 +38,12 @@ use App\Http\Controllers\SystemAdminController;
 use App\Http\Controllers\WorkerNominationController;
 use App\Http\Controllers\WorkerOnboardingController;
 use App\Http\Controllers\WorkerPortalController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Models\PortalNotification;
-use App\Models\WorkerNomination;
 
 Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');
-
-// Temporary test endpoint to verify POST handling (CSRF + session)
-Route::get('/test-post', function () {
-    return '<!doctype html><html><head><meta charset="utf-8"><title>Test POST</title></head><body>'
-        . '<form method="POST" action="/test-post">'.csrf_field()
-        . '<input type="text" name="sample" value="hello">'
-        . '<button type="submit">Send POST</button></form></body></html>';
-});
-
-Route::post('/test-post', function () {
-    return response('ok', 200);
-});
-
-// Temporary debug endpoint to show current authenticated user info
-Route::middleware('auth')->get('/debug-auth', function () {
-    $user = Auth::user();
-
-    return response()->json([
-        'auth_id' => $user?->id,
-        'email' => $user?->email,
-        'role' => $user?->role,
-        'participant_id' => $user?->participant?->id,
-    ]);
-});
-
-// Temporary debug route to inspect a notification's owner and data
-Route::middleware('auth')->get('/debug-notification/{id}', function ($id) {
-    $n = PortalNotification::find($id);
-    if (! $n) {
-        return response()->json(['error' => 'not_found'], 404);
-    }
-
-    return response()->json([
-        'id' => $n->id,
-        'user_id' => $n->user_id,
-        'read_at' => $n->read_at,
-        'data' => $n->data,
-        'created_at' => $n->created_at,
-    ]);
-});
-
-// Temporary debug route to inspect a worker nomination record
-Route::middleware('auth')->get('/debug-nomination/{id}', function ($id) {
-    $n = WorkerNomination::with('participant.user')->find($id);
-    if (! $n) {
-        return response()->json(['error' => 'not_found'], 404);
-    }
-
-    return response()->json([
-        'id' => $n->id,
-        'participant_id' => $n->participant_id,
-        'participant_user_id' => $n->participant?->user?->id,
-        'participant_user_email' => $n->participant?->user?->email,
-        'status' => $n->status->value ?? $n->status,
-        'created_at' => $n->created_at,
-        'uploaded_documents' => $n->uploaded_documents,
-    ]);
-});
 
 Route::get('/portal', [AuthController::class, 'showLogin'])->name('portal.login');
 Route::get('/portal/login', function () {
@@ -739,3 +680,15 @@ Route::post('/support/widget/{conversation}/message', [SupportTicketController::
 
 Route::get('/support/widget/{conversation}/view', [SupportTicketController::class, 'showWidgetView'])
     ->name('public.support.widget.view');
+
+Route::fallback(function (Request $request) {
+    if ($request->expectsJson()) {
+        return response()->json(['message' => 'Not found.'], 404);
+    }
+
+    if (Auth::check()) {
+        return redirect()->route('portal.dashboard');
+    }
+
+    return redirect()->route('public.home');
+});
