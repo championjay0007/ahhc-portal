@@ -34,9 +34,9 @@ class NotificationController extends Controller
     public function show(Request $request, PortalNotification $notification)
     {
         $user = Auth::user();
-        // Allow owners or admins/system_admins to view the notification
-        if ($notification->user_id !== $user->id && ! in_array($user->role, ['admin', 'system_admin'], true)) {
-            abort(403);
+
+        if (! $this->canAccessNotification($user, $notification)) {
+            return redirect()->route('portal.dashboard')->with('status', 'That notification is no longer available.');
         }
 
         // Mark as read if not already read
@@ -45,20 +45,16 @@ class NotificationController extends Controller
         }
 
         $data = $notification->data ?? [];
-        $url = $data['url'] ?? null;
+        $url = $this->resolveNotificationUrl($data);
 
-        if (empty($url) && ! empty($data['conversation_id'])) {
-            $url = route('portal.admin.support.conversation.show', ['conversation' => $data['conversation_id']]);
-        }
-
-        return redirect($url ?? route('portal.dashboard'));
+        return redirect()->to(is_string($url) && $url !== '' ? $url : route('portal.dashboard'));
     }
 
     public function markRead(Request $request, PortalNotification $notification)
     {
         $user = Auth::user();
-        if ($notification->user_id !== $user->id && ! in_array($user->role, ['admin', 'system_admin'], true)) {
-            abort(403);
+        if (! $this->canAccessNotification($user, $notification)) {
+            return redirect()->route('portal.dashboard')->with('status', 'That notification is no longer available.');
         }
 
         $notification->update(['read_at' => now()]);
@@ -69,13 +65,38 @@ class NotificationController extends Controller
     public function markUnread(Request $request, PortalNotification $notification)
     {
         $user = Auth::user();
-        if ($notification->user_id !== $user->id && ! in_array($user->role, ['admin', 'system_admin'], true)) {
-            abort(403);
+        if (! $this->canAccessNotification($user, $notification)) {
+            return redirect()->route('portal.dashboard')->with('status', 'That notification is no longer available.');
         }
 
         $notification->update(['read_at' => null]);
 
         return back()->with('status', 'Notification marked unread.');
+    }
+
+    private function canAccessNotification($user, PortalNotification $notification): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        if (in_array($user->role, ['admin', 'system_admin'], true)) {
+            return true;
+        }
+
+        return (int) ($notification->user_id ?? 0) === (int) $user->id
+            || (int) ($notification->recipient_id ?? 0) === (int) $user->id;
+    }
+
+    private function resolveNotificationUrl(array $data): ?string
+    {
+        $url = $data['url'] ?? null;
+
+        if (empty($url) && ! empty($data['conversation_id'])) {
+            return route('portal.admin.support.conversation.show', ['conversation' => $data['conversation_id']]);
+        }
+
+        return is_string($url) && $url !== '' ? $url : null;
     }
 
     public function preferences()
