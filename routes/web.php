@@ -41,6 +41,7 @@ use App\Http\Controllers\WorkerPortalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PortalNotification;
+use App\Models\WorkerNomination;
 
 Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');
@@ -82,6 +83,24 @@ Route::middleware('auth')->get('/debug-notification/{id}', function ($id) {
         'read_at' => $n->read_at,
         'data' => $n->data,
         'created_at' => $n->created_at,
+    ]);
+});
+
+// Temporary debug route to inspect a worker nomination record
+Route::middleware('auth')->get('/debug-nomination/{id}', function ($id) {
+    $n = WorkerNomination::with('participant.user')->find($id);
+    if (! $n) {
+        return response()->json(['error' => 'not_found'], 404);
+    }
+
+    return response()->json([
+        'id' => $n->id,
+        'participant_id' => $n->participant_id,
+        'participant_user_id' => $n->participant?->user?->id,
+        'participant_user_email' => $n->participant?->user?->email,
+        'status' => $n->status->value ?? $n->status,
+        'created_at' => $n->created_at,
+        'uploaded_documents' => $n->uploaded_documents,
     ]);
 });
 
