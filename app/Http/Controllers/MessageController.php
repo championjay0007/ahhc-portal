@@ -11,6 +11,7 @@ use App\Services\MessageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -397,7 +398,17 @@ class MessageController extends Controller
     {
         $user = Auth::user();
 
+        Log::debug('MessageController@conversationFromMessage start', [
+            'route' => request()->route()?->getName(),
+            'user_id' => $user?->id,
+            'user_role' => $user?->role,
+            'message_id' => $message->id,
+            'sender_id' => $message->sender_id,
+            'recipient_id' => $message->recipient_id,
+        ]);
+
         if (! $user) {
+            Log::warning('MessageController@conversationFromMessage unauthorized: no authenticated user', ['message_id' => $message->id]);
             abort(403);
         }
 
@@ -405,6 +416,13 @@ class MessageController extends Controller
             && $message->recipient_id !== $user->id
             && $message->sender_id !== $user->id
         ) {
+            Log::warning('MessageController@conversationFromMessage forbidden: user is not sender or recipient', [
+                'route' => request()->route()?->getName(),
+                'user_id' => $user->id,
+                'message_id' => $message->id,
+                'sender_id' => $message->sender_id,
+                'recipient_id' => $message->recipient_id,
+            ]);
             abort(403);
         }
 
@@ -564,12 +582,30 @@ class MessageController extends Controller
     public function show(Message $message)
     {
         $user = Auth::user();
+        Log::debug('MessageController@show start', [
+            'route' => request()->route()?->getName(),
+            'user_id' => $user?->id,
+            'user_role' => $user?->role,
+            'message_id' => $message->id,
+            'sender_id' => $message->sender_id,
+            'recipient_id' => $message->recipient_id,
+        ]);
 
         if (! $user) {
+            Log::warning('MessageController@show unauthorized: no authenticated user', ['message_id' => $message->id]);
             abort(403);
         }
 
         if (! $this->canAccessMessage($message)) {
+            Log::warning('MessageController@show forbidden: user cannot access this message', [
+                'route' => request()->route()?->getName(),
+                'user_id' => $user->id,
+                'user_role' => $user->role,
+                'message_id' => $message->id,
+                'sender_id' => $message->sender_id,
+                'recipient_id' => $message->recipient_id,
+            ]);
+
             if (in_array($user->role, ['admin', 'system_admin'], true)) {
                 return redirect()->route('portal.messages.conversation.from_message', ['message' => $message->id]);
             }

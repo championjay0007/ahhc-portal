@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Message;
 use App\Models\PortalNotification;
 use App\Models\UserNotificationPreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -45,7 +47,15 @@ class NotificationController extends Controller
         }
 
         $data = $notification->data ?? [];
-        $url = $this->resolveNotificationUrl($data);
+        $url = $this->resolveNotificationUrl($user, $data);
+
+        Log::debug('NotificationController@show resolved URL', [
+            'route' => request()->route()?->getName(),
+            'user_id' => $user->id,
+            'notification_id' => $notification->id,
+            'notification_data' => $data,
+            'resolved_url' => $url,
+        ]);
 
         if (is_string($url) && $url !== '') {
             return redirect()->to($url);
@@ -92,12 +102,34 @@ class NotificationController extends Controller
             || (int) ($notification->recipient_id ?? 0) === (int) $user->id;
     }
 
-    private function resolveNotificationUrl(array $data): ?string
+    private function resolveNotificationUrl($user, array $data): ?string
     {
         $url = $data['url'] ?? null;
 
         if (! empty($data['message_id'])) {
-            return route($this->notificationRoutePrefix().'conversation.from_message', ['message' => $data['message_id']]);
+            $message = Message::find($data['message_id']);
+
+            if (! $message) {
+                Log::warning('NotificationController@resolveNotificationUrl missing message', [
+                    'user_id' => $user?->id,
+                    'message_id' => $data['message_id'],
+                    'notification_data' => $data,
+                ]);
+                return null;
+            }
+
+            if (! $this->canAccessMessage($user, $message)) {
+                Log::warning('NotificationController@resolveNotificationUrl unauthorized message access', [
+                    'user_id' => $user?->id,
+                    'message_id' => $message->id,
+                    'sender_id' => $message->sender_id,
+                    'recipient_id' => $message->recipient_id,
+                    'user_role' => $user?->role,
+                ]);
+                return null;
+            }
+
+            return route($this->notificationRoutePrefix().'conversation.from_message', ['message' => $message->id]);
         }
 
         if (empty($url) && ! empty($data['conversation_id'])) {
@@ -105,6 +137,19 @@ class NotificationController extends Controller
         }
 
         return is_string($url) && $url !== '' ? $url : null;
+    }
+
+    private function canAccessMessage($user, Message $message): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        if (in_array($user->role, ['admin', 'system_admin'], true)) {
+            return true;
+        }
+
+        return $message->recipient_id === $user->id || $message->sender_id === $user->id;
     }
 
     private function notificationRoutePrefix(): string
