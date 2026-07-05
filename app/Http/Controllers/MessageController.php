@@ -328,6 +328,10 @@ class MessageController extends Controller
         $user = Auth::user();
 
         if (! $user) {
+            Log::warning('authorizeDirectChatRecipient denied: no authenticated user', [
+                'recipient_id' => $recipient->id,
+                'recipient_role' => $recipient->role,
+            ]);
             abort(403, 'You must be signed in to access this conversation.');
         }
 
@@ -345,6 +349,15 @@ class MessageController extends Controller
         if ($allowed->contains($recipient->id) || $hasThreadAccess) {
             return;
         }
+
+        Log::warning('authorizeDirectChatRecipient denied: user has no direct chat access', [
+            'user_id' => $user->id,
+            'user_role' => $user->role,
+            'recipient_id' => $recipient->id,
+            'recipient_role' => $recipient->role,
+            'allowed_recipient_ids' => $allowed->all(),
+            'has_thread_access' => $hasThreadAccess,
+        ]);
 
         abort(403, 'You are not authorized to chat with this user.');
     }
@@ -509,6 +522,12 @@ class MessageController extends Controller
         $recipientId = $validated['recipient_id'];
         $allowedRecipients = collect();
 
+        Log::debug('MessageController@send start', [
+            'user_id' => $user?->id,
+            'user_role' => $user?->role,
+            'recipient_id' => $recipientId,
+        ]);
+
         if ($user->role === 'participant') {
             $participant = Participant::where('user_id', $user->id)
                 ->with(['assignments.worker.user'])
@@ -538,6 +557,12 @@ class MessageController extends Controller
         }
 
         if (! $allowedRecipients->contains($recipientId)) {
+            Log::warning('MessageController@send denied: recipient not allowed', [
+                'user_id' => $user->id,
+                'user_role' => $user->role,
+                'recipient_id' => $recipientId,
+                'allowed_recipients' => $allowedRecipients->all(),
+            ]);
             abort(403, 'You are not authorized to message this user.');
         }
 
@@ -637,6 +662,12 @@ class MessageController extends Controller
     public function markRead(Message $message)
     {
         if (! $this->canAccessMessage($message)) {
+            Log::warning('MessageController@markRead denied', [
+                'user_id' => Auth::id(),
+                'message_id' => $message->id,
+                'sender_id' => $message->sender_id,
+                'recipient_id' => $message->recipient_id,
+            ]);
             abort(403);
         }
 
@@ -648,6 +679,12 @@ class MessageController extends Controller
     public function markUnread(Message $message)
     {
         if (! $this->canAccessMessage($message)) {
+            Log::warning('MessageController@markUnread denied', [
+                'user_id' => Auth::id(),
+                'message_id' => $message->id,
+                'sender_id' => $message->sender_id,
+                'recipient_id' => $message->recipient_id,
+            ]);
             abort(403);
         }
 
@@ -659,6 +696,12 @@ class MessageController extends Controller
     public function delete(Message $message)
     {
         if (! $this->canAccessMessage($message)) {
+            Log::warning('MessageController@delete denied', [
+                'user_id' => Auth::id(),
+                'message_id' => $message->id,
+                'sender_id' => $message->sender_id,
+                'recipient_id' => $message->recipient_id,
+            ]);
             abort(403);
         }
 
