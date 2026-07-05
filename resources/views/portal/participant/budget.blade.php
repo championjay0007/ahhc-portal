@@ -23,6 +23,10 @@
     @endif
 
     <div class="card portal-card p-4 mb-4">
+        @php
+            $computedRemaining = ($limitBudgetCents ?? 0) - ($usedBudgetCents ?? 0);
+            $displayRemaining = (int) $computedRemaining;
+        @endphp
         <h5>Budget composition</h5>
         <div class="row g-3 mt-3">
             <div class="col-md-3">
@@ -46,7 +50,7 @@
             <div class="col-md-3">
                 <div class="card border-0 bg-light p-3">
                     <p class="text-muted mb-1">Remaining</p>
-                    <h4 class="{{ $remainingBudgetCents < 0 ? 'text-danger' : '' }}">${{ number_format($remainingBudgetCents / 100, 2) }}</h4>
+                    <h4 class="{{ $displayRemaining < 0 ? 'text-danger' : '' }}">${{ number_format($displayRemaining / 100, 2) }}</h4>
                 </div>
             </div>
         </div>
