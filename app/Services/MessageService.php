@@ -43,6 +43,13 @@ class MessageService
             // don't block message creation on notification failures
         }
 
+        // Fire a real-time broadcast event so the UI can update message icons in real time
+        try {
+            event(new \App\Events\NewMessage($message));
+        } catch (\Exception $e) {
+            // non-fatal if broadcasting isn't configured
+        }
+
         return $message;
     }
 

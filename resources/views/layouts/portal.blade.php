@@ -13,6 +13,7 @@
     <meta name="theme-color" content="{{ $dashboardPrimary }}">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="current-user-id" content="{{ auth()->id() }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Portal' }}">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
