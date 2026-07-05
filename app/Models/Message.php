@@ -21,6 +21,9 @@ class Message extends Model
     ];
 
     protected $casts = [
+        'sender_id' => 'integer',
+        'recipient_id' => 'integer',
+        'template_id' => 'integer',
         'read_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
