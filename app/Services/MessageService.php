@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Message;
 use App\Models\MessageTemplate;
+use App\Models\PortalNotification;
 use App\Models\PortalSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
@@ -26,6 +27,20 @@ class MessageService
         $recipient = User::find($recipientId);
         if ($recipient && $recipient->email) {
             self::sendEmailNotification($recipient, $subject, $body);
+        }
+
+        // Create an in-app portal notification so users see the message in the UI
+        try {
+            PortalNotification::create([
+                'user_id' => $recipientId,
+                'title' => 'New message',
+                'message' => substr(strip_tags($body), 0, 255),
+                'type' => 'info',
+                'channel' => 'in_app',
+                'data' => ['message_id' => $message->id],
+            ]);
+        } catch (\Exception $e) {
+            // don't block message creation on notification failures
         }
 
         return $message;
