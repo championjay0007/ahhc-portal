@@ -708,10 +708,15 @@ class AuthController extends Controller
                 : max(0, (int) ($participant->current_budget_used_cents ?? 0));
             $committedBudgetCents = $budgetMetrics['committed'] ?? 0;
 
-            $rawRemainingBudgetCents = $budgetMetrics['remaining'] ?? ($budgetLimitCents - $usedBudgetCents);
-            $remainingBudgetCents = is_numeric($rawRemainingBudgetCents)
-                ? (int) round((float) $rawRemainingBudgetCents)
-                : 0;
+            $computedRemaining = $budgetLimitCents - $usedBudgetCents;
+            if (isset($budgetMetrics['remaining']) && (int) round((float) $budgetMetrics['remaining']) !== $computedRemaining) {
+                \Log::warning('Budget remaining mismatch (AuthController::dashboard)', [
+                    'participant_id' => $participant->id ?? null,
+                    'budget_metrics_remaining' => $budgetMetrics['remaining'] ?? null,
+                    'computed_remaining' => $computedRemaining,
+                ]);
+            }
+            $remainingBudgetCents = (int) $computedRemaining;
 
             $budgetPercent = $budgetLimitCents > 0
                 ? min(100, (int) round(($usedBudgetCents / $budgetLimitCents) * 100))

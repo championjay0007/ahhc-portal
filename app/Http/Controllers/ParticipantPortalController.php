@@ -249,10 +249,16 @@ class ParticipantPortalController extends Controller
 
         $usedBudgetCents = (int) ($budgetMetrics['used'] ?? ($approvedCents + $committedCents + $paidCents));
 
-        $rawRemaining = $budgetMetrics['remaining'] ?? ($limitBudgetCents - $usedBudgetCents);
-        $remainingBudgetCents = is_numeric($rawRemaining)
-            ? (int) round((float) $rawRemaining)
-            : 0;
+        $computedRemaining = $limitBudgetCents - $usedBudgetCents;
+        if (isset($budgetMetrics['remaining']) && (int) round((float) $budgetMetrics['remaining']) !== $computedRemaining) {
+            \Log::warning('Budget remaining mismatch (ParticipantPortalController::showBudget)', [
+                'participant_id' => $participant->id ?? null,
+                'budget_metrics_remaining' => $budgetMetrics['remaining'] ?? null,
+                'computed_remaining' => $computedRemaining,
+                'budget_metrics' => $budgetMetrics,
+            ]);
+        }
+        $remainingBudgetCents = (int) $computedRemaining;
 
         $budgetPercent = $limitBudgetCents ? round(($usedBudgetCents / $limitBudgetCents) * 100, 1) : 0;
         $overBudget = $usedBudgetCents > $limitBudgetCents;
