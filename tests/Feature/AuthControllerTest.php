@@ -195,6 +195,47 @@ class AuthControllerTest extends TestCase
         $response->assertSee('$200.00');
     }
 
+    public function test_participant_dashboard_preserves_positive_remaining_budget_when_service_reports_zero(): void
+    {
+        $participantUser = User::create([
+            'name' => 'Participant Dashboard Remaining',
+            'email' => 'participant-dashboard-remaining@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $participantUser->id,
+            'participant_number' => 'P-'.$participantUser->id,
+            'first_name' => 'Participant',
+            'last_name' => 'Remaining',
+            'status' => 'active',
+            'phone' => '0400000000',
+            'email' => $participantUser->email,
+            'consent_to_share' => false,
+            'budget_limit_cents' => 10000,
+            'current_budget_used_cents' => 0,
+            'created_by_id' => $participantUser->id,
+            'updated_by_id' => $participantUser->id,
+        ]);
+
+        $period = now()->startOfQuarter();
+
+        Budget::create([
+            'participant_id' => $participant->id,
+            'quarter_start_date' => $period->toDateString(),
+            'quarter_end_date' => $period->copy()->endOfQuarter()->toDateString(),
+        ]);
+
+        $response = $this->actingAs($participantUser)->get(route('portal.dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertSee('$100.00');
+    }
+
     public function test_login_redirects_each_role_to_their_dashboard(): void
     {
         $cases = [

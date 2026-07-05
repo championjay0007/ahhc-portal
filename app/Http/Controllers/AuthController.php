@@ -707,7 +707,12 @@ class AuthController extends Controller
                 ? $budgetMetrics['used']
                 : max(0, (int) ($participant->current_budget_used_cents ?? 0));
             $committedBudgetCents = $budgetMetrics['committed'] ?? 0;
-            $remainingBudgetCents = max(0, $budgetMetrics['remaining'] ?? max(0, $budgetLimitCents - $usedBudgetCents));
+
+            $rawRemainingBudgetCents = $budgetMetrics['remaining'] ?? ($budgetLimitCents - $usedBudgetCents);
+            $remainingBudgetCents = is_numeric($rawRemainingBudgetCents)
+                ? (int) round((float) $rawRemainingBudgetCents)
+                : 0;
+
             $budgetPercent = $budgetLimitCents > 0
                 ? min(100, (int) round(($usedBudgetCents / $budgetLimitCents) * 100))
                 : 0;

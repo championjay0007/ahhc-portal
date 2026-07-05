@@ -240,14 +240,20 @@ class ParticipantPortalController extends Controller
         $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant);
         $budgetMetrics = $budgetService->getBudgetMetrics($budget);
 
-        $openingBalanceCents = $budgetMetrics['opening_balance'];
-        $carryOverCents = $budgetMetrics['carry_over'];
-        $committedCents = $budgetMetrics['committed'];
-        $approvedCents = $budgetMetrics['approved'];
-        $paidCents = $budgetMetrics['paid'];
-        $limitBudgetCents = $budgetMetrics['total'];
-        $usedBudgetCents = $approvedCents + $committedCents;
-        $remainingBudgetCents = $budgetMetrics['remaining'];
+        $openingBalanceCents = (int) ($budgetMetrics['opening_balance'] ?? 0);
+        $carryOverCents = (int) ($budgetMetrics['carry_over'] ?? 0);
+        $committedCents = (int) ($budgetMetrics['committed'] ?? 0);
+        $approvedCents = (int) ($budgetMetrics['approved'] ?? 0);
+        $paidCents = (int) ($budgetMetrics['paid'] ?? 0);
+        $limitBudgetCents = (int) ($budgetMetrics['total'] ?? 0);
+
+        $usedBudgetCents = (int) ($budgetMetrics['used'] ?? ($approvedCents + $committedCents + $paidCents));
+
+        $rawRemaining = $budgetMetrics['remaining'] ?? ($limitBudgetCents - $usedBudgetCents);
+        $remainingBudgetCents = is_numeric($rawRemaining)
+            ? (int) round((float) $rawRemaining)
+            : 0;
+
         $budgetPercent = $limitBudgetCents ? round(($usedBudgetCents / $limitBudgetCents) * 100, 1) : 0;
         $overBudget = $usedBudgetCents > $limitBudgetCents;
         $currentQuarterLabel = $this->formatFiscalQuarterLabel(now());
