@@ -1,4 +1,4 @@
-@extends('layouts.portal')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.portal')
 
 @section('content')
 <div class="container py-4">
@@ -23,10 +23,14 @@
                 <li class="list-group-item">Carry Over: ${{ number_format($budget->carry_over,2) }}</li>
                 <li class="list-group-item">Total Available: ${{ number_format($budget->total_available,2) }}</li>
                 <li class="list-group-item">Committed: ${{ number_format($budget->committed_funds,2) }}</li>
+                <li class="list-group-item">Used (approved + paid): ${{ number_format($budget->approved_spend + $budget->paid_spend,2) }}</li>
+                <li class="list-group-item">Remaining: ${{ number_format($budget->remaining_balance,2) }}</li>
+                <li class="list-group-item">
+                    <strong>Remaining formula</strong>: Total Available − Committed − Used
+                </li>
                 <li class="list-group-item">Pending Invoices: ${{ number_format($budget->pending_invoices,2) }}</li>
                 <li class="list-group-item">Approved Spend: ${{ number_format($budget->approved_spend,2) }}</li>
                 <li class="list-group-item">Paid Spend: ${{ number_format($budget->paid_spend,2) }}</li>
-                <li class="list-group-item">Remaining: ${{ number_format($budget->remaining_balance,2) }}</li>
             </ul>
             <p>
                 <a href="{{ route('budgets.export.csv', $budget) }}" class="btn btn-outline-secondary">Export CSV</a>

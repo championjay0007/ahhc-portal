@@ -247,7 +247,7 @@ class ParticipantPortalController extends Controller
         $paidCents = (int) ($budgetMetrics['paid'] ?? 0);
         $limitBudgetCents = (int) ($budgetMetrics['total'] ?? 0);
 
-        $usedBudgetCents = (int) ($budgetMetrics['used'] ?? ($approvedCents + $committedCents + $paidCents));
+        $usedBudgetCents = (int) ($budgetMetrics['used'] ?? ($approvedCents + $paidCents));
 
         $computedRemaining = $limitBudgetCents - $committedCents - $usedBudgetCents;
         if (isset($budgetMetrics['remaining']) && (int) round((float) $budgetMetrics['remaining']) !== $computedRemaining) {

@@ -53,6 +53,16 @@
                 </div>
             </div>
         </div>
+        <div class="row g-3 mt-3">
+            <div class="col-12">
+                <div class="alert alert-info mb-0">
+                    <strong>Remaining</strong> = Total available − Committed − Used
+                    <div class="small text-muted mt-1">
+                        Total available is opening balance plus carry-over. Used includes approved and paid invoices.
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="card portal-card p-4 mb-4">

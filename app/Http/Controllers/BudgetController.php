@@ -34,33 +34,52 @@ class BudgetController extends Controller
         return view('budgets.index', compact('budgets'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('budgets.create');
+        if (! auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        $participant = null;
+        $participants = null;
+
+        if ($request->filled('participant_id')) {
+            $participant = Participant::find($request->input('participant_id'));
+        }
+
+        if (! $participant) {
+            $participants = Participant::orderBy('first_name')->orderBy('last_name')->get();
+        }
+
+        return view('budgets.create', compact('participant', 'participants'));
     }
 
     public function store(Request $request)
     {
+        if (! auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
         $hasQuarterStartColumn =
             Schema::hasColumn('budgets', 'quarter_start');
 
         $data = $request->validate([
-            'participant_id' => 'nullable|integer',
+            'participant_id' => ['required', 'integer', 'exists:participants,id'],
             'quarter_start' => [Rule::requiredIf(fn () => $hasQuarterStartColumn), 'nullable', 'date'],
             'quarter_end' => [Rule::requiredIf(fn () => $hasQuarterStartColumn), 'nullable', 'date'],
             'quarter_start_date' => [Rule::requiredIf(fn () => ! $hasQuarterStartColumn), 'nullable', 'date'],
             'quarter_end_date' => [Rule::requiredIf(fn () => ! $hasQuarterStartColumn), 'nullable', 'date'],
-            'opening_budget' => 'required|numeric',
-            'carry_over' => 'nullable|numeric',
+            'opening_budget' => 'required|numeric|min:0',
+            'carry_over' => 'nullable|numeric|min:0',
         ]);
 
         $quarterStart = $data['quarter_start'] ?? $data['quarter_start_date'] ?? null;
         $quarterEnd = $data['quarter_end'] ?? $data['quarter_end_date'] ?? null;
 
-        $participantId = $this->resolveParticipantId($request->user());
+        $participantId = $data['participant_id'] ?? $this->resolveParticipantId($request->user());
 
         $budget = Budget::create([
-            'participant_id' => $data['participant_id'] ?? $participantId,
+            'participant_id' => $participantId,
             'quarter_start' => $quarterStart,
             'quarter_end' => $quarterEnd,
             'quarter_start_date' => $quarterStart,
@@ -71,7 +90,7 @@ class BudgetController extends Controller
 
         $this->service->calculateTotals($budget);
 
-        return redirect()->route('budgets.show', $budget);
+        return redirect()->route('budgets.index')->with('status', 'Budget created successfully for participant ID '.$participantId.'.');
     }
 
     public function show(Budget $budget)
@@ -87,8 +106,9 @@ class BudgetController extends Controller
     {
         $user = auth()->user();
         $participantId = $this->resolveParticipantId($user);
+        $quarterCol = Schema::hasColumn('budgets', 'quarter_start') ? 'quarter_start' : 'quarter_start_date';
 
-        $budgets = Budget::where('participant_id', $participantId)->orderBy('quarter_start', 'desc')->get();
+        $budgets = Budget::where('participant_id', $participantId)->orderBy($quarterCol, 'desc')->get();
         foreach ($budgets as $b) {
             $b->alerts = $this->service->getAlerts($b);
         }

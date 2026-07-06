@@ -1,8 +1,11 @@
-@extends('layouts.portal')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.portal')
 
 @section('content')
 <div class="container py-4">
     <h1>Budgets</h1>
+    @if(session('status'))
+        <div class="alert alert-success">{{ session('status') }}</div>
+    @endif
     <a href="{{ route('budgets.create') }}" class="btn btn-primary mb-3">Create Budget</a>
     <table class="table table-striped">
         <thead>
