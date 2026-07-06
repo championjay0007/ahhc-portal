@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 class BudgetController extends Controller
 {
@@ -78,17 +79,46 @@ class BudgetController extends Controller
 
         $participantId = $data['participant_id'] ?? $this->resolveParticipantId($request->user());
 
-        $budget = Budget::create([
-            'participant_id' => $participantId,
-            'quarter_start' => $quarterStart,
-            'quarter_end' => $quarterEnd,
-            'quarter_start_date' => $quarterStart,
-            'quarter_end_date' => $quarterEnd,
-            'opening_budget' => $data['opening_budget'],
-            'carry_over' => $data['carry_over'] ?? 0,
-        ]);
+        $existingBudgetQuery = Budget::where('participant_id', $participantId);
+        if ($hasQuarterStartColumn) {
+            $existingBudgetQuery->whereDate('quarter_start', $quarterStart)
+                ->whereDate('quarter_end', $quarterEnd);
+        } else {
+            $existingBudgetQuery->whereDate('quarter_start_date', $quarterStart)
+                ->whereDate('quarter_end_date', $quarterEnd);
+        }
 
-        $this->service->calculateTotals($budget);
+        if ($existingBudget = $existingBudgetQuery->first()) {
+            return redirect()->route('budgets.show', $existingBudget)
+                ->with('status', 'A budget already exists for this participant and quarter.');
+        }
+
+        try {
+            $budget = Budget::create([
+                'participant_id' => $participantId,
+                'quarter_start' => $quarterStart,
+                'quarter_end' => $quarterEnd,
+                'quarter_start_date' => $quarterStart,
+                'quarter_end_date' => $quarterEnd,
+                'opening_budget' => $data['opening_budget'],
+                'carry_over' => $data['carry_over'] ?? 0,
+            ]);
+
+            $this->service->calculateTotals($budget);
+        } catch (QueryException $e) {
+            // Handle potential race condition where two requests create the same budget
+            // Duplicate key SQLSTATE is 23000 for MySQL unique constraint violations
+            if ($e->getCode() === '23000') {
+                // Try to find the existing budget and redirect to it
+                $existing = $existingBudgetQuery->first();
+                if ($existing) {
+                    return redirect()->route('budgets.show', $existing)
+                        ->with('status', 'A budget already exists for this participant and quarter.');
+                }
+            }
+
+            throw $e;
+        }
 
         return redirect()->route('budgets.index')->with('status', 'Budget created successfully for participant ID '.$participantId.'.');
     }
