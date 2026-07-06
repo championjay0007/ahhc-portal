@@ -237,7 +237,7 @@
                         </tr>
                         <tr>
                             <td class="text-muted">Remaining balance</td>
-                            <td class="text-end">${{ number_format($remainingBudgetCents / 100, 2) }}</td>
+                            <td class="text-end">${{ number_format($displayRemaining / 100, 2) }}</td>
                         </tr>
                         <tr>
                             <td class="text-muted">Pending approvals</td>
