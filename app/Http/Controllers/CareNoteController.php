@@ -118,7 +118,7 @@ class CareNoteController extends Controller
             'owner_id' => $participant->id,
             'document_type' => 'monthly_care_management_checklist',
             'title' => $title,
-            'storage_disk' => null,
+            'storage_disk' => 'local',
             'path' => null,
             'mime_type' => null,
             'size_bytes' => 0,
