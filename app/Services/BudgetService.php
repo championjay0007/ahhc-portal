@@ -85,19 +85,42 @@ class BudgetService
     {
         $totalAvailable = $this->calculateTotalAvailable($budget);
 
-        $committed = Schema::hasColumn('budgets', 'committed_cents')
-            ? ($budget->committed_cents ?? 0)
-            : (int) ($budget->committed_funds * 100);
+        // Invoice summaries
+        $invoiceSummary = $this->getInvoiceSummary($budget->participant_id, $budget->quarter_start ?? null);
+        $approved = (int) ($invoiceSummary['approved_sum'] ?? 0);
+        $paid = (int) ($invoiceSummary['paid_sum'] ?? 0);
 
-        $approved = Schema::hasColumn('budgets', 'approved_spend_cents')
-            ? ($budget->approved_spend_cents ?? 0)
-            : (int) ($budget->approved_spend * 100);
+        $usedMode = config('budget.used_mode', 'approved');
+        $used = $usedMode === 'paid' ? $paid : $approved;
 
-        $paid = Schema::hasColumn('budgets', 'paid_spend_cents')
-            ? ($budget->paid_spend_cents ?? 0)
-            : (int) ($budget->paid_spend * 100);
+        // Committed from approved pre-approvals in the quarter minus invoiced amounts consumed
+        $period = $invoiceSummary['period'] ?? $this->getQuarterPeriodForDate($budget->quarter_start ?? now());
 
-        return $totalAvailable - ($committed + $approved + $paid);
+        $approvedPreApprovals = PreApprovalRequest::query()
+            ->where('participant_id', $budget->participant_id)
+            ->whereIn('status', [PreApprovalRequest::STATUS_APPROVED, PreApprovalRequest::STATUS_APPROVED_WITH_CONDITIONS])
+            ->whereBetween('approved_at', [$period['quarter_start_date'].' 00:00:00', $period['quarter_end_date'].' 23:59:59'])
+            ->get();
+
+        $committedSum = $approvedPreApprovals->sum(function ($r) {
+            return (int) ($r->committed_amount_cents ?? $r->requested_amount_cents ?? 0);
+        });
+
+        $preIds = $approvedPreApprovals->pluck('id')->filter()->all();
+        if (! empty($preIds)) {
+            $invoicedFromPre = Invoice::query()
+                ->whereIn('pre_approval_id', $preIds)
+                ->whereIn('status', ['approved', 'paid'])
+                ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
+                ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
+                ->sum('amount_cents');
+        } else {
+            $invoicedFromPre = 0;
+        }
+
+        $committed = max(0, (int) $committedSum - (int) $invoicedFromPre);
+
+        return (int) $totalAvailable - (int) $committed - (int) $used;
     }
 
     /**
@@ -602,21 +625,7 @@ class BudgetService
      */
     public function getBudgetMetrics(Budget $budget): array
     {
-        $totalAvailable = $this->calculateTotalAvailable($budget);
-        $remaining = $this->calculateRemaining($budget);
-
-        $committed = Schema::hasColumn('budgets', 'committed_cents')
-            ? ($budget->committed_cents ?? 0)
-            : (int) ($budget->committed_funds * 100);
-
-        $approved = Schema::hasColumn('budgets', 'approved_spend_cents')
-            ? ($budget->approved_spend_cents ?? 0)
-            : (int) ($budget->approved_spend * 100);
-
-        $paid = Schema::hasColumn('budgets', 'paid_spend_cents')
-            ? ($budget->paid_spend_cents ?? 0)
-            : (int) ($budget->paid_spend * 100);
-
+        // Total is strictly opening + carry (in cents)
         $opening = Schema::hasColumn('budgets', 'opening_balance_cents')
             ? ($budget->opening_balance_cents ?? 0)
             : (int) ($budget->opening_budget * 100);
@@ -625,19 +634,60 @@ class BudgetService
             ? ($budget->carry_over_cents ?? 0)
             : (int) ($budget->carry_over * 100);
 
-        $used = $committed + $approved + $paid;
+        $totalAvailable = $opening + $carry;
+
+        // Invoice summaries for the participant/quarter
+        $invoiceSummary = $this->getInvoiceSummary($budget->participant_id, $budget->quarter_start ?? null);
+        $approved = (int) ($invoiceSummary['approved_sum'] ?? 0);
+        $paid = (int) ($invoiceSummary['paid_sum'] ?? 0);
+        $pending = (int) ($invoiceSummary['pending_sum'] ?? 0);
+
+        // Used budget: choose mode from config (approved or paid)
+        $usedMode = config('budget.used_mode', 'approved');
+        $used = $usedMode === 'paid' ? $paid : $approved;
+
+        // Committed funds: sum of approved pre-approvals in quarter minus invoices already consumed for those pre-approvals
+        $period = $invoiceSummary['period'] ?? $this->getQuarterPeriodForDate($budget->quarter_start ?? now());
+
+        $approvedPreApprovals = PreApprovalRequest::query()
+            ->where('participant_id', $budget->participant_id)
+            ->whereIn('status', [PreApprovalRequest::STATUS_APPROVED, PreApprovalRequest::STATUS_APPROVED_WITH_CONDITIONS])
+            ->whereBetween('approved_at', [$period['quarter_start_date'].' 00:00:00', $period['quarter_end_date'].' 23:59:59'])
+            ->get();
+
+        $committedSum = $approvedPreApprovals->sum(function ($r) {
+            return (int) ($r->committed_amount_cents ?? $r->requested_amount_cents ?? 0);
+        });
+
+        $preIds = $approvedPreApprovals->pluck('id')->filter()->all();
+        if (! empty($preIds)) {
+            $invoicedFromPre = Invoice::query()
+                ->whereIn('pre_approval_id', $preIds)
+                ->whereIn('status', ['approved', 'paid'])
+                ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
+                ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
+                ->sum('amount_cents');
+        } else {
+            $invoicedFromPre = 0;
+        }
+
+        $committed = max(0, (int) $committedSum - (int) $invoicedFromPre);
+
+        // Remaining = total - committed - used
+        $remaining = (int) $totalAvailable - (int) $committed - (int) $used;
+
         $utilization = $totalAvailable > 0 ? round(($used / $totalAvailable) * 100, 1) : 0;
 
         return [
-            'opening_balance' => $opening,
-            'carry_over' => $carry,
-            'total_available' => $totalAvailable,
-            'total' => $totalAvailable,
-            'remaining' => $remaining,
-            'committed' => $committed,
-            'approved' => $approved,
-            'paid' => $paid,
-            'used' => $used,
+            'opening_balance' => (int) $opening,
+            'carry_over' => (int) $carry,
+            'total_available' => (int) $totalAvailable,
+            'total' => (int) $totalAvailable,
+            'remaining' => (int) $remaining,
+            'committed' => (int) $committed,
+            'approved' => (int) $approved,
+            'paid' => (int) $paid,
+            'used' => (int) $used,
             'utilization_percent' => $utilization,
             'is_overcommitted' => $remaining < 0,
             'is_low_balance' => $remaining > 0 && $remaining < ($totalAvailable * 0.25),
