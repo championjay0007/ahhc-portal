@@ -86,7 +86,12 @@
                         <li><strong>Quarter budget total:</strong> ${{ number_format($budgetMetrics['total'] / 100, 2) }}</li>
                         <li><strong>Committed:</strong> ${{ number_format($budgetMetrics['committed'] / 100, 2) }}</li>
                         <li><strong>Approved spend:</strong> ${{ number_format($budgetMetrics['approved'] / 100, 2) }}</li>
-                        <li><strong>Remaining balance:</strong> ${{ number_format($budgetMetrics['remaining'] / 100, 2) }}</li>
+                        @php
+                            $bmTotal = $budgetMetrics['total'] ?? $budgetMetrics['total_available'] ?? 0;
+                            $bmUsed = $budgetMetrics['used'] ?? (($budgetMetrics['committed'] ?? 0) + ($budgetMetrics['approved'] ?? 0) + ($budgetMetrics['paid'] ?? 0));
+                            $bmRemaining = (int) ($bmTotal - $bmUsed);
+                        @endphp
+                        <li><strong>Remaining balance:</strong> ${{ number_format($bmRemaining / 100, 2) }}</li>
                     </ul>
 
                     @if(! $budgetAvailable)

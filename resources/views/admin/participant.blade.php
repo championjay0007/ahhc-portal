@@ -479,7 +479,12 @@
                     </div>
                     <div class="col-md-4">
                         <div class="small text-muted">Remaining</div>
-                        <div class="fw-bold">${{ number_format(($budgetMetrics['remaining'] ?? 0) / 100, 2) }}</div>
+                        @php
+                            $bmTotal = $budgetMetrics['total'] ?? $budgetMetrics['total_available'] ?? 0;
+                            $bmUsed = $budgetMetrics['used'] ?? (($budgetMetrics['committed'] ?? 0) + ($budgetMetrics['approved'] ?? 0) + ($budgetMetrics['paid'] ?? 0));
+                            $bmRemaining = (int) ($bmTotal - $bmUsed);
+                        @endphp
+                        <div class="fw-bold">${{ number_format($bmRemaining / 100, 2) }}</div>
                     </div>
                     <div class="col-md-4">
                         <div class="small text-muted">Quarter</div>
