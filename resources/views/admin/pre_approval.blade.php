@@ -88,18 +88,9 @@
                         <li><strong>Approved spend:</strong> ${{ number_format($budgetMetrics['approved'] / 100, 2) }}</li>
                         @php
                             $bmTotal = $budgetMetrics['total'] ?? $budgetMetrics['total_available'] ?? 0;
-                            $bmUsed = $budgetMetrics['used'] ?? (($budgetMetrics['committed'] ?? 0) + ($budgetMetrics['approved'] ?? 0) + ($budgetMetrics['paid'] ?? 0));
-                            $bmRemaining = (int) ($bmTotal - $bmUsed);
-                        @endphp
-                        <li><strong>Remaining balance:</strong> ${{ number_format($bmRemaining / 100, 2) }}</li>
-                    </ul>
-
-                    @if(! $budgetAvailable)
-                        <div class="alert alert-danger mt-3 mb-0">Budget availability check failed: there is not enough remaining budget to commit this amount.</div>
-                    @endif
-
-                    @if(!empty($carePlanWarnings))
-                        <div class="alert alert-warning mt-3 mb-0">
+                                        $bmUsed = $budgetMetrics['used'] ?? ($budgetMetrics['approved'] ?? 0);
+                                        $bmCommitted = $budgetMetrics['committed'] ?? 0;
+                                        $bmRemaining = (int) ($bmTotal - $bmCommitted - $bmUsed);
                             <strong>Care plan alignment issues:</strong>
                             <ul class="mb-0">
                                 @foreach($carePlanWarnings as $warning)

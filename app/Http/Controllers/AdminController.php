@@ -2256,13 +2256,17 @@ class AdminController extends Controller
         return back()->with('status', 'Invoice approved.');
     }
 
-    public function rejectInvoice(Invoice $invoice)
+    public function rejectInvoice(Request $request, Invoice $invoice)
     {
         if ($invoice->status === 'paid') {
             return back()->withErrors(['budget' => 'Paid invoices cannot be rejected.']);
         }
 
-        DB::transaction(function () use ($invoice) {
+        $validated = $request->validate([
+            'rejection_reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        DB::transaction(function () use ($invoice, $validated) {
             if ($invoice->status === 'approved' && $invoice->participant && $invoice->pre_approval_id) {
                 $this->budgetService->releaseInvoice($invoice);
             }
@@ -2271,20 +2275,27 @@ class AdminController extends Controller
                 'status' => 'rejected',
                 'approved_at' => now(),
                 'approved_by_id' => auth()->id(),
+                'rejection_reason' => $validated['rejection_reason'] ?? null,
             ]);
             AuditLogService::record('Invoice Rejected', $invoice, [], [
                 'invoice_number' => $invoice->invoice_number,
                 'participant_id' => $invoice->participant_id,
                 'rejected_by' => auth()->id(),
+                'rejection_reason' => $validated['rejection_reason'] ?? null,
             ]);
 
             if ($invoice->participant && $invoice->participant->user_id) {
+                $message = 'Your invoice '.$invoice->invoice_number.' was not approved and has been returned for review.';
+                if (! empty($validated['rejection_reason'])) {
+                    $message .= ' Reason: '.$validated['rejection_reason'];
+                }
+
                 NotificationCenterService::send('invoice_rejected', $invoice->participant->user_id, [
                     'participant_id' => $invoice->participant_id,
                     'invoice_id' => $invoice->id,
-                    'message' => 'Your invoice '.$invoice->invoice_number.' was not approved and has been returned for review.',
+                    'message' => $message,
                     'url' => route('portal.participant.invoices.index'),
-                ]);
+                ], ['email']);
             }
         });
 

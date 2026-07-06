@@ -23,6 +23,7 @@ class Invoice extends Model
         'approved_at',
         'approved_by_id',
         'notes',
+        'rejection_reason',
         'attachment_path',
         'attachment_disk',
         'attachment_mime_type',

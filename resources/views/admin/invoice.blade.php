@@ -69,24 +69,44 @@
                         @csrf
                         <button type="submit" class="btn btn-success">Mark as paid</button>
                     </form>
-                    <form method="POST" action="{{ route('portal.admin.invoices.reject', $invoice) }}" class="d-inline ms-2">
-                        @csrf
-                        <button type="submit" class="btn btn-danger">Reject invoice</button>
-                    </form>
+                    <button class="btn btn-danger ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#rejectInvoiceForm" aria-expanded="false" aria-controls="rejectInvoiceForm">
+                        Reject invoice
+                    </button>
                 @elseif($invoice->status === 'paid')
                     <div class="alert alert-success">This invoice has already been paid.</div>
                 @elseif($invoice->status === 'rejected')
                     <div class="alert alert-danger">This invoice was rejected.</div>
+                    @if($invoice->rejection_reason)
+                        <div class="alert alert-secondary mt-3">
+                            <strong>Rejection reason:</strong>
+                            <p class="mb-0">{{ $invoice->rejection_reason }}</p>
+                        </div>
+                    @endif
                 @else
                     <form method="POST" action="{{ route('portal.admin.invoices.review', $invoice) }}" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-primary">Approve invoice</button>
                     </form>
-                    <form method="POST" action="{{ route('portal.admin.invoices.reject', $invoice) }}" class="d-inline ms-2">
-                        @csrf
-                        <button type="submit" class="btn btn-danger">Reject invoice</button>
-                    </form>
+                    <button class="btn btn-danger ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#rejectInvoiceForm" aria-expanded="false" aria-controls="rejectInvoiceForm">
+                        Reject invoice
+                    </button>
                 @endif
+
+                <div class="collapse mt-4" id="rejectInvoiceForm">
+                    <div class="card card-body bg-light">
+                        <form method="POST" action="{{ route('portal.admin.invoices.reject', $invoice) }}">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="rejection_reason" class="form-label">Rejection reason</label>
+                                <textarea id="rejection_reason" name="rejection_reason" rows="4" class="form-control" placeholder="Explain why the invoice was rejected" required>{{ old('rejection_reason') }}</textarea>
+                                @error('rejection_reason')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-danger">Confirm reject invoice</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

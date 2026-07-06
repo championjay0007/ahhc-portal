@@ -24,8 +24,7 @@
 
     <div class="card portal-card p-4 mb-4">
         @php
-            $computedRemaining = ($limitBudgetCents ?? 0) - ($usedBudgetCents ?? 0);
-            $displayRemaining = (int) $computedRemaining;
+            $displayRemaining = (int) ($remainingBudgetCents ?? 0);
         @endphp
         <h5>Budget composition</h5>
         <div class="row g-3 mt-3">

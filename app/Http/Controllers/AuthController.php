@@ -700,16 +700,14 @@ class AuthController extends Controller
             $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant, now());
             $budgetMetrics = $budgetService->getBudgetMetrics($budget);
 
-            $budgetLimitCents = $budgetMetrics['total_available'] > 0
-                ? $budgetMetrics['total_available']
-                : max(0, (int) ($participant->budget_limit_cents ?? 0));
-            $usedBudgetCents = $budgetMetrics['used'] ?? max(0, (int) ($participant->current_budget_used_cents ?? 0));
-            $committedBudgetCents = $budgetMetrics['committed'] ?? 0;
-            $remainingBudgetCents = $budgetMetrics['remaining'] ?? max(0, $budgetLimitCents - $committedBudgetCents - $usedBudgetCents);
+            $budgetLimitCents = (int) ($budgetMetrics['total_available'] ?? 0);
+            $usedBudgetCents = (int) ($budgetMetrics['used'] ?? 0);
+            $committedBudgetCents = (int) ($budgetMetrics['committed'] ?? 0);
+            $remainingBudgetCents = (int) ($budgetMetrics['remaining'] ?? 0);
 
             $budgetPercent = isset($budgetMetrics['utilization_percent'])
                 ? min(100, (int) round($budgetMetrics['utilization_percent']))
-                : ($budgetLimitCents > 0 ? min(100, (int) round(($usedBudgetCents / $budgetLimitCents) * 100)) : 0);
+                : 0;
             $currentQuarterLabel = $budget->quarter_start_date && $budget->quarter_end_date
                 ? $budget->quarter_start_date->format('j M Y').' – '.$budget->quarter_end_date->format('j M Y')
                 : $this->formatFiscalQuarterLabel(now());

@@ -53,7 +53,7 @@ class BudgetService
 
         $budget->remaining_balance = bcsub(
             $budget->total_available,
-            bcadd($budget->committed_funds, $budget->approved_spend, 2),
+            bcadd($budget->committed_funds, bcadd($budget->approved_spend, $budget->paid_spend, 2), 2),
             2
         );
 
@@ -90,8 +90,12 @@ class BudgetService
         $approved = (int) ($invoiceSummary['approved_sum'] ?? 0);
         $paid = (int) ($invoiceSummary['paid_sum'] ?? 0);
 
-        $usedMode = config('budget.used_mode', 'approved');
-        $used = $usedMode === 'paid' ? $paid : $approved;
+        $used = (int) $approved + (int) $paid;
+        if ($used === 0) {
+            $used = Schema::hasColumn('budgets', 'approved_spend_cents') || Schema::hasColumn('budgets', 'paid_spend_cents')
+                ? (int) ($budget->approved_spend_cents ?? 0) + (int) ($budget->paid_spend_cents ?? 0)
+                : (int) ($budget->approved_spend ?? 0) + (int) ($budget->paid_spend ?? 0);
+        }
 
         // Committed from approved pre-approvals in the quarter minus invoiced amounts consumed
         $period = $invoiceSummary['period'] ?? $this->getQuarterPeriodForDate($budget->quarter_start ?? now());
@@ -234,7 +238,7 @@ class BudgetService
             }
 
             $budget->total_available = bcadd($budget->opening_budget, $budget->carry_over, 2);
-            $budget->remaining_balance = bcsub($budget->total_available, bcadd($budget->committed_funds, $budget->approved_spend, 2), 2);
+            $budget->remaining_balance = bcsub($budget->total_available, bcadd($budget->committed_funds, bcadd($budget->approved_spend, $budget->paid_spend, 2), 2), 2);
 
             $budget->save();
             try {
@@ -452,41 +456,6 @@ class BudgetService
             }
         }
 
-        // If using legacy cents schema, deterministically recompute approved/paid/committed from invoices
-        try {
-            if (Schema::hasColumn('budgets', 'approved_spend_cents')) {
-                $participantId = $participant->id ?? $participant;
-
-                $approvedSum = Invoice::query()
-                    ->where('participant_id', $participantId)
-                    ->where('status', 'approved')
-                    ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
-                    ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
-                    ->sum('amount_cents');
-
-                $paidSum = Invoice::query()
-                    ->where('participant_id', $participantId)
-                    ->where('status', 'paid')
-                    ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
-                    ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
-                    ->sum('amount_cents');
-
-                $opening = (int) ($budget->opening_balance_cents ?? 0);
-                $carry = (int) ($budget->carry_over_cents ?? 0);
-                $totalAvailable = $opening + $carry;
-
-                $budget->approved_spend_cents = (int) $approvedSum;
-                $budget->paid_spend_cents = (int) $paidSum;
-                $budget->committed_cents = max(0, $totalAvailable - (int) $approvedSum - (int) $paidSum);
-                $budget->save();
-                try {
-                    $budget->refresh();
-                } catch (\Throwable $_) {
-                }
-            }
-        } catch (\Throwable $_) {
-            // ignore reconciliation errors in test environment
-        }
 
         return $budget;
     }
@@ -642,9 +611,13 @@ class BudgetService
         $paid = (int) ($invoiceSummary['paid_sum'] ?? 0);
         $pending = (int) ($invoiceSummary['pending_sum'] ?? 0);
 
-        // Used budget: choose mode from config (approved or paid)
-        $usedMode = config('budget.used_mode', 'approved');
-        $used = $usedMode === 'paid' ? $paid : $approved;
+        // Used budget: approved and paid invoices are both counted as used funds.
+        $used = (int) $approved + (int) $paid;
+        if ($used === 0) {
+            $used = Schema::hasColumn('budgets', 'approved_spend_cents') || Schema::hasColumn('budgets', 'paid_spend_cents')
+                ? (int) ($budget->approved_spend_cents ?? 0) + (int) ($budget->paid_spend_cents ?? 0)
+                : (int) ($budget->approved_spend ?? 0) + (int) ($budget->paid_spend ?? 0);
+        }
 
         // Committed funds: sum of approved pre-approvals in quarter minus invoices already consumed for those pre-approvals
         $period = $invoiceSummary['period'] ?? $this->getQuarterPeriodForDate($budget->quarter_start ?? now());
@@ -672,6 +645,16 @@ class BudgetService
         }
 
         $committed = max(0, (int) $committedSum - (int) $invoicedFromPre);
+        if ($committed === 0) {
+            $committed = Schema::hasColumn('budgets', 'committed_cents')
+                ? (int) ($budget->committed_cents ?? 0)
+                : (int) ($budget->committed_funds ?? 0);
+        }
+        if ($committed === 0) {
+            $committed = Schema::hasColumn('budgets', 'committed_cents')
+                ? (int) ($budget->committed_cents ?? 0)
+                : (int) ($budget->committed_funds ?? 0);
+        }
 
         // Remaining = total - committed - used
         $remaining = (int) $totalAvailable - (int) $committed - (int) $used;

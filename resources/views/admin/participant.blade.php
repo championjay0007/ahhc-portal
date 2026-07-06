@@ -481,8 +481,9 @@
                         <div class="small text-muted">Remaining</div>
                         @php
                             $bmTotal = $budgetMetrics['total'] ?? $budgetMetrics['total_available'] ?? 0;
-                            $bmUsed = $budgetMetrics['used'] ?? (($budgetMetrics['committed'] ?? 0) + ($budgetMetrics['approved'] ?? 0) + ($budgetMetrics['paid'] ?? 0));
-                            $bmRemaining = (int) ($bmTotal - $bmUsed);
+                            $bmUsed = $budgetMetrics['used'] ?? ($budgetMetrics['approved'] ?? 0);
+                            $bmCommitted = $budgetMetrics['committed'] ?? 0;
+                            $bmRemaining = (int) ($bmTotal - $bmCommitted - $bmUsed);
                         @endphp
                         <div class="fw-bold">${{ number_format($bmRemaining / 100, 2) }}</div>
                     </div>
