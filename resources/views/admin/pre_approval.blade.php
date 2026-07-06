@@ -82,15 +82,21 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h6>System review checks</h6>
+                    @php
+                        $bmTotal = $budgetMetrics['total'] ?? $budgetMetrics['total_available'] ?? 0;
+                        $bmUsed = $budgetMetrics['used'] ?? ($budgetMetrics['approved'] ?? 0);
+                        $bmCommitted = $budgetMetrics['committed'] ?? 0;
+                        $bmRemaining = (int) ($bmTotal - $bmCommitted - $bmUsed);
+                    @endphp
                     <ul class="mb-0">
-                        <li><strong>Quarter budget total:</strong> ${{ number_format($budgetMetrics['total'] / 100, 2) }}</li>
-                        <li><strong>Committed:</strong> ${{ number_format($budgetMetrics['committed'] / 100, 2) }}</li>
+                        <li><strong>Quarter budget total:</strong> ${{ number_format($bmTotal / 100, 2) }}</li>
+                        <li><strong>Committed:</strong> ${{ number_format($bmCommitted / 100, 2) }}</li>
                         <li><strong>Approved spend:</strong> ${{ number_format($budgetMetrics['approved'] / 100, 2) }}</li>
-                        @php
-                            $bmTotal = $budgetMetrics['total'] ?? $budgetMetrics['total_available'] ?? 0;
-                                        $bmUsed = $budgetMetrics['used'] ?? ($budgetMetrics['approved'] ?? 0);
-                                        $bmCommitted = $budgetMetrics['committed'] ?? 0;
-                                        $bmRemaining = (int) ($bmTotal - $bmCommitted - $bmUsed);
+                        <li><strong>Remaining:</strong> ${{ number_format($bmRemaining / 100, 2) }}</li>
+                    </ul>
+
+                    @if(!empty($carePlanWarnings))
+                        <div class="mt-3">
                             <strong>Care plan alignment issues:</strong>
                             <ul class="mb-0">
                                 @foreach($carePlanWarnings as $warning)
