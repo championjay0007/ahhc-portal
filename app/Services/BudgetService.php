@@ -421,20 +421,34 @@ class BudgetService
         $participantId = $participant->id ?? $participant;
 
         if (Schema::hasColumn('budgets', 'quarter_start_date')) {
+            // Prefer exact match, but also accept any existing budget whose date range overlaps
             $budget = Budget::where('participant_id', $participantId)
-                ->whereDate('quarter_start_date', $period['quarter_start_date'])
-                ->whereDate('quarter_end_date', $period['quarter_end_date'])
-                ->first();
+                ->where(function ($q) use ($period) {
+                    $q->where(function ($sq) use ($period) {
+                        $sq->whereDate('quarter_start_date', $period['quarter_start_date'])
+                            ->whereDate('quarter_end_date', $period['quarter_end_date']);
+                    })->orWhere(function ($sq) use ($period) {
+                        // overlapping interval: start <= period_end AND end >= period_start
+                        $sq->whereDate('quarter_start_date', '<=', $period['quarter_end_date'])
+                            ->whereDate('quarter_end_date', '>=', $period['quarter_start_date']);
+                    });
+                })->first();
         } else {
             $budget = Budget::where('participant_id', $participantId)
-                ->whereDate('quarter_start', $period['quarter_start'])
-                ->whereDate('quarter_end', $period['quarter_end'])
-                ->first();
+                ->where(function ($q) use ($period) {
+                    $q->where(function ($sq) use ($period) {
+                        $sq->whereDate('quarter_start', $period['quarter_start'])
+                            ->whereDate('quarter_end', $period['quarter_end']);
+                    })->orWhere(function ($sq) use ($period) {
+                        $sq->whereDate('quarter_start', '<=', $period['quarter_end'])
+                            ->whereDate('quarter_end', '>=', $period['quarter_start']);
+                    });
+                })->first();
         }
 
         if (! $budget) {
             try {
-                $budget = Budget::create(array_merge([
+                $createData = array_merge([
                     'participant_id' => $participantId,
                     'opening_budget' => 0,
                     'carry_over' => 0,
@@ -447,12 +461,22 @@ class BudgetService
                 ] : [
                     'quarter_start' => $period['quarter_start'],
                     'quarter_end' => $period['quarter_end'],
-                ]));
+                ]);
+
+                $budget = Budget::create($createData);
             } catch (QueryException $e) {
-                $budget = Budget::where('participant_id', $participantId)
-                    ->whereDate('quarter_start_date', $period['quarter_start_date'])
-                    ->whereDate('quarter_end_date', $period['quarter_end_date'])
-                    ->first();
+                // If create failed due to unique constraint, attempt to find any overlapping budget
+                if (Schema::hasColumn('budgets', 'quarter_start_date')) {
+                    $budget = Budget::where('participant_id', $participantId)
+                        ->whereDate('quarter_start_date', '<=', $period['quarter_end_date'])
+                        ->whereDate('quarter_end_date', '>=', $period['quarter_start_date'])
+                        ->first();
+                } else {
+                    $budget = Budget::where('participant_id', $participantId)
+                        ->whereDate('quarter_start', '<=', $period['quarter_end'])
+                        ->whereDate('quarter_end', '>=', $period['quarter_start'])
+                        ->first();
+                }
             }
         }
 

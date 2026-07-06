@@ -8,27 +8,25 @@
         <div class="alert alert-success">{{ session('status') }}</div>
     @endif
 
-    @if($participant)
-        <div class="mb-3">
-            <label class="form-label">Participant</label>
-            <div class="form-control-plaintext">{{ $participant->first_name }} {{ $participant->last_name }} ({{ $participant->participant_number ?? $participant->id }})</div>
-        </div>
-    @elseif($participants)
-        <div class="mb-3">
-            <label class="form-label">Participant</label>
-            <select name="participant_id" class="form-select" required>
-                <option value="">Select participant</option>
-                @foreach($participants as $option)
-                    <option value="{{ $option->id }}">{{ $option->first_name }} {{ $option->last_name }} ({{ $option->participant_number ?? $option->id }})</option>
-                @endforeach
-            </select>
-        </div>
-    @endif
-
     <form method="POST" action="{{ route('budgets.store') }}">
         @csrf
+
         @if($participant)
+            <div class="mb-3">
+                <label class="form-label">Participant</label>
+                <div class="form-control-plaintext">{{ $participant->first_name }} {{ $participant->last_name }} ({{ $participant->participant_number ?? $participant->id }})</div>
+            </div>
             <input type="hidden" name="participant_id" value="{{ $participant->id }}">
+        @elseif($participants)
+            <div class="mb-3">
+                <label class="form-label">Participant</label>
+                <select name="participant_id" class="form-select" required>
+                    <option value="">Select participant</option>
+                    @foreach($participants as $option)
+                        <option value="{{ $option->id }}"{{ old('participant_id') == $option->id ? ' selected' : '' }}>{{ $option->first_name }} {{ $option->last_name }} ({{ $option->participant_number ?? $option->id }})</option>
+                    @endforeach
+                </select>
+            </div>
         @endif
 
         @if($errors->any())
