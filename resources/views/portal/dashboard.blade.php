@@ -175,7 +175,7 @@
             <div class="budget-body">
                 <div class="budget-stats">
                     <div class="budget-stat">
-                        <span class="budget-stat-label">Total Budget</span>
+                        <span class="budget-stat-label">Total Available</span>
                         <span class="budget-stat-value">${{ number_format($budgetLimitCents / 100, 2) }}</span>
                     </div>
                     <div class="budget-stat">
@@ -183,7 +183,7 @@
                         <span class="budget-stat-value stat-used">${{ number_format($usedBudgetCents / 100, 2) }}</span>
                     </div>
                     <div class="budget-stat">
-                        <span class="budget-stat-label">Committed / Pending</span>
+                        <span class="budget-stat-label">Committed</span>
                         <span class="budget-stat-value stat-committed">${{ number_format(($committedBudgetCents ?? 0) / 100, 2) }}</span>
                     </div>
                     <div class="budget-stat">

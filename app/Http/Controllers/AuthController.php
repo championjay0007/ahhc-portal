@@ -703,24 +703,13 @@ class AuthController extends Controller
             $budgetLimitCents = $budgetMetrics['total_available'] > 0
                 ? $budgetMetrics['total_available']
                 : max(0, (int) ($participant->budget_limit_cents ?? 0));
-            $usedBudgetCents = $budgetMetrics['used'] > 0
-                ? $budgetMetrics['used']
-                : max(0, (int) ($participant->current_budget_used_cents ?? 0));
+            $usedBudgetCents = $budgetMetrics['used'] ?? max(0, (int) ($participant->current_budget_used_cents ?? 0));
             $committedBudgetCents = $budgetMetrics['committed'] ?? 0;
+            $remainingBudgetCents = $budgetMetrics['remaining'] ?? max(0, $budgetLimitCents - $committedBudgetCents - $usedBudgetCents);
 
-            $computedRemaining = $budgetLimitCents - $usedBudgetCents;
-            if (isset($budgetMetrics['remaining']) && (int) round((float) $budgetMetrics['remaining']) !== $computedRemaining) {
-                \Log::warning('Budget remaining mismatch (AuthController::dashboard)', [
-                    'participant_id' => $participant->id ?? null,
-                    'budget_metrics_remaining' => $budgetMetrics['remaining'] ?? null,
-                    'computed_remaining' => $computedRemaining,
-                ]);
-            }
-            $remainingBudgetCents = (int) $computedRemaining;
-
-            $budgetPercent = $budgetLimitCents > 0
-                ? min(100, (int) round(($usedBudgetCents / $budgetLimitCents) * 100))
-                : 0;
+            $budgetPercent = isset($budgetMetrics['utilization_percent'])
+                ? min(100, (int) round($budgetMetrics['utilization_percent']))
+                : ($budgetLimitCents > 0 ? min(100, (int) round(($usedBudgetCents / $budgetLimitCents) * 100)) : 0);
             $currentQuarterLabel = $budget->quarter_start_date && $budget->quarter_end_date
                 ? $budget->quarter_start_date->format('j M Y').' – '.$budget->quarter_end_date->format('j M Y')
                 : $this->formatFiscalQuarterLabel(now());
