@@ -52,7 +52,10 @@ class BudgetController extends Controller
             $participants = Participant::orderBy('first_name')->orderBy('last_name')->get();
         }
 
-        return view('budgets.create', compact('participant', 'participants'));
+        $period = $this->service->getQuarterPeriodForDate(now());
+        $hasQuarterStartColumn = Schema::hasColumn('budgets', 'quarter_start');
+
+        return view('budgets.create', compact('participant', 'participants', 'period', 'hasQuarterStartColumn'));
     }
 
     public function store(Request $request)
@@ -79,13 +82,36 @@ class BudgetController extends Controller
 
         $participantId = $data['participant_id'] ?? $this->resolveParticipantId($request->user());
 
+        if ($quarterStart) {
+            $period = $this->service->getQuarterPeriodForDate($quarterStart);
+        } else {
+            $period = $this->service->getQuarterPeriodForDate(now());
+        }
+
+        $quarterStart = $period['quarter_start'];
+        $quarterEnd = $period['quarter_end'];
+
         $existingBudgetQuery = Budget::where('participant_id', $participantId);
         if ($hasQuarterStartColumn) {
-            $existingBudgetQuery->whereDate('quarter_start', $quarterStart)
-                ->whereDate('quarter_end', $quarterEnd);
+            $existingBudgetQuery->where(function ($q) use ($period) {
+                $q->where(function ($sq) use ($period) {
+                    $sq->whereDate('quarter_start', $period['quarter_start'])
+                        ->whereDate('quarter_end', $period['quarter_end']);
+                })->orWhere(function ($sq) use ($period) {
+                    $sq->whereDate('quarter_start', '<=', $period['quarter_end'])
+                        ->whereDate('quarter_end', '>=', $period['quarter_start']);
+                });
+            });
         } else {
-            $existingBudgetQuery->whereDate('quarter_start_date', $quarterStart)
-                ->whereDate('quarter_end_date', $quarterEnd);
+            $existingBudgetQuery->where(function ($q) use ($period) {
+                $q->where(function ($sq) use ($period) {
+                    $sq->whereDate('quarter_start_date', $period['quarter_start_date'])
+                        ->whereDate('quarter_end_date', $period['quarter_end_date']);
+                })->orWhere(function ($sq) use ($period) {
+                    $sq->whereDate('quarter_start_date', '<=', $period['quarter_end_date'])
+                        ->whereDate('quarter_end_date', '>=', $period['quarter_start_date']);
+                });
+            });
         }
 
         if ($existingBudget = $existingBudgetQuery->first()) {
@@ -106,10 +132,7 @@ class BudgetController extends Controller
 
             $this->service->calculateTotals($budget);
         } catch (QueryException $e) {
-            // Handle potential race condition where two requests create the same budget
-            // Duplicate key SQLSTATE is 23000 for MySQL unique constraint violations
             if ($e->getCode() === '23000') {
-                // Try to find the existing budget and redirect to it
                 $existing = $existingBudgetQuery->first();
                 if ($existing) {
                     return redirect()->route('budgets.show', $existing)
@@ -130,6 +153,16 @@ class BudgetController extends Controller
         $alerts = $this->service->getAlerts($budget);
 
         return view('budgets.show', compact('budget', 'alerts'));
+    }
+
+    public function destroy(Budget $budget)
+    {
+        $this->authorize('delete', $budget);
+
+        $budget->delete();
+
+        return redirect()->route('budgets.index')
+            ->with('status', 'Budget deleted successfully.');
     }
 
     public function dashboard()

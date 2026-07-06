@@ -663,6 +663,7 @@ Route::middleware(['auth', 'mfa', 'onboarding_complete', 'assessment_workflow'])
     Route::get('/budgets/create', [BudgetController::class, 'create'])->name('budgets.create');
     Route::post('/budgets', [BudgetController::class, 'store'])->name('budgets.store');
     Route::get('/budgets/{budget}', [BudgetController::class, 'show'])->name('budgets.show');
+    Route::delete('/budgets/{budget}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
 
     Route::post('/budgets/{budget}/transactions', [BudgetTransactionController::class, 'store'])->name('budgets.transactions.store');
 

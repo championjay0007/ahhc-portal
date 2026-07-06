@@ -26,7 +26,16 @@
                 <td>${{ number_format($budget->total_available,2) }}</td>
                 <td>${{ number_format($budget->committed_funds,2) }}</td>
                 <td>${{ number_format($budget->remaining_balance,2) }}</td>
-                <td><a href="{{ route('budgets.show', $budget) }}" class="btn btn-sm btn-outline-primary">View</a></td>
+                <td class="d-flex gap-2">
+                    <a href="{{ route('budgets.show', $budget) }}" class="btn btn-sm btn-outline-primary">View</a>
+                    @can('delete', $budget)
+                        <form method="POST" action="{{ route('budgets.destroy', $budget) }}" onsubmit="return confirm('Delete this budget?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    @endcan
+                </td>
             </tr>
             @endforeach
         </tbody>
