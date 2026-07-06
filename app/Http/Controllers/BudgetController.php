@@ -25,9 +25,11 @@ class BudgetController extends Controller
         $user = $request->user();
         $participantId = $this->resolveParticipantId($user);
 
+        $quarterCol = Schema::hasColumn('budgets', 'quarter_start') ? 'quarter_start' : 'quarter_start_date';
+
         $budgets = Budget::when($user->cannot('viewAny', Budget::class), function ($q) use ($participantId) {
             $q->where('participant_id', $participantId);
-        })->withCount('transactions')->latest('quarter_start')->paginate(20);
+        })->withCount('transactions')->orderBy($quarterCol, 'desc')->paginate(20);
 
         return view('budgets.index', compact('budgets'));
     }

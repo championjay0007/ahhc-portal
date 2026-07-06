@@ -1,0 +1,69 @@
+Hey — Sam here. I'll walk you through how the budget system works from both the Admin side and the Participant side, step-by-step, like I'm explaining it to a colleague.
+
+ADMIN: what you do and see
+- Where to go:
+  1. Log in to the Control Center (Admin Portal).
+  2. Open "Budget & Finance" → "Budgets".
+  3. You can also open a specific participant record and click the "Create Budget" button there to prefill the participant.
+
+- Create a budget:
+  - Click "Create Budget".
+  - Fill the form fields: Participant (pre-filled if launched from a participant page), Quarter Start Date, Quarter End Date, Opening Budget (dollars), Carry Over (dollars).
+  - Submit the form.
+  - What happens behind the scenes: a new row is written to the `budgets` table keyed to the `participant_id` and quarter dates. The app stores money values in cents (e.g., $1,000 → 100000 cents) and the `BudgetService` computes canonical metrics.
+
+- What you see in the Budgets list:
+  - Columns: Participant, Quarter (e.g., 2026-07-01 → 2026-09-30), Total Available, Committed, Remaining, Actions (View/Edit).
+  - "Total Available" = Opening Budget + Carry Over.
+  - "Committed" = funds currently reserved/committed (pre-approvals, pending invoices, etc.).
+  - "Remaining" = funds left to be committed/used (Total Available minus any committed/paid amounts).
+
+- View a budget detail:
+  - Click "View" on a budget row.
+  - You’ll see a ledger: transactions, commits/releases, pre-approvals and invoice history, and derived totals.
+  - Admins can perform actions: commit funds, release commitments, mark spends as paid, or edit/delete the budget per permissions.
+
+- Who controls the numbers:
+  - Admin sets the Opening Budget and Carry Over (these establish the quarter’s funds).
+  - Pre-approvals and invoices do not change the opening balance — they change committed/approved/paid metrics.
+  - `BudgetService` handles calculations and ensures the portal shows consistent canonical metrics.
+
+- Permissions and behavior notes:
+  - Only users with admin role can see all budgets. Regular users are restricted to their own participant budgets.
+  - The system uses policies to gate actions (we fixed a role-check issue so policy calls behave correctly).
+
+PARTICIPANT: what they do and see
+- Where to go:
+  1. Log in to the Participant Portal.
+  2. Open "My Budget" from the sidebar.
+
+- What the participant sees:
+  - The same canonical metrics but scoped to the participant: Quarter range, Total Available, Committed, Remaining.
+  - A simplified ledger showing pre-approvals and submitted invoices, and whether they’re approved/committed/paid.
+  - Participants cannot create budgets — admins create budgets for participants.
+
+- Actions available to the participant:
+  - Submit pre-approval requests (these may reserve funds by increasing "Committed").
+  - Submit invoices against services; invoice approvals update approved/paid metrics and affect remaining balance.
+
+- How to read the numbers (simple example):
+  - Admin creates a budget: Opening $1,000, Carry Over $200 → Total Available $1,200.
+  - Participant submits a pre-approval that reserves $100 → Committed $100, Remaining $1,100.
+  - An invoice for $100 is marked paid → Paid increases and Remaining decreases accordingly.
+
+EXTRA: common navigation flows
+- Admin creates a budget for a participant:
+  1. Admin opens Participant → clicks "Create Budget" → form pre-fills participant → submits.
+  2. App creates the budget row and redirects back to Budgets list or the created budget page.
+  3. Admin sees Total Available in the list (Opening + Carry Over).
+
+- Admin reviews budget usage:
+  1. From Budgets list, click "View" → inspect transactions and commitments.
+  2. Approve or reject pre-approvals, or mark invoices as paid to update metrics.
+
+TROUBLESHOOTING pointers (short):
+- If the Budgets page errors on load, check policy role checks and column names (e.g., `quarter_start_date` vs `quarter_start`).
+- If numbers look wrong, confirm that the budget row exists for the corre
+ct participant & quarter and that `BudgetService` is being used to compute metrics.
+
+

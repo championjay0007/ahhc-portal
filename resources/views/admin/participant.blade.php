@@ -434,18 +434,19 @@
                         <p class="text-muted small mb-0">Current quarter transaction history, approvals and category allocation.</p>
                     </div>
                     <form method="POST" action="{{ route('portal.admin.reports.export') }}" class="d-flex gap-2 align-items-center">
-                        @csrf
-                        <input type="hidden" name="report_type" value="Participant Budget">
-                        <input type="hidden" name="participant_id" value="{{ $participant->id }}">
-                        <input type="hidden" name="start_date" value="{{ $budget->quarter_start_date }}">
-                        <input type="hidden" name="end_date" value="{{ $budget->quarter_end_date }}">
-                        <select name="export_format" class="form-select form-select-sm" style="width: 130px;">
-                            @foreach($exportFormats as $format => $label)
-                                <option value="{{ $format }}">{{ strtoupper($format) }}</option>
-                            @endforeach
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-outline-primary">Export</button>
-                    </form>
+                            @csrf
+                            <input type="hidden" name="report_type" value="Participant Budget">
+                            <input type="hidden" name="participant_id" value="{{ $participant->id }}">
+                            <input type="hidden" name="start_date" value="{{ $budget->quarter_start_date }}">
+                            <input type="hidden" name="end_date" value="{{ $budget->quarter_end_date }}">
+                            <select name="export_format" class="form-select form-select-sm" style="width: 130px;">
+                                @foreach($exportFormats as $format => $label)
+                                    <option value="{{ $format }}">{{ strtoupper($format) }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Export</button>
+                            <a href="{{ route('budgets.create', ['participant_id' => $participant->id]) }}" class="btn btn-sm btn-primary">Create Budget</a>
+                        </form>
                 </div>
 
                 @if(!empty($budgetAlerts))
