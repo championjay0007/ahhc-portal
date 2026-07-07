@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\Budget;
 use App\Models\Document;
+use App\Models\Invoice;
 use App\Models\Participant;
+use App\Models\PortalSetting;
 use App\Models\PreApprovalRequest;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -459,5 +461,113 @@ class ParticipantPortalTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSeeText('My Budget');
+    }
+
+    public function test_participant_dashboard_shows_committed_from_invoice_override(): void
+    {
+        $user = User::create([
+            'name' => 'Participant Invoice Override',
+            'email' => 'participant-invoice-override@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $user->id,
+            'participant_number' => 'P-1006',
+            'first_name' => 'Participant',
+            'last_name' => 'Override',
+            'status' => 'active',
+        ]);
+
+        Budget::updateOrCreate([
+            'participant_id' => $participant->id,
+            'quarter_start_date' => now()->startOfQuarter(),
+            'quarter_end_date' => now()->endOfQuarter(),
+        ], [
+            'opening_balance_cents' => 100000,
+            'carry_over_cents' => 0,
+            'committed_cents' => 0,
+            'approved_spend_cents' => 0,
+            'paid_spend_cents' => 0,
+        ]);
+
+        PortalSetting::create([
+            'key' => 'invoice_budget_mode',
+            'value' => 'committed_amount',
+        ]);
+
+        Invoice::create([
+            'participant_id' => $participant->id,
+            'invoice_number' => 'INV-OVR-1001',
+            'status' => 'submitted',
+            'amount_cents' => 50000,
+            'committed_amount_cents' => 25000,
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->addWeeks(1)->toDateString(),
+        ]);
+
+        $response = $this->actingAs($user)->get(route('portal.dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertSee('$250.00');
+        $response->assertSeeText('Committed');
+    }
+
+    public function test_preapproval_mode_ignores_invoice_committed_override_without_preapproval(): void
+    {
+        PortalSetting::create([
+            'key' => 'invoice_budget_mode',
+            'value' => 'preapproval_amount',
+        ]);
+
+        $user = User::create([
+            'name' => 'Participant Mode Preserve',
+            'email' => 'participant-mode-preserve@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $user->id,
+            'participant_number' => 'P-1007',
+            'first_name' => 'Participant',
+            'last_name' => 'ModePreserve',
+            'status' => 'active',
+        ]);
+
+        Budget::updateOrCreate([
+            'participant_id' => $participant->id,
+            'quarter_start_date' => now()->startOfQuarter(),
+            'quarter_end_date' => now()->endOfQuarter(),
+        ], [
+            'opening_balance_cents' => 100000,
+            'carry_over_cents' => 0,
+            'committed_cents' => 0,
+            'approved_spend_cents' => 0,
+            'paid_spend_cents' => 0,
+        ]);
+
+        Invoice::create([
+            'participant_id' => $participant->id,
+            'invoice_number' => 'INV-MODE-1001',
+            'status' => 'submitted',
+            'amount_cents' => 50000,
+            'committed_amount_cents' => 25000,
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->addWeeks(1)->toDateString(),
+        ]);
+
+        $response = $this->actingAs($user)->get(route('portal.dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertDontSee('$250.00');
+        $response->assertSee('$0.00');
     }
 }

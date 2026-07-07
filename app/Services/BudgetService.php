@@ -124,6 +124,23 @@ class BudgetService
 
         $committed = max(0, (int) $committedSum - (int) $invoicedFromPre);
 
+        $invoiceBudgetMode = \App\Models\PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
+        if (in_array($invoiceBudgetMode, ['invoice_amount', 'committed_amount'], true)) {
+            try {
+                $invoiceCommitted = Invoice::query()
+                    ->where('participant_id', $budget->participant_id)
+                    ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
+                    ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
+                    ->whereIn('status', ['submitted', 'approved'])
+                    ->whereNotNull('committed_amount_cents')
+                    ->sum('committed_amount_cents');
+            } catch (\Throwable $_) {
+                $invoiceCommitted = 0;
+            }
+
+            $committed = max(0, (int) $committed + (int) $invoiceCommitted);
+        }
+
         return (int) $totalAvailable - (int) $committed - (int) $used;
     }
 
@@ -313,11 +330,11 @@ class BudgetService
     /**
      * Called when an invoice is approved to reconcile against participant budget.
      */
-    public function approveInvoice($invoice)
+    public function approveInvoice($invoice, ?int $overrideAmountCents = null)
     {
-        $budget = $this->getOrCreateBudgetForParticipantQuarter($invoice->participant, now());
+        $budget = $this->getOrCreateBudgetForParticipantQuarter($invoice->participant, $invoice->invoice_date ?? now());
 
-        $amountCents = isset($invoice->amount_cents) ? (int) $invoice->amount_cents : (int) round(((float) ($invoice->amount ?? 0)) * 100);
+        $amountCents = $overrideAmountCents ?? (isset($invoice->amount_cents) ? (int) $invoice->amount_cents : (int) round(((float) ($invoice->amount ?? 0)) * 100));
 
         $meta = [
             'invoice_id' => $invoice->id,
@@ -328,7 +345,19 @@ class BudgetService
             $meta['pre_approval_id'] = $invoice->pre_approval_id;
         }
 
-        // Adjust legacy cents columns directly to ensure compatibility in tests
+        $invoiceBudgetMode = \App\Models\PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
+
+        if (in_array($invoiceBudgetMode, ['invoice_amount', 'committed_amount'], true)) {
+            $budget->approved_spend_cents = (int) ($budget->approved_spend_cents ?? 0) + $amountCents;
+            $budget->save();
+            try {
+                $budget->refresh();
+            } catch (\Throwable $_) {
+            }
+
+            return;
+        }
+
         if (Schema::hasColumn('budgets', 'approved_spend_cents')) {
             $budget->committed_cents = max(0, (int) ($budget->committed_cents ?? 0) - $amountCents);
             $budget->approved_spend_cents = (int) ($budget->approved_spend_cents ?? 0) + $amountCents;
@@ -347,7 +376,7 @@ class BudgetService
 
     public function releaseInvoice($invoice)
     {
-        $budget = $this->getOrCreateBudgetForParticipantQuarter($invoice->participant, now());
+        $budget = $this->getOrCreateBudgetForParticipantQuarter($invoice->participant, $invoice->invoice_date ?? now());
 
         $amountCents = isset($invoice->amount_cents) ? (int) $invoice->amount_cents : (int) round(((float) ($invoice->amount ?? 0)) * 100);
 
@@ -359,6 +388,19 @@ class BudgetService
 
         if ($invoice->pre_approval_id) {
             $meta['pre_approval_id'] = $invoice->pre_approval_id;
+        }
+
+        $invoiceBudgetMode = \App\Models\PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
+
+        if (in_array($invoiceBudgetMode, ['invoice_amount', 'committed_amount'], true)) {
+            $budget->approved_spend_cents = max(0, (int) ($budget->approved_spend_cents ?? 0) - $amountCents);
+            $budget->save();
+            try {
+                $budget->refresh();
+            } catch (\Throwable $_) {
+            }
+
+            return;
         }
 
         if (Schema::hasColumn('budgets', 'committed_cents')) {
@@ -669,11 +711,24 @@ class BudgetService
         }
 
         $committed = max(0, (int) $committedSum - (int) $invoicedFromPre);
-        if ($committed === 0) {
-            $committed = Schema::hasColumn('budgets', 'committed_cents')
-                ? (int) ($budget->committed_cents ?? 0)
-                : (int) ($budget->committed_funds ?? 0);
+
+        $invoiceBudgetMode = \App\Models\PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
+        if (in_array($invoiceBudgetMode, ['invoice_amount', 'committed_amount'], true)) {
+            try {
+                $invoiceCommitted = Invoice::query()
+                    ->where('participant_id', $budget->participant_id)
+                    ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
+                    ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
+                    ->whereIn('status', ['submitted', 'approved'])
+                    ->whereNotNull('committed_amount_cents')
+                    ->sum('committed_amount_cents');
+            } catch (\Throwable $_) {
+                $invoiceCommitted = 0;
+            }
+
+            $committed = max(0, (int) $committed + (int) $invoiceCommitted);
         }
+
         if ($committed === 0) {
             $committed = Schema::hasColumn('budgets', 'committed_cents')
                 ? (int) ($budget->committed_cents ?? 0)
