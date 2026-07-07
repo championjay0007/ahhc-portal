@@ -155,6 +155,33 @@ class BudgetController extends Controller
         return view('budgets.show', compact('budget', 'alerts'));
     }
 
+    public function edit(Budget $budget)
+    {
+        $this->authorize('update', $budget);
+
+        return view('budgets.edit', compact('budget'));
+    }
+
+    public function update(Request $request, Budget $budget)
+    {
+        $this->authorize('update', $budget);
+
+        $data = $request->validate([
+            'opening_budget' => ['required', 'numeric', 'min:0'],
+            'carry_over' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $budget->update([
+            'opening_budget' => $data['opening_budget'],
+            'carry_over' => $data['carry_over'] ?? 0,
+        ]);
+
+        $this->service->calculateTotals($budget);
+
+        return redirect()->route('budgets.show', $budget)
+            ->with('status', 'Budget updated successfully.');
+    }
+
     public function destroy(Budget $budget)
     {
         $this->authorize('delete', $budget);

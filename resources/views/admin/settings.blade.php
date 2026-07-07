@@ -211,6 +211,14 @@
                                 <label class="form-check-label" for="pwa_enabled">Enable Offline PWA (Service Worker)</label>
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Invoice budget mode</label>
+                            <select name="invoice_budget_mode" class="form-select">
+                                <option value="preapproval_amount"{{ old('invoice_budget_mode', $settings['invoice_budget_mode'] ?? 'preapproval_amount') === 'preapproval_amount' ? ' selected' : '' }}>Pre-approval amount controls invoice spend</option>
+                                <option value="committed_amount"{{ old('invoice_budget_mode', $settings['invoice_budget_mode'] ?? 'preapproval_amount') === 'committed_amount' ? ' selected' : '' }}>Committed amount controls budget drawdown directly</option>
+                            </select>
+                            <small class="text-muted">When set to committed amount, admin approval uses the invoice committed amount against the participant budget without requiring the invoice total to stay within the linked pre-approval amount.</small>
+                        </div>
                     </div>
 
                     <hr class="my-4">

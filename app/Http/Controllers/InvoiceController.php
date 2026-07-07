@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\Participant;
+use App\Models\PortalSetting;
 use App\Models\PreApprovalRequest;
 use App\Models\User;
 use App\Services\AuditLogService;
@@ -58,6 +59,7 @@ class InvoiceController extends Controller
         ]);
 
         $amountCents = (int) round($validated['amount'] * 100);
+        $invoiceBudgetMode = PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
 
         if (! empty($validated['pre_approval_id'])) {
             $preApproval = PreApprovalRequest::where('id', $validated['pre_approval_id'])
@@ -69,9 +71,11 @@ class InvoiceController extends Controller
                 return back()->withErrors(['pre_approval_id' => 'Selected pre-approval is invalid or unavailable.']);
             }
 
-            $allowedAmount = $preApproval->committed_amount_cents ?? $preApproval->requested_amount_cents;
-            if ($amountCents > $allowedAmount) {
-                return back()->withErrors(['amount' => 'Invoice amount must not exceed the linked pre-approval total.']);
+            if ($invoiceBudgetMode === 'preapproval_amount') {
+                $allowedAmount = $preApproval->committed_amount_cents ?? $preApproval->requested_amount_cents;
+                if ($amountCents > $allowedAmount) {
+                    return back()->withErrors(['amount' => 'Invoice amount must not exceed the linked pre-approval total.']);
+                }
             }
         }
 

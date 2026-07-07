@@ -15,6 +15,7 @@ class Invoice extends Model
         'invoice_number',
         'status',
         'amount_cents',
+        'committed_amount_cents',
         'invoice_date',
         'service_date',
         'due_date',
@@ -31,6 +32,7 @@ class Invoice extends Model
 
     protected $casts = [
         'amount_cents' => 'integer',
+        'committed_amount_cents' => 'integer',
         'invoice_date' => 'date',
         'service_date' => 'date',
         'due_date' => 'date',

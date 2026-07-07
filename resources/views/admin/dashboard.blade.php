@@ -133,6 +133,22 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm">
+            <div class="card dashboard-card h-100 border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-circle bg-secondary">
+                            <i class="bi bi-lock fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-muted small mb-1">Committed</p>
+                            <h2 class="fw-bold mb-0">${{ number_format(($totalCommittedCents ?? 0) / 100, 2) }}</h2>
+                            <small class="text-muted">Funds reserved (pre-approvals & invoices)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- <div class="row g-4 mb-4">
@@ -268,6 +284,7 @@
                                     <th>Participant</th>
                                     <th>Budget</th>
                                     <th>Used</th>
+                                    <th>Committed</th>
                                     <th>Remaining</th>
                                 </tr>
                             </thead>
@@ -277,6 +294,7 @@
                                         <td class="fw-bold">{{ $budget['name'] }}</td>
                                         <td>${{ number_format($budget['budget'], 0) }}</td>
                                         <td>${{ number_format($budget['used'], 0) }}</td>
+                                        <td>${{ number_format($budget['committed'] ?? 0, 0) }}</td>
                                         <td class="text-success fw-bold">${{ number_format($budget['remaining'], 0) }}</td>
                                     </tr>
                                     <tr>

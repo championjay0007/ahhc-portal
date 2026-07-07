@@ -12,6 +12,8 @@ use App\Models\Invoice;
 use App\Models\Participant;
 use App\Models\PortalNotification;
 use App\Models\PreApprovalRequest;
+use App\Models\Budget;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Shift;
 use App\Models\Worker;
 use App\Services\MessageService;
@@ -59,19 +61,39 @@ class AdminDashboardController extends Controller
         // PRE-APPROVALS
         $pendingApprovals = PreApprovalRequest::where('status', 'pending')->count();
 
-        // BUDGET DATA FOR PARTICIPANTS
-        $budgetData = Participant::select('id', 'first_name', 'budget_limit_cents', 'current_budget_used_cents')
-            ->orderByDesc('budget_limit_cents')
-            ->get()
-            ->map(function ($participant) {
-                return [
-                    'name' => $participant->first_name,
-                    'budget' => $participant->budget_limit_cents / 100,
-                    'used' => $participant->current_budget_used_cents / 100,
-                    'remaining' => ($participant->budget_limit_cents - $participant->current_budget_used_cents) / 100,
-                ];
-            })
-            ->take(5); // Top 5 for dashboard display
+        // BUDGET DATA FOR PARTICIPANTS (including committed amounts)
+        $budgetService = new \App\Services\BudgetService();
+        $participants = Participant::orderByDesc('budget_limit_cents')->take(5)->get();
+        $budgetData = $participants->map(function ($participant) use ($budgetService) {
+            try {
+                $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant);
+                $metrics = $budgetService->getBudgetMetrics($budget);
+                $committed = (int) ($metrics['committed'] ?? 0) / 100;
+            } catch (\Throwable $_) {
+                $committed = 0;
+            }
+
+            return [
+                'name' => $participant->first_name,
+                'budget' => $participant->budget_limit_cents / 100,
+                'used' => $participant->current_budget_used_cents / 100,
+                'committed' => $committed,
+                'remaining' => ($participant->budget_limit_cents - $participant->current_budget_used_cents) / 100,
+            ];
+        });
+
+        // Total committed across budgets (if stored in cents column)
+        $totalCommittedCents = 0;
+        if (Schema::hasTable('budgets') && Schema::hasColumn('budgets', 'committed_cents')) {
+            $totalCommittedCents = (int) Budget::sum('committed_cents');
+        }
+        if (empty($totalCommittedCents)) {
+            try {
+                $totalCommittedCents = (int) \App\Models\Invoice::whereNotNull('committed_amount_cents')->sum('committed_amount_cents');
+            } catch (\Throwable $_) {
+                // leave as zero
+            }
+        }
 
         // RECENT ACTIVITY
         $recentActivity = AuditLog::with('user')->latest()->take(5)->get();
@@ -96,7 +118,8 @@ class AdminDashboardController extends Controller
             'unconfirmedShifts',
             'pendingApprovals',
             'budgetData',
-            'recentActivity'
+            'recentActivity',
+            'totalCommittedCents'
         ));
     }
 }

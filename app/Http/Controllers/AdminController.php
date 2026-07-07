@@ -205,17 +205,37 @@ class AdminController extends Controller
         $participants = $query->paginate(20)->withQueryString();
 
         $participants->getCollection()->transform(function (Participant $participant) use ($budgetService, $currentQuarterPeriod) {
-            $budget = Budget::firstOrCreate([
-                'participant_id' => $participant->id,
-                'quarter_start_date' => $currentQuarterPeriod['quarter_start_date'],
-                'quarter_end_date' => $currentQuarterPeriod['quarter_end_date'],
-            ], [
-                'opening_balance_cents' => 0,
-                'carry_over_cents' => 0,
-                'committed_cents' => 0,
-                'approved_spend_cents' => 0,
-                'paid_spend_cents' => 0,
-            ]);
+            $budget = Budget::where('participant_id', $participant->id)
+                ->where(function ($query) use ($currentQuarterPeriod) {
+                    $query->where(function ($inner) use ($currentQuarterPeriod) {
+                        $inner->whereDate('quarter_start_date', $currentQuarterPeriod['quarter_start_date'])
+                            ->whereDate('quarter_end_date', $currentQuarterPeriod['quarter_end_date']);
+                    })->orWhere(function ($inner) use ($currentQuarterPeriod) {
+                        $inner->whereDate('quarter_start_date', '<=', $currentQuarterPeriod['quarter_end_date'])
+                            ->whereDate('quarter_end_date', '>=', $currentQuarterPeriod['quarter_start_date']);
+                    });
+                })
+                ->first();
+
+            if (! $budget) {
+                try {
+                    $budget = Budget::create([
+                        'participant_id' => $participant->id,
+                        'quarter_start_date' => $currentQuarterPeriod['quarter_start_date'],
+                        'quarter_end_date' => $currentQuarterPeriod['quarter_end_date'],
+                        'opening_balance_cents' => 0,
+                        'carry_over_cents' => 0,
+                        'committed_cents' => 0,
+                        'approved_spend_cents' => 0,
+                        'paid_spend_cents' => 0,
+                    ]);
+                } catch (\Illuminate\Database\QueryException $e) {
+                    $budget = Budget::where('participant_id', $participant->id)
+                        ->whereDate('quarter_start_date', '<=', $currentQuarterPeriod['quarter_end_date'])
+                        ->whereDate('quarter_end_date', '>=', $currentQuarterPeriod['quarter_start_date'])
+                        ->first();
+                }
+            }
 
             $participant->current_budget = $budgetService->calculateTotalAvailable($budget);
             $participant->committed = $budget->committed_cents;
@@ -223,6 +243,7 @@ class AdminController extends Controller
             $participant->paid_spend = $budget->paid_spend_cents;
             $participant->remaining_budget = $budgetService->calculateRemaining($budget);
             $participant->utilization = $participant->current_budget ? min(100, round((($participant->committed + $participant->approved_spend) / $participant->current_budget) * 100, 1)) : 0;
+            $participant->budget = $budget;
 
             return $participant;
         });
@@ -1046,6 +1067,7 @@ class AdminController extends Controller
             'pwa_enabled' => ['nullable', 'boolean'],
             'report_export_emails' => ['nullable', 'boolean'],
             'incident_alerts' => ['nullable', 'boolean'],
+            'invoice_budget_mode' => ['nullable', 'string', 'in:preapproval_amount,committed_amount,invoice_amount'],
             'email_template_source' => ['nullable', 'string', 'in:code,database'],
             'tawk_to_property_id' => ['nullable', 'string', 'max:255'],
             'tawk_to_widget_id' => ['nullable', 'string', 'max:255'],
@@ -1081,6 +1103,7 @@ class AdminController extends Controller
             'report_export_emails' => (bool) ($request->boolean('report_export_emails')),
             'pwa_enabled' => (bool) ($request->boolean('pwa_enabled')),
             'incident_alerts' => (bool) ($request->boolean('incident_alerts')),
+            'invoice_budget_mode' => $validated['invoice_budget_mode'] ?? $existingSettings['invoice_budget_mode'] ?? 'preapproval_amount',
             'email_template_source' => $validated['email_template_source'] ?? $existingSettings['email_template_source'] ?? 'database',
             'tawk_to_property_id' => $validated['tawk_to_property_id'] ?? $existingSettings['tawk_to_property_id'] ?? null,
             'tawk_to_widget_id' => $validated['tawk_to_widget_id'] ?? $existingSettings['tawk_to_widget_id'] ?? null,
@@ -1301,6 +1324,7 @@ class AdminController extends Controller
             'require_mfa' => false,
             'report_export_emails' => false,
             'incident_alerts' => true,
+            'invoice_budget_mode' => 'preapproval_amount',
             'email_template_source' => 'database',
             'pwa_enabled' => false,
             'pwa_icon_path' => null,
@@ -2216,7 +2240,7 @@ class AdminController extends Controller
         return view('admin.invoice', compact('invoice'));
     }
 
-    public function reviewInvoice(Invoice $invoice)
+    public function reviewInvoice(Request $request, Invoice $invoice)
     {
         if ($invoice->status === 'approved') {
             return back()->with('status', 'Invoice is already approved.');
@@ -2226,21 +2250,31 @@ class AdminController extends Controller
             return back()->withErrors(['invoice' => 'Only submitted invoices can be approved.']);
         }
 
-        DB::transaction(function () use ($invoice) {
+        $validated = $request->validate([
+            'committed_amount' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $committedAmountCents = isset($validated['committed_amount'])
+            ? (int) round((float) $validated['committed_amount'] * 100)
+            : null;
+
+        DB::transaction(function () use ($invoice, $committedAmountCents) {
             $invoice->update([
                 'status' => 'approved',
                 'approved_at' => now(),
                 'approved_by_id' => auth()->id(),
+                'committed_amount_cents' => $committedAmountCents,
             ]);
 
             AuditLogService::record('Invoice Approved', $invoice, [], [
                 'invoice_number' => $invoice->invoice_number,
                 'participant_id' => $invoice->participant_id,
                 'approved_by' => auth()->id(),
+                'committed_amount_cents' => $committedAmountCents,
             ]);
 
-            if ($invoice->participant && $invoice->pre_approval_id) {
-                $this->budgetService->approveInvoice($invoice);
+            if ($invoice->participant) {
+                $this->budgetService->approveInvoice($invoice, $committedAmountCents);
             }
 
             if ($invoice->participant && $invoice->participant->user_id) {
@@ -2267,7 +2301,7 @@ class AdminController extends Controller
         ]);
 
         DB::transaction(function () use ($invoice, $validated) {
-            if ($invoice->status === 'approved' && $invoice->participant && $invoice->pre_approval_id) {
+            if ($invoice->status === 'approved' && $invoice->participant) {
                 $this->budgetService->releaseInvoice($invoice);
             }
 
@@ -2313,7 +2347,8 @@ class AdminController extends Controller
             $budgetDate = Carbon::parse($invoice->invoice_date ?? now());
             $budget = $this->budgetService->getOrCreateBudgetForParticipantQuarter($invoice->participant, $budgetDate);
 
-            if ($invoice->amount_cents > $budget->approved_spend_cents) {
+            $approvedSpend = (int) ($budget->approved_spend_cents ?? 0);
+            if ($invoice->amount_cents > $approvedSpend) {
                 return back()->withErrors(['budget' => 'Not enough approved spend available to pay this invoice.']);
             }
         }

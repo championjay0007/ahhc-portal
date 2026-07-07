@@ -85,6 +85,10 @@
                 @else
                     <form method="POST" action="{{ route('portal.admin.invoices.review', $invoice) }}" class="d-inline">
                         @csrf
+                        <div class="mb-3">
+                            <label for="committed_amount" class="form-label">Committed amount</label>
+                            <input type="text" id="committed_amount" name="committed_amount" value="{{ old('committed_amount', number_format(($invoice->amount_cents ?? 0) / 100, 2)) }}" class="form-control" placeholder="e.g. 1500.00">
+                        </div>
                         <button type="submit" class="btn btn-primary">Approve invoice</button>
                     </form>
                     <button class="btn btn-danger ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#rejectInvoiceForm" aria-expanded="false" aria-controls="rejectInvoiceForm">

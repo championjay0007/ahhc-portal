@@ -35,6 +35,9 @@
             <p>
                 <a href="{{ route('budgets.export.csv', $budget) }}" class="btn btn-outline-secondary">Export CSV</a>
                 <a href="{{ route('budgets.export.pdf', $budget) }}" class="btn btn-outline-secondary">Export PDF</a>
+                @can('update', $budget)
+                    <a href="{{ route('budgets.edit', $budget) }}" class="btn btn-outline-secondary">Edit Budget</a>
+                @endcan
                 @can('delete', $budget)
                     <form method="POST" action="{{ route('budgets.destroy', $budget) }}" class="d-inline-block" onsubmit="return confirm('Delete this budget?');">
                         @csrf

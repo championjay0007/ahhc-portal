@@ -70,7 +70,7 @@
         <div class="row g-3 mt-3">
             <div class="col-md-4">
                 <div class="card border-0 bg-light p-3">
-                    <p class="text-muted mb-1">Committed (pending approval)</p>
+                    <p class="text-muted mb-1">Committed</p>
                     <h4>${{ number_format($committedCents / 100, 2) }}</h4>
                 </div>
             </div>

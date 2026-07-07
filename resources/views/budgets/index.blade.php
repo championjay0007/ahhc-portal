@@ -28,6 +28,9 @@
                 <td>${{ number_format($budget->remaining_balance,2) }}</td>
                 <td class="d-flex gap-2">
                     <a href="{{ route('budgets.show', $budget) }}" class="btn btn-sm btn-outline-primary">View</a>
+                    @can('update', $budget)
+                        <a href="{{ route('budgets.edit', $budget) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    @endcan
                     @can('delete', $budget)
                         <form method="POST" action="{{ route('budgets.destroy', $budget) }}" onsubmit="return confirm('Delete this budget?');">
                             @csrf

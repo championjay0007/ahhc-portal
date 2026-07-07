@@ -104,7 +104,11 @@
                                 <td class="text-end">${{ number_format($remaining / 100, 2) }}</td>
                                 <td class="text-end">{{ $utilization }}%</td>
                                 <td class="text-end">
-                                    <a href="{{ route('portal.admin.participants.show', $participant) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                    @if(!empty($participant->budget))
+                                        <a href="{{ route('budgets.show', $participant->budget) }}" class="btn btn-sm btn-outline-primary">View budget</a>
+                                    @else
+                                        <a href="{{ route('portal.admin.participants.show', $participant) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

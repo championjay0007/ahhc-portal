@@ -55,6 +55,56 @@ class BudgetControllerTest extends TestCase
         $show->assertSee('Total Available');
     }
 
+    public function test_admin_can_edit_budget()
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+        $participant = Participant::factory()->create();
+        $budget = Budget::create([
+            'participant_id' => $participant->id,
+            'quarter_start_date' => now()->startOfQuarter()->toDateString(),
+            'quarter_end_date' => now()->endOfQuarter()->toDateString(),
+            'opening_budget' => 1000.00,
+            'carry_over' => 50.00,
+        ]);
+
+        $this->actingAs($user);
+
+        $edit = $this->get(route('budgets.edit', $budget));
+        $edit->assertStatus(200);
+        $edit->assertSee('Edit Budget');
+
+        $resp = $this->put(route('budgets.update', $budget), [
+            'opening_budget' => 2200.00,
+            'carry_over' => 120.00,
+        ]);
+
+        $resp->assertRedirect(route('budgets.show', $budget));
+        $resp->assertSessionHas('status', 'Budget updated successfully.');
+
+        $budget->refresh();
+        $this->assertEquals(2200.00, (float) $budget->opening_budget);
+        $this->assertEquals(120.00, (float) $budget->carry_over);
+    }
+
+    public function test_admin_budget_list_view_opens_budget_page()
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+        $participant = Participant::factory()->create();
+        $budget = Budget::create([
+            'participant_id' => $participant->id,
+            'quarter_start_date' => now()->startOfQuarter()->toDateString(),
+            'quarter_end_date' => now()->endOfQuarter()->toDateString(),
+            'opening_budget' => 1000.00,
+            'carry_over' => 50.00,
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('portal.admin.budgets'));
+        $response->assertStatus(200);
+        $response->assertSee(route('budgets.show', $budget));
+    }
+
     public function test_admin_can_delete_budget()
     {
         $user = User::factory()->create(['role' => 'admin']);
