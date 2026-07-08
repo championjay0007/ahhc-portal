@@ -93,11 +93,48 @@ class AdminApproveStage2Test extends TestCase
         $this->assertNotNull($worker->stage_2_completed_at);
     }
 
-    public function test_admin_show_page_displays_worker_profile_documents_and_declarations(): void
+    public function test_admin_show_page_renders_when_worker_has_no_onboarding_token(): void
     {
         $admin = User::create([
             'name' => 'Admin',
             'email' => 'admin4@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'password' => bcrypt('Password123!'),
+        ]);
+
+        $worker = Worker::create([
+            'worker_number' => 'W-2004',
+            'first_name' => 'NoToken',
+            'last_name' => 'Worker',
+            'phone' => '0400000003',
+            'email' => 'notoken@example.com',
+            'role_type' => 'Independent',
+            'status' => 'pending',
+            'onboarding_stage' => 2,
+            'onboarding_token' => null,
+            'onboarding_expires_at' => null,
+        ]);
+
+        WorkerComplianceDocument::create([
+            'worker_id' => $worker->id,
+            'document_type' => 'Police Check',
+            'document_path' => 'worker_compliance/'.$worker->id.'/police.pdf',
+            'status' => 'submitted',
+        ]);
+
+        $response = $this->actingAs($admin)
+            ->get(route('admin.worker_onboarding.show', $worker));
+
+        $response->assertOk();
+        $response->assertSee('Submitted Documents');
+    }
+
+    public function test_admin_show_page_displays_worker_profile_documents_and_declarations(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin',
+            'email' => 'admin5@example.com',
             'role' => 'admin',
             'status' => 'active',
             'password' => bcrypt('Password123!'),

@@ -118,8 +118,12 @@
                                             </span>
                                             @if ($doc->document_path)
                                                 <div class="d-flex gap-2 justify-content-end mt-2">
-                                                    <a href="{{ route('worker.onboarding.document.preview', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-primary">Preview</a>
-                                                    <a href="{{ route('worker.onboarding.document.download', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                                    @if (filled($worker->onboarding_token))
+                                                        <a href="{{ route('worker.onboarding.document.preview', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-primary">Preview</a>
+                                                        <a href="{{ route('worker.onboarding.document.download', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                                    @else
+                                                        <span class="text-muted small">Preview unavailable until onboarding is re-invited</span>
+                                                    @endif
                                                 </div>
                                             @endif
                                         </div>
@@ -220,8 +224,12 @@
                                                 </span>
                                                 <div class="d-flex gap-2 justify-content-end mt-2">
                                                     @if ($doc->document_path)
-                                                        <a href="{{ route('worker.onboarding.document.preview', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-primary">Preview</a>
-                                                        <a href="{{ route('worker.onboarding.document.download', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                                        @if (filled($worker->onboarding_token))
+                                                            <a href="{{ route('worker.onboarding.document.preview', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-primary">Preview</a>
+                                                            <a href="{{ route('worker.onboarding.document.download', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                                        @else
+                                                            <span class="text-muted small">Preview unavailable until onboarding is re-invited</span>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </div>
@@ -276,8 +284,12 @@
                                                         </div>
                                                         <div class="text-end d-flex flex-wrap gap-2 justify-content-end">
                                                             @if ($doc->document_path)
-                                                                <a href="{{ route('worker.onboarding.document.preview', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-primary">Preview</a>
-                                                                <a href="{{ route('worker.onboarding.document.download', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                                                @if (filled($worker->onboarding_token))
+                                                                    <a href="{{ route('worker.onboarding.document.preview', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-primary">Preview</a>
+                                                                    <a href="{{ route('worker.onboarding.document.download', ['token' => $worker->onboarding_token, 'document' => $doc->id]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                                                @else
+                                                                    <span class="text-muted small">Preview unavailable until onboarding is re-invited</span>
+                                                                @endif
                                                             @endif
                                                         </div>
                                                     </div>
