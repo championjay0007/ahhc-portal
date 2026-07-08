@@ -154,6 +154,21 @@ class ComplianceController extends Controller
     }
 
     /**
+     * Preview compliance document file inline for admins.
+     */
+    public function previewFile(WorkerComplianceDocument $document)
+    {
+        if (! $document->document_path || ! Storage::disk('private')->exists($document->document_path)) {
+            abort(404, 'File not found');
+        }
+
+        return response()->file(Storage::disk('private')->path($document->document_path), [
+            'Content-Type' => Storage::disk('private')->mimeType($document->document_path),
+            'Content-Disposition' => 'inline; filename="'.basename($document->document_path).'"',
+        ]);
+    }
+
+    /**
      * Get compliance document file
      */
     public function downloadFile(WorkerComplianceDocument $document): StreamedResponse

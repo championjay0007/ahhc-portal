@@ -368,6 +368,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
         Route::put('/documents/{document}', [ComplianceController::class, 'update'])->name('documents.update');
         Route::delete('/documents/{document}', [ComplianceController::class, 'destroy'])->name('documents.destroy');
         Route::post('/documents/{document}/upload', [ComplianceController::class, 'uploadFile'])->name('documents.upload');
+        Route::get('/documents/{document}/preview', [ComplianceController::class, 'previewFile'])->name('documents.preview');
         Route::get('/documents/{document}/download', [ComplianceController::class, 'downloadFile'])->name('documents.download');
         Route::post('/documents/{document}/verify', [ComplianceController::class, 'verify'])->name('documents.verify');
         Route::post('/documents/{document}/reject', [ComplianceController::class, 'reject'])->name('documents.reject');
