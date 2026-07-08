@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Services\TemplateVariableService;
 
 class EmailTemplate extends Model
 {
@@ -172,22 +173,13 @@ class EmailTemplate extends Model
 
     public function sampleVariables(): array
     {
-        $defaults = [
-            'name' => 'Jane Doe',
-            'email' => 'jane.doe@example.com',
-            'unsubscribe_url' => url('/unsubscribe'),
-            'organization' => config('app.name', 'Website Name'),
-            'date' => now()->toFormattedDateString(),
-            'company' => 'Acme Corp',
-            'reset_link' => url('/password/reset'),
-        ];
+        $vars = $this->variables ?? [];
 
-        $samples = [];
-
-        foreach ($this->variables ?? [] as $variable) {
-            $samples[$variable] = $defaults[$variable] ?? 'Sample '.Str::title(str_replace('_', ' ', $variable));
+        if (empty($vars)) {
+            // fallback: return a small set of common samples
+            return TemplateVariableService::sampleValuesFor(['name', 'email', 'organization', 'date']);
         }
 
-        return $samples;
+        return TemplateVariableService::sampleValuesFor($vars);
     }
 }

@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ExpirePreApprovals::class,
         \App\Console\Commands\NormalizeBudgets::class,
+        \App\Console\Commands\MigrateMessageTemplatesToEmailTemplates::class,
     ];
 
     /**

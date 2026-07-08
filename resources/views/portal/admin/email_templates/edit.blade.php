@@ -195,6 +195,26 @@
                         </div>
                     </div>
 
+                    <div class="variables-section mt-3">
+                        <strong><i class="bi bi-list-ul"></i>Available Variables</strong>
+                        <div class="mt-3">
+                            @php
+                                $availableVariables = $availableVariables ?? [];
+                            @endphp
+
+                            @if(!empty($availableVariables))
+                                @foreach($availableVariables as $key => $desc)
+                                    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+                                        <span style="padding:0.4rem 0.7rem;border-radius:6px;background:white;border:1px solid #e6eefc;color:#1e293b;font-weight:700;">{{ $key }}</span>
+                                        <small style="color:#475569;">{{ $desc }}</small>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div style="color:#64748b;">No shared variables defined.</div>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="action-buttons">
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-circle me-2"></i>Update Template

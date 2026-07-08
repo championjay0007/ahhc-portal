@@ -7,6 +7,7 @@ use App\Models\EmailTemplate;
 use App\Models\EmailTemplateCategory;
 use App\Models\EmailTemplateVersion;
 use App\Services\EmailTemplateService;
+use App\Services\TemplateVariableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
@@ -79,7 +80,9 @@ class EmailTemplateController extends Controller
         $categories = EmailTemplateCategory::active()->orderBy('name')->get();
         $emailTemplate->load('versions');
 
-        return view('portal.admin.email_templates.edit', compact('emailTemplate', 'categories'));
+        $availableVariables = TemplateVariableService::getAvailableVariables();
+
+        return view('portal.admin.email_templates.edit', compact('emailTemplate', 'categories', 'availableVariables'));
     }
 
     public function update(Request $request, EmailTemplate $emailTemplate)
