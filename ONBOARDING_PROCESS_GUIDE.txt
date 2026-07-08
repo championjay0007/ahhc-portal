@@ -1,0 +1,394 @@
+# AHHC PORTAL ONBOARDING GUIDE
+**Document Version:** 1.0
+**Date:** 8 July 2026
+**Purpose:** This guide explains the complete onboarding workflows for Participants and Workers within the Allegiance Heart & Home Care Portal, including the responsibilities of Allegiance Heart & Home Care Administrators at each stage of the process.
+
+**Note:** "AHHC" refers to Allegiance Heart & Home Care. The full name is used here at the beginning of the document for clarity, and "AHHC" will be used as the short form throughout the rest of this guide.
+
+---
+
+# 1. Introduction
+The Allegiance Heart & Home Care Portal contains two independent onboarding workflows:
+
+- **Participant Onboarding** – for individuals receiving services from Allegiance Heart & Home Care.
+- **Worker Onboarding** – for workers, support providers, or suppliers delivering services to participants.
+Both workflows are designed to:
+
+- Protect participant information.
+- Ensure compliance with Allegiance Heart & Home Care policies and regulatory requirements.
+- Collect all mandatory information and documentation.
+- Allow administrators to review every submission before granting portal access.
+- Maintain a complete audit trail of all onboarding activities.
+No participant or worker receives full access to the portal until the required approval process has been completed by an Allegiance Heart & Home Care Administrator.
+
+---
+
+# 2. Participant Onboarding Workflow
+The participant onboarding process is completed through an **8-step guided wizard**.
+
+## Step 1 – Invitation & Access
+The onboarding process begins when an AHHC Administrator sends an invitation to the participant.
+
+The invitation contains:
+
+- A secure onboarding link
+- The participant's email address
+- An expiry period (if configured)
+The participant can:
+
+- Open the onboarding wizard
+- Begin completing the required information
+- Save progress as a draft
+- Return later to continue before final submission
+
+---
+
+## Step 2 – Account Setup
+The participant creates their portal account by:
+
+- Creating a password
+- Confirming login credentials
+- Setting up Multi-Factor Authentication (MFA), if enabled
+Once completed, the participant can securely access the onboarding wizard but does **not** yet receive access to the main participant portal.
+
+---
+
+## Step 3 – Personal Profile Information
+The participant completes their personal profile, including:
+
+- Full legal name
+- Preferred name
+- Date of birth
+- Gender (if applicable)
+- Phone number
+- Email address
+- Residential address
+- Postal address (if different)
+- Preferred language
+- Communication preferences
+This information forms the participant's primary profile within the AHHC Portal.
+
+---
+
+## Step 4 – Emergency Contact Information
+The participant provides one or more emergency contacts.
+
+Typical information includes:
+
+- Contact name
+- Relationship to participant
+- Phone number
+- Email address (optional)
+- Alternative contact details
+This information supports emergency planning and participant safety.
+
+---
+
+## Step 5 – Support Person Information
+Where applicable, the participant may nominate:
+
+- Family member
+- Guardian
+- Advocate
+- Support coordinator
+- Carer
+- Legal representative
+The participant can define each person's role and permissions within the portal where applicable.
+
+---
+
+## Step 6 – Upload Required Documents
+The participant uploads all required onboarding documentation.
+
+Examples include:
+
+- Identification documents
+- NDIS documentation (where applicable)
+- Medical or support-related documents
+- Referral documents
+- Other requested supporting evidence
+The system validates:
+
+- Required documents are uploaded
+- Accepted file formats
+- File size limits
+- Successful upload completion
+Incomplete or invalid uploads prevent progression to the next step.
+
+---
+
+## Step 7 – Agreements & Electronic Signatures
+The participant reviews and electronically signs all required agreements.
+
+These may include:
+
+- Privacy Consent
+- Service Agreement
+- Consent Forms
+- Terms and Conditions
+- Participant Declarations
+- Other organisation-specific agreements
+Each signed agreement is securely stored within the participant record together with:
+
+- Signature
+- Date
+- Time
+- Audit information
+
+---
+
+## Step 8 – Review & Submit
+Before submission, the participant reviews all entered information.
+
+The system performs validation to ensure:
+
+- Required fields are complete
+- Mandatory documents are uploaded
+- All agreements have been signed
+- No validation errors remain
+Once submitted:
+
+- The onboarding becomes read-only.
+- The submission is sent to AHHC Administration.
+- The participant status changes to **Pending Admin Review**.
+The participant cannot access the full portal until approval has been granted.
+
+---
+
+# 3. Administrator Review of Participant Onboarding
+When participant onboarding is submitted, the Administrator completes the following review process.
+
+## Review Participant Information
+Verify:
+
+- Personal information
+- Contact details
+- Emergency contacts
+- Support persons
+- Uploaded documents
+- Signed agreements
+
+---
+
+## Validate Submitted Documents
+The Administrator confirms that all documents:
+
+- Are present
+- Are readable
+- Are current
+- Meet organisational requirements
+If documents are missing or invalid, the Administrator requests corrections.
+
+---
+
+## Make an Approval Decision
+The Administrator may:
+
+- **Approve** the onboarding and activate the participant.
+- **Request Changes** if additional information is required.
+- **Reject** the submission where requirements have not been met.
+Every decision should be recorded within the system for auditing purposes.
+
+---
+
+## Notify the Participant
+The portal automatically updates the participant regarding their onboarding status.
+
+Possible statuses include:
+
+- Pending Review
+- Changes Requested
+- Approved
+- Rejected
+Notifications may be delivered through:
+
+- Portal notifications
+- Email notifications
+- SMS notifications (if enabled)
+
+---
+
+# 4. Worker Onboarding Workflow
+The worker onboarding process consists of **6 structured stages**.
+
+---
+
+## Stage 1 – Invitation & Account Creation
+An AHHC Administrator invites the worker after:
+
+- Nomination
+- Referral
+- Recruitment
+- Marketplace registration
+The worker:
+
+- Receives a secure invitation
+- Creates their account
+- Sets a password
+- Completes MFA (if enabled)
+
+---
+
+## Stage 2 – Upload Compliance Documentation
+The worker uploads all required compliance documents.
+
+Typical examples include:
+
+- ABN Verification
+- National Police Check
+- NDIS Worker Screening Check
+- Professional Qualifications
+- First Aid Certificate
+- CPR Certificate
+- Professional Registration
+- Driver's Licence
+- Insurance Certificates
+- Working With Children Check (where applicable)
+- Marketplace Agreement
+- Other mandatory compliance documentation
+Documents are securely stored and linked to the worker profile.
+
+---
+
+## Stage 3 – Compliance Review
+AHHC Administration reviews every uploaded document.
+
+The review includes:
+
+- Authenticity
+- Expiry dates
+- Completeness
+- Compliance requirements
+- Supporting evidence
+If necessary, additional documentation is requested.
+
+---
+
+## Stage 4 – Worker Declarations
+The worker electronically signs required declarations, including:
+
+- Privacy Agreement
+- Confidentiality Agreement
+- Code of Conduct
+- Incident Reporting Agreement
+- Workplace Policies
+- Conflict of Interest Declaration
+- Other organisational declarations
+Each declaration is securely stored with a complete audit history.
+
+---
+
+## Stage 5 – Service Approval
+Following successful compliance review, the Administrator approves the services the worker may deliver.
+
+Approval may include:
+
+- Personal Care
+- Domestic Assistance
+- Community Access
+- Nursing Services
+- Allied Health
+- Transport Services
+- Other approved service categories
+Restrictions or conditions may also be applied where necessary.
+
+---
+
+## Stage 6 – Participant Assignment
+Once onboarding is fully approved:
+
+The Administrator assigns the worker to one or more participants.
+
+The worker receives access only to:
+
+- Assigned participants
+- Approved services
+- Relevant schedules
+- Required documentation
+Worker onboarding is considered complete once assignment has been confirmed.
+
+---
+
+# 5. Administrator Review of Worker Onboarding
+Following worker submission, the Administrator performs the following tasks.
+
+## Review Compliance Documentation
+Confirm:
+
+- Required documents are present
+- Documents are valid
+- Documents have not expired
+- Regulatory requirements have been satisfied
+
+---
+
+## Request Corrections (if required)
+Where documentation is incomplete, the Administrator may:
+
+- Request additional documents
+- Request updated versions
+- Reject invalid documentation
+
+---
+
+## Approve Worker Eligibility
+Once compliant, the Administrator:
+
+- Confirms declarations
+- Approves service categories
+- Applies any restrictions or conditions
+
+---
+
+## Assign Participants
+After approval:
+
+- Workers are assigned to participants.
+- Access permissions are automatically limited according to their assignments and approved services.
+
+---
+
+# 6. Comparison of the Two Onboarding Workflows
+Participant OnboardingWorker OnboardingAccount setupAccount setupPersonal profileWorker profileEmergency contactsCompliance documentationSupport personsCredential verificationDocument uploadCompliance reviewService agreementsWorker declarationsAdmin approvalService approvalParticipant activationParticipant assignment
+---
+
+# 7. Administrator Responsibilities
+Throughout both onboarding workflows, AHHC Administrators are responsible for:
+
+- Reviewing all submitted information.
+- Verifying uploaded documents.
+- Ensuring compliance with organisational policies.
+- Requesting corrections where required.
+- Approving or rejecting onboarding submissions.
+- Activating participant accounts.
+- Approving worker eligibility.
+- Assigning workers to participants.
+- Maintaining complete audit records of every action taken.
+
+---
+
+# 8. Key Principles
+The AHHC onboarding process is designed to ensure:
+
+- Secure user registration
+- Accurate participant records
+- Verified worker credentials
+- Regulatory compliance
+- Controlled access to sensitive information
+- Complete auditability
+- High standards of service quality and participant safety
+No participant or worker should receive full portal access until every required onboarding step has been completed and formally approved by an authorised AHHC Administrator.
+
+---
+
+# 9. Conclusion
+The AHHC Portal onboarding system provides a secure, structured, and compliant process for introducing both participants and workers into the organisation.
+
+By requiring administrative review before activation, AHHC ensures that:
+
+- Participant information is accurate.
+- Required documentation has been verified.
+- Legal agreements have been completed.
+- Workers meet compliance standards.
+- Access permissions are granted appropriately.
+- The organisation maintains strong governance, accountability, and participant safety throughout the onboarding lifecycle.

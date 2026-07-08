@@ -1,113 +1,265 @@
-================================================================================
-ALLEGIANCE HEART & HOME CARE (AHHC)
-PARTICIPANT ONBOARDING PROCESS & WORKFLOW
-Confidential Build Brief Extract
-================================================================================
+# AHHC PORTAL ONBOARDING GUIDE
 
-OVERVIEW
---------
-The AHHC Self-Management Support portal operates on a strict access control 
-principle. Users cannot self-create full portal accounts. All onboarding must 
-go through an AHHC suitability review and approval process before a secure 
-portal invitation is issued. 
+**Document Version:** 1.0
+**Date:** 8 July 2026
+**Purpose:** This guide explains the full onboarding journey for participants and workers in the AHHC Portal, starting from the participant enquiry form, including how participants nominate workers and how AHHC Administrators respond at each stage.
 
-This document outlines the mandatory 6-step onboarding workflow for new 
-participants and their nominated support persons.
+---
 
-================================================================================
-CLIENT ONBOARDING WORKFLOW (6 STEPS)
-================================================================================
+# 1. Introduction
+The AHHC Portal supports two related onboarding journeys:
 
-STEP 1: ENQUIRY / APPLICATION
------------------------------
-- Trigger: A prospective participant or their representative visits the public 
-  AHHC website (allegiancehearthomecare.com.au/self-management-support).
-- Action: The user completes the public Contact/Enquiry Form (capturing name, 
-  email, phone, role, and Support at Home status).
-- System Behavior: The form submission is routed to AHHC admin. 
-- Security Note: No full portal access is created at this stage. It simply 
-  generates an enquiry for AHHC review.
+- Participant onboarding – for individuals seeking services through AHHC.
+- Worker onboarding – for workers, support providers, or suppliers who will provide services to participants.
 
-STEP 2: SUITABILITY ASSESSMENT
-------------------------------
-- Trigger: AHHC receives the initial enquiry.
-- Action: AHHC conducts a suitability assessment to determine if the 
-  participant is appropriate for the self-management support model.
-- System Behavior: AHHC staff can either upload a completed suitability 
-  assessment document to the system or assign an assessment form to the 
-  prospective participant for completion.
+Both journeys are designed to:
 
-STEP 3: PARTICIPANT PROFILE SETUP
----------------------------------
-- Trigger: Suitability assessment is approved.
-- Action: AHHC Admin/Care Manager creates the foundational participant record 
-  in the secure portal.
-- Data Captured: 
-  * Support plan and Care plan
-  * Quarterly budget and quarter dates
-  * Emergency contacts and communication preferences
-  * Support person authority levels (if applicable)
-  * Identified risks
+- protect participant information,
+- collect required information and documentation,
+- ensure compliance with AHHC policies,
+- require administrative review before access is granted,
+- maintain a full audit trail of onboarding actions.
 
-STEP 4: DOCUMENT UPLOAD
------------------------
-- Trigger: Profile is created.
-- Action: Required documentation is gathered and securely uploaded to the 
-  participant's file.
-- Documents Required:
-  * Referral / Support plan
-  * Authority documents (e.g., proof of representation)
-  * Service agreements
-  * Participant handbook acknowledgement
-  * Other relevant clinical or administrative records
-- Security Note: All uploads are subject to file type controls, size limits, 
-  and malware scanning.
+No participant or worker receives full portal access until the required approval steps have been completed by an AHHC Administrator.
 
-STEP 5: ELECTRONIC SIGNING (E-SIGN)
------------------------------------
-- Trigger: Documents are uploaded and ready for execution.
-- Action: AHHC assigns mandatory legal and consent forms to the participant 
-  and/or support person via the portal's e-Signature module.
-- Forms Required:
-  * Self-Management Agreement
-  * Consent and Privacy documents
-  * Roles and Responsibilities acknowledgements
-- System Behavior: The system tracks pending signatures and stores the final 
-  signed PDF copies with a full audit trail (signer name, role, date/time).
+---
 
-STEP 6: DASHBOARD ACTIVATION & INVITATION
------------------------------------------
-- Trigger: All documents are signed, and AHHC grants final approval.
-- Action: The system generates a secure portal invitation.
-- System Behavior: 
-  * The participant/support person receives a secure login invitation link 
-    via email/SMS.
-  * The user sets up their password and configures Multi-Factor 
-    Authentication (MFA/2FA).
-  * The user is granted role-based access to the Participant Dashboard.
+# 2. Participant Onboarding Journey: Starting from the Enquiry Form
+The participant onboarding journey begins when a person submits an enquiry form through the AHHC Portal or an approved intake channel.
 
-================================================================================
-POST-ONBOARDING: PARTICIPANT DASHBOARD CAPABILITIES
-================================================================================
-Once onboarded and activated, the participant/support person can securely log 
-in to the mobile-responsive PWA/Web Portal to:
+## Step 1 – Enquiry Form Submitted
+When a participant submits an enquiry form, the system records:
 
-1. View Live Budget: Track quarterly budget, committed funds, approved/paid 
-   spend, and remaining balance.
-2. Manage Workers/Suppliers: Nominate and onboard their own chosen support 
-   workers or third-party suppliers (subject to AHHC compliance approval).
-3. Submit Pre-Approvals: Request new services, attach quotes, and select 
-   service categories.
-4. Submit Invoices: Upload receipts/invoices and link them to pre-approvals 
-   or care notes.
-5. Manage Documents: Upload and view care plans, agreements, and receipts.
-6. Sign Forms: Complete any ongoing digital forms required by AHHC.
-7. Report Incidents/Feedback: Submit complaints, feedback, or incident reports.
-8. Secure Messaging: Communicate securely with the AHHC care team.
+- the participant’s contact details,
+- basic service request information,
+- the date and time of the enquiry,
+- the intake source or referral channel.
 
-================================================================================
-DOCUMENT CONTROL
-Project: Self-Management Support System
-Business: Allegiance Heart & Home Care Pty Ltd
-Preferred Go-Live: On or before 1 July 2026
-================================================================================
+This stage creates the initial participant record and begins the onboarding process.
+
+## Step 2 – Enquiry Review by AHHC Administration
+An AHHC Administrator reviews the submitted enquiry.
+
+The administrator may:
+
+- confirm the enquiry is valid,
+- request more information,
+- assign the enquiry to the appropriate service team,
+- move the participant forward to onboarding.
+
+If the enquiry is accepted, the participant is invited into the onboarding process.
+
+## Step 3 – Invitation and Access
+Once the enquiry is accepted, the participant receives an onboarding invitation.
+
+The invitation typically includes:
+
+- a secure onboarding link,
+- the participant’s email address,
+- instructions to begin the onboarding process.
+
+The participant can:
+
+- start the onboarding wizard,
+- save progress and return later,
+- complete the process in stages.
+
+---
+
+# 3. Participant Onboarding Steps
+After the invitation is accepted, the participant completes the onboarding process through the guided workflow.
+
+## Step 1 – Account Setup
+The participant creates or confirms their portal account by:
+
+- setting a password,
+- confirming login credentials,
+- completing MFA if enabled.
+
+## Step 2 – Personal Profile Information
+The participant enters their personal details, including:
+
+- full name,
+- preferred name,
+- date of birth,
+- contact details,
+- address,
+- preferred communication method.
+
+## Step 3 – Emergency Contact Information
+The participant provides emergency contact details such as:
+
+- name,
+- relationship,
+- phone number,
+- email address.
+
+## Step 4 – Support Person Information
+The participant may nominate support persons, such as:
+
+- family members,
+- guardians,
+- advocates,
+- carers,
+- support coordinators,
+- legal representatives.
+
+These people may be recorded as support contacts for the participant’s care and service planning.
+
+## Step 5 – Document Upload
+The participant uploads required documents, such as:
+
+- identification,
+- referral documents,
+- medical or support-related documentation,
+- other evidence requested by AHHC.
+
+## Step 6 – Agreements and Electronic Signatures
+The participant reviews and signs required agreements, including:
+
+- privacy consent,
+- service agreements,
+- declarations,
+- terms and conditions.
+
+## Step 7 – Review and Submission
+Before submission, the participant reviews all entered information and confirms that required documents and agreements are complete.
+
+Once submitted:
+
+- the onboarding becomes read-only,
+- the submission is routed to AHHC Administration,
+- the participant status changes to Pending Admin Review.
+
+---
+
+# 4. How Participants Nominate Workers
+Participants can nominate workers as part of their support arrangement or service planning.
+
+## Nomination Process
+A participant may nominate a worker when:
+
+- they want a specific worker to assist them,
+- they are requesting a worker from a preferred provider,
+- they are selecting support staff for their care plan.
+
+The nomination typically includes:
+
+- the worker’s name or registration details,
+- the service requested,
+- the participant’s reason for the nomination,
+- any relevant support notes.
+
+## What Happens After Nomination
+Once a worker is nominated:
+
+- the nomination is recorded against the participant’s profile,
+- AHHC Administration reviews the nomination,
+- the nominated worker is checked against eligibility and compliance requirements,
+- the worker may be approved or declined for the participant’s services.
+
+This ensures that nominated workers are appropriate, verified, and authorised before they begin delivering services.
+
+---
+
+# 5. Administrator Review of Participant Onboarding
+When participant onboarding is submitted, the administrator reviews the full submission.
+
+## Review Tasks
+The administrator verifies:
+
+- personal information,
+- contact details,
+- emergency contacts,
+- support person nominations,
+- uploaded documents,
+- signed agreements.
+
+## Possible Decisions
+The administrator may:
+
+- approve the participant,
+- request changes,
+- reject the submission.
+
+## Notification to Participant
+The participant is notified of the outcome through the portal and/or email.
+
+Possible statuses include:
+
+- Pending Review,
+- Changes Requested,
+- Approved,
+- Rejected.
+
+---
+
+# 6. Worker Onboarding Workflow
+The worker onboarding workflow is separate from the participant process, but closely connected when a participant nominates or is assigned a worker.
+
+## Stage 1 – Invitation and Account Creation
+A worker receives an invitation from AHHC Administration and creates their account.
+
+## Stage 2 – Compliance Documentation Upload
+The worker submits required documents, including:
+
+- police checks,
+- qualifications,
+- licenses,
+- insurance certificates,
+- other compliance evidence.
+
+## Stage 3 – Compliance Review
+AHHC Administration reviews the worker’s uploaded documents.
+
+## Stage 4 – Declarations and Agreements
+The worker signs required declarations and agreements.
+
+## Stage 5 – Service Approval
+The administrator approves the services the worker may deliver.
+
+## Stage 6 – Participant Assignment
+Once approved, the worker may be assigned to one or more participants, depending on eligibility and service approval.
+
+---
+
+# 7. How the Two Workflows Connect
+The participant and worker onboarding journeys connect in the following way:
+
+- a participant enters the system through the enquiry form and onboarding process,
+- the participant may nominate a worker,
+- AHHC Administration reviews the nomination and the worker’s compliance status,
+- if approved, the worker can be assigned to support the participant.
+
+This creates a controlled, compliant, and auditable process for service delivery.
+
+---
+
+# 8. Administrator Responsibilities
+Throughout both onboarding workflows, AHHC Administrators are responsible for:
+
+- reviewing enquiries and submissions,
+- validating documents,
+- checking worker compliance,
+- reviewing participant nominations,
+- requesting corrections where necessary,
+- approving or rejecting submissions,
+- assigning workers to participants,
+- maintaining audit records.
+
+---
+
+# 9. Key Principles
+The AHHC onboarding process is designed to ensure:
+
+- secure intake and registration,
+- accurate participant records,
+- verified worker credentials,
+- compliant service delivery,
+- controlled access to sensitive information,
+- clear accountability and auditability.
+
+---
+
+# 10. Conclusion
+The AHHC Portal onboarding process begins when a participant submits an enquiry form and continues through participant registration, documentation, review, and approval. Participants may also nominate workers, and those nominations are reviewed by AHHC Administration before a worker is approved and assigned. This structure ensures that services are delivered safely, lawfully, and in a well-managed way.

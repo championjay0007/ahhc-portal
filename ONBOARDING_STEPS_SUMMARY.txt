@@ -1,0 +1,46 @@
+
+Note:The full meaning of AHHC is “Allegiance Heart & Home Care
+
+
+# AHHC ONBOARDING STEPS SUMMARY
+
+This document provides a simple summary of the onboarding process used in the portal.
+
+## Participant Onboarding Steps
+1. Enquiry Submitted
+   - A person submits an enquiry or application through the public site.
+
+2. Enquiry and Suitability Review
+   - AHHC reviews the enquiry and checks whether the participant is suitable for the service model.
+
+3. Participant Profile Created
+   - If approved, AHHC creates the participant profile and records the initial support information.
+
+4. Documents and Agreements
+   - The participant uploads required documents and signs the required agreements.
+
+5. Admin Review and Approval
+   - AHHC administration reviews the submission and either approves it, requests updates, or rejects it.
+
+6. Invitation and Portal Access
+   - Once approved, the participant receives an invitation and can access the portal.
+
+## Worker Onboarding Steps
+1. Worker Nomination and Review
+   - A participant may nominate a worker they wish to receive support from.
+   - AHHC reviews the nomination before proceeding.
+
+2. Invitation Sent
+   - If the nomination is approved, AHHC sends the worker an onboarding invitation.
+
+3. Account Setup
+   - The worker creates their account and completes the required login setup.
+
+4. Compliance Documents
+   - The worker uploads required compliance and qualification documents.
+
+5. Review and Declarations
+   - AHHC reviews the submitted documents and the worker signs the required declarations.
+
+6. Service Approval and Assignment
+   - If approved, the worker is assigned to participants and can provide approved services.
