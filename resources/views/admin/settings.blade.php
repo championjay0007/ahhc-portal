@@ -211,6 +211,11 @@
                                 <label class="form-check-label" for="pwa_enabled">Enable Offline PWA (Service Worker)</label>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Session lifetime (minutes)</label>
+                            <input type="number" name="session_lifetime" value="{{ old('session_lifetime', $settings['session_lifetime'] ?? 120) }}" class="form-control" min="1" max="10080">
+                            <small class="text-muted">Controls how long a user session stays active before expiring.</small>
+                        </div>
                         <div class="col-md-12">
                             <label class="form-label">Invoice budget mode</label>
                             <select name="invoice_budget_mode" class="form-select">

@@ -35,6 +35,7 @@ class AdminSettingsTest extends TestCase
                 'require_mfa' => true,
                 'report_export_emails' => true,
                 'incident_alerts' => false,
+                'session_lifetime' => 240,
             ]);
 
         $response->assertRedirect(route('portal.admin.settings'));
@@ -61,6 +62,7 @@ class AdminSettingsTest extends TestCase
         $this->assertTrue((bool) PortalSetting::where('key', 'require_mfa')->value('value'));
         $this->assertTrue((bool) PortalSetting::where('key', 'report_export_emails')->value('value'));
         $this->assertFalse((bool) PortalSetting::where('key', 'incident_alerts')->value('value'));
+        $this->assertSame(240, (int) PortalSetting::where('key', 'session_lifetime')->value('value'));
 
         $followUp = $this->actingAs($admin)->get(route('portal.admin.settings'));
         $followUp->assertStatus(200);

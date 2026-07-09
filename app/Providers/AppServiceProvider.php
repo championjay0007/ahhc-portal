@@ -89,6 +89,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::share('portalSettings', $this->loadSettings());
+        $this->applySessionLifetime();
         // Ensure views always have an `$errors` ViewErrorBag available even when
         // middleware that normally shares errors (ShareErrorsFromSession) is
         // disabled during tests.
@@ -98,6 +99,16 @@ class AppServiceProvider extends ServiceProvider
 
         // Apply portal SMTP settings globally for all mail operations
         $this->applyPortalMailConfig();
+    }
+
+    protected function applySessionLifetime(): void
+    {
+        $settings = $this->loadSettings();
+        $lifetime = $settings['session_lifetime'] ?? 120;
+
+        if (is_numeric($lifetime)) {
+            config(['session.lifetime' => (int) $lifetime]);
+        }
     }
 
     protected function applyPortalMailConfig(): void
