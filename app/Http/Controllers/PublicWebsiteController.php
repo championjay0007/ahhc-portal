@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Models\User;
 use App\Services\NotificationCenterService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class PublicWebsiteController extends Controller
 {
@@ -83,9 +84,34 @@ class PublicWebsiteController extends Controller
                 );
             }
 
-            return redirect()->back()->with('status', 'Thank you for your enquiry. A team member from Allegiance Heart Home care will contact you to discuss your self-management support request and next steps.');
+            $message = 'Thank you for your enquiry. A team member from Allegiance Heart Home care will contact you to discuss your self-management support request and next steps.';
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                ]);
+            }
+
+            return redirect()->back()->with('status', $message);
+        } catch (ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             \Log::error('Enquiry submission failed: '.$e->getMessage(), ['exception' => $e]);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to submit enquiry. Please try again.',
+                ], 500);
+            }
 
             return redirect()->back()->withErrors(['error' => 'Failed to submit enquiry. Please try again.'])->withInput();
         }
