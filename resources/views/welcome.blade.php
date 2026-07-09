@@ -2918,8 +2918,8 @@
                     <i class="bi bi-envelope-check-fill" style="font-size: 2.5rem; color: #0f766e;"></i>
                 </div>
                 <h6 class="fw-bold mb-2">Thank you for getting in touch</h6>
-                <p class="mb-0" style="color: var(--text-secondary);">
-                    Your enquiry has been received and a member of our team will be in touch with you shortly.
+                <p id="enquirySuccessMessage" class="mb-0" style="color: var(--text-secondary);">
+                    Thank you for your enquiry. A team member from Allegiance Heart Home care will contact you to discuss your self-management support request and next steps.
                 </p>
             </div>
             <div class="modal-footer border-0 justify-content-center pb-4">
@@ -3047,7 +3047,12 @@
 
                     if (response.ok && result.success) {
                         enquiryForm.reset();
-                        setFeedback('success', `<i class="bi bi-check-circle-fill me-2"></i>${result.message || 'Your enquiry was submitted successfully.'}`);
+                        const successMessage = result.message || 'Thank you for your enquiry. A team member from Allegiance Heart Home care will contact you to discuss your self-management support request and next steps.';
+                        setFeedback('success', `<i class="bi bi-check-circle-fill me-2"></i>${successMessage}`);
+                        const successMessageElement = document.getElementById('enquirySuccessMessage');
+                        if (successMessageElement) {
+                            successMessageElement.textContent = successMessage;
+                        }
                         if (typeof bootstrap !== 'undefined' && enquirySuccessModal) {
                             const modal = new bootstrap.Modal(enquirySuccessModal, { backdrop: 'static', keyboard: false });
                             modal.show();
