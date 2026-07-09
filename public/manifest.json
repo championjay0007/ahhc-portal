@@ -1,13 +1,13 @@
 {
-    "name": "Allegiance Heart & Home Care",
-    "short_name": "Allegiance Heart & Home Care",
-    "description": "Manage workers, suppliers, invoices, approvals, documents and service evidence in one secure portal, with oversight from Allegiance Heart & Home Care.",
+    "name": "AHHC Portal",
+    "short_name": "AHHC Portal",
+    "description": "Manage participants, workers, invoices, approvals, documents, and compliance in one secure portal.",
     "start_url": "/portal/dashboard?source=pwa",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",
-    "background_color": "#245e9e",
-    "theme_color": "#245e9e",
+    "background_color": "#0d6efd",
+    "theme_color": "#0d6efd",
     "categories": [
         "business",
         "finance"
@@ -15,19 +15,19 @@
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "/storage/portal/settings/2lTsZNnjSpx8QOrRS89j41z6ZOHkHOUQ0KoNnT8V.jpg",
+            "src": "/storage/portal/settings/2Fv6AalQ0vwRaFYFlRSyvl0t7U7EMCTUbT8pyM1Y.png",
             "sizes": "192x192",
-            "type": "image/jpeg"
+            "type": "image/png"
         },
         {
-            "src": "/storage/portal/settings/2lTsZNnjSpx8QOrRS89j41z6ZOHkHOUQ0KoNnT8V.jpg",
+            "src": "/storage/portal/settings/2Fv6AalQ0vwRaFYFlRSyvl0t7U7EMCTUbT8pyM1Y.png",
             "sizes": "512x512",
-            "type": "image/jpeg"
+            "type": "image/png"
         },
         {
-            "src": "/storage/portal/settings/2lTsZNnjSpx8QOrRS89j41z6ZOHkHOUQ0KoNnT8V.jpg",
+            "src": "/storage/portal/settings/2Fv6AalQ0vwRaFYFlRSyvl0t7U7EMCTUbT8pyM1Y.png",
             "sizes": "180x180",
-            "type": "image/jpeg"
+            "type": "image/png"
         }
     ]
 }

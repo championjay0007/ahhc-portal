@@ -520,6 +520,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
         Route::get('/conversations', [SupportCenterController::class, 'conversationsIndex'])->name('conversations');
         Route::get('/conversations/create', [SupportCenterController::class, 'conversationCreate'])->name('conversation.create');
         Route::post('/conversations', [SupportCenterController::class, 'conversationStore'])->name('conversation.store');
+        Route::post('/conversations/mark-all-read', [SupportCenterController::class, 'markAllConversationsRead'])->name('conversations.mark_all_read');
         Route::get('/conversations/{conversation}', [SupportCenterController::class, 'conversationShow'])->name('conversation.show');
         Route::get('/conversations/{conversation}/messages', [SupportCenterController::class, 'conversationMessages'])->name('conversation.messages');
         Route::post('/conversations/{conversation}/message', [SupportCenterController::class, 'conversationMessage'])->name('conversation.message');
@@ -542,6 +543,7 @@ Route::middleware(['auth', 'mfa'])->prefix('/portal/messages')->name('portal.mes
         ->name('conversation.send');
     Route::post('/send', [MessageController::class, 'send'])->name('send');
     Route::get('/inbox', [MessageController::class, 'inbox'])->name('inbox');
+    Route::post('/mark-all-read', [MessageController::class, 'markAllRead'])->name('mark_all_read');
     Route::get('/from-message/{message}', [MessageController::class, 'conversationFromMessage'])->name('conversation.from_message');
     Route::get('/{message}', [MessageController::class, 'show'])->name('show');
     Route::post('/{message}/mark-read', [MessageController::class, 'markRead'])->name('mark_read');
@@ -564,6 +566,7 @@ Route::middleware(['auth', 'mfa'])->prefix('/portal/participant/messages')->name
         ->name('conversation.send');
     Route::post('/send', [MessageController::class, 'send'])->name('send');
     Route::get('/inbox', [MessageController::class, 'inbox'])->name('inbox');
+    Route::post('/mark-all-read', [MessageController::class, 'markAllRead'])->name('mark_all_read');
     Route::get('/from-message/{message}', [MessageController::class, 'conversationFromMessage'])->name('conversation.from_message');
     Route::get('/{message}', [MessageController::class, 'show'])->name('show');
     Route::post('/{message}/mark-read', [MessageController::class, 'markRead'])->name('mark_read');
@@ -686,6 +689,7 @@ Route::middleware(['auth', 'mfa', 'onboarding_complete', 'assessment_workflow'])
 
     Route::prefix('/portal/support/conversations')->name('portal.support.conversations.')->middleware('auth')->group(function () {
         Route::get('/', [SupportConversationController::class, 'index'])->name('index');
+        Route::post('/mark-all-read', [SupportCenterController::class, 'markAllConversationsRead'])->name('mark_all_read');
         Route::get('/{conversation}', [SupportConversationController::class, 'show'])->name('show');
         Route::get('/{conversation}/messages', [SupportConversationController::class, 'messages'])->name('messages');
         Route::post('/{conversation}/message', [SupportConversationController::class, 'sendMessage'])->name('message');

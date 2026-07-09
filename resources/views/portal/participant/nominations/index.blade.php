@@ -110,9 +110,10 @@
                             @endif
 
                             <div class="d-flex gap-2 mt-4">
-                                <a href="{{ route('portal.participant.nominations.show', $nomination) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 load-nomination-detail-btn"
+                                        data-detail-url="{{ route('portal.participant.nominations.show', $nomination) }}">
                                     View Details
-                                </a>
+                                </button>
                                 @if($nomination->status->value === 'Submitted' || $nomination->status->value === 'Rejected')
                                     <form method="POST" action="{{ route('portal.participant.nominations.destroy', $nomination) }}" style="display: inline;">
                                         @csrf
@@ -224,4 +225,78 @@
             display: inline;
         }
     </style>
+
+    <!-- Nomination Detail Modal -->
+    <div class="modal fade" id="nominationDetailModal" tabindex="-1" aria-labelledby="nominationDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="nominationDetailModalLabel">Nomination Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="nominationDetailModalBody">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 mb-0">Loading nomination details…</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalElement = document.getElementById('nominationDetailModal');
+            const modalBody = document.getElementById('nominationDetailModalBody');
+            const nominationModal = modalElement ? new bootstrap.Modal(modalElement, {
+                keyboard: true,
+                backdrop: 'static'
+            }) : null;
+
+            document.querySelectorAll('.load-nomination-detail-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    if (!nominationModal || !modalBody) {
+                        return;
+                    }
+
+                    const url = button.dataset.detailUrl;
+                    if (!url) {
+                        return;
+                    }
+
+                    modalBody.innerHTML = `
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 mb-0">Loading nomination details…</p>
+                        </div>
+                    `;
+                    nominationModal.show();
+
+                    try {
+                        const response = await fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to load nomination details.');
+                        }
+
+                        modalBody.innerHTML = await response.text();
+                    } catch (error) {
+                        modalBody.innerHTML = `
+                            <div class="alert alert-danger mb-0">
+                                Unable to load nomination details at this time. Please try again.
+                            </div>
+                        `;
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

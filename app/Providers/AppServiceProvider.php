@@ -65,16 +65,18 @@ class AppServiceProvider extends ServiceProvider
                 $unreadMessageCount = MessageService::getUnreadCount(Auth::id());
 
                 $supportConversations = SupportConversation::with(['user', 'messages'])
+                    ->withCount(['messages as unread_messages_count' => function ($query) {
+                        $query->where('is_admin', false)->whereNull('read_at');
+                    }])
                     ->where('status', '!=', 'closed')
                     ->orderByDesc('last_message_at')
                     ->take(5)
                     ->get();
 
-                $unreadSupportConversationCount = SupportMessage::whereHas('conversation', function ($query) {
-                    $query->where('status', '!=', 'closed');
-                })
-                    ->where('is_admin', false)
-                    ->whereNull('read_at')
+                $unreadSupportConversationCount = SupportConversation::where('status', '!=', 'closed')
+                    ->whereHas('messages', function ($query) {
+                        $query->where('is_admin', false)->whereNull('read_at');
+                    })
                     ->count();
 
                 // Fetch recent messages

@@ -186,6 +186,29 @@ class SupportCenterController extends Controller
         return view('portal.admin.support.conversations', compact('conversations'));
     }
 
+    public function markAllConversationsRead(Request $request)
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            abort(403);
+        }
+
+        $unreadCount = SupportMessage::where('is_admin', false)
+            ->whereNull('read_at')
+            ->count();
+
+        SupportMessage::where('is_admin', false)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['status' => 'success', 'count' => 0, 'cleared' => $unreadCount]);
+        }
+
+        return back()->with('status', 'All support messages marked as read.');
+    }
+
     /**
      * Show conversation details
      */

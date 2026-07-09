@@ -659,6 +659,31 @@ class MessageController extends Controller
         return view($view, compact('message', 'replyTarget', 'canChat', 'replyEmailUrl'));
     }
 
+    public function markAllRead(Request $request)
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            abort(403);
+        }
+
+        $unreadCount = Message::where('recipient_id', $user->id)
+            ->whereNull('read_at')
+            ->whereNull('deleted_at')
+            ->count();
+
+        Message::where('recipient_id', $user->id)
+            ->whereNull('read_at')
+            ->whereNull('deleted_at')
+            ->update(['read_at' => now()]);
+
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['status' => 'success', 'count' => 0, 'cleared' => $unreadCount]);
+        }
+
+        return back()->with('status', 'All messages marked as read.');
+    }
+
     public function markRead(Message $message)
     {
         if (! $this->canAccessMessage($message)) {

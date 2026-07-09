@@ -1958,14 +1958,9 @@
                         <a href="{{ route('portal.notifications') }}">
                             <i class="bi bi-list-ul me-1"></i>View all
                         </a>
-                        @if(isset($unreadNotificationCount) && $unreadNotificationCount > 0)
-                            <form method="POST" action="{{ route('portal.notifications.mark_all_read') }}" class="m-0">
-                                @csrf
-                                <button type="submit">
-                                    <i class="bi bi-check2-all me-1"></i>Mark all read
-                                </button>
-                            </form>
-                        @endif
+                        <button type="button" class="btn btn-link p-0 text-danger clear-dropdown-btn" data-clear-url="{{ route('portal.notifications.mark_all_read') }}">
+                            <i class="bi bi-trash me-1"></i>Clear
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2009,6 +2004,9 @@
                         <a href="{{ route('portal.admin.support.conversations') }}">
                             <i class="bi bi-chat-left-text me-1"></i>Open chat list
                         </a>
+                        <button type="button" class="btn btn-link p-0 text-danger clear-dropdown-btn" data-clear-url="{{ route('portal.admin.support.conversations.mark_all_read') }}">
+                            <i class="bi bi-trash me-1"></i>Clear
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2176,6 +2174,9 @@
         const notificationDropdown = document.getElementById('adminNotificationDropdown');
         const messageToggle = document.getElementById('adminMessageToggle');
         const messageDropdown = document.getElementById('adminMessageDropdown');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+        const notificationMarkAllUrl = @json(route('portal.notifications.mark_all_read'));
+        const messageMarkAllUrl = @json(route('portal.admin.support.conversations.mark_all_read'));
 
         function closeAllDropdowns() {
             if (notificationDropdown) {
@@ -2199,12 +2200,84 @@
             toggle.setAttribute('aria-expanded', 'true');
         }
 
+        function setBadgeCount(toggle, count) {
+            const badge = toggle?.querySelector('.notification-badge');
+            if (!toggle) {
+                return;
+            }
+
+            if (count > 0) {
+                if (badge) {
+                    badge.textContent = count;
+                } else {
+                    const badgeEl = document.createElement('span');
+                    badgeEl.className = 'notification-badge';
+                    badgeEl.textContent = count;
+                    toggle.appendChild(badgeEl);
+                }
+            } else if (badge) {
+                badge.remove();
+            }
+        }
+
+        async function markDropdownAsRead(dropdown, toggle, url) {
+            if (!dropdown || !toggle || !url) {
+                return;
+            }
+
+            const unreadItems = dropdown.querySelectorAll('.notification-item.unread');
+            if (unreadItems.length === 0 && !toggle.querySelector('.notification-badge')) {
+                return;
+            }
+
+            if (toggle.dataset.marking === 'true') {
+                return;
+            }
+
+            toggle.dataset.marking = 'true';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify({}),
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const data = await response.json();
+                dropdown.querySelectorAll('.notification-item.unread').forEach(item => item.classList.remove('unread'));
+                setBadgeCount(toggle, data.count ?? 0);
+            } finally {
+                toggle.dataset.marking = 'false';
+            }
+        }
+
+        document.querySelectorAll('.clear-dropdown-btn').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                const dropdown = button.closest('.notification-dropdown');
+                const toggle = dropdown?.previousElementSibling;
+                if (dropdown && toggle) {
+                    markDropdownAsRead(dropdown, toggle, button.dataset.clearUrl);
+                }
+            });
+        });
+
         if (notificationToggle && notificationDropdown) {
             notificationToggle.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const isOpen = notificationDropdown.classList.contains('show');
                 if (!isOpen) {
                     openDropdown(notificationDropdown, notificationToggle);
+                    markDropdownAsRead(notificationDropdown, notificationToggle, notificationMarkAllUrl);
                 } else {
                     closeAllDropdowns();
                     notificationToggle.setAttribute('aria-expanded', 'false');
@@ -2218,6 +2291,7 @@
                 const isOpen = messageDropdown.classList.contains('show');
                 if (!isOpen) {
                     openDropdown(messageDropdown, messageToggle);
+                    markDropdownAsRead(messageDropdown, messageToggle, messageMarkAllUrl);
                 } else {
                     closeAllDropdowns();
                     messageToggle.setAttribute('aria-expanded', 'false');

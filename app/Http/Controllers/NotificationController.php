@@ -26,9 +26,17 @@ class NotificationController extends Controller
     {
         $user = Auth::user();
 
+        $unreadCount = PortalNotification::where('user_id', $user->id)
+            ->whereNull('read_at')
+            ->count();
+
         PortalNotification::where('user_id', $user->id)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
+
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['status' => 'success', 'count' => 0, 'cleared' => $unreadCount]);
+        }
 
         return back()->with('status', 'All notifications marked as read.');
     }
