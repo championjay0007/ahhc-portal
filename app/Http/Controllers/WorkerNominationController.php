@@ -135,7 +135,11 @@ class WorkerNominationController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        if (request()->ajax()) {
+        if (
+            request()->ajax() ||
+            request()->boolean('ajax') ||
+            request()->header('X-Requested-With') === 'XMLHttpRequest'
+        ) {
             return view('portal.participant.nominations._detail', compact('nomination'));
         }
 

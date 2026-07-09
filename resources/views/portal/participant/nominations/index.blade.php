@@ -111,7 +111,7 @@
 
                             <div class="d-flex gap-2 mt-4">
                                 <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 load-nomination-detail-btn"
-                                        data-detail-url="{{ route('portal.participant.nominations.show', $nomination) }}">
+                                        data-detail-url="{{ route('portal.participant.nominations.show', ['nomination' => $nomination->id]) }}">
                                     View Details
                                 </button>
                                 @if($nomination->status->value === 'Submitted' || $nomination->status->value === 'Rejected')
@@ -278,17 +278,23 @@
 
                     try {
                         const response = await fetch(url, {
+                            method: 'GET',
+                            credentials: 'same-origin',
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'text/html, application/xhtml+xml',
                             },
                         });
 
                         if (!response.ok) {
+                            const errorText = await response.text().catch(() => null);
+                            console.error('Nomination detail fetch failed:', response.status, response.statusText, errorText);
                             throw new Error('Failed to load nomination details.');
                         }
 
                         modalBody.innerHTML = await response.text();
                     } catch (error) {
+                        console.error(error);
                         modalBody.innerHTML = `
                             <div class="alert alert-danger mb-0">
                                 Unable to load nomination details at this time. Please try again.
