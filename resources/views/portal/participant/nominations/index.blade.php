@@ -110,10 +110,6 @@
                             @endif
 
                             <div class="d-flex gap-2 mt-4">
-                                <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 load-nomination-detail-btn"
-                                        data-detail-url="{{ route('portal.participant.nominations.show', ['nomination' => $nomination->id]) }}">
-                                    View Details
-                                </button>
                                 @if($nomination->status->value === 'Submitted' || $nomination->status->value === 'Rejected')
                                     <form method="POST" action="{{ route('portal.participant.nominations.destroy', $nomination) }}" style="display: inline;">
                                         @csrf
