@@ -2768,8 +2768,6 @@
                         This form creates an enquiry for Allegiance Heart & Home Care review. It does <strong>not</strong> create a portal account automatically.
                     </p>
 
-                    <div id="enquiryFormFeedback" class="d-none rounded-3 mb-3 p-3"></div>
-
                     <form id="enquiryForm" method="POST" action="{{ route('public.enquiries.store') }}" novalidate>
                         @csrf
                         
@@ -2984,26 +2982,6 @@
         const enquirySubmitBtn = document.getElementById('enquirySubmitBtn');
         const enquirySuccessModal = document.getElementById('enquirySuccessModal');
         const enquirySuccessAlert = document.querySelector('[data-enquiry-success="true"]');
-        const enquiryFeedback = document.getElementById('enquiryFormFeedback');
-
-        const setFeedback = (type, message) => {
-            if (!enquiryFeedback) return;
-            enquiryFeedback.className = `rounded-3 mb-3 p-3 alert-${type}`;
-            enquiryFeedback.innerHTML = message;
-            enquiryFeedback.classList.remove('d-none');
-        };
-
-        const resetSubmitState = () => {
-            if (!enquirySubmitBtn) return;
-            enquirySubmitBtn.disabled = false;
-            enquirySubmitBtn.classList.remove('is-loading');
-            const submitLabel = enquirySubmitBtn.querySelector('.submit-label');
-            const submitSpinner = enquirySubmitBtn.querySelector('.submit-spinner');
-            if (submitLabel && submitSpinner) {
-                submitLabel.classList.remove('d-none');
-                submitSpinner.classList.add('d-none');
-            }
-        };
 
         if (enquirySuccessAlert && enquirySuccessModal && typeof bootstrap !== 'undefined') {
             const modal = new bootstrap.Modal(enquirySuccessModal, { backdrop: 'static', keyboard: false });
@@ -3011,11 +2989,10 @@
         }
 
         if (enquiryForm && enquirySubmitBtn) {
-            enquiryForm.addEventListener('submit', async function(event) {
-                event.preventDefault();
-
+            enquiryForm.addEventListener('submit', function(event) {
                 if (!enquiryForm.checkValidity()) {
                     enquiryForm.reportValidity();
+                    event.preventDefault();
                     return;
                 }
 
@@ -3029,44 +3006,6 @@
 
                 enquirySubmitBtn.disabled = true;
                 enquirySubmitBtn.classList.add('is-loading');
-                enquiryFeedback?.classList.add('d-none');
-
-                try {
-                    const formData = new FormData(enquiryForm);
-                    const response = await fetch(enquiryForm.action, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: formData,
-                        credentials: 'same-origin'
-                    });
-
-                    const result = await response.json().catch(() => ({}));
-
-                    if (response.ok && result.success) {
-                        enquiryForm.reset();
-                        const successMessage = result.message || 'Thank you for your enquiry. A team member from Allegiance Heart Home care will contact you to discuss your self-management support request and next steps.';
-                        setFeedback('success', `<i class="bi bi-check-circle-fill me-2"></i>${successMessage}`);
-                        const successMessageElement = document.getElementById('enquirySuccessMessage');
-                        if (successMessageElement) {
-                            successMessageElement.textContent = successMessage;
-                        }
-                        if (typeof bootstrap !== 'undefined' && enquirySuccessModal) {
-                            const modal = new bootstrap.Modal(enquirySuccessModal, { backdrop: 'static', keyboard: false });
-                            modal.show();
-                        }
-                    } else {
-                        const message = result.message || 'Unable to submit your enquiry right now.';
-                        const errors = result.errors ? Object.values(result.errors).flat().join(' ') : message;
-                        setFeedback('danger', `<i class="bi bi-exclamation-triangle-fill me-2"></i>${errors}`);
-                    }
-                } catch (error) {
-                    setFeedback('danger', '<i class="bi bi-exclamation-triangle-fill me-2"></i>Unable to submit your enquiry right now. Please try again.');
-                } finally {
-                    resetSubmitState();
-                }
             });
         }
 
