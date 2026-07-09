@@ -2102,6 +2102,38 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    const originalFetch = window.fetch.bind(window);
+
+    window.fetch = function(input, init = {}) {
+        const method = (init.method || (input instanceof Request ? input.method : 'GET')).toUpperCase();
+        const targetUrl = typeof input === 'string' ? input : input instanceof Request ? input.url : input.url;
+
+        const isStateChanging = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+        const isSameOrigin = (() => {
+            try {
+                return !targetUrl.startsWith('http://') && !targetUrl.startsWith('https://') || new URL(targetUrl, window.location.origin).origin === window.location.origin;
+            } catch (error) {
+                return true;
+            }
+        })();
+
+        if (csrfToken && isStateChanging && isSameOrigin) {
+            const headers = new Headers(init.headers || {});
+            if (!headers.has('X-CSRF-TOKEN')) {
+                headers.set('X-CSRF-TOKEN', csrfToken);
+            }
+            if (!headers.has('X-Requested-With')) {
+                headers.set('X-Requested-With', 'XMLHttpRequest');
+            }
+            return originalFetch(input, { ...init, headers });
+        }
+
+        return originalFetch(input, init);
+    };
+</script>
+
+<script>
     // ========================================
     // SIDEBAR TOGGLE FUNCTIONALITY
     // ========================================
