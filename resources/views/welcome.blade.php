@@ -2749,7 +2749,7 @@
             <div class="col-lg-7 fade-up">
                 <div class="contact-form-card">
                     @if(session('status'))
-                        <div class="alert alert-success rounded-3 mb-4" style="background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46;">
+                        <div class="alert alert-success rounded-3 mb-4" data-enquiry-success="true" style="background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46;">
                             <i class="bi bi-check-circle-fill me-2"></i>{{ session('status') }}
                         </div>
                     @endif
@@ -2768,7 +2768,7 @@
                         This form creates an enquiry for Allegiance Heart & Home Care review. It does <strong>not</strong> create a portal account automatically.
                     </p>
 
-                    <form method="POST" action="{{ route('public.enquiries.store') }}" novalidate>
+                    <form id="enquiryForm" method="POST" action="{{ route('public.enquiries.store') }}" novalidate>
                         @csrf
                         
                         <div class="row g-3">
@@ -2883,8 +2883,12 @@
                             </div>
 
                             <div class="col-12">
-                                <button type="submit" class="btn-primary-custom w-100" style="justify-content: center;">
-                                    <i class="bi bi-send-fill"></i> Submit Enquiry
+                                <button id="enquirySubmitBtn" type="submit" class="btn-primary-custom w-100" style="justify-content: center;">
+                                    <span class="submit-label"><i class="bi bi-send-fill"></i> Submit Enquiry</span>
+                                    <span class="submit-spinner d-none" role="status" aria-hidden="true">
+                                        <span class="spinner-border spinner-border-sm me-2"></span>
+                                        Submitting your enquiry...
+                                    </span>
                                 </button>
                                 <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem;">
                                     <i class="bi bi-shield-lock me-1"></i> Your information is secure and encrypted
@@ -2897,6 +2901,33 @@
         </div>
     </div>
 </section>
+
+<div class="modal fade" id="enquirySuccessModal" tabindex="-1" aria-labelledby="enquirySuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); color: white;">
+                <h5 class="modal-title fw-bold" id="enquirySuccessModalLabel">
+                    <i class="bi bi-check-circle-fill me-2"></i> Enquiry Submitted
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="mb-3">
+                    <i class="bi bi-envelope-check-fill" style="font-size: 2.5rem; color: #0f766e;"></i>
+                </div>
+                <h6 class="fw-bold mb-2">Thank you for getting in touch</h6>
+                <p class="mb-0" style="color: var(--text-secondary);">
+                    Your enquiry has been received and a member of our team will be in touch with you shortly.
+                </p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4">
+                <button type="button" class="btn btn-primary-custom" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -2947,10 +2978,37 @@
             setPanelState(items[0], true);
         }
 
+        const enquiryForm = document.getElementById('enquiryForm');
+        const enquirySubmitBtn = document.getElementById('enquirySubmitBtn');
+        const enquirySuccessModal = document.getElementById('enquirySuccessModal');
+        const enquirySuccessAlert = document.querySelector('[data-enquiry-success="true"]');
+
+        if (enquirySuccessAlert && enquirySuccessModal) {
+            const modal = new bootstrap.Modal(enquirySuccessModal);
+            modal.show();
+        }
+
+        if (enquiryForm && enquirySubmitBtn) {
+            enquiryForm.addEventListener('submit', function(event) {
+                if (!enquiryForm.checkValidity()) {
+                    return;
+                }
+
+                const submitLabel = enquirySubmitBtn.querySelector('.submit-label');
+                const submitSpinner = enquirySubmitBtn.querySelector('.submit-spinner');
+
+                if (submitLabel && submitSpinner) {
+                    submitLabel.classList.add('d-none');
+                    submitSpinner.classList.remove('d-none');
+                }
+
+                enquirySubmitBtn.disabled = true;
+            });
+        }
+
         // Form validation visual feedback
-        const form = document.querySelector('form');
-        if (form) {
-            const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+        if (enquiryForm) {
+            const inputs = enquiryForm.querySelectorAll('input[required], select[required], textarea[required]');
             
             inputs.forEach(input => {
                 input.addEventListener('invalid', function() {
