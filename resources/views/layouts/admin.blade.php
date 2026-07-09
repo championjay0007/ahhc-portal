@@ -2126,7 +2126,28 @@
             if (!headers.has('X-Requested-With')) {
                 headers.set('X-Requested-With', 'XMLHttpRequest');
             }
-            return originalFetch(input, { ...init, headers });
+
+            let body = init.body;
+            if (body instanceof FormData) {
+                const formData = new FormData(body);
+                if (!formData.has('_token')) {
+                    formData.append('_token', csrfToken);
+                }
+                body = formData;
+            } else if (body instanceof URLSearchParams) {
+                const params = new URLSearchParams(body.toString());
+                if (!params.has('_token')) {
+                    params.append('_token', csrfToken);
+                }
+                body = params;
+            } else if (typeof body === 'string' && body && !body.includes('_token=')) {
+                const contentType = headers.get('content-type') || '';
+                if (contentType.includes('application/x-www-form-urlencoded')) {
+                    body = `${body}${body ? '&' : ''}_token=${encodeURIComponent(csrfToken)}`;
+                }
+            }
+
+            return originalFetch(input, { ...init, headers, body });
         }
 
         return originalFetch(input, init);
