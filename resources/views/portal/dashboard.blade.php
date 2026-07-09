@@ -568,6 +568,8 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        flex-wrap: nowrap;
+        flex-shrink: 0;
     }
 
     .icon-btn {
@@ -584,6 +586,8 @@
         font-size: 1.2rem;
         transition: var(--transition);
         position: relative;
+        flex-shrink: 0;
+        overflow: visible;
     }
 
     .icon-btn:hover {
@@ -601,8 +605,8 @@
 
     .icon-badge {
         position: absolute;
-        top: -4px;
-        right: -4px;
+        top: -3px;
+        right: -3px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -616,6 +620,8 @@
         padding: 0 0.35rem;
         border: 2px solid var(--bg-surface);
         animation: pulse 2s infinite;
+        z-index: 2;
+        box-shadow: 0 0 0 1px rgba(14, 56, 99, 0.08);
     }
 
     @keyframes pulse {
@@ -1543,6 +1549,20 @@
             gap: 0.75rem;
         }
 
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+        }
+
+        .icon-badge {
+            top: -2px;
+            right: -2px;
+            min-width: 18px;
+            height: 18px;
+            font-size: 0.64rem;
+            padding: 0 0.28rem;
+        }
+
         .user-dropdown {
             order: -1;
             width: 100%;
@@ -1802,6 +1822,14 @@
         .icon-btn {
             width: 38px;
             height: 38px;
+        }
+
+        .icon-badge {
+            top: -2px;
+            right: -2px;
+            min-width: 17px;
+            height: 17px;
+            font-size: 0.62rem;
         }
 
         .user-avatar {

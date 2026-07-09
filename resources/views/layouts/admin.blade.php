@@ -554,12 +554,17 @@
            ======================================== */
         .notification-menu {
             position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         .notification-toggle {
             position: relative;
             width: 44px;
             height: 44px;
+            padding: 0;
             border: 1px solid var(--border-medium);
             border-radius: var(--radius-md);
             background: var(--bg-muted);
@@ -570,6 +575,9 @@
             cursor: pointer;
             transition: var(--transition);
             font-size: 1.2rem;
+            flex-shrink: 0;
+            overflow: visible;
+            line-height: 1;
         }
 
         .notification-toggle:hover {
@@ -582,20 +590,22 @@
 
         .notification-badge {
             position: absolute;
-            top: 4px;
-            right: 4px;
-            min-width: 18px;
-            height: 18px;
+            top: -2px;
+            right: -2px;
+            min-width: 20px;
+            height: 20px;
             border-radius: var(--radius-full);
             background: var(--danger);
             color: white;
-            font-size: 0.65rem;
+            font-size: 0.68rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             border: 2px solid white;
             animation: pulse 2s infinite;
+            z-index: 2;
+            box-shadow: 0 0 0 1px rgba(14, 56, 99, 0.08);
         }
 
         @keyframes pulse {
@@ -1201,9 +1211,22 @@
                 padding: var(--spacing-md);
             }
 
+            .notification-menu {
+                margin: 0;
+            }
+
             .notification-toggle {
-                width: 40px;
-                height: 40px;
+                width: 42px;
+                height: 42px;
+            }
+
+            .notification-badge {
+                top: -1px;
+                right: -1px;
+                min-width: 18px;
+                height: 18px;
+                font-size: 0.64rem;
+                padding: 0 0.3rem;
             }
 
             h1 { font-size: var(--font-size-3xl); }
@@ -1903,7 +1926,7 @@
                         <span class="notification-badge">{{ $unreadNotificationCount }}</span>
                     @endif
                 </button>
-                <div class="notification-dropdown" id="adminNotificationDropdown">
+                <div class="notification-dropdown" id="adminNotificationDropdown" aria-hidden="true">
                     <div class="notification-header">
                         <h6>Notifications</h6>
                     </div>
@@ -1957,7 +1980,7 @@
                         <span class="notification-badge">{{ $unreadMessageCount }}</span>
                     @endif
                 </button>
-                <div class="notification-dropdown" id="adminMessageDropdown">
+                <div class="notification-dropdown" id="adminMessageDropdown" aria-hidden="true">
                     <div class="notification-header">
                         <h6>Live chat</h6>
                     </div>
@@ -2155,19 +2178,35 @@
         const messageDropdown = document.getElementById('adminMessageDropdown');
 
         function closeAllDropdowns() {
-            if (notificationDropdown) notificationDropdown.classList.remove('show');
-            if (messageDropdown) messageDropdown.classList.remove('show');
+            if (notificationDropdown) {
+                notificationDropdown.classList.remove('show');
+                notificationDropdown.setAttribute('aria-hidden', 'true');
+            }
+            if (messageDropdown) {
+                messageDropdown.classList.remove('show');
+                messageDropdown.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        function openDropdown(dropdown, toggle) {
+            closeAllDropdowns();
+            if (!dropdown || !toggle) {
+                return;
+            }
+
+            dropdown.classList.add('show');
+            dropdown.setAttribute('aria-hidden', 'false');
+            toggle.setAttribute('aria-expanded', 'true');
         }
 
         if (notificationToggle && notificationDropdown) {
             notificationToggle.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const isOpen = notificationDropdown.classList.contains('show');
-                closeAllDropdowns();
                 if (!isOpen) {
-                    notificationDropdown.classList.add('show');
-                    notificationToggle.setAttribute('aria-expanded', 'true');
+                    openDropdown(notificationDropdown, notificationToggle);
                 } else {
+                    closeAllDropdowns();
                     notificationToggle.setAttribute('aria-expanded', 'false');
                 }
             });
@@ -2177,11 +2216,10 @@
             messageToggle.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const isOpen = messageDropdown.classList.contains('show');
-                closeAllDropdowns();
                 if (!isOpen) {
-                    messageDropdown.classList.add('show');
-                    messageToggle.setAttribute('aria-expanded', 'true');
+                    openDropdown(messageDropdown, messageToggle);
                 } else {
+                    closeAllDropdowns();
                     messageToggle.setAttribute('aria-expanded', 'false');
                 }
             });
