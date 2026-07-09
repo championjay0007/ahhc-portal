@@ -164,12 +164,18 @@ class AppServiceProvider extends ServiceProvider
             'tawk_to_widget_id' => null,
         ];
 
-        if (! Schema::hasTable('portal_settings')) {
+        try {
+            if (! Schema::hasTable('portal_settings')) {
+                return $defaults;
+            }
+
+            $stored = PortalSetting::query()->pluck('value', 'key')->all();
+
+            return array_replace($defaults, $stored);
+        } catch (\Throwable $e) {
+            report($e);
+
             return $defaults;
         }
-
-        $stored = PortalSetting::query()->pluck('value', 'key')->all();
-
-        return array_replace($defaults, $stored);
     }
 }
