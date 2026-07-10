@@ -126,8 +126,8 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="category" class="form-label"><i class="bi bi-tag me-2"></i>Category</label>
-                            <input list="categoryList" type="text" id="category" name="category" class="form-control custom-select @error('category') is-invalid @enderror" value="{{ old('category', $emailTemplate->category) }}" placeholder="e.g. Onboarding, Newsletter, Alerts">
+                            <label for="category" class="form-label"><i class="bi bi-tag me-2"></i>Purpose</label>
+                            <input list="categoryList" type="text" id="category" name="category" class="form-control custom-select @error('category') is-invalid @enderror" value="{{ old('category', $emailTemplate->category) }}" placeholder="e.g. Onboarding invitation, Account activation, Invoice reminder">
                             <datalist id="categoryList">
                                 @foreach($categories ?? [] as $category)
                                     <option value="{{ $category->name }}"></option>
