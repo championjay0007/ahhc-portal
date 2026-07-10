@@ -45,7 +45,7 @@
                     </select>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3" id="owner_type_block">
                     <label for="owner_type" class="form-label">Assign to</label>
                     <select id="owner_type" name="owner_type" class="form-select" required>
                         @foreach($ownerTypes as $type)
@@ -187,6 +187,7 @@
 
         function updateOwnerVisibility() {
             const value = ownerType.value;
+
             ownerBlocks.forEach((block) => {
                 const select = block.querySelector('select');
                 const isActive = block.classList.contains(`owner-select-${value}`);

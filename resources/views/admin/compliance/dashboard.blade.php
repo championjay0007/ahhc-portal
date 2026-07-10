@@ -1,16 +1,25 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container py-5">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h1>Worker Compliance Dashboard</h1>
-            <p class="text-muted">Monitor and manage worker compliance documents</p>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h3 class="mb-1">Worker Compliance Dashboard</h3>
+            <p class="text-muted mb-0">Monitor and manage worker compliance documents.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ route('portal.admin.compliance.export', ['type' => 'all']) }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-download"></i> Export report
+            </a>
         </div>
     </div>
 
-    <!-- Compliance Score Card -->
-    <div class="row mb-4">
+        @if(session('status'))
+            <div class="alert alert-success">{{ session('status') }}</div>
+        @endif
+
+        <!-- Compliance Score Card -->
+        <div class="row mb-4">
         <div class="col-md-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -287,3 +296,4 @@ function loadMissingDocuments(documents) {
 }
 </script>
 @endpush
+@endsection
