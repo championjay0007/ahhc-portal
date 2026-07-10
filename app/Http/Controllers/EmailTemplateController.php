@@ -61,13 +61,18 @@ class EmailTemplateController extends Controller
             'subject' => 'required|string|max:255',
             'html_body' => 'required|string',
             'text_body' => 'nullable|string',
+            'variables' => 'nullable|string',
             'category' => 'nullable|string|max:100',
             'is_active' => 'nullable|boolean',
         ]);
 
         $category = EmailTemplateCategory::findOrCreateByName($request->input('category'));
+        $plainText = $this->normalizePlainTextBody($request->input('html_body'), $request->input('text_body'));
+        $variables = $this->normalizeTemplateVariables($request->input('variables'));
 
         EmailTemplate::create(array_merge($validated, [
+            'text_body' => $plainText,
+            'variables' => $variables,
             'category_id' => $category?->id,
             'is_active' => $request->boolean('is_active', true),
         ]));
@@ -94,13 +99,18 @@ class EmailTemplateController extends Controller
             'subject' => 'required|string|max:255',
             'html_body' => 'required|string',
             'text_body' => 'nullable|string',
+            'variables' => 'nullable|string',
             'category' => 'nullable|string|max:100',
             'is_active' => 'nullable|boolean',
         ]);
 
         $category = EmailTemplateCategory::findOrCreateByName($request->input('category'));
+        $plainText = $this->normalizePlainTextBody($request->input('html_body'), $request->input('text_body'));
+        $variables = $this->normalizeTemplateVariables($request->input('variables'));
 
         $emailTemplate->update(array_merge($validated, [
+            'text_body' => $plainText,
+            'variables' => $variables,
             'category_id' => $category?->id,
             'is_active' => $request->boolean('is_active', true),
         ]));
@@ -115,6 +125,39 @@ class EmailTemplateController extends Controller
 
         return Redirect::route('portal.admin.messages.email_templates.index')
             ->with('status', 'Email template deleted successfully.');
+    }
+
+    protected function normalizeTemplateVariables(?string $variables): array
+    {
+        $items = preg_split('/\r\n|\n|\r/', (string) $variables);
+
+        $normalized = collect($items)
+            ->map(fn ($item) => trim((string) $item))
+            ->filter(fn ($item) => $item !== '')
+            ->map(fn ($item) => preg_replace('/[^A-Za-z0-9_]/', '', $item))
+            ->filter(fn ($item) => $item !== '')
+            ->values()
+            ->all();
+
+        return array_values(array_unique($normalized));
+    }
+
+    protected function normalizePlainTextBody(string $htmlBody, ?string $textBody = null): string
+    {
+        if (is_string($textBody) && trim($textBody) !== '' && trim($htmlBody) === '') {
+            return trim($textBody);
+        }
+
+        $text = preg_replace('/<br\s*\/?>/i', "\n", $htmlBody);
+        $text = preg_replace('/<\/(p|div|li|ul|ol|tr|table|section|article|header|footer|h[1-6])>/i', "\n\n", $text);
+        $text = strip_tags($text);
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+        $text = preg_replace('/\r\n?/', "\n", $text);
+        $text = preg_replace('/[ \t]+/', ' ', $text);
+        $text = preg_replace('/ *\n */', "\n", $text);
+        $text = preg_replace('/\n{3,}/', "\n\n", $text);
+
+        return trim((string) $text);
     }
 
     public function preview(EmailTemplate $emailTemplate)

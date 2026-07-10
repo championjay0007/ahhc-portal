@@ -177,9 +177,16 @@
 
                     <div class="mb-3">
                         <label for="text_body" class="form-label"><i class="bi bi-file-text me-2"></i>Plain Text Body</label>
-                        <textarea id="text_body" name="text_body" class="form-control @error('text_body') is-invalid @enderror" rows="5">{{ old('text_body', $emailTemplate->text_body) }}</textarea>
+                        <textarea id="text_body" name="text_body" class="form-control @error('text_body') is-invalid @enderror" rows="5" readonly>{{ old('text_body', $emailTemplate->text_body) }}</textarea>
                         @error('text_body')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <small class="form-text text-muted" style="display: block; margin-top: 0.5rem;"><i class="bi bi-info-circle me-1"></i>Optional fallback content for plain-text email recipients.</small>
+                        <small class="form-text text-muted" style="display: block; margin-top: 0.5rem;"><i class="bi bi-info-circle me-1"></i>This is generated from the main content and stays consistent with the editor.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="variables" class="form-label"><i class="bi bi-braces me-2"></i>Template Variables</label>
+                        <textarea id="variables" name="variables" class="form-control @error('variables') is-invalid @enderror" rows="3" placeholder="one variable per line&#10;name&#10;email&#10;activation_code">{{ old('variables', implode($emailTemplate->variables ?? [], "\n")) }}</textarea>
+                        @error('variables')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <small class="form-text text-muted" style="display: block; margin-top: 0.5rem;"><i class="bi bi-info-circle me-1"></i>List any additional variables you want to make available for this template.</small>
                     </div>
 
                     <div class="variables-section">
@@ -278,16 +285,34 @@
             const subjectValue = document.getElementById('subject').value || '';
             const htmlValue = $('#html_body').summernote('code') || '';
             const textValue = document.getElementById('text_body').value || '';
+            const customVariablesValue = document.getElementById('variables').value || '';
+            const customVariables = [...new Set(customVariablesValue.split(/\r?\n/).map(value => value.trim()).filter(Boolean))];
             const variables = [...new Set([
                 ...extractVariables(subjectValue),
                 ...extractVariables(htmlValue),
                 ...extractVariables(textValue),
+                ...customVariables,
             ])];
 
             const container = document.getElementById('detectedVariables');
             container.innerHTML = variables.length
                 ? variables.map(name => `<span>${name}</span>`).join('')
                 : 'No variables detected yet.';
+        }
+
+        function syncPlainTextBody() {
+            const htmlValue = $('#html_body').summernote('code') || '';
+            const textArea = document.getElementById('text_body');
+            const normalizedHtml = htmlValue
+                .replace(/<br\s*\/?>/gi, '\n')
+                .replace(/<\/(p|div|li|ul|ol|tr|table|section|article|header|footer|h[1-6])>/gi, '\n')
+                .replace(/<[^>]+>/g, '');
+            const plainText = normalizedHtml
+                .replace(/&nbsp;/gi, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            textArea.value = plainText.replace(/\s+/g, ' ').trim();
+            updateDetectedVariables();
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -304,15 +329,15 @@
                 ],
                 callbacks: {
                     onChange: function () {
-                        updateDetectedVariables();
+                        syncPlainTextBody();
                     }
                 }
             });
 
             document.getElementById('subject').addEventListener('input', updateDetectedVariables);
-            document.getElementById('text_body').addEventListener('input', updateDetectedVariables);
+            document.getElementById('variables').addEventListener('input', updateDetectedVariables);
 
-            updateDetectedVariables();
+            syncPlainTextBody();
         });
     </script>
 @endpush

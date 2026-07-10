@@ -31,7 +31,7 @@ class EmailTemplate extends Model
     {
         static::creating(function (self $template) {
             $template->slug = $template->slug ?: self::makeUniqueSlug($template->name);
-            $template->variables = self::extractVariables($template->subject, $template->html_body, $template->text_body);
+            $template->variables = self::resolveVariables($template->getAttribute('variables'), $template->subject, $template->html_body, $template->text_body);
 
             if (! isset($template->is_active)) {
                 $template->is_active = true;
@@ -51,7 +51,7 @@ class EmailTemplate extends Model
                 $template->slug = self::makeUniqueSlug($template->name, $template->id);
             }
 
-            $template->variables = self::extractVariables($template->subject, $template->html_body, $template->text_body);
+            $template->variables = self::resolveVariables($template->getAttribute('variables'), $template->subject, $template->html_body, $template->text_body);
         });
     }
 
@@ -74,6 +74,29 @@ class EmailTemplate extends Model
         }
 
         return array_values(array_unique($variables));
+    }
+
+    public static function resolveVariables($providedVariables, string $subject, string $htmlBody, ?string $textBody = null): array
+    {
+        $explicitVariables = [];
+
+        if (is_string($providedVariables)) {
+            $explicitVariables = preg_split('/\r\n|\n|\r/', $providedVariables);
+        } elseif (is_array($providedVariables)) {
+            $explicitVariables = $providedVariables;
+        }
+
+        $explicitVariables = collect($explicitVariables)
+            ->map(fn ($item) => trim((string) $item))
+            ->filter(fn ($item) => $item !== '')
+            ->map(fn ($item) => preg_replace('/[^A-Za-z0-9_]/', '', $item))
+            ->filter(fn ($item) => $item !== '')
+            ->values()
+            ->all();
+
+        $detectedVariables = self::extractVariables($subject, $htmlBody, $textBody);
+
+        return array_values(array_unique(array_merge($detectedVariables, $explicitVariables)));
     }
 
     public static function makeUniqueSlug(string $name, ?int $ignoreId = null): string
