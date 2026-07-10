@@ -130,9 +130,9 @@
                     
                     <div class="mb-3">
                         <label for="subject" class="form-label"><i class="bi bi-subject me-2"></i>Email Subject <span class="text-danger">*</span></label>
-                        <input type="text" id="subject" name="subject" class="form-control @error('subject') is-invalid @enderror" value="{{ old('subject') }}" placeholder="Welcome to our platform, {{'{{'}}name{{'}}'}}" required>
+                        <input type="text" id="subject" name="subject" class="form-control @error('subject') is-invalid @enderror" value="{{ old('subject') }}" placeholder="Welcome to our platform, @{{name}}" required>
                         @error('subject')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <small class="form-text text-muted" style="display: block; margin-top: 0.5rem;"><i class="bi bi-info-circle me-1"></i>Use placeholders like <code>{{'{{'}}name{{'}}'}}</code>, <code>{{'{{'}}email{{'}}'}}</code>, <code>{{'{{'}}unsubscribe_url{{'}}'}}</code></small>
+                        <small class="form-text text-muted" style="display: block; margin-top: 0.5rem;"><i class="bi bi-info-circle me-1"></i>Use placeholders like <code>@{{name}}</code>, <code>@{{email}}</code>, <code>@{{unsubscribe_url}}</code></small>
                     </div>
 
                     <div class="sample-template-select">
@@ -182,7 +182,7 @@
                 
                 <div style="background: white; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid #667eea;">
                     <h6 style="color: #1e293b; font-weight: 600; margin-bottom: 0.5rem;"><i class="bi bi-pin me-2"></i>Template Placeholders</h6>
-                    <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Use double curly braces to insert dynamic values: <code>{{'{{'}}variable_name{{'}}'}}</code></p>
+                    <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Use double curly braces to insert dynamic values: <code>@{{variable_name}}</code></p>
                 </div>
 
                 <div style="background: white; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid #667eea;">

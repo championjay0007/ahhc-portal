@@ -71,6 +71,40 @@ class AdminSettingsTest extends TestCase
         $followUp->assertSee('Worker');
     }
 
+    public function test_admin_can_disable_pwa_service_worker(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Disable PWA',
+            'email' => 'admin-disable-pwa@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => true,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $response = $this->actingAs($admin)
+            ->from(route('portal.admin.settings'))
+            ->post(route('portal.admin.settings.update'), [
+                'organization_name' => 'AHHC Care Services',
+                'support_email' => 'care@ahhc.example.com',
+                'default_user_role' => 'worker',
+                'require_mfa' => true,
+                'report_export_emails' => true,
+                'incident_alerts' => false,
+                'pwa_enabled' => 0,
+            ]);
+
+        $response->assertRedirect(route('portal.admin.settings'));
+        $response->assertSessionHas('status', 'Settings updated.');
+
+        $this->assertFalse((bool) PortalSetting::where('key', 'pwa_enabled')->value('value'));
+
+        $followUp = $this->actingAs($admin)->get(route('portal.admin.settings'));
+        $followUp->assertStatus(200);
+        $followUp->assertSee('const PWA_ENABLED = false;');
+    }
+
     public function test_session_lifetime_setting_is_applied_immediately_after_update(): void
     {
         $admin = User::create([

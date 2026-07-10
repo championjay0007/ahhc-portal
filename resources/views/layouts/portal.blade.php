@@ -2129,7 +2129,7 @@
         // ========================================
         @php
             $pwaSettingValue = \App\Models\PortalSetting::where('key', 'pwa_enabled')->value('value');
-            $pwaEnabled = $pwaSettingValue === null || $pwaSettingValue === '' || filter_var($pwaSettingValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== false;
+            $pwaEnabled = filter_var($pwaSettingValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === true;
         @endphp
         const PWA_ENABLED = {{ $pwaEnabled ? 'true' : 'false' }};
 
