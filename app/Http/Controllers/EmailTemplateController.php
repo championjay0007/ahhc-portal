@@ -49,8 +49,9 @@ class EmailTemplateController extends Controller
     public function create()
     {
         $categories = EmailTemplateCategory::active()->orderBy('name')->get();
+        $purposes = EmailTemplateService::getBuiltInTemplateCategories();
 
-        return view('portal.admin.email_templates.create', compact('categories'));
+        return view('portal.admin.email_templates.create', compact('categories', 'purposes'));
     }
 
     public function store(Request $request)
@@ -78,11 +79,12 @@ class EmailTemplateController extends Controller
     public function edit(EmailTemplate $emailTemplate)
     {
         $categories = EmailTemplateCategory::active()->orderBy('name')->get();
+        $purposes = EmailTemplateService::getBuiltInTemplateCategories();
         $emailTemplate->load('versions');
 
         $availableVariables = TemplateVariableService::getAvailableVariables();
 
-        return view('portal.admin.email_templates.edit', compact('emailTemplate', 'categories', 'availableVariables'));
+        return view('portal.admin.email_templates.edit', compact('emailTemplate', 'categories', 'purposes', 'availableVariables'));
     }
 
     public function update(Request $request, EmailTemplate $emailTemplate)

@@ -21,6 +21,13 @@ class EmailTemplateService
         return $source === 'database';
     }
 
+    public static function getBuiltInTemplateCategories(): array
+    {
+        $categories = array_map(fn ($definition) => $definition['category'] ?? 'General', self::getBuiltInTemplateDefinitions());
+
+        return array_values(array_unique($categories));
+    }
+
     public static function defaultHtmlFromText(string $text, ?string $url = null): string
     {
         $html = '<div style="font-family: system-ui, sans-serif; color: #111827; line-height: 1.7; padding: 1rem;">'.nl2br(e($text)).'</div>';

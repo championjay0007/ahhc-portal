@@ -112,6 +112,9 @@
                                 @foreach($categories ?? [] as $category)
                                     <option value="{{ $category->name }}"></option>
                                 @endforeach
+                                @foreach($purposes ?? [] as $purpose)
+                                    <option value="{{ $purpose }}"></option>
+                                @endforeach
                             </datalist>
                             @error('category')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
