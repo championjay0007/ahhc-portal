@@ -59,7 +59,7 @@
         
         .custom-select {
             appearance: none;
-            background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%23667eea' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E\");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%23667eea' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             padding-right: 36px;
@@ -235,7 +235,7 @@
                         @foreach($emailTemplate->versions as $version)
                             <div class="version-item">
                                 <div class="version-label">
-                                    <i class="bi bi-tag me-1" style="color: #667eea;\"></i>Version {{ $version->version_number }}
+                                    <i class="bi bi-tag me-1" style="color: #667eea;"></i>Version {{ $version->version_number }}
                                 </div>
                                 <div class="version-time">{{ $version->created_at->diffForHumans() }}</div>
                                 <div class="version-subject" title="{{ $version->subject }}">{{ $version->subject }}</div>
@@ -252,7 +252,7 @@
                     </div>
                 @else
                     <div style="background: #f8fafc; border-radius: 8px; padding: 1rem; text-align: center; color: #64748b;">
-                        <i class="bi bi-inbox" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.5;\"></i>
+                        <i class="bi bi-inbox" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.5;"></i>
                         <p style="margin: 0; font-size: 0.9rem;">No prior versions yet. Every save creates a new snapshot automatically.</p>
                     </div>
                 @endif

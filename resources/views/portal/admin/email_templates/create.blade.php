@@ -48,7 +48,7 @@
         
         .custom-select {
             appearance: none;
-            background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%23667eea' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E\");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%23667eea' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             padding-right: 36px;
@@ -216,92 +216,20 @@
     <script>
         const sampleTemplates = {
             welcome: {
-                subject: 'Welcome to {{'{{'}}company{{'}}'}}, {{'{{'}}name{{'}}'}}'                html_body: '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h1>Welcome!</h1><p>Hello {{'{{'}}name{{'}}'}},</p><p>We\'re excited to have you join our community. Get started by exploring our platform.</p><a href="{{'{{'}}activation_url{{'}}'}}" style="display: inline-block; padding: 10px 20px; background-color: #667eea; color: white; text-decoration: none; border-radius: 5px;">Get Started</a><br/><br/><p>Best regards,<br/>The Team</p></div>',
-                text_body: 'Welcome!\n\nHello {{'{{'}}name{{'}}'}},\n\nWe\'re excited to have you join our community. Get started by exploring our platform.\n\nBest regards,\nThe Team'
+                subject: 'Welcome to @{{company}}, @{{name}}',
+                html_body: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h1>Welcome!</h1><p>Hello @{{name}},</p><p>We are excited to have you join our community. Get started by exploring our portal.</p><a href="@{{activation_url}}" style="display: inline-block; padding: 10px 20px; background-color: #667eea; color: white; text-decoration: none; border-radius: 5px;">Get Started</a><br/><br/><p>Best regards,<br/>The Team</p></div>`,
+                text_body: 'Welcome!\n\nHello @{{name}},\n\nWe are excited to have you join our community. Get started by exploring our portal.\n\nBest regards,\nThe Team'
             },
             reminder: {
-                subject: 'Don\'t forget: {{'{{'}}action{{'}}'}}'                html_body: '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Reminder</h2><p>Hi {{'{{'}}name{{'}}'}},</p><p>Just a friendly reminder about {{'{{'}}action{{'}}'}}</p><a href="{{'{{'}}action_url{{'}}'}}" style="display: inline-block; padding: 10px 20px; background-color: #667eea; color: white; text-decoration: none; border-radius: 5px;">Take Action</a><br/><br/><p>Thanks!</p></div>',
-                text_body: 'Reminder\n\nHi {{'{{'}}name{{'}}'}},\n\nJust a friendly reminder about {{'{{'}}action{{'}}'}}\n\nThanks!'
+                subject: 'Don\'t forget: @{{action}}',
+                html_body: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Reminder</h2><p>Hi @{{name}},</p><p>Just a friendly reminder about @{{action}}.</p><a href="@{{action_url}}" style="display: inline-block; padding: 10px 20px; background-color: #667eea; color: white; text-decoration: none; border-radius: 5px;">Take Action</a><br/><br/><p>Thanks!</p></div>`,
+                text_body: 'Reminder\n\nHi @{{name}},\n\nJust a friendly reminder about @{{action}}.\n\nThanks!'
             },
             unsubscribe: {
                 subject: 'Subscription Updated',
-                html_body: '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Subscription Updated</h2><p>Hi {{'{{'}}name{{'}}'}},</p><p>Your email subscription has been updated successfully.</p><p>If you have any questions, feel free to contact us.</p></div>',
-                text_body: 'Subscription Updated\n\nHi {{'{{'}}name{{'}}'}},\n\nYour subscription has been updated.'
+                html_body: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Subscription Updated</h2><p>Hi @{{name}},</p><p>Your email subscription has been updated successfully.</p><p>If you have any questions, feel free to contact us.</p></div>`,
+                text_body: 'Subscription Updated\n\nHi @{{name}},\n\nYour subscription has been updated.'
             }
-        };
-
-        document.getElementById('sample_template').addEventListener('change', function() {
-            const template = sampleTemplates[this.value];
-            if (template) {
-                document.getElementById('subject').value = template.subject;
-                document.getElementById('text_body').value = template.text_body;
-                $('#html_body').summernote('code', template.html_body);
-                updateDetectedVariables();
-            }
-        });
-
-        function extractVariables(value) {
-            const matches = [...value.matchAll(/\{\{\s*(\w+)\s*\}\}/g)];
-            return [...new Set(matches.map(m => m[1]))];
-        }
-
-        function updateDetectedVariables() {
-            const subjectValue = document.getElementById('subject').value || '';
-            const htmlValue = $('#html_body').summernote('code') || '';
-            const textValue = document.getElementById('text_body').value || '';
-            const variables = [...new Set([
-                ...extractVariables(subjectValue),
-                ...extractVariables(htmlValue),
-                ...extractVariables(textValue),
-            ])];
-
-            const container = document.getElementById('detectedVariables');
-            container.innerHTML = variables.length
-                ? variables.map(name => `<span>${name}</span>`).join('')
-                : 'No variables detected yet.';
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            $('#html_body').summernote({
-                height: 300,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['insert', ['link', 'picture', 'hr']],
-                    ['view', ['fullscreen', 'codeview']],
-                ],
-                callbacks: {
-                    onChange: function () {
-                        updateDetectedVariables();
-                    }
-                }
-            });
-
-            document.getElementById('subject').addEventListener('input', updateDetectedVariables);
-            document.getElementById('text_body').addEventListener('input', updateDetectedVariables);
-
-            updateDetectedVariables();
-        });
-    </script>
-@endpush
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endsection
-
-@push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.js"></script>
-    <script>
-        const sampleTemplates = {
-            welcome: `<h1>Welcome, @{{name}}!</h1><p>Thank you for joining @{{organization}}. Your login email is <strong>@{{email}}</strong>.</p><p><a href="@{{unsubscribe_url}}">Unsubscribe</a></p>`,
-            reminder: `<h1>Reminder for @{{name}}</h1><p>This is a friendly reminder that your event is scheduled for @{{date}}.</p><p>If you need help, contact us at <strong>@{{email}}</strong>.</p>`,
-            unsubscribe: `<h1>We're sorry to see you go</h1><p>Hello @{{name}},</p><p>You can unsubscribe by clicking the link below:</p><p><a href="@{{unsubscribe_url}}">Unsubscribe now</a></p>`,
         };
 
         function extractVariables(value) {
@@ -348,13 +276,13 @@
             document.getElementById('text_body').addEventListener('input', updateDetectedVariables);
 
             document.getElementById('sample_template').addEventListener('change', function () {
-                const sampleKey = this.value;
-                if (!sampleKey) {
-                    return;
+                const template = sampleTemplates[this.value];
+                if (template) {
+                    document.getElementById('subject').value = template.subject;
+                    document.getElementById('text_body').value = template.text_body;
+                    $('#html_body').summernote('code', template.html_body);
+                    updateDetectedVariables();
                 }
-                const sample = sampleTemplates[sampleKey] || '';
-                $('#html_body').summernote('code', sample);
-                updateDetectedVariables();
             });
 
             updateDetectedVariables();
