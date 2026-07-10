@@ -1128,6 +1128,12 @@ class AdminController extends Controller
         $settings = $this->loadSettings();
         $this->updatePwaManifest($settings);
 
+        $sessionLifetime = (int) ($settings['session_lifetime'] ?? 120);
+        if ($sessionLifetime > 0) {
+            config(['session.lifetime' => $sessionLifetime]);
+            config(['session.cookie_lifetime' => $sessionLifetime]);
+        }
+
         if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json(['message' => 'Settings updated.']);
         }

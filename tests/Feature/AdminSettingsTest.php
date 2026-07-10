@@ -71,6 +71,30 @@ class AdminSettingsTest extends TestCase
         $followUp->assertSee('Worker');
     }
 
+    public function test_session_lifetime_setting_is_applied_immediately_after_update(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Session Lifetime Owner',
+            'email' => 'admin-session-lifetime@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => true,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        config(['session.lifetime' => 120]);
+
+        $this->actingAs($admin)
+            ->from(route('portal.admin.settings'))
+            ->post(route('portal.admin.settings.update'), [
+                'session_lifetime' => 240,
+            ]);
+
+        $this->assertSame(240, (int) config('session.lifetime'));
+        $this->assertSame(240, (int) PortalSetting::where('key', 'session_lifetime')->value('value'));
+    }
+
     public function test_admin_can_generate_vapid_keys_and_persist_them(): void
     {
         $admin = User::create([

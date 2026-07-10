@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OnboardingSubmission;
 use App\Models\Participant;
 use App\Services\NotificationCenterService;
+use App\Services\TemplateMailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -67,8 +68,45 @@ class AdminOnboardingController extends Controller
         NotificationCenterService::send('portal_invitation', $participant->user_id, [
             'participant_id' => $participant->id,
             'url' => route('portal.login'),
-            'message' => 'Your onboarding has been approved. AHHC will activate your account shortly.',
+            'message' => 'Your onboarding has been approved. We are preparing your account for activation.',
         ]);
+
+        try {
+            $html = view('mail.onboarding-status', [
+                'title' => 'Your onboarding is approved',
+                'greeting' => 'Hello '.$participant->first_name.',',
+                'intro' => 'Thank you for completing your onboarding details.',
+                'body' => 'Your submission has been approved and your account is now being prepared for activation. You will receive a confirmation email as soon as access is ready.',
+                'ctaLabel' => 'Return to portal',
+                'ctaUrl' => route('portal.login'),
+                'secondaryLabel' => 'Need help?',
+                'secondaryUrl' => route('portal.login'),
+                'organization' => config('app.name', 'AHHC Portal'),
+            ])->render();
+
+            TemplateMailer::send(
+                $participant->email,
+                'onboarding-status',
+                [
+                    'title' => 'Your onboarding is approved',
+                    'greeting' => 'Hello '.$participant->first_name.',',
+                    'intro' => 'Thank you for completing your onboarding details.',
+                    'body' => 'Your submission has been approved and your account is now being prepared for activation. You will receive a confirmation email as soon as access is ready.',
+                    'ctaLabel' => 'Return to portal',
+                    'ctaUrl' => route('portal.login'),
+                    'secondaryLabel' => 'Need help?',
+                    'secondaryUrl' => route('portal.login'),
+                    'organization' => config('app.name', 'AHHC Portal'),
+                ],
+                'Your onboarding is approved',
+                $html,
+                strip_tags($html),
+                'Onboarding Approved',
+                'Onboarding'
+            );
+        } catch (\Throwable $e) {
+            // Fail silently so the admin flow still completes.
+        }
 
         // TODO: Log audit trail
 
@@ -111,6 +149,43 @@ class AdminOnboardingController extends Controller
             'message' => 'Changes were requested for your onboarding. Please review the comments and complete the updates.',
         ]);
 
+        try {
+            $html = view('mail.onboarding-status', [
+                'title' => 'We need a few updates',
+                'greeting' => 'Hello '.$submission->participant->first_name.',',
+                'intro' => 'Your onboarding details have been reviewed.',
+                'body' => 'Our team has requested a few updates before we can move your account forward. Please review the feedback and continue from the secure onboarding link below.',
+                'ctaLabel' => 'Update onboarding',
+                'ctaUrl' => route('portal.onboarding.show', ['token' => $submission->participant->onboarding_token]),
+                'secondaryLabel' => 'Contact support',
+                'secondaryUrl' => route('portal.login'),
+                'organization' => config('app.name', 'AHHC Portal'),
+            ])->render();
+
+            TemplateMailer::send(
+                $submission->participant->email,
+                'onboarding-status',
+                [
+                    'title' => 'We need a few updates',
+                    'greeting' => 'Hello '.$submission->participant->first_name.',',
+                    'intro' => 'Your onboarding details have been reviewed.',
+                    'body' => 'Our team has requested a few updates before we can move your account forward. Please review the feedback and continue from the secure onboarding link below.',
+                    'ctaLabel' => 'Update onboarding',
+                    'ctaUrl' => route('portal.onboarding.show', ['token' => $submission->participant->onboarding_token]),
+                    'secondaryLabel' => 'Contact support',
+                    'secondaryUrl' => route('portal.login'),
+                    'organization' => config('app.name', 'AHHC Portal'),
+                ],
+                'We need a few updates',
+                $html,
+                strip_tags($html),
+                'Onboarding Changes Requested',
+                'Onboarding'
+            );
+        } catch (\Throwable $e) {
+            // Fail silently so the admin flow still completes.
+        }
+
         // TODO: Log audit trail
 
         return redirect()->route('admin.onboarding.index')
@@ -144,6 +219,43 @@ class AdminOnboardingController extends Controller
             'url' => route('portal.login'),
             'message' => 'Your onboarding has been rejected. Please contact AHHC support for next steps.',
         ]);
+
+        try {
+            $html = view('mail.onboarding-status', [
+                'title' => 'Your onboarding needs attention',
+                'greeting' => 'Hello '.$submission->participant->first_name.',',
+                'intro' => 'We have reviewed your onboarding submission.',
+                'body' => 'At this time, we are unable to approve your onboarding. Please contact our support team for guidance on the next steps.',
+                'ctaLabel' => 'Contact support',
+                'ctaUrl' => route('portal.login'),
+                'secondaryLabel' => 'Return to portal',
+                'secondaryUrl' => route('portal.login'),
+                'organization' => config('app.name', 'AHHC Portal'),
+            ])->render();
+
+            TemplateMailer::send(
+                $submission->participant->email,
+                'onboarding-status',
+                [
+                    'title' => 'Your onboarding needs attention',
+                    'greeting' => 'Hello '.$submission->participant->first_name.',',
+                    'intro' => 'We have reviewed your onboarding submission.',
+                    'body' => 'At this time, we are unable to approve your onboarding. Please contact our support team for guidance on the next steps.',
+                    'ctaLabel' => 'Contact support',
+                    'ctaUrl' => route('portal.login'),
+                    'secondaryLabel' => 'Return to portal',
+                    'secondaryUrl' => route('portal.login'),
+                    'organization' => config('app.name', 'AHHC Portal'),
+                ],
+                'Your onboarding needs attention',
+                $html,
+                strip_tags($html),
+                'Onboarding Rejected',
+                'Onboarding'
+            );
+        } catch (\Throwable $e) {
+            // Fail silently so the admin flow still completes.
+        }
 
         // TODO: Log audit trail
 

@@ -307,34 +307,63 @@ class EmailTemplateService
                 'subject' => 'Complete your AHHC portal onboarding',
                 'category' => 'Onboarding',
                 'html' => <<<'HTML'
-<div style="font-family: Arial, Helvetica, sans-serif; background: #eef3ff; padding: 24px 12px;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 640px; margin: 0 auto; border-collapse: collapse;">
-    <tr>
-      <td style="padding: 0 0 16px; text-align: center; color: #64748b; font-size: 12px;">Complete your AHHC portal onboarding</td>
-    </tr>
-    <tr>
-      <td style="background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
-          <tr>
-            <td style="background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); padding: 28px 32px; color: #ffffff; text-align: left;">
-              <h1 style="margin: 0 0 8px; font-size: 26px; line-height: 1.1;">Welcome to AHHC</h1>
-              <p style="margin: 0; font-size: 15px; opacity: 0.92;">Please complete your onboarding to get started.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding: 30px 32px 36px; color: #334155; line-height: 1.7;">
-              <p style="margin: 0 0 16px;">Hello {{participant_first_name}},</p>
-              <p style="margin: 0 0 24px;">Your onboarding invitation is ready. Use the secure link below to continue and complete your setup.</p>
-              <div style="text-align: center; margin: 0 0 26px;">
-                <a href="{{onboarding_url}}" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 999px; font-weight: 700; font-size: 15px;">Continue onboarding</a>
-              </div>
-              <p style="margin: 0; font-size: 13px; color: #64748b;">If you were not expecting this, you can ignore this email.</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<div style="margin:0;padding:0;background:#f5f7fb;font-family:Arial,sans-serif;color:#172033;">
+  <div style="max-width:640px;margin:32px auto;padding:24px;background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;">
+    <div style="margin-bottom:20px;">
+      <div style="display:inline-block;padding:6px 10px;border-radius:999px;background:#e8f1ff;color:#0d6efd;font-size:12px;font-weight:bold;letter-spacing:0.04em;text-transform:uppercase;">AHHC Portal</div>
+    </div>
+    <h1 style="margin:0 0 12px;font-size:24px;color:#0E3863;">Welcome, {{participant_first_name}}</h1>
+    <p style="margin:0 0 12px;font-size:16px;line-height:1.6;">Hello {{participant_first_name}},</p>
+    <p style="margin:0 0 12px;font-size:16px;line-height:1.6;">You’re invited to begin your onboarding with Allegiance Heart &amp; Home Care. This first step helps us confirm your information, review your documents, and prepare your portal access.</p>
+    <p style="margin:0 0 18px;font-size:16px;line-height:1.6;">Please use the secure link below to continue. The link remains active until {{expires_at}}.</p>
+    <p style="margin:0 0 16px;"><a href="{{onboarding_url}}" style="display:inline-block;padding:12px 20px;background:#0d6efd;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:bold;">Continue onboarding</a></p>
+    <p style="margin:0 0 8px;font-size:14px;line-height:1.6;">If you have any questions or did not expect this invitation, please contact our support team for assistance.</p>
+    <p style="margin:24px 0 0;font-size:13px;color:#6b7280;line-height:1.6;">This is an automated message from AHHC Portal. Please do not reply directly to this email.</p>
+  </div>
+</div>
+HTML,
+            ],
+            [
+                'name' => 'Onboarding Status Update',
+                'slug' => 'onboarding-status',
+                'subject' => '{{title}}',
+                'category' => 'Onboarding',
+                'html' => <<<'HTML'
+<div style="margin:0;padding:0;background:#f5f7fb;font-family:Arial,sans-serif;color:#172033;">
+  <div style="max-width:640px;margin:32px auto;padding:24px;background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;">
+    <div style="margin-bottom:20px;">
+      <div style="display:inline-block;padding:6px 10px;border-radius:999px;background:#e8f1ff;color:#0d6efd;font-size:12px;font-weight:bold;letter-spacing:0.04em;text-transform:uppercase;">AHHC Portal</div>
+    </div>
+    <h1 style="margin:0 0 12px;font-size:24px;color:#0E3863;">{{title}}</h1>
+    <p style="margin:0 0 12px;font-size:16px;line-height:1.6;">{{greeting}}</p>
+    <p style="margin:0 0 12px;font-size:16px;line-height:1.6;">{{intro}}</p>
+    <p style="margin:0 0 18px;font-size:16px;line-height:1.6;">{{body}}</p>
+    <p style="margin:0 0 16px;"><a href="{{ctaUrl}}" style="display:inline-block;padding:12px 20px;background:#0d6efd;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:bold;">{{ctaLabel}}</a></p>
+    <p style="margin:0 0 8px;font-size:14px;line-height:1.6;"><a href="{{secondaryUrl}}" style="color:#0d6efd;text-decoration:none;">{{secondaryLabel}}</a></p>
+    <p style="margin:24px 0 0;font-size:13px;color:#6b7280;line-height:1.6;">This is an automated message from AHHC Portal. Please do not reply directly to this email.</p>
+  </div>
+</div>
+HTML,
+            ],
+            [
+                'name' => 'Account Activated',
+                'slug' => 'account-activated',
+                'subject' => 'Your account is now active',
+                'category' => 'Account',
+                'html' => <<<'HTML'
+<div style="font-family: Arial, sans-serif; color: #172033; background:#f5f7fb; padding:24px;">
+  <div style="max-width:640px;margin:0 auto;padding:24px;background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;">
+    <div style="margin-bottom:20px;">
+      <div style="display:inline-block;padding:6px 10px;border-radius:999px;background:#e8f1ff;color:#0d6efd;font-size:12px;font-weight:bold;letter-spacing:0.04em;text-transform:uppercase;">AHHC Portal</div>
+    </div>
+    <h2 style="margin:0 0 12px;color:#0E3863;font-size:24px;">Your account is now active</h2>
+    <p style="margin:0 0 12px;font-size:16px;line-height:1.6;">Hi {{name}},</p>
+    <p style="margin:0 0 12px;font-size:16px;line-height:1.6;">Your account has been activated successfully. You can now sign in and access your portal dashboard whenever you’re ready.</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Use the button below to sign in and begin using the portal.</p>
+    <p style="margin:0 0 16px;"><a href="{{login_url}}" style="display:inline-block;padding:12px 20px;background:#0d6efd;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:bold;">Sign in to the portal</a></p>
+    <p style="margin:0 0 8px;font-size:14px;line-height:1.6;">If you prefer, you can also go directly to your dashboard after signing in: <a href="{{dashboard_url}}" style="color:#0d6efd;text-decoration:none;">Open dashboard</a>.</p>
+    <p style="margin:24px 0 0;font-size:13px;color:#6b7280;line-height:1.6;">If you did not expect this message, please contact our support team right away.</p>
+  </div>
 </div>
 HTML,
             ],

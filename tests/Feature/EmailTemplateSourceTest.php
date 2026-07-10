@@ -45,6 +45,20 @@ class EmailTemplateSourceTest extends TestCase
         $this->assertSame('Default text for Jane', $rendered['text']);
     }
 
+    public function test_built_in_templates_include_the_polished_onboarding_and_activation_content(): void
+    {
+        $definitions = EmailTemplateService::getBuiltInTemplateDefinitions();
+        $slugs = array_column($definitions, 'slug');
+
+        $this->assertContains('participant-onboarding-invitation', $slugs);
+        $this->assertContains('account-activated', $slugs);
+        $this->assertContains('onboarding-status', $slugs);
+
+        $participantTemplate = collect($definitions)->firstWhere('slug', 'participant-onboarding-invitation');
+        $this->assertStringContainsString('Continue onboarding', $participantTemplate['html']);
+        $this->assertStringContainsString('Welcome,', $participantTemplate['html']);
+    }
+
     public function test_missing_template_source_setting_defaults_to_database_templates(): void
     {
         PortalSetting::query()->where('key', 'email_template_source')->delete();
