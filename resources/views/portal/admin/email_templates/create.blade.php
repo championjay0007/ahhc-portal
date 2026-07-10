@@ -116,7 +116,7 @@
                             @error('category')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label"><i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;\"></i>Status</label>
+                            <label class="form-label"><i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>Status</label>
                             <div class="form-check form-switch" style="padding-top: 0.35rem;">
                                 <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="is_active">Publish this template</label>
