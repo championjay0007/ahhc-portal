@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Agreement;
 use App\Models\Assessment;
-use App\Models\Budget;
 use App\Models\CareNote;
 use App\Models\Document;
 use App\Models\EmailTemplate;
@@ -55,8 +54,7 @@ class AdminSearchController extends Controller
                 $this->searchAssessments($search),
                 $this->searchWorkerNominations($search),
                 $this->searchParticipantAssignments($search),
-                $this->searchCareNotes($search),
-                $this->searchBudgets($search)
+                $this->searchCareNotes($search)
             );
         }
 
@@ -411,28 +409,6 @@ class AdminSearchController extends Controller
                 'subtitle' => $assessment->participant?->first_name . ' ' . $assessment->participant?->last_name,
                 'description' => ucfirst($assessment->status) . ' · ' . ucfirst($assessment->overall_decision),
                 'url' => $this->routeUrl('admin.assessments.show', $assessment),
-            ])
-            ->filter(fn($result) => ! empty($result['url']))
-            ->toArray();
-    }
-
-    protected function searchBudgets(string $search): array
-    {
-        return Budget::with('participant')
-            ->where(function ($query) use ($search) {
-                $query->where('assignment_type', 'like', "%{$search}%")
-                    ->orWhere('status', 'like', "%{$search}%")
-                    ->orWhere('quarter_start', 'like', "%{$search}%")
-                    ->orWhere('quarter_end', 'like', "%{$search}%");
-            })
-            ->limit(10)
-            ->get()
-            ->map(fn($budget) => [
-                'type' => 'Budget',
-                'title' => 'Budget #' . $budget->id,
-                'subtitle' => $budget->participant?->first_name . ' ' . $budget->participant?->last_name,
-                'description' => 'Quarter ' . ($budget->quarter_start?->format('Y-m-d') ?? 'N/A') . ' → ' . ($budget->quarter_end?->format('Y-m-d') ?? 'N/A'),
-                'url' => $this->routeUrl('portal.admin.budgets'),
             ])
             ->filter(fn($result) => ! empty($result['url']))
             ->toArray();
