@@ -50,8 +50,9 @@ class EmailTemplateController extends Controller
     {
         $categories = EmailTemplateCategory::active()->orderBy('name')->get();
         $purposes = EmailTemplateService::getBuiltInTemplateCategories();
+        $functionKeys = EmailTemplateService::getBuiltInTemplateFunctionKeys();
 
-        return view('portal.admin.email_templates.create', compact('categories', 'purposes'));
+        return view('portal.admin.email_templates.create', compact('categories', 'purposes', 'functionKeys'));
     }
 
     public function store(Request $request)
@@ -62,6 +63,7 @@ class EmailTemplateController extends Controller
             'html_body' => 'required|string',
             'text_body' => 'nullable|string',
             'variables' => 'nullable|string',
+            'function_key' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:100',
             'is_active' => 'nullable|boolean',
         ]);
@@ -69,8 +71,11 @@ class EmailTemplateController extends Controller
         $category = EmailTemplateCategory::findOrCreateByName($request->input('category'));
         $plainText = $this->normalizePlainTextBody($request->input('html_body'), $request->input('text_body'));
         $variables = $this->normalizeTemplateVariables($request->input('variables'));
+        $functionKey = trim((string) $request->input('function_key', ''));
+        $slug = $functionKey !== '' ? EmailTemplateService::normalizeSlug($functionKey) : null;
 
         EmailTemplate::create(array_merge($validated, [
+            'slug' => $slug,
             'text_body' => $plainText,
             'variables' => $variables,
             'category_id' => $category?->id,
@@ -85,11 +90,12 @@ class EmailTemplateController extends Controller
     {
         $categories = EmailTemplateCategory::active()->orderBy('name')->get();
         $purposes = EmailTemplateService::getBuiltInTemplateCategories();
+        $functionKeys = EmailTemplateService::getBuiltInTemplateFunctionKeys();
         $emailTemplate->load('versions');
 
         $availableVariables = TemplateVariableService::getAvailableVariables();
 
-        return view('portal.admin.email_templates.edit', compact('emailTemplate', 'categories', 'purposes', 'availableVariables'));
+        return view('portal.admin.email_templates.edit', compact('emailTemplate', 'categories', 'purposes', 'functionKeys', 'availableVariables'));
     }
 
     public function update(Request $request, EmailTemplate $emailTemplate)
@@ -100,6 +106,7 @@ class EmailTemplateController extends Controller
             'html_body' => 'required|string',
             'text_body' => 'nullable|string',
             'variables' => 'nullable|string',
+            'function_key' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:100',
             'is_active' => 'nullable|boolean',
         ]);
@@ -107,8 +114,11 @@ class EmailTemplateController extends Controller
         $category = EmailTemplateCategory::findOrCreateByName($request->input('category'));
         $plainText = $this->normalizePlainTextBody($request->input('html_body'), $request->input('text_body'));
         $variables = $this->normalizeTemplateVariables($request->input('variables'));
+        $functionKey = trim((string) $request->input('function_key', ''));
+        $slug = $functionKey !== '' ? EmailTemplateService::normalizeSlug($functionKey) : $emailTemplate->slug;
 
         $emailTemplate->update(array_merge($validated, [
+            'slug' => $slug,
             'text_body' => $plainText,
             'variables' => $variables,
             'category_id' => $category?->id,

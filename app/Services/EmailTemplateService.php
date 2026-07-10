@@ -28,6 +28,13 @@ class EmailTemplateService
         return array_values(array_unique($categories));
     }
 
+    public static function getBuiltInTemplateFunctionKeys(): array
+    {
+        $keys = array_map(fn ($definition) => $definition['slug'] ?? null, self::getBuiltInTemplateDefinitions());
+
+        return array_values(array_filter(array_unique($keys)));
+    }
+
     public static function defaultHtmlFromText(string $text, ?string $url = null): string
     {
         $html = '<div style="font-family: system-ui, sans-serif; color: #111827; line-height: 1.7; padding: 1rem;">'.nl2br(e($text)).'</div>';

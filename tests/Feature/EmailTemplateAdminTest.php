@@ -71,4 +71,32 @@ class EmailTemplateAdminTest extends TestCase
         $response->assertOk();
         $response->assertSee('Template Variables');
     }
+
+    public function test_admin_can_link_template_to_specific_function_key_on_create(): void
+    {
+        $admin = User::create([
+            'name' => 'Function Linking Admin',
+            'email' => 'function-linking-admin@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => true,
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        $this->actingAs($admin)->post(route('portal.admin.messages.email_templates.store'), [
+            'name' => 'Worker Invite Override',
+            'subject' => 'Hello {{name}}',
+            'html_body' => '<p>Hello {{name}}</p>',
+            'text_body' => '',
+            'function_key' => 'worker-onboarding-invitation',
+            'category' => 'Onboarding',
+            'is_active' => true,
+        ]);
+
+        $template = EmailTemplate::where('slug', 'worker-onboarding-invitation')->first();
+
+        $this->assertNotNull($template);
+        $this->assertSame('worker-onboarding-invitation', $template->slug);
+    }
 }
