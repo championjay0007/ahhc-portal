@@ -184,7 +184,14 @@
 
                     <div class="mb-3">
                         <label for="variables" class="form-label"><i class="bi bi-braces me-2"></i>Template Variables</label>
-                        <textarea id="variables" name="variables" class="form-control @error('variables') is-invalid @enderror" rows="3" placeholder="one variable per line&#10;name&#10;email&#10;activation_code">{{ old('variables', implode($emailTemplate->variables ?? [], "\n")) }}</textarea>
+                        @php
+                            $variableInputValue = old('variables');
+                            if ($variableInputValue === null) {
+                                $variableValues = is_array($emailTemplate->variables ?? null) ? $emailTemplate->variables : [];
+                                $variableInputValue = implode("\n", $variableValues);
+                            }
+                        @endphp
+                        <textarea id="variables" name="variables" class="form-control @error('variables') is-invalid @enderror" rows="3" placeholder="one variable per line&#10;name&#10;email&#10;activation_code">{{ $variableInputValue }}</textarea>
                         @error('variables')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         <small class="form-text text-muted" style="display: block; margin-top: 0.5rem;"><i class="bi bi-info-circle me-1"></i>List any additional variables you want to make available for this template.</small>
                     </div>
