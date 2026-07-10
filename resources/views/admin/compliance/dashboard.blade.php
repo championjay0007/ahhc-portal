@@ -2,12 +2,16 @@
 
 @section('content')
 <div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-start mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-4 gap-3">
         <div>
             <h3 class="mb-1">Worker Compliance Dashboard</h3>
             <p class="text-muted mb-0">Monitor and manage worker compliance documents.</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+            <div class="input-group input-group-sm w-100">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input id="compliance-search" type="search" class="form-control" placeholder="Search workers, document type or status">
+            </div>
             <a href="{{ route('portal.admin.compliance.export', ['type' => 'all']) }}" class="btn btn-sm btn-outline-secondary">
                 <i class="bi bi-download"></i> Export report
             </a>
@@ -206,94 +210,137 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    loadDashboardStats();
-    loadComplianceReport();
-});
+    let expiringDocuments = [];
+    let expiredDocuments = [];
+    let missingDocuments = [];
 
-function loadDashboardStats() {
-    fetch('{{ route("portal.admin.compliance.dashboard.stats") }}')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('compliance-score').textContent = data.compliance_score ?? '--';
-            document.getElementById('expiring-count').textContent = data.expiring_soon?.count ?? 0;
-            document.getElementById('expired-count').textContent = data.expired?.count ?? 0;
-            document.getElementById('missing-count').textContent = data.missing?.count ?? 0;
-            document.getElementById('workers-at-risk').textContent = data.workers_with_issues?.count ?? 0;
-            document.getElementById('alerts-count').textContent = data.alerts ?? 0;
-        })
-        .catch(error => {
-            console.error('Error loading stats:', error);
-            document.getElementById('compliance-score').textContent = 'Err';
-        });
-}
+    document.addEventListener('DOMContentLoaded', function() {
+        loadDashboardStats();
+        loadComplianceReport();
 
-function loadComplianceReport() {
-    fetch('{{ route("portal.admin.compliance.report") }}')
-        .then(response => response.json())
-        .then(data => {
-            loadExpiringDocuments(data.expiring_soon?.documents ?? []);
-            loadExpiredDocuments(data.expired?.documents ?? []);
-            loadMissingDocuments(data.missing?.documents ?? []);
-        })
-        .catch(error => console.error('Error loading report:', error));
-}
+        const searchInput = document.getElementById('compliance-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                loadExpiringDocuments(expiringDocuments);
+                loadExpiredDocuments(expiredDocuments);
+                loadMissingDocuments(missingDocuments);
+            });
+        }
+    });
 
-function loadExpiringDocuments(documents) {
-    const tbody = document.getElementById('expiring-tbody');
-    tbody.innerHTML = documents.length ? documents.map(doc => `
-        <tr>
-            <td>
-                <a href="/portal/admin/compliance/workers/${doc.worker_id}">${doc.worker_name}</a>
-            </td>
-            <td>${doc.document_type}</td>
-            <td>${doc.expiry_date}</td>
-            <td>
-                <span class="badge bg-warning text-dark">${doc.days_remaining} days</span>
-            </td>
-            <td>
-                <a href="/portal/admin/compliance/documents/${doc.id}" class="btn btn-sm btn-outline-primary">View</a>
-            </td>
-        </tr>
-    `).join('') : '<tr><td colspan="5" class="text-center text-muted py-4">No documents expiring soon</td></tr>';
-}
+    function getComplianceSearchTerm() {
+        const searchInput = document.getElementById('compliance-search');
+        return (searchInput?.value ?? '').trim().toLowerCase();
+    }
 
-function loadExpiredDocuments(documents) {
-    const tbody = document.getElementById('expired-tbody');
-    tbody.innerHTML = documents.length ? documents.map(doc => `
-        <tr class="table-danger">
-            <td>
-                <a href="/portal/admin/compliance/workers/${doc.worker_id}">${doc.worker_name}</a>
-            </td>
-            <td>${doc.document_type}</td>
-            <td>${doc.expiry_date}</td>
-            <td>
-                <span class="badge bg-danger">${Math.abs(doc.days_overdue)} days overdue</span>
-            </td>
-            <td>
-                <a href="/portal/admin/compliance/documents/${doc.id}" class="btn btn-sm btn-outline-danger">Review</a>
-            </td>
-        </tr>
-    `).join('') : '<tr><td colspan="5" class="text-center text-muted py-4">No expired documents</td></tr>';
-}
+    function matchesComplianceSearch(doc) {
+        const term = getComplianceSearchTerm();
+        if (!term) {
+            return true;
+        }
 
-function loadMissingDocuments(documents) {
-    const tbody = document.getElementById('missing-tbody');
-    tbody.innerHTML = documents.length ? documents.map(doc => `
-        <tr>
-            <td>
-                <a href="/portal/admin/compliance/workers/${doc.worker_id}">${doc.worker_name}</a>
-            </td>
-            <td>${doc.document_type}</td>
-            <td>
-                <span class="badge bg-secondary">Missing</span>
-            </td>
-            <td>
-                <a href="/portal/admin/compliance/workers/${doc.worker_id}" class="btn btn-sm btn-outline-secondary">Manage</a>
-            </td>
-        </tr>
-    `).join('') : '<tr><td colspan="4" class="text-center text-muted py-4">All documents submitted</td></tr>';
-}
+        return [
+            doc.worker_name,
+            doc.document_type,
+            doc.status ?? '',
+            doc.expiry_date ?? '',
+            doc.days_remaining ?? '',
+            doc.days_overdue ?? '',
+        ]
+            .filter(Boolean)
+            .some(value => String(value).toLowerCase().includes(term));
+    }
+
+    function loadDashboardStats() {
+        fetch('{{ route("portal.admin.compliance.dashboard.stats") }}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('compliance-score').textContent = data.compliance_score ?? '--';
+                document.getElementById('expiring-count').textContent = data.expiring_soon?.count ?? 0;
+                document.getElementById('expired-count').textContent = data.expired?.count ?? 0;
+                document.getElementById('missing-count').textContent = data.missing?.count ?? 0;
+                document.getElementById('workers-at-risk').textContent = data.workers_with_issues?.count ?? 0;
+                document.getElementById('alerts-count').textContent = data.alerts ?? 0;
+            })
+            .catch(error => {
+                console.error('Error loading stats:', error);
+                document.getElementById('compliance-score').textContent = 'Err';
+            });
+    }
+
+    function loadComplianceReport() {
+        fetch('{{ route("portal.admin.compliance.report") }}')
+            .then(response => response.json())
+            .then(data => {
+                expiringDocuments = data.expiring_soon?.documents ?? [];
+                expiredDocuments = data.expired?.documents ?? [];
+                missingDocuments = data.missing?.documents ?? [];
+
+                loadExpiringDocuments(expiringDocuments);
+                loadExpiredDocuments(expiredDocuments);
+                loadMissingDocuments(missingDocuments);
+            })
+            .catch(error => console.error('Error loading report:', error));
+    }
+
+    function loadExpiringDocuments(documents) {
+        const tbody = document.getElementById('expiring-tbody');
+        const filtered = documents.filter(matchesComplianceSearch);
+        tbody.innerHTML = filtered.length ? filtered.map(doc => `
+            <tr>
+                <td>
+                    <a href="/portal/admin/compliance/workers/${doc.worker_id}">${doc.worker_name}</a>
+                </td>
+                <td>${doc.document_type}</td>
+                <td>${doc.expiry_date}</td>
+                <td>
+                    <span class="badge bg-warning text-dark">${doc.days_remaining} days</span>
+                </td>
+                <td>
+                    <a href="/portal/admin/compliance/documents/${doc.id}" class="btn btn-sm btn-outline-primary">View</a>
+                </td>
+            </tr>
+        `).join('') : '<tr><td colspan="5" class="text-center text-muted py-4">No matching expiring documents found</td></tr>';
+    }
+
+    function loadExpiredDocuments(documents) {
+        const tbody = document.getElementById('expired-tbody');
+        const filtered = documents.filter(matchesComplianceSearch);
+        tbody.innerHTML = filtered.length ? filtered.map(doc => `
+            <tr class="table-danger">
+                <td>
+                    <a href="/portal/admin/compliance/workers/${doc.worker_id}">${doc.worker_name}</a>
+                </td>
+                <td>${doc.document_type}</td>
+                <td>${doc.expiry_date}</td>
+                <td>
+                    <span class="badge bg-danger">${Math.abs(doc.days_overdue)} days overdue</span>
+                </td>
+                <td>
+                    <a href="/portal/admin/compliance/documents/${doc.id}" class="btn btn-sm btn-outline-danger">Review</a>
+                </td>
+            </tr>
+        `).join('') : '<tr><td colspan="5" class="text-center text-muted py-4">No matching expired documents found</td></tr>';
+    }
+
+    function loadMissingDocuments(documents) {
+        const tbody = document.getElementById('missing-tbody');
+        const filtered = documents.filter(matchesComplianceSearch);
+        tbody.innerHTML = filtered.length ? filtered.map(doc => `
+            <tr>
+                <td>
+                    <a href="/portal/admin/compliance/workers/${doc.worker_id}">${doc.worker_name}</a>
+                </td>
+                <td>${doc.document_type}</td>
+                <td>
+                    <span class="badge bg-secondary">Missing</span>
+                </td>
+                <td>
+                    <a href="/portal/admin/compliance/workers/${doc.worker_id}" class="btn btn-sm btn-outline-secondary">Manage</a>
+                </td>
+            </tr>
+        `).join('') : '<tr><td colspan="4" class="text-center text-muted py-4">No matching missing documents found</td></tr>';
+    }
 </script>
 @endpush
 @endsection

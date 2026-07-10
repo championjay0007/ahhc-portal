@@ -17,6 +17,7 @@ use App\Http\Controllers\CareNoteController;
 use App\Http\Controllers\CareReviewController;
 use App\Http\Controllers\ComplianceController;
 use App\Http\Controllers\Dashboards\AdminDashboardController;
+use App\Http\Controllers\AdminSearchController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\InvoiceController;
@@ -195,6 +196,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     Route::delete('/portal/admin/users/{user}', [AdminController::class, 'destroyUser'])->name('portal.admin.users.destroy');
     // Admin dashboard and management
     Route::get('/portal/admin', [AdminDashboardController::class, 'index'])->name('portal.admin.dashboard');
+    Route::get('/portal/admin/search', [AdminSearchController::class, 'index'])->name('portal.admin.search');
 
     // ====================================================
     // NEW ONBOARDING WORKFLOW - Admin Routes

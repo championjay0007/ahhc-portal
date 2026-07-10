@@ -1912,10 +1912,10 @@
     <!-- Topbar -->
     <div class="topbar">
         <div class="topbar-left">
-            <div class="topbar-search">
+            <form class="topbar-search" action="{{ route('portal.admin.search') }}" method="GET">
                 <i class="bi bi-search"></i>
-                <input type="text" class="form-control" placeholder="Search participants, workers, invoices...">
-            </div>
+                <input type="text" name="search" class="form-control" placeholder="Search participants, workers, invoices..." value="{{ request('search') }}">
+            </form>
         </div>
         <div class="topbar-right">
             <!-- Notifications -->
