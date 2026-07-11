@@ -87,4 +87,37 @@ class EmailTemplateSourceTest extends TestCase
         $this->assertStringContainsString('Hello Jane', $rendered['html']);
         $this->assertSame('Hello Jane', $rendered['text']);
     }
+
+    public function test_database_source_uses_inactive_database_template_body_strictly(): void
+    {
+        PortalSetting::query()->where('key', 'email_template_source')->delete();
+        PortalSetting::create([
+            'key' => 'email_template_source',
+            'value' => 'database',
+        ]);
+
+        EmailTemplate::create([
+            'name' => 'Example Template',
+            'slug' => 'example-template',
+            'subject' => 'Database subject (inactive)',
+            'html_body' => '<p>Stored DB body for {{name}}</p>',
+            'text_body' => 'Stored DB text for {{name}}',
+            'category' => 'General',
+            'is_active' => false,
+        ]);
+
+        $rendered = EmailTemplateService::renderTemplate(
+            'example-template',
+            ['name' => 'Jane'],
+            'Default subject',
+            '<p>Default html for Jane</p>',
+            'Default text for Jane',
+            'Example Template',
+            'General'
+        );
+
+        $this->assertSame('Database subject (inactive)', $rendered['subject']);
+        $this->assertStringContainsString('Stored DB body for Jane', $rendered['html']);
+        $this->assertSame('Stored DB text for Jane', $rendered['text']);
+    }
 }

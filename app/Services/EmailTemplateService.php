@@ -84,14 +84,8 @@ class EmailTemplateService
                 ]);
             }
 
-            if (! $template->is_active) {
-                return [
-                    'subject' => $defaultSubject,
-                    'html' => $defaultHtml,
-                    'text' => $defaultText ?? strip_tags($defaultHtml),
-                ];
-            }
-
+            // When database templates are selected, always render the stored DB template.
+            // Do not fall back to the code-defined defaults for active templates.
             return $template->render($variables);
         } catch (\Throwable $e) {
             return [

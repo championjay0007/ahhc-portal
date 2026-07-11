@@ -136,7 +136,7 @@
                                     <option value="database"{{ old('email_template_source', $settings['email_template_source'] ?? 'database') === 'database' ? ' selected' : '' }}>🗄️ Use Database Message Templates (Admin-Managed)</option>
                                     <option value="code"{{ old('email_template_source', $settings['email_template_source'] ?? 'database') === 'code' ? ' selected' : '' }}>💻 Use Code-Based Email Messages (Original)</option>
                                 </select>
-                                <small class="text-muted" style="display: block; margin-top: 0.75rem;"><i class="bi bi-info-circle me-1"></i>Choose whether outgoing emails use the admin-managed templates or the original code-defined messages. When set to <strong>Database</strong>, admins can edit all email content via the Email Templates interface.</small>
+                                <small class="text-muted" style="display: block; margin-top: 0.75rem;"><i class="bi bi-info-circle me-1"></i>Choose whether outgoing emails use the admin-managed templates or the original code-defined messages. When set to <strong>Database</strong>, the system will strictly use stored email template content and not fall back to the code defaults for active templates.</small>
                             </div>
                         </div>
                         <div class="col-md-6">
