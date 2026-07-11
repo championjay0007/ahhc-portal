@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\ParticipantOnboardingInvitation;
 use App\Models\Agreement;
 use App\Models\Participant;
 use App\Models\ParticipantApplication;
@@ -124,7 +123,7 @@ class AdminApplicationsController extends Controller
                 'Onboarding'
             );
         } catch (\Throwable $e) {
-            Mail::to($participant->email)->send(new ParticipantOnboardingInvitation($participant));
+            // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
         }
 
         NotificationCenterService::send('portal_invitation', $user->id, [

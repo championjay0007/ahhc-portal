@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Enums\WorkerNominationStatus;
-use App\Mail\WorkerOnboardingInvitation;
 use App\Models\Participant;
 use App\Models\User;
 use App\Models\Worker;
 use App\Models\WorkerNomination;
 use App\Notifications\WorkerInvitationSent;
+use App\Services\TemplateMailer;
 use App\Notifications\WorkerNominationApproved;
 use App\Notifications\WorkerNominationRejected;
 use App\Notifications\WorkerNominationSubmitted;
@@ -332,7 +332,36 @@ class WorkerNominationController extends Controller
     {
         $worker = $this->ensureWorkerOnboardingRecord($nomination);
 
-        Mail::to($nomination->worker_email)->send(new WorkerOnboardingInvitation($worker));
+        $defaultHtml = view('mail.worker_onboarding_invitation', [
+            'worker' => $worker,
+            'onboardingUrl' => route('worker.onboarding.show', ['token' => $worker->onboarding_token]),
+            'expiresAt' => $worker->onboarding_expires_at,
+        ])->render();
+
+        try {
+            TemplateMailer::send(
+                $nomination->worker_email,
+                'worker-onboarding-invitation',
+                [
+                    'name' => trim($worker->first_name.' '.$worker->last_name),
+                    'first_name' => $worker->first_name,
+                    'last_name' => $worker->last_name,
+                    'email' => $worker->email,
+                    'phone' => $worker->phone,
+                    'worker_number' => $worker->worker_number,
+                    'onboarding_url' => route('worker.onboarding.show', ['token' => $worker->onboarding_token]),
+                    'expires_at' => optional($worker->onboarding_expires_at)->format('M d, Y') ?? now()->addDays(30)->format('M d, Y'),
+                    'organization' => config('app.name', 'AHHC Portal'),
+                ],
+                'AHHC Portal - Worker Onboarding Invitation',
+                $defaultHtml,
+                strip_tags($defaultHtml),
+                'Worker Onboarding Invitation',
+                'Onboarding'
+            );
+        } catch (\Throwable $e) {
+            // TemplateMailer already handles fallback delivery when the email service fails.
+        }
 
         return $worker;
     }

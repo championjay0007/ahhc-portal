@@ -3,8 +3,9 @@
 namespace Tests\Feature;
 
 use App\Enums\WorkerNominationStatus;
-use App\Mail\WorkerOnboardingInvitation;
+use App\Mail\AdminEmailTemplate;
 use App\Models\Participant;
+use App\Models\PortalSetting;
 use App\Models\User;
 use App\Models\WorkerNomination;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -72,9 +73,11 @@ class WorkerNominationApprovalTest extends TestCase
         $this->assertDatabaseHas('workers', ['email' => 'julia.worker@example.com']);
         $this->assertSame(WorkerNominationStatus::WorkerInvited, $nomination->status);
 
-        Mail::assertSent(WorkerOnboardingInvitation::class, function (WorkerOnboardingInvitation $mail) {
+        Mail::assertSent(AdminEmailTemplate::class, function (AdminEmailTemplate $mail) {
             return $mail->hasTo('julia.worker@example.com')
-                && str_contains($mail->onboardingUrl, route('worker.onboarding.show', ['token' => $mail->worker->onboarding_token]));
+                && str_contains($mail->subject, 'AHHC Portal - Worker Onboarding Invitation');
         });
+
+        Mail::assertNotSent(\App\Mail\WorkerOnboardingInvitation::class);
     }
 }

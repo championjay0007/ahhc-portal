@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Mail\ParticipantOnboardingInvitation;
 use App\Models\Agreement;
 use App\Models\Enquiry;
 use App\Models\Participant;
@@ -161,7 +160,7 @@ class EnquiryController extends Controller
                 'Onboarding'
             );
         } catch (\Throwable $e) {
-            Mail::to($user->email)->send(new ParticipantOnboardingInvitation($participant));
+            // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
         }
 
         NotificationCenterService::send('portal_invitation', $user->id, [

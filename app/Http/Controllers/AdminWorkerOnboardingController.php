@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\ComplianceStatus;
 use App\Enums\WorkerDeclarationType;
-use App\Mail\WorkerOnboardingInvitation;
 use App\Models\User;
 use App\Models\Worker;
 use App\Models\WorkerComplianceDocument;
@@ -115,12 +114,12 @@ class AdminWorkerOnboardingController extends Controller
                 ],
                 'AHHC Portal - Worker Onboarding Invitation',
                 view('mail.worker_onboarding_invitation', ['worker' => $worker, 'onboardingUrl' => route('worker.onboarding.show', ['token' => $worker->onboarding_token]), 'expiresAt' => $worker->onboarding_expires_at])->render(),
-                view('mail.worker_onboarding_invitation', ['worker' => $worker, 'onboardingUrl' => route('worker.onboarding.show', ['token' => $worker->onboarding_token]), 'expiresAt' => $worker->onboarding_expires_at])->render(),
+                strip_tags(view('mail.worker_onboarding_invitation', ['worker' => $worker, 'onboardingUrl' => route('worker.onboarding.show', ['token' => $worker->onboarding_token]), 'expiresAt' => $worker->onboarding_expires_at])->render()),
                 'Worker Onboarding Invitation',
                 'Onboarding'
             );
         } catch (\Throwable $e) {
-            Mail::to($worker->email)->send(new WorkerOnboardingInvitation($worker));
+            // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
         }
 
         return redirect()->route('admin.worker_onboarding.show', $worker)

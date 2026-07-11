@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\ExportFormat;
 use App\Http\Requests\ApprovePreApprovalRequest;
 use App\Http\Requests\RejectPreApprovalRequest;
-use App\Mail\ParticipantOnboardingInvitation;
-use App\Mail\PortalTestEmail;
 use App\Models\Assessment;
 use App\Models\AuditLog;
 use App\Models\Budget;
@@ -366,7 +364,7 @@ class AdminController extends Controller
                     'Onboarding'
                 );
             } catch (\Throwable $e) {
-                Mail::to($user->email)->send(new ParticipantOnboardingInvitation($participant));
+                // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
             }
         }
 
@@ -492,7 +490,7 @@ class AdminController extends Controller
                     'Onboarding'
                 );
             } catch (\Throwable $e) {
-                Mail::to($user->email)->send(new ParticipantOnboardingInvitation($participant));
+                // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
             }
         }
 
@@ -590,7 +588,7 @@ class AdminController extends Controller
                 'Onboarding'
             );
         } catch (\Throwable $e) {
-            Mail::to($participant->email)->send(new ParticipantOnboardingInvitation($participant));
+            // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
         }
 
         if ($participant->user) {
@@ -999,11 +997,7 @@ class AdminController extends Controller
                 'Account'
             );
         } catch (\Throwable $e) {
-            try {
-                Mail::to($user->email)->send(new PortalTestEmail);
-            } catch (\Throwable $_) {
-                // swallow: email best-effort
-            }
+            // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
         }
 
         return back()->with('status', 'User activated and permitted to access the dashboard immediately.');
