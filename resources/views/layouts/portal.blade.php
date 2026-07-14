@@ -1277,9 +1277,10 @@
                                         $data = $notification->data ?? [];
                                         $title = $data['title'] ?? ucfirst($notification->type ?? 'Notification');
                                         $message = $data['message'] ?? 'View details for this update.';
+                                        $url = $data['url'] ?? route('portal.notifications.show', $notification);
                                         $isUnread = $notification->read_at === null;
                                     @endphp
-                                    <a href="{{ route('portal.notifications.show', $notification) }}" class="notification-item {{ $isUnread ? 'unread' : '' }}">
+                                    <a href="{{ $url }}" class="notification-item {{ $isUnread ? 'unread' : '' }}">
                                         <div class="notification-title">{{ $title }}</div>
                                         <div class="notification-message">{{ $message }}</div>
                                         <div class="notification-meta">

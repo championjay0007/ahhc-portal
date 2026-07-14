@@ -47,6 +47,9 @@ class CareNoteSubmitted extends Notification
     public function toArray($notifiable)
     {
         return [
+            'title' => 'Care Note Submitted',
+            'message' => 'Care note #'.$this->careNote->id.' from '.optional($this->careNote->worker)->first_name,
+            'url' => route('portal.admin.care_notes.show', $this->careNote->id),
             'care_note_id' => $this->careNote->id,
             'participant_id' => $this->careNote->participant_id,
             'worker_id' => $this->careNote->worker_id,

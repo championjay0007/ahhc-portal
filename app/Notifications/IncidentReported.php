@@ -41,6 +41,9 @@ class IncidentReported extends Notification
     public function toArray($notifiable)
     {
         return [
+            'title' => 'Incident Report Submitted',
+            'message' => 'Incident #'.$this->incident->id.' - '.ucfirst($this->incident->incident_type),
+            'url' => route('portal.admin.incidents.show', $this->incident->id),
             'incident_id' => $this->incident->id,
             'participant_id' => $this->incident->participant_id,
             'worker_id' => $this->incident->worker_id,
