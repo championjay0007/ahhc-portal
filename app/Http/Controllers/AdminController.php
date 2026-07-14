@@ -2396,6 +2396,23 @@ class AdminController extends Controller
         return Storage::disk($invoice->attachment_disk)->download($path, $filename);
     }
 
+    public function downloadCareNoteAttachment(CareNote $careNote)
+    {
+        if (! $careNote->attachment_path || ! Storage::disk('local')->exists($careNote->attachment_path)) {
+            abort(404);
+        }
+
+        $filename = 'care-note-'.$careNote->id.'.'.pathinfo($careNote->attachment_path, PATHINFO_EXTENSION);
+
+        AuditLogService::record('Care Note Attachment Download', $careNote, [], [
+            'care_note_id' => $careNote->id,
+            'participant_id' => $careNote->participant_id,
+            'downloaded_by' => auth()->id(),
+        ]);
+
+        return Storage::disk('local')->download($careNote->attachment_path, $filename);
+    }
+
     public function exportBudgetPdf(Budget $budget)
     {
         $this->authorize('view', $budget);

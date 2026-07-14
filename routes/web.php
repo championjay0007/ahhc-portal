@@ -440,6 +440,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     Route::get('/portal/admin/care-notes', [AdminController::class, 'careNotes'])->name('portal.admin.care_notes');
     Route::get('/portal/admin/care-notes/{careNote}', [AdminController::class, 'showCareNote'])->name('portal.admin.care_notes.show');
     Route::post('/portal/admin/care-notes/{careNote}/approve', [AdminController::class, 'approveCareNote'])->name('portal.admin.care_notes.approve');
+    Route::get('/portal/admin/care-notes/{careNote}/attachment/download', [AdminController::class, 'downloadCareNoteAttachment'])->name('portal.admin.care_notes.attachment.download');
     Route::get('/portal/admin/incidents', [AdminController::class, 'incidents'])->name('portal.admin.incidents');
     Route::get('/portal/admin/incidents/{incident}', [AdminController::class, 'showIncident'])->name('portal.admin.incidents.show');
     Route::post('/portal/admin/incidents/{incident}/status', [AdminController::class, 'updateIncidentStatus'])->name('portal.admin.incidents.status');

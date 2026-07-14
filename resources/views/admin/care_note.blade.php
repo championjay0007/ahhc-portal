@@ -76,7 +76,9 @@
                 @if($careNote->attachment_path)
                     <div class="mb-4">
                         <h6>Attachment</h6>
-                        <p><a href="{{ \Illuminate\Support\Facades\Storage::url($careNote->attachment_path) }}" target="_blank">Download attachment</a></p>
+                        <p><a href="{{ route('portal.admin.care_notes.attachment.download', $careNote) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-download me-1"></i>Download attachment
+                        </a></p>
                     </div>
                 @endif
 
