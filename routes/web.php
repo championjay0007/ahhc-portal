@@ -444,6 +444,9 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     Route::get('/portal/admin/incidents', [AdminController::class, 'incidents'])->name('portal.admin.incidents');
     Route::get('/portal/admin/incidents/{incident}', [AdminController::class, 'showIncident'])->name('portal.admin.incidents.show');
     Route::post('/portal/admin/incidents/{incident}/status', [AdminController::class, 'updateIncidentStatus'])->name('portal.admin.incidents.status');
+    Route::get('/portal/admin/complaints', [AdminController::class, 'complaints'])->name('portal.admin.complaints');
+    Route::get('/portal/admin/complaints/{complaint}', [AdminController::class, 'showComplaint'])->name('portal.admin.complaints.show');
+    Route::post('/portal/admin/complaints/{complaint}/status', [AdminController::class, 'updateComplaintStatus'])->name('portal.admin.complaints.status');
     Route::get('/portal/admin/invoices', [AdminController::class, 'invoices'])->name('portal.admin.invoices');
     Route::get('/portal/admin/invoices/{invoice}', [AdminController::class, 'showInvoice'])->name('portal.admin.invoices.show');
     Route::post('/portal/admin/invoices/{invoice}/review', [AdminController::class, 'reviewInvoice'])->name('portal.admin.invoices.review');

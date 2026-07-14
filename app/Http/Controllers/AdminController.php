@@ -2034,6 +2034,51 @@ class AdminController extends Controller
         return back()->with('status', 'Incident updated.');
     }
 
+    public function complaints(Request $request)
+    {
+        $query = Complaint::with(['participant', 'supportPerson'])->orderBy('created_at', 'desc');
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%")
+                    ->orWhereHas('participant', function ($p) use ($search) {
+                        $p->where('first_name', 'like', "%{$search}%")->orWhere('last_name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
+        }
+
+        $complaints = $query->paginate(20)->withQueryString();
+
+        return view('admin.complaints', compact('complaints'));
+    }
+
+    public function showComplaint(Complaint $complaint)
+    {
+        $complaint->load(['participant', 'supportPerson', 'submittedBy']);
+
+        return view('admin.complaint', compact('complaint'));
+    }
+
+    public function updateComplaintStatus(Request $request, Complaint $complaint)
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:open,acknowledged,investigating,resolved,closed'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $complaint->update([
+            'status' => $validated['status'],
+            'notes' => $validated['notes'] ?? $complaint->notes,
+        ]);
+
+        return back()->with('status', 'Complaint updated.');
+    }
+
     public function approveCareNote(CareNote $careNote)
     {
         if ($careNote->status !== 'approved') {

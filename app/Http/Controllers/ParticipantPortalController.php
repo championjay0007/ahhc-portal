@@ -10,6 +10,7 @@ use App\Models\Participant;
 use App\Models\PreApprovalRequest;
 use App\Models\Shift;
 use App\Models\User;
+use App\Notifications\ComplaintSubmitted;
 use App\Services\BudgetService;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
@@ -209,7 +210,7 @@ class ParticipantPortalController extends Controller
         $user = Auth::user();
         $participant = Participant::where('user_id', $user->id)->firstOrFail();
 
-        Complaint::create([
+        $complaint = Complaint::create([
             'participant_id' => $participant->id,
             'support_person_id' => $participant->assigned_support_person_id,
             'submitted_by_id' => $user->id,
@@ -221,17 +222,9 @@ class ParticipantPortalController extends Controller
             'notes' => $validated['notes'] ?? null,
         ]);
 
-        User::where('role', 'admin')->get()->each(function ($admin) use ($participant, $validated) {
-            NotificationService::notify([
-                'user_id' => $admin->id,
-                'participant_id' => $participant->id,
-                'type' => 'warning',
-                'data' => [
-                    'title' => 'New complaint submitted',
-                    'message' => "{$participant->first_name} submitted a new complaint ({$validated['category']}).",
-                    'url' => route('portal.admin.activity'),
-                ],
-            ]);
+        // Send notification to all admins
+        User::where('role', 'admin')->get()->each(function ($admin) use ($complaint) {
+            $admin->notify(new ComplaintSubmitted($complaint));
         });
 
         return redirect()->route('portal.dashboard')->with('status', 'Complaint submitted successfully.');
