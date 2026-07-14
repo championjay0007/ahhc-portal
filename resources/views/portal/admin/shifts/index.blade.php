@@ -1,11 +1,9 @@
-@extends('layouts.portal')
-
-@section('title', 'Shift Scheduling')
+@extends('layouts.admin')
 
 @section('content')
-    <div class="portal-page-header d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1>Shift Scheduling</h1>
+            <h4 class="mb-0">Shift Scheduling</h4>
             <p class="text-muted mb-0">Create, assign and manage participant service shifts.</p>
         </div>
         <a href="{{ route('portal.admin.shifts.create') }}" class="btn btn-primary">Create Shift</a>

@@ -147,13 +147,20 @@ class WorkerPortalController extends Controller
     public function confirmShift(Shift $shift)
     {
         $worker = $this->worker();
-        abort_unless($shift->worker_id === $worker->id, 403, 'Unauthorized.');
-
-        if ($shift->status === Shift::STATUS_SCHEDULED) {
-            $oldValues = $shift->getOriginal();
-            $shift->update(['status' => Shift::STATUS_CONFIRMED]);
-            AuditLogService::record('Shift Confirmed', $shift, $oldValues, $shift->getChanges());
+        
+        // Check if worker is assigned to this shift
+        if ($shift->worker_id !== $worker->id) {
+            abort(403, 'You are not assigned to this shift.');
         }
+
+        // Check if shift is in correct status
+        if ($shift->status !== Shift::STATUS_SCHEDULED) {
+            abort(422, 'Shift can only be confirmed from scheduled status.');
+        }
+
+        $oldValues = $shift->getOriginal();
+        $shift->update(['status' => Shift::STATUS_CONFIRMED]);
+        AuditLogService::record('Shift Confirmed', $shift, $oldValues, $shift->getChanges());
 
         return redirect()->route('portal.worker.shifts')->with('status', 'Shift confirmed successfully.');
     }
@@ -161,16 +168,23 @@ class WorkerPortalController extends Controller
     public function startShift(Shift $shift)
     {
         $worker = $this->worker();
-        abort_unless($shift->worker_id === $worker->id, 403, 'Unauthorized.');
-
-        if (in_array($shift->status, [Shift::STATUS_SCHEDULED, Shift::STATUS_CONFIRMED], true)) {
-            $oldValues = $shift->getOriginal();
-            $shift->update([
-                'status' => Shift::STATUS_IN_PROGRESS,
-                'started_at' => $shift->started_at ?? now(),
-            ]);
-            AuditLogService::record('Shift Started', $shift, $oldValues, $shift->getChanges());
+        
+        // Check if worker is assigned to this shift
+        if ($shift->worker_id !== $worker->id) {
+            abort(403, 'You are not assigned to this shift.');
         }
+
+        // Check if shift is in correct status
+        if (!in_array($shift->status, [Shift::STATUS_SCHEDULED, Shift::STATUS_CONFIRMED], true)) {
+            abort(422, 'Shift can only be started from scheduled or confirmed status.');
+        }
+
+        $oldValues = $shift->getOriginal();
+        $shift->update([
+            'status' => Shift::STATUS_IN_PROGRESS,
+            'started_at' => $shift->started_at ?? now(),
+        ]);
+        AuditLogService::record('Shift Started', $shift, $oldValues, $shift->getChanges());
 
         return redirect()->route('portal.worker.shifts')->with('status', 'Shift started.');
     }
@@ -178,16 +192,23 @@ class WorkerPortalController extends Controller
     public function completeShift(Shift $shift)
     {
         $worker = $this->worker();
-        abort_unless($shift->worker_id === $worker->id, 403, 'Unauthorized.');
-
-        if ($shift->status === Shift::STATUS_IN_PROGRESS) {
-            $oldValues = $shift->getOriginal();
-            $shift->update([
-                'status' => Shift::STATUS_COMPLETED,
-                'completed_at' => now(),
-            ]);
-            AuditLogService::record('Shift Completed', $shift, $oldValues, $shift->getChanges());
+        
+        // Check if worker is assigned to this shift
+        if ($shift->worker_id !== $worker->id) {
+            abort(403, 'You are not assigned to this shift.');
         }
+
+        // Check if shift is in correct status
+        if ($shift->status !== Shift::STATUS_IN_PROGRESS) {
+            abort(422, 'Shift can only be completed from in-progress status.');
+        }
+
+        $oldValues = $shift->getOriginal();
+        $shift->update([
+            'status' => Shift::STATUS_COMPLETED,
+            'completed_at' => now(),
+        ]);
+        AuditLogService::record('Shift Completed', $shift, $oldValues, $shift->getChanges());
 
         return redirect()->route('portal.worker.shifts')->with('status', 'Shift completed successfully.');
     }

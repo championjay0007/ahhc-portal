@@ -1,11 +1,11 @@
-@extends('layouts.portal')
-
-@section('title', 'Edit Shift')
+@extends('layouts.admin')
 
 @section('content')
-    <div class="portal-page-header mb-4">
-        <h1>Edit Shift</h1>
-        <p class="text-muted">Update the shift details and worker assignment.</p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-0">Edit Shift</h4>
+            <p class="text-muted mb-0">Update the shift details and worker assignment.</p>
+        </div>
     </div>
 
     <div class="card">

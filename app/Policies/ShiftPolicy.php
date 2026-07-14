@@ -22,8 +22,8 @@ class ShiftPolicy
             return true;
         }
 
-        // Workers can view their own shifts
-        if ($user->worker && $user->worker->shifts()->where('shift_id', $shift->id)->exists()) {
+        // Workers can view their assigned shifts
+        if ($user->worker && $shift->worker_id === $user->worker->id) {
             return true;
         }
 
@@ -54,5 +54,22 @@ class ShiftPolicy
     public function cancel(User $user, Shift $shift): bool
     {
         return $user->role === 'admin' || $user->role === 'system_admin';
+    }
+
+    // Worker actions
+    public function confirm(User $user, Shift $shift): bool
+    {
+        return $user->worker && $shift->worker_id === $user->worker->id && $shift->status === Shift::STATUS_SCHEDULED;
+    }
+
+    public function start(User $user, Shift $shift): bool
+    {
+        return $user->worker && $shift->worker_id === $user->worker->id && 
+               in_array($shift->status, [Shift::STATUS_SCHEDULED, Shift::STATUS_CONFIRMED]);
+    }
+
+    public function complete(User $user, Shift $shift): bool
+    {
+        return $user->worker && $shift->worker_id === $user->worker->id && $shift->status === Shift::STATUS_IN_PROGRESS;
     }
 }
