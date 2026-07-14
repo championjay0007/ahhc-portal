@@ -2452,141 +2452,139 @@
     // ========================================
     // PWA SERVICE WORKER & INSTALL PROMPT
     // ========================================
-    <script>
-        const PWA_ENABLED = false;
-    </script>
+    const PWA_ENABLED = false;
 
-    function updateOfflineState() {
-        if (navigator.onLine) {
-            document.body.classList.remove('offline-state');
-            const offlineBanner = document.getElementById('offlineBanner');
-            if (offlineBanner) offlineBanner.style.display = 'none';
-        } else {
-            document.body.classList.add('offline-state');
-            showOfflineBanner();
+        function updateOfflineState() {
+            if (navigator.onLine) {
+                document.body.classList.remove('offline-state');
+                const offlineBanner = document.getElementById('offlineBanner');
+                if (offlineBanner) offlineBanner.style.display = 'none';
+            } else {
+                document.body.classList.add('offline-state');
+                showOfflineBanner();
+            }
         }
-    }
 
-    function showOfflineBanner() {
-        let banner = document.getElementById('offlineBanner');
-        if (!banner) {
-            banner = document.createElement('div');
-            banner.id = 'offlineBanner';
-            banner.className = 'alert alert-warning position-fixed top-0 start-50 translate-middle-x mt-3 shadow-lg d-flex align-items-center gap-2';
-            banner.style.cssText = 'z-index: 9999; border-radius: 12px; min-width: 300px;';
-            banner.innerHTML = '<i class="bi bi-wifi-off fs-5"></i><strong>You are offline</strong><span class="ms-auto small text-muted">Some features may be limited</span>';
-            document.body.appendChild(banner);
+        function showOfflineBanner() {
+            let banner = document.getElementById('offlineBanner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'offlineBanner';
+                banner.className = 'alert alert-warning position-fixed top-0 start-50 translate-middle-x mt-3 shadow-lg d-flex align-items-center gap-2';
+                banner.style.cssText = 'z-index: 9999; border-radius: 12px; min-width: 300px;';
+                banner.innerHTML = '<i class="bi bi-wifi-off fs-5"></i><strong>You are offline</strong><span class="ms-auto small text-muted">Some features may be limited</span>';
+                document.body.appendChild(banner);
+            }
+            banner.style.display = 'flex';
         }
-        banner.style.display = 'flex';
-    }
 
-    @if(Auth::check())
-        @include('components.pwa-push-registration')
-    @endif
+        @if(Auth::check())
+            @include('components.pwa-push-registration')
+        @endif
 
-    function unregisterServiceWorkers() {
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                registrations.forEach(function(registration) {
-                    registration.unregister().catch(function(error) {
-                        console.log('Failed to unregister service worker:', error);
+        function unregisterServiceWorkers() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    registrations.forEach(function(registration) {
+                        registration.unregister().catch(function(error) {
+                            console.log('Failed to unregister service worker:', error);
+                        });
                     });
                 });
-            });
-        }
-    }
-
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-            updateOfflineState();
-
-            if (PWA_ENABLED) {
-                navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function(registration) {
-                    console.log('PWA service worker registered:', registration);
-                    if (typeof initializePushSubscription === 'function') {
-                        initializePushSubscription(registration);
-                    }
-                    if (typeof setupServiceWorkerUpdates === 'function') {
-                        setupServiceWorkerUpdates(registration);
-                    }
-                }).catch(function(error) {
-                    console.error('PWA service worker registration failed:', error);
-                });
-            } else {
-                unregisterServiceWorkers();
             }
-        });
-    } else {
-        window.addEventListener('load', updateOfflineState);
-    }
+        }
 
-    var deferredPwaPrompt;
-    var pwaInstallBanner = document.getElementById('pwaInstallBanner');
-    var pwaInstallButton = document.getElementById('pwaInstallButton');
-    var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                updateOfflineState();
 
-    window.addEventListener('beforeinstallprompt', function(event) {
-        if (!PWA_ENABLED) {
+                if (PWA_ENABLED) {
+                    navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function(registration) {
+                        console.log('PWA service worker registered:', registration);
+                        if (typeof initializePushSubscription === 'function') {
+                            initializePushSubscription(registration);
+                        }
+                        if (typeof setupServiceWorkerUpdates === 'function') {
+                            setupServiceWorkerUpdates(registration);
+                        }
+                    }).catch(function(error) {
+                        console.error('PWA service worker registration failed:', error);
+                    });
+                } else {
+                    unregisterServiceWorkers();
+                }
+            });
+        } else {
+            window.addEventListener('load', updateOfflineState);
+        }
+
+        var deferredPwaPrompt;
+        var pwaInstallBanner = document.getElementById('pwaInstallBanner');
+        var pwaInstallButton = document.getElementById('pwaInstallButton');
+        var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
+
+        window.addEventListener('beforeinstallprompt', function(event) {
+            if (!PWA_ENABLED) {
+                event.preventDefault();
+                return;
+            }
+
             event.preventDefault();
-            return;
-        }
-
-        event.preventDefault();
-        deferredPwaPrompt = event;
-        if (pwaInstallBanner) {
-            setTimeout(function() {
-                pwaInstallBanner.classList.remove('d-none');
-            }, 3000);
-        }
-    });
-
-    if (pwaInstallButton) {
-        pwaInstallButton.addEventListener('click', function() {
-            if (!deferredPwaPrompt) return;
-            deferredPwaPrompt.prompt();
-            deferredPwaPrompt.userChoice.then(function(choiceResult) {
-                if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-                deferredPwaPrompt = null;
-            });
-        });
-    }
-
-    if (pwaInstallDismiss) {
-        pwaInstallDismiss.addEventListener('click', function() {
-            if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-        });
-    }
-
-    function registerPendingSync() {
-        if ('serviceWorker' in navigator && PWA_ENABLED && 'SyncManager' in window) {
-            navigator.serviceWorker.ready.then(function(registration) {
-                registration.sync.register('sync-pending-requests').catch(function() {});
-            });
-        }
-    }
-
-    window.addEventListener('online', function() {
-        registerPendingSync();
-        updateOfflineState();
-    });
-
-    window.addEventListener('offline', updateOfflineState);
-
-    // ========================================
-    // AUTO-DISMISS ALERTS
-    // ========================================
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.alert').forEach(function(alert) {
-            if (!alert.classList.contains('alert-danger')) {
+            deferredPwaPrompt = event;
+            if (pwaInstallBanner) {
                 setTimeout(function() {
-                    alert.style.opacity = '0';
-                    alert.style.transform = 'translateY(-10px)';
-                    setTimeout(function() { alert.remove(); }, 300);
-                }, 5000);
+                    pwaInstallBanner.classList.remove('d-none');
+                }, 3000);
             }
         });
-    });
-</script>
+
+        if (pwaInstallButton) {
+            pwaInstallButton.addEventListener('click', function() {
+                if (!deferredPwaPrompt) return;
+                deferredPwaPrompt.prompt();
+                deferredPwaPrompt.userChoice.then(function(choiceResult) {
+                    if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                    deferredPwaPrompt = null;
+                });
+            });
+        }
+
+        if (pwaInstallDismiss) {
+            pwaInstallDismiss.addEventListener('click', function() {
+                if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+            });
+        }
+
+        function registerPendingSync() {
+            if ('serviceWorker' in navigator && PWA_ENABLED && 'SyncManager' in window) {
+                navigator.serviceWorker.ready.then(function(registration) {
+                    registration.sync.register('sync-pending-requests').catch(function() {});
+                });
+            }
+        }
+
+        window.addEventListener('online', function() {
+            registerPendingSync();
+            updateOfflineState();
+        });
+
+        window.addEventListener('offline', updateOfflineState);
+
+        // ========================================
+        // AUTO-DISMISS ALERTS
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.alert').forEach(function(alert) {
+                if (!alert.classList.contains('alert-danger')) {
+                    setTimeout(function() {
+                        alert.style.opacity = '0';
+                        alert.style.transform = 'translateY(-10px)';
+                        setTimeout(function() { alert.remove(); }, 300);
+                    }, 5000);
+                }
+            });
+        });
+    </script>
 
     <!-- Support Widget (authenticated users) -->
     <div id="supportWidgetCard" class="support-widget-card d-none" aria-live="polite">
