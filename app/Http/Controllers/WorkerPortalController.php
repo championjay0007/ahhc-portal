@@ -148,8 +148,8 @@ class WorkerPortalController extends Controller
     {
         $worker = $this->worker();
         
-        // Check if worker is assigned to this shift
-        if ($shift->worker_id !== $worker->id) {
+        // Check if worker is assigned to this shift (use int cast to avoid type mismatch)
+        if ((int)$shift->worker_id !== (int)$worker->id) {
             abort(403, 'You are not assigned to this shift.');
         }
 
@@ -169,8 +169,8 @@ class WorkerPortalController extends Controller
     {
         $worker = $this->worker();
         
-        // Check if worker is assigned to this shift
-        if ($shift->worker_id !== $worker->id) {
+        // Check if worker is assigned to this shift (use int cast to avoid type mismatch)
+        if ((int)$shift->worker_id !== (int)$worker->id) {
             abort(403, 'You are not assigned to this shift.');
         }
 
@@ -193,8 +193,8 @@ class WorkerPortalController extends Controller
     {
         $worker = $this->worker();
         
-        // Check if worker is assigned to this shift
-        if ($shift->worker_id !== $worker->id) {
+        // Check if worker is assigned to this shift (use int cast to avoid type mismatch)
+        if ((int)$shift->worker_id !== (int)$worker->id) {
             abort(403, 'You are not assigned to this shift.');
         }
 

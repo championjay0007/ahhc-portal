@@ -23,7 +23,7 @@ class ShiftPolicy
         }
 
         // Workers can view their assigned shifts
-        if ($user->worker && $shift->worker_id === $user->worker->id) {
+        if ($user->worker && (int)$shift->worker_id === (int)$user->worker->id) {
             return true;
         }
 
@@ -59,17 +59,17 @@ class ShiftPolicy
     // Worker actions
     public function confirm(User $user, Shift $shift): bool
     {
-        return $user->worker && $shift->worker_id === $user->worker->id && $shift->status === Shift::STATUS_SCHEDULED;
+        return $user->worker && ((int)$shift->worker_id === (int)$user->worker->id) && $shift->status === Shift::STATUS_SCHEDULED;
     }
 
     public function start(User $user, Shift $shift): bool
     {
-        return $user->worker && $shift->worker_id === $user->worker->id && 
+        return $user->worker && ((int)$shift->worker_id === (int)$user->worker->id) && 
                in_array($shift->status, [Shift::STATUS_SCHEDULED, Shift::STATUS_CONFIRMED]);
     }
 
     public function complete(User $user, Shift $shift): bool
     {
-        return $user->worker && $shift->worker_id === $user->worker->id && $shift->status === Shift::STATUS_IN_PROGRESS;
+        return $user->worker && ((int)$shift->worker_id === (int)$user->worker->id) && $shift->status === Shift::STATUS_IN_PROGRESS;
     }
 }
