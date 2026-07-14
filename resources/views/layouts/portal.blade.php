@@ -1277,18 +1277,7 @@
                                         $data = $notification->data ?? [];
                                         $title = $data['title'] ?? ucfirst($notification->type ?? 'Notification');
                                         $message = $data['message'] ?? 'View details for this update.';
-                                        
-                                        // Determine the action URL based on notification type
-                                        if (isset($data['url']) && !empty($data['url'])) {
-                                            $url = $data['url'];
-                                        } elseif ($notification->type === 'App\\Notifications\\IncidentReported' && isset($data['incident_id'])) {
-                                            $url = route('portal.admin.incidents.show', $data['incident_id']);
-                                        } elseif ($notification->type === 'App\\Notifications\\CareNoteSubmitted' && isset($data['care_note_id'])) {
-                                            $url = route('portal.admin.care_notes.show', $data['care_note_id']);
-                                        } else {
-                                            $url = route('portal.notifications.show', $notification);
-                                        }
-                                        
+                                        $url = $data['action_url'] ?? $data['url'] ?? route('portal.notifications.show', $notification);
                                         $isUnread = $notification->read_at === null;
                                     @endphp
                                     <a href="{{ $url }}" class="notification-item {{ $isUnread ? 'unread' : '' }}">
