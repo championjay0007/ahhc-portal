@@ -275,7 +275,8 @@
             <div class="card dashboard-card h-100 border-0">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-2">Live Quarterly Budget Dashboard</h5>
-                    <p class="text-muted small mb-4">Budget reduces as pre-approvals are committed and invoices are approved/paid.</p>
+                    <p class="text-muted small mb-2">Live figures update as pre-approvals are committed and invoices are approved or paid.</p>
+                    <p class="text-muted small mb-3">Shows opening quarter budget, committed funds (pre-approvals and pending invoices), approved/paid spend, and the live available balance.</p>
 
                     <div class="table-responsive">
                         <table class="table table-sm mb-0">
@@ -289,6 +290,22 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $totalBudget = collect($budgetData)->sum('budget');
+                                    $totalUsed = collect($budgetData)->sum('used');
+                                    $totalCommitted = collect($budgetData)->sum('committed');
+                                    $totalRemaining = collect($budgetData)->sum('remaining');
+                                @endphp
+
+                                <tr class="fw-bold">
+                                    <td>Total</td>
+                                    <td>${{ number_format($totalBudget, 0) }}</td>
+                                    <td>${{ number_format($totalUsed, 0) }}</td>
+                                    <td>${{ number_format($totalCommitted ?? 0, 0) }}</td>
+                                    <td class="text-success">${{ number_format($totalRemaining, 0) }}</td>
+                                </tr>
+                                <tr><td colspan="5" class="py-2"></td></tr>
+
                                 @forelse($budgetData as $budget)
                                     <tr>
                                         <td class="fw-bold">{{ $budget['name'] }}</td>
@@ -301,7 +318,8 @@
                                         <td colspan="4" class="py-2">
                                             <div class="progress" style="height: 6px;">
                                                 @php
-                                                    $usedPercent = $budget['budget'] > 0 ? ($budget['used'] / $budget['budget']) * 100 : 0;
+                                                    $totalUsedForPercent = ($budget['used'] ?? 0) + ($budget['committed'] ?? 0);
+                                                    $usedPercent = $budget['budget'] > 0 ? min(100, ($totalUsedForPercent / $budget['budget']) * 100) : 0;
                                                     $remainingPercent = max(0, 100 - $usedPercent);
                                                 @endphp
                                                 <div class="progress-bar" style="width: {{ $usedPercent }}%; background: {{ $usedPercent >= 80 ? '#dc3545' : '#20c997' }};"></div>
