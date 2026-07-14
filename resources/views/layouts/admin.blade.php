@@ -2458,11 +2458,13 @@
         try {
             $pwaSettingValue = \App\Models\PortalSetting::where('key', 'pwa_enabled')->value('value');
             $pwaEnabled = filter_var($pwaSettingValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === true;
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $pwaEnabled = false;
         }
     @endphp
-    const PWA_ENABLED = {{ $pwaEnabled ? 'true' : 'false' }};
+    <script>
+        const PWA_ENABLED = <?php echo json_encode((bool) $pwaEnabled); ?>;
+    </script>
 
     function updateOfflineState() {
         if (navigator.onLine) {
