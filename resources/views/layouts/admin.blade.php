@@ -2020,6 +2020,11 @@
                 <i class="bi bi-gear-fill"></i>
             </a>
 
+            <!-- PWA Install Topbar Button -->
+            <button id="pwaInstallTopbarButton" class="topbar-icon" title="Install">
+                <i class="bi bi-cloud-arrow-down-fill"></i>
+            </button>
+
             <!-- User Dropdown -->
             <div class="user-dropdown dropdown">
                 <div class="user-dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -2595,6 +2600,31 @@
         if (pwaInstallDismiss) {
             pwaInstallDismiss.addEventListener('click', function() {
                 if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+            });
+        }
+
+        // Wire topbar install button to the same behavior
+        var pwaInstallTopbarButton = document.getElementById('pwaInstallTopbarButton');
+        if (pwaInstallTopbarButton) {
+            pwaInstallTopbarButton.addEventListener('click', function() {
+                // If the banner button exists, trigger its click to reuse logic
+                if (pwaInstallButton) { pwaInstallButton.click(); return; }
+
+                if (deferredPwaPrompt) {
+                    deferredPwaPrompt.prompt();
+                    deferredPwaPrompt.userChoice.then(function(choiceResult) {
+                        if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                        deferredPwaPrompt = null;
+                    });
+                    return;
+                }
+
+                if (isIos()) {
+                    alert('To install this app on iOS: tap the Share button in Safari, then select "Add to Home Screen".');
+                    return;
+                }
+
+                alert('Your browser does not support automatic installation. Please use the browser menu and choose "Add to Home screen".');
             });
         }
 
