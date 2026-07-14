@@ -68,17 +68,28 @@ class AdminDashboardController extends Controller
             try {
                 $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant);
                 $metrics = $budgetService->getBudgetMetrics($budget);
-                $committed = (int) ($metrics['committed'] ?? 0) / 100;
             } catch (\Throwable $_) {
-                $committed = 0;
+                $metrics = [
+                    'total_available' => (int) ($participant->budget_limit_cents ?? 0),
+                    'used' => (int) ($participant->current_budget_used_cents ?? 0),
+                    'committed' => 0,
+                    'remaining' => (int) (($participant->budget_limit_cents ?? 0) - ($participant->current_budget_used_cents ?? 0)),
+                ];
             }
 
+            // Ensure values are integers (cents) then convert to dollars for the view
+            $totalAvailable = (int) ($metrics['total_available'] ?? 0);
+            $usedCents = (int) ($metrics['used'] ?? 0);
+            $committedCents = (int) ($metrics['committed'] ?? 0);
+            $remainingCents = (int) ($metrics['remaining'] ?? ($totalAvailable - $usedCents - $committedCents));
+
             return [
-                'name' => $participant->first_name,
-                'budget' => $participant->budget_limit_cents / 100,
-                'used' => $participant->current_budget_used_cents / 100,
-                'committed' => $committed,
-                'remaining' => ($participant->budget_limit_cents - $participant->current_budget_used_cents) / 100,
+                'name' => trim(($participant->first_name ?? '') . ' ' . ($participant->last_name ?? '')) ?: ($participant->name ?? 'Participant'),
+                'budget' => $totalAvailable / 100,
+                'used' => $usedCents / 100,
+                'committed' => $committedCents / 100,
+                'remaining' => $remainingCents / 100,
+                'utilization_percent' => isset($metrics['utilization_percent']) ? $metrics['utilization_percent'] : null,
             ];
         });
 

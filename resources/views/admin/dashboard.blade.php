@@ -283,10 +283,10 @@
                             <thead>
                                 <tr class="text-muted small">
                                     <th>Participant</th>
-                                    <th>Budget</th>
+                                    <th>Assigned</th>
                                     <th>Used</th>
                                     <th>Committed</th>
-                                    <th>Remaining</th>
+                                    <th>Available</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -331,7 +331,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted py-3">No participants with budgets</td>
+                                        <td colspan="5" class="text-center text-muted py-3">No participants with budgets</td>
                                     </tr>
                                 @endforelse
                             </tbody>
