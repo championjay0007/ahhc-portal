@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
+use App\Models\PortalSetting;
 use App\Services\TemplateVariableService;
 
 class EmailTemplate extends Model
@@ -142,6 +143,8 @@ class EmailTemplate extends Model
 
     protected function replaceVariables(string $content, array $variables, string $context = 'html'): string
     {
+        $variables = array_merge($this->defaultVariables(), $variables);
+
         // Support both plain {{logo}} and Blade-style expressions in stored HTML.
         $content = $this->renderBladeContent($content, $variables);
 
@@ -186,6 +189,23 @@ class EmailTemplate extends Model
         } catch (\Throwable) {
             return $content;
         }
+    }
+
+    protected function defaultVariables(): array
+    {
+        $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
+        $logoUrl = ! empty($logoPath)
+            ? asset('storage/' . ltrim($logoPath, '/'))
+            : 'https://via.placeholder.com/160x90.png?text=AHHC+Logo';
+
+        return [
+            'logo' => $logoUrl,
+            'portalSettings' => [
+                'logo_path' => $logoPath,
+            ],
+            'organization' => config('app.name', 'AHHC Portal'),
+            'year' => now()->year,
+        ];
     }
 
     public function createVersionSnapshot(?string $note = null): EmailTemplateVersion

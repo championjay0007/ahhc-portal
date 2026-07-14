@@ -90,7 +90,18 @@ class AppServiceProvider extends ServiceProvider
             $view->with(compact('portalNotifications', 'portalUnreadNotifications', 'portalMessages', 'supportConversations', 'unreadNotificationCount', 'portalSettings', 'unreadMessageCount', 'unreadSupportConversationCount', 'messageRoutePrefix'));
         });
 
-        View::share('portalSettings', $this->loadSettings());
+        $settings = $this->loadSettings();
+        View::share('portalSettings', $settings);
+
+        $logoPath = $settings['logo_path'] ?? null;
+        $logoUrl = ! empty($logoPath)
+            ? asset('storage/' . ltrim($logoPath, '/'))
+            : 'https://via.placeholder.com/160x90.png?text=AHHC+Logo';
+
+        View::share('logo', $logoUrl);
+        View::share('organization', $settings['organization_name'] ?? config('app.name', 'AHHC Portal'));
+        View::share('year', now()->year);
+
         $this->applySessionLifetime();
         // Ensure views always have an `$errors` ViewErrorBag available even when
         // middleware that normally shares errors (ShareErrorsFromSession) is
