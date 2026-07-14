@@ -40,13 +40,13 @@ class CareNoteSubmitted extends Notification
             ->line("Worker: {$worker->first_name} {$worker->last_name}")
             ->line("Shift date: {$shiftDate}")
             ->line("Status: ".ucfirst($careNote->status))
-            ->action('Review care note', route('portal.admin.care_notes.show', $careNote->id))
+            ->action('Review care note', route('portal.admin.care_notes.show', $careNote))
             ->line('Please review and approve when ready.');
     }
 
     public function toArray($notifiable)
     {
-        $careNoteUrl = route('portal.admin.care_notes.show', ['careNote' => $this->careNote->id]);
+        $careNoteUrl = route('portal.admin.care_notes.show', $this->careNote);
         
         return [
             'title' => 'Care Note Submitted',

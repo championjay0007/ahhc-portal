@@ -34,13 +34,13 @@ class IncidentReported extends Notification
             ->line('Type: '.$incident->incident_type)
             ->line('Severity: '.ucfirst($incident->severity))
             ->line('Description: '.Str::limit($incident->description, 200))
-            ->action('View incident', route('portal.admin.incidents.show', $incident->id))
+            ->action('View incident', route('portal.admin.incidents.show', $incident))
             ->line('Please review and take appropriate action.');
     }
 
     public function toArray($notifiable)
     {
-        $incidentUrl = route('portal.admin.incidents.show', ['incident' => $this->incident->id]);
+        $incidentUrl = route('portal.admin.incidents.show', $this->incident);
         
         return [
             'title' => 'Incident Report Submitted',
