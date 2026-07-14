@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 use App\Services\TemplateVariableService;
 
@@ -141,6 +142,9 @@ class EmailTemplate extends Model
 
     protected function replaceVariables(string $content, array $variables, string $context = 'html'): string
     {
+        // Support both plain {{logo}} and Blade-style expressions in stored HTML.
+        $content = $this->renderBladeContent($content, $variables);
+
         return preg_replace_callback('/\{\{\s*(\w+)\s*\}\}/', function ($matches) use ($variables, $context) {
             $key = $matches[1] ?? null;
 
@@ -173,6 +177,15 @@ class EmailTemplate extends Model
 
             return (string) $fallback;
         }, $content);
+    }
+
+    protected function renderBladeContent(string $content, array $variables): string
+    {
+        try {
+            return Blade::render($content, $variables);
+        } catch (\Throwable) {
+            return $content;
+        }
     }
 
     public function createVersionSnapshot(?string $note = null): EmailTemplateVersion
