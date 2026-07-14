@@ -247,7 +247,9 @@ class WorkerPortalController extends Controller
 
         if (! empty($validated['shift_id'])) {
             $shift = Shift::findOrFail($validated['shift_id']);
-            abort_unless($shift->worker_id === $worker->id, 403, 'Invalid shift selection.');
+            if ((int)$shift->worker_id !== (int)$worker->id) {
+                abort(403, 'Invalid shift selection.');
+            }
         }
 
         $participant = Participant::findOrFail($validated['participant_id']);
@@ -317,7 +319,9 @@ class WorkerPortalController extends Controller
 
         if (! empty($validated['shift_id'])) {
             $shift = Shift::findOrFail($validated['shift_id']);
-            abort_unless($shift->worker_id === $worker->id, 403, 'Invalid shift selection.');
+            if ((int)$shift->worker_id !== (int)$worker->id) {
+                abort(403, 'Invalid shift selection.');
+            }
         }
 
         $incident = Incident::create([
