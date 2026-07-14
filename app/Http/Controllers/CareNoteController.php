@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\CareNote;
 use App\Models\Document;
 use App\Models\Participant;
+use App\Models\User;
+use App\Notifications\CareNoteSubmitted;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class CareNoteController extends Controller
 {
@@ -67,6 +70,16 @@ class CareNoteController extends Controller
             'shift_date' => $careNote->shift_date,
             'status' => $careNote->status,
         ]);
+
+        // Notify admins
+        try {
+            $admins = User::where('role', 'admin')->get();
+            if ($admins->isNotEmpty()) {
+                Notification::send($admins, new CareNoteSubmitted($careNote));
+            }
+        } catch (\Exception $e) {
+            // swallow notification errors to not block user flow
+        }
 
         return redirect()->route('portal.admin.participants.care_notes', $participant)->with('status', 'Care note saved.');
     }
@@ -159,7 +172,7 @@ class CareNoteController extends Controller
             $attachmentPath = $request->file('attachment')->store('care_notes', 'local');
         }
 
-        CareNote::create([
+        $careNote = CareNote::create([
             'participant_id' => $participant->id,
             'worker_id' => $workerId,
             'shift_date' => $validated['shift_date'],
@@ -176,6 +189,16 @@ class CareNoteController extends Controller
             'submitted_at' => now(),
             'created_by_id' => $user->id,
         ]);
+
+        // Notify admins
+        try {
+            $admins = User::where('role', 'admin')->get();
+            if ($admins->isNotEmpty()) {
+                Notification::send($admins, new CareNoteSubmitted($careNote));
+            }
+        } catch (\Exception $e) {
+            // swallow notification errors to not block user flow
+        }
 
         return redirect()->route('portal.participant.care_notes.index')->with('status', 'Care note saved.');
     }

@@ -11,6 +11,7 @@ use App\Models\ParticipantAssignment;
 use App\Models\Shift;
 use App\Models\User;
 use App\Models\Worker;
+use App\Notifications\CareNoteSubmitted;
 use App\Notifications\IncidentReported;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
@@ -235,7 +236,7 @@ class WorkerPortalController extends Controller
             $attachmentPath = $request->file('attachment')->store('care_notes', 'local');
         }
 
-        CareNote::create([
+        $careNote = CareNote::create([
             'participant_id' => $participant->id,
             'worker_id' => $worker->id,
             'shift_id' => $validated['shift_id'] ?? null,
@@ -253,6 +254,16 @@ class WorkerPortalController extends Controller
             'submitted_at' => now(),
             'created_by_id' => Auth::id(),
         ]);
+
+        // Notify admins
+        try {
+            $admins = User::where('role', 'admin')->get();
+            if ($admins->isNotEmpty()) {
+                Notification::send($admins, new CareNoteSubmitted($careNote));
+            }
+        } catch (\Exception $e) {
+            // swallow notification errors to not block user flow
+        }
 
         return redirect()->route('portal.worker.care_notes.create')->with('status', 'Care note submitted successfully.');
     }
