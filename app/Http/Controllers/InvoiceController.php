@@ -11,6 +11,7 @@ use App\Services\AuditLogService;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller
@@ -93,7 +94,8 @@ class InvoiceController extends Controller
             $attachmentMimeType = $file->getMimeType();
         }
 
-        $invoice = Invoice::create(array_merge($validated, [
+        try {
+            $invoice = Invoice::create(array_merge($validated, [
             'participant_id' => $participant->id,
             'status' => 'submitted',
             'invoice_file_path' => $attachmentPath,
@@ -101,6 +103,19 @@ class InvoiceController extends Controller
             'attachment_disk' => $attachmentDisk,
             'attachment_mime_type' => $attachmentMimeType,
         ]));
+        } catch (QueryException $e) {
+            // Handle unique constraint on invoice_number
+            if (str_contains($e->getMessage(), 'unique') || str_contains($e->getMessage(), 'UNIQUE')) {
+                // remove stored attachment if present
+                if ($attachmentPath && Storage::disk($attachmentDisk)->exists($attachmentPath)) {
+                    Storage::disk($attachmentDisk)->delete($attachmentPath);
+                }
+
+                return back()->withErrors(['invoice_number' => 'An invoice with that number already exists. Please choose a different invoice number.'])->withInput();
+            }
+
+            throw $e;
+        }
 
         AuditLogService::record('Invoice Create', $invoice, [], [
             'invoice_number' => $invoice->invoice_number,

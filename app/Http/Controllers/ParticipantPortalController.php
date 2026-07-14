@@ -161,17 +161,25 @@ class ParticipantPortalController extends Controller
         $user = Auth::user();
         $participant = Participant::where('user_id', $user->id)->firstOrFail();
 
-        Invoice::create([
-            'participant_id' => $participant->id,
-            'invoice_number' => $validated['invoice_number'],
-            'status' => 'draft',
-            'subtotal_cents' => $validated['subtotal_cents'],
-            'gst_cents' => $validated['gst_cents'],
-            'total_cents' => $validated['total_cents'],
-            'invoice_date' => $validated['invoice_date'],
-            'due_date' => $validated['due_date'],
-            'notes' => $validated['notes'] ?? null,
-        ]);
+        try {
+            Invoice::create([
+                'participant_id' => $participant->id,
+                'invoice_number' => $validated['invoice_number'],
+                'status' => 'draft',
+                'subtotal_cents' => $validated['subtotal_cents'],
+                'gst_cents' => $validated['gst_cents'],
+                'total_cents' => $validated['total_cents'],
+                'invoice_date' => $validated['invoice_date'],
+                'due_date' => $validated['due_date'],
+                'notes' => $validated['notes'] ?? null,
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (str_contains($e->getMessage(), 'unique') || str_contains($e->getMessage(), 'UNIQUE')) {
+                return back()->withErrors(['invoice_number' => 'An invoice with that number already exists. Please choose a different invoice number.'])->withInput();
+            }
+
+            throw $e;
+        }
 
         return redirect()->route('portal.dashboard')->with('status', 'Invoice submitted successfully.');
     }

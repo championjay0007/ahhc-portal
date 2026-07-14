@@ -118,9 +118,9 @@ class EmailTemplate extends Model
     public function render(array $variables = []): array
     {
         return [
-            'subject' => $this->replaceVariables($this->subject, $variables),
-            'html' => $this->replaceVariables($this->html_body, $variables),
-            'text' => $this->replaceVariables($this->text_body ?? '', $variables),
+            'subject' => $this->replaceVariables($this->subject, $variables, 'subject'),
+            'html' => $this->replaceVariables($this->html_body, $variables, 'html'),
+            'text' => $this->replaceVariables($this->text_body ?? '', $variables, 'text'),
         ];
     }
 
@@ -139,16 +139,39 @@ class EmailTemplate extends Model
         return $this->categoryRelation->name ?? $this->category ?? 'General';
     }
 
-    protected function replaceVariables(string $content, array $variables): string
+    protected function replaceVariables(string $content, array $variables, string $context = 'html'): string
     {
-        return preg_replace_callback('/\{\{\s*(\w+)\s*\}\}/', function ($matches) use ($variables) {
+        return preg_replace_callback('/\{\{\s*(\w+)\s*\}\}/', function ($matches) use ($variables, $context) {
             $key = $matches[1] ?? null;
 
             if ($key === null) {
                 return $matches[0];
             }
 
-            return $variables[$key] ?? $variables[strtolower($key)] ?? $variables[strtoupper($key)] ?? '';
+            $lookup = $variables[$key] ?? $variables[strtolower($key)] ?? $variables[strtoupper($key)] ?? null;
+
+            if ($lookup !== null && $lookup !== '') {
+                if ($key === 'logo' && $context === 'html' && filter_var($lookup, FILTER_VALIDATE_URL)) {
+                    return '<img src="'.e($lookup).'" alt="'.e(config('app.name', 'Logo')).'" style="max-height:90px;width:auto;display:block;" />';
+                }
+
+                return $lookup;
+            }
+
+            $default = TemplateVariableService::sampleValuesFor([$key]);
+            $fallback = $default[$key] ?? 'Sample '.Str::title(str_replace('_', ' ', $key));
+
+            if ($key === 'logo') {
+                if ($context === 'text') {
+                    return filter_var($fallback, FILTER_VALIDATE_URL) ? $fallback : strip_tags($fallback);
+                }
+
+                if (filter_var($fallback, FILTER_VALIDATE_URL)) {
+                    return '<img src="'.e($fallback).'" alt="'.e(config('app.name', 'Logo')).'" style="max-height:90px;width:auto;display:block;" />';
+                }
+            }
+
+            return (string) $fallback;
         }, $content);
     }
 

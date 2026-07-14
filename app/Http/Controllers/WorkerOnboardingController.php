@@ -11,6 +11,7 @@ use App\Models\WorkerComplianceDocument;
 use App\Models\WorkerComplianceType;
 use App\Models\WorkerDeclaration;
 use App\Services\NotificationService;
+use App\Services\TemplateMailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -150,6 +151,35 @@ class WorkerOnboardingController extends Controller
         }
 
         $worker->update(['user_id' => $user->id]);
+
+        // Send account-activated email prompting the worker to sign in and continue onboarding.
+        try {
+            $defaultHtml = view('mail.account_activated', [
+                'name' => $user->name,
+                'login_url' => route('portal.login'),
+                'dashboard_url' => url('/dashboard'),
+            ])->render();
+
+            TemplateMailer::send(
+                $worker->email,
+                'account-activated',
+                [
+                    'name' => $user->name,
+                    'email' => $worker->email,
+                    'worker_email' => $worker->email,
+                    'worker_id' => $worker->worker_number,
+                    'login_url' => route('portal.login'),
+                    'dashboard_url' => url('/dashboard'),
+                ],
+                'Your account is now active',
+                $defaultHtml,
+                strip_tags($defaultHtml),
+                'Account Activated',
+                'Account'
+            );
+        } catch (\Throwable $e) {
+            // Best-effort: don't block onboarding flow if email fails.
+        }
 
         return redirect()->route('portal.login')->with('success', 'Account created successfully. Please log in to continue with your onboarding.');
     }

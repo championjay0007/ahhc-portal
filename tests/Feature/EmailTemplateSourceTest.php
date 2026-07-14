@@ -59,6 +59,40 @@ class EmailTemplateSourceTest extends TestCase
         $this->assertStringContainsString('Welcome,', $participantTemplate['html']);
     }
 
+    public function test_logo_variable_has_a_safe_fallback_url_or_image(): void
+    {
+        PortalSetting::query()->where('key', 'email_template_source')->delete();
+        PortalSetting::create([
+            'key' => 'email_template_source',
+            'value' => 'database',
+        ]);
+
+        EmailTemplate::create([
+            'name' => 'Logo Template',
+            'slug' => 'logo-template',
+            'subject' => 'Logo test',
+            'html_body' => '<p>Logo: {{logo}}</p>',
+            'text_body' => 'Logo: {{logo}}',
+            'category' => 'General',
+            'is_active' => true,
+        ]);
+
+        $rendered = EmailTemplateService::renderTemplate(
+            'logo-template',
+            [],
+            'Default subject',
+            '<p>Default html</p>',
+            'Default text',
+            'Logo Template',
+            'General'
+        );
+
+        $this->assertSame('Logo test', $rendered['subject']);
+        $this->assertStringContainsString('Logo:', $rendered['html']);
+        $this->assertStringContainsString('<img', $rendered['html']);
+        $this->assertStringContainsString('http', $rendered['text']);
+    }
+
     public function test_missing_template_source_setting_defaults_to_database_templates(): void
     {
         PortalSetting::query()->where('key', 'email_template_source')->delete();

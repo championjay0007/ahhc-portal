@@ -15,6 +15,7 @@ use App\Notifications\IncidentReported;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -399,7 +400,8 @@ class WorkerPortalController extends Controller
         $attachmentDisk = 'local';
         $attachmentMimeType = $file->getMimeType();
 
-        $invoice = Invoice::create([
+        try {
+            $invoice = Invoice::create([
             'participant_id' => $validated['participant_id'],
             'worker_id' => $worker->id,
             'invoice_number' => $validated['invoice_number'],
@@ -414,6 +416,18 @@ class WorkerPortalController extends Controller
             'attachment_disk' => $attachmentDisk,
             'attachment_mime_type' => $attachmentMimeType,
         ]);
+        } catch (QueryException $e) {
+            // Unique invoice number conflict
+            if (str_contains($e->getMessage(), 'unique') || str_contains($e->getMessage(), 'UNIQUE')) {
+                if ($path && Storage::disk($attachmentDisk)->exists($path)) {
+                    Storage::disk($attachmentDisk)->delete($path);
+                }
+
+                return back()->withErrors(['invoice_number' => 'An invoice with that number already exists. Please choose a different invoice number.'])->withInput();
+            }
+
+            throw $e;
+        }
 
         AuditLogService::record('Worker Invoice Submitted', $invoice, [], [
             'invoice_number' => $invoice->invoice_number,
