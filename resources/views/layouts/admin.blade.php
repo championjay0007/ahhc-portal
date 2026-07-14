@@ -2019,8 +2019,9 @@
             <!-- User Dropdown -->
             <div class="user-dropdown dropdown">
                 <div class="user-dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ auth()->user()->profile_photo_url ?? 'https://via.placeholder.com/40' }}" alt="avatar">
-                    <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
+                    @php($currentUser = auth()->user())
+                    <img src="{{ optional($currentUser)->profile_photo_url ?? 'https://via.placeholder.com/40' }}" alt="avatar">
+                    <span class="d-none d-md-inline">{{ optional($currentUser)->name ?? 'User' }}</span>
                     <i class="bi bi-chevron-down d-none d-md-inline"></i>
                 </div>
                 <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius: var(--radius-lg); min-width: 200px;">
@@ -2452,8 +2453,14 @@
     // PWA SERVICE WORKER & INSTALL PROMPT
     // ========================================
     @php
-        $pwaSettingValue = \App\Models\PortalSetting::where('key', 'pwa_enabled')->value('value');
-        $pwaEnabled = filter_var($pwaSettingValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === true;
+        $pwaEnabled = false;
+
+        try {
+            $pwaSettingValue = \App\Models\PortalSetting::where('key', 'pwa_enabled')->value('value');
+            $pwaEnabled = filter_var($pwaSettingValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === true;
+        } catch (Throwable $e) {
+            $pwaEnabled = false;
+        }
     @endphp
     const PWA_ENABLED = {{ $pwaEnabled ? 'true' : 'false' }};
 
