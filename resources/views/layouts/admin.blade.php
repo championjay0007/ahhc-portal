@@ -2452,18 +2452,8 @@
     // ========================================
     // PWA SERVICE WORKER & INSTALL PROMPT
     // ========================================
-    @php
-        $pwaEnabled = false;
-
-        try {
-            $pwaSettingValue = \App\Models\PortalSetting::where('key', 'pwa_enabled')->value('value');
-            $pwaEnabled = filter_var($pwaSettingValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === true;
-        } catch (\Throwable $e) {
-            $pwaEnabled = false;
-        }
-    @endphp
     <script>
-        const PWA_ENABLED = <?php echo json_encode((bool) $pwaEnabled); ?>;
+        const PWA_ENABLED = false;
     </script>
 
     function updateOfflineState() {
