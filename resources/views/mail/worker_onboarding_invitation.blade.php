@@ -228,7 +228,9 @@
             <tbody>
                 <tr>
                     <td class="email-header">
-                        <img src="{{ $logo ?? asset('images/ahhc-logo.png') }}" alt="AHHC Logo">
+                        <a href="{{ url('/') }}" style="display:inline-block;">
+                            <img src="{{ $logo ?? asset('storage/' . ($portalSettings['logo_path'] ?? '')) }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
+                        </a>
                         <div class="email-badge">Worker Invitation</div>
                         <h1 class="email-title">Welcome to AHHC</h1>
                         <p class="email-intro">You've been invited to join the AHHC Care Team.</p>
