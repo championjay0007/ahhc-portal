@@ -15,6 +15,7 @@ class CareNote extends Model
         'start_time',
         'end_time',
         'tasks_completed',
+        'care_summary',
         'observations',
         'risks_flag',
         'attachment_path',
@@ -32,6 +33,19 @@ class CareNote extends Model
         'risks_flag' => 'boolean',
         'service_confirmed' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $careNote): void {
+            if (empty($careNote->care_summary) && ! empty($careNote->tasks_completed)) {
+                $careNote->care_summary = $careNote->tasks_completed;
+            }
+
+            if (empty($careNote->care_summary) && ! empty($careNote->observations)) {
+                $careNote->care_summary = $careNote->observations;
+            }
+        });
+    }
 
     public function participant(): BelongsTo
     {

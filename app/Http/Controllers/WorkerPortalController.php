@@ -243,6 +243,7 @@ class WorkerPortalController extends Controller
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
             'tasks_completed' => $validated['tasks_completed'],
+            'care_summary' => $validated['tasks_completed'],
             'observations' => $validated['observations'] ?? null,
             'risks_flag' => $request->boolean('risks_flag'),
             'service_confirmed' => true,
