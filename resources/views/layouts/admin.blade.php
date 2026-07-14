@@ -2530,6 +2530,18 @@
         var pwaInstallBanner = document.getElementById('pwaInstallBanner');
         var pwaInstallButton = document.getElementById('pwaInstallButton');
         var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
+        var deferredPwaPrompt;
+        var pwaInstallBanner = document.getElementById('pwaInstallBanner');
+        var pwaInstallButton = document.getElementById('pwaInstallButton');
+        var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
+
+        function isIos() {
+            return /iphone|ipad|ipod/i.test(navigator.userAgent);
+        }
+
+        function isInStandaloneMode() {
+            return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+        }
 
         window.addEventListener('beforeinstallprompt', function(event) {
             if (!PWA_ENABLED) {
@@ -2542,18 +2554,41 @@
             if (pwaInstallBanner) {
                 setTimeout(function() {
                     pwaInstallBanner.classList.remove('d-none');
-                }, 3000);
+                }, 1000);
+            }
+        });
+
+        // Fallback: on iOS show the banner with manual instructions if not already installed
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!PWA_ENABLED) return;
+            if (!deferredPwaPrompt && isIos() && !isInStandaloneMode()) {
+                if (pwaInstallBanner) {
+                    pwaInstallBanner.classList.remove('d-none');
+                }
             }
         });
 
         if (pwaInstallButton) {
             pwaInstallButton.addEventListener('click', function() {
-                if (!deferredPwaPrompt) return;
-                deferredPwaPrompt.prompt();
-                deferredPwaPrompt.userChoice.then(function(choiceResult) {
+                if (deferredPwaPrompt) {
+                    deferredPwaPrompt.prompt();
+                    deferredPwaPrompt.userChoice.then(function(choiceResult) {
+                        if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                        deferredPwaPrompt = null;
+                    });
+                    return;
+                }
+
+                // If no install prompt available (e.g. iOS), show manual instructions
+                if (isIos()) {
+                    alert('To install this app on iOS: tap the Share button in Safari, then select "Add to Home Screen".');
                     if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-                    deferredPwaPrompt = null;
-                });
+                    return;
+                }
+
+                // Generic fallback
+                alert('Your browser does not support automatic installation. Please use the browser menu and choose "Add to Home screen".');
+                if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
             });
         }
 
