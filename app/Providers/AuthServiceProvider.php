@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Models\Budget;
 use App\Models\Participant;
+use App\Models\Shift;
 use App\Models\WorkerComplianceDocument;
 use App\Models\WorkerNomination;
 use App\Policies\BudgetPolicy;
 use App\Policies\ParticipantPolicy;
+use App\Policies\ShiftPolicy;
 use App\Policies\WorkerComplianceDocumentPolicy;
 use App\Policies\WorkerNominationPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -29,6 +31,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         Gate::policy(Budget::class, BudgetPolicy::class);
         Gate::policy(Participant::class, ParticipantPolicy::class);
+        Gate::policy(Shift::class, ShiftPolicy::class);
         Gate::policy(WorkerComplianceDocument::class, WorkerComplianceDocumentPolicy::class);
         Gate::policy(WorkerNomination::class, WorkerNominationPolicy::class);
     }

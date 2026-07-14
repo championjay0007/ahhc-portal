@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Shift;
+use Carbon\Carbon;
 
 class ShiftNotificationService
 {
@@ -57,10 +58,22 @@ class ShiftNotificationService
             'processed' => 0,
         ];
 
-        $targetDate = now()->addDay()->toDateString();
+        // Get current datetime
+        $now = Carbon::now();
+        $in24Hours = $now->copy()->addDay();
 
+        // Find all shifts that start within the next 24 hours
         Shift::whereIn('status', [Shift::STATUS_SCHEDULED, Shift::STATUS_CONFIRMED])
-            ->whereDate('shift_date', $targetDate)
+            ->where(function ($query) use ($now, $in24Hours) {
+                // Shifts today within 24 hours
+                $query->whereDate('shift_date', $now->format('Y-m-d'))
+                    ->where('start_time', '>=', $now->format('H:i'))
+                    // Shifts tomorrow up to the current time
+                    ->orWhere(function ($q) use ($now, $in24Hours) {
+                        $q->whereDate('shift_date', $in24Hours->format('Y-m-d'))
+                            ->where('start_time', '<=', $in24Hours->format('H:i'));
+                    });
+            })
             ->whereNull('reminder_sent_at')
             ->chunk(50, function ($shifts) use (&$results) {
                 foreach ($shifts as $shift) {
