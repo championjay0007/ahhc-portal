@@ -4,7 +4,7 @@ namespace App\Mail;
 
 use App\Models\PortalSetting;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Mail\Mailable;
+use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Markdown;
 use Illuminate\Queue\SerializesModels;
 
