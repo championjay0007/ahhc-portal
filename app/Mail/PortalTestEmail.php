@@ -26,9 +26,30 @@ class PortalTestEmail extends Mailable
     public function build()
     {
         $subject = ($this->settings['website_name'] ?? 'Portal').' — Test Email';
+        $inner = view('emails.portal_test', ['settings' => $this->settings])->render();
 
-        return $this->subject($subject)
-            ->view('emails.portal_test')
-            ->with(['settings' => $this->settings]);
+        $logoUrl = null;
+        $logoPath = \App\Models\PortalSetting::where('key', 'logo_path')->value('value');
+        if (! empty($logoPath)) {
+            $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
+        }
+
+        $html = view('emails.shared-layout', [
+            'subjectLine' => $subject,
+            'headline' => $subject,
+            'subtitle' => null,
+            'intro' => null,
+            'details' => [],
+            'actionUrl' => null,
+            'actionText' => null,
+            'supportText' => null,
+            'footerNote' => null,
+            'badge' => null,
+            'highlightPanel' => $inner,
+            'warning' => null,
+            'logo' => $logoUrl,
+        ])->render();
+
+        return $this->subject($subject)->html($html);
     }
 }

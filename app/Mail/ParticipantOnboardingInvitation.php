@@ -17,18 +17,35 @@ class ParticipantOnboardingInvitation extends Mailable
         public Participant $participant,
     ) {}
 
-    public function envelope(): Envelope
+    public function build()
     {
-        return new Envelope(
-            subject: 'Complete your AHHC portal onboarding',
-        );
-    }
+        $subject = 'Complete your AHHC portal onboarding';
 
-    public function content(): Content
-    {
-        return new Content(
-            view: 'mail.participant-onboarding-invitation',
-        );
+        $inner = view('mail.participant-onboarding-invitation', ['participant' => $this->participant])->render();
+
+        $logoUrl = null;
+        $logoPath = \App\Models\PortalSetting::where('key', 'logo_path')->value('value');
+        if (! empty($logoPath)) {
+            $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
+        }
+
+        $html = view('emails.shared-layout', [
+            'subjectLine' => $subject,
+            'headline' => $subject,
+            'subtitle' => null,
+            'intro' => null,
+            'details' => [],
+            'actionUrl' => null,
+            'actionText' => null,
+            'supportText' => null,
+            'footerNote' => null,
+            'badge' => null,
+            'highlightPanel' => $inner,
+            'warning' => null,
+            'logo' => $logoUrl,
+        ])->render();
+
+        return $this->subject($subject)->html($html);
     }
 
     public function attachments(): array
