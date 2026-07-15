@@ -342,16 +342,6 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
         Route::post('/{worker}/reject', [AdminWorkerOnboardingController::class, 'rejectWorker'])->name('reject');
     });
 
-    Route::prefix('/portal/admin/shifts')->name('portal.admin.shifts.')->group(function () {
-        Route::get('/', [ShiftController::class, 'index'])->name('index');
-        Route::get('/create', [ShiftController::class, 'create'])->name('create');
-        Route::post('/', [ShiftController::class, 'store'])->name('store');
-        Route::get('/{shift}/edit', [ShiftController::class, 'edit'])->name('edit');
-        Route::put('/{shift}', [ShiftController::class, 'update'])->name('update');
-        Route::post('/{shift}/cancel', [ShiftController::class, 'cancel'])->name('cancel');
-        Route::delete('/{shift}', [ShiftController::class, 'destroy'])->name('destroy');
-    });
-
     // Compliance Management
     Route::prefix('/portal/admin/compliance')->name('portal.admin.compliance.')->group(function () {
         Route::get('/', [ComplianceController::class, 'index'])->name('index');
@@ -660,6 +650,7 @@ Route::middleware(['auth', 'mfa', 'onboarding_complete', 'assessment_workflow'])
     // Budget
     Route::get('/portal/participant/budget', [ParticipantPortalController::class, 'showBudget'])->name('portal.participant.budget');
     Route::get('/portal/participant/services', [ParticipantPortalController::class, 'showServices'])->name('portal.participant.services');
+    Route::post('/portal/participant/services/shifts', [ParticipantPortalController::class, 'createShift'])->name('portal.participant.services.shifts.create');
     Route::get('/portal/participant/team', [ParticipantPortalController::class, 'showTeam'])->name('portal.participant.team');
     Route::get('/portal/participant/feedback', [ParticipantPortalController::class, 'showComplaints'])->name('portal.participant.feedback');
 

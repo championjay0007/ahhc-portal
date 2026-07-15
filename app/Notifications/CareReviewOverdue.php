@@ -5,7 +5,7 @@ namespace App\Notifications;
 use App\Models\MonthlyCareReview;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class CareReviewOverdue extends Notification implements ShouldQueue
@@ -19,20 +19,22 @@ class CareReviewOverdue extends Notification implements ShouldQueue
         return ['mail', 'database'];
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable)
     {
         $participant = $this->review->participant;
         $daysOverdue = $this->review->daysOverdue();
 
-        return (new MailMessage)
-            ->subject("CRITICAL: Care Review Overdue - {$participant->first_name} {$participant->last_name}")
-            ->greeting("Hello {$notifiable->name},")
-            ->line("CRITICAL ALERT: Monthly care review for {$participant->first_name} {$participant->last_name} is OVERDUE.")
-            ->line("Was due: {$this->review->next_review_date->format('F j, Y')}")
-            ->line("Days overdue: {$daysOverdue}")
-            ->line('Immediate action required to complete this review.')
-            ->action('Complete Review', config('app.url').'/portal/admin/care-reviews/'.$this->review->id)
-            ->line('This is a critical compliance matter.');
+        $intro = "CRITICAL ALERT: Monthly care review for {$participant->first_name} {$participant->last_name} is OVERDUE. Was due: {$this->review->next_review_date->format('F j, Y')}. Days overdue: {$daysOverdue}. Immediate action required to complete this review.";
+
+        return new StyledEmail(
+            "CRITICAL: Care Review Overdue - {$participant->first_name} {$participant->last_name}",
+            'Care Review Overdue',
+            '',
+            $intro,
+            [],
+            config('app.url').'/portal/admin/care-reviews/'.$this->review->id,
+            'Complete Review'
+        );
     }
 
     public function toDatabase(object $notifiable): array

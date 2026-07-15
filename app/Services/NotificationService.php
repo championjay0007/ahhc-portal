@@ -29,17 +29,26 @@ class NotificationService
             );
 
             if ($preference->channel_email && $user && $user->email && ($notification->title || $notification->message)) {
-                $body = trim($notification->message ?: $notification->title ?: 'You have a new notification.');
-
+                $intro = trim($notification->message ?: $notification->title ?: 'You have a new notification.');
                 if (! empty($attrs['data']['url'])) {
-                    $body .= "\n\n".$attrs['data']['url'];
+                    $intro .= "\n\n".$attrs['data']['url'];
                 }
 
                 try {
-                    Mail::raw($body, function ($message) use ($user, $notification) {
-                        $message->to($user->email)
-                            ->subject($notification->title ?? config('app.name').' Notification');
-                    });
+                    Mail::to($user->email)->send(new \App\Mail\StyledEmail(
+                        $notification->title ?? config('app.name').' Notification', // subjectLine
+                        $notification->title ?? config('app.name'), // headline
+                        '', // subtitle
+                        $intro, // intro/body text
+                        [], // details
+                        $attrs['data']['url'] ?? null, // actionUrl
+                        'View details', // actionText
+                        null, // supportText
+                        null, // footerNote
+                        $notification->type ?? null, // badge
+                        null, // highlightPanel
+                        null // warning
+                    ));
                 } catch (\Exception $e) {
                     // ignore mail failures for now
                 }

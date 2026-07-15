@@ -250,11 +250,20 @@ class MessageService
             if (isset($preference->channel_email) && ! $preference->channel_email) {
                 return;
             }
-
-            Mail::html($body, function ($message) use ($recipient, $subject) {
-                $message->to($recipient->email)
-                    ->subject($subject);
-            });
+            Mail::to($recipient->email)->send(new \App\Mail\StyledEmail(
+                $subject,
+                $subject,
+                '',
+                $body,
+                [],
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ));
         } catch (\Exception $e) {
             // Log but don't throw - message was still created in database
         }

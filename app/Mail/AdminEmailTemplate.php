@@ -23,8 +23,23 @@ class AdminEmailTemplate extends Mailable
 
     public function build()
     {
+        $html = view('emails.shared-layout', [
+            'subjectLine' => $this->subject,
+            'headline' => $this->subject,
+            'subtitle' => null,
+            'intro' => null,
+            'details' => [],
+            'actionUrl' => null,
+            'actionText' => null,
+            'supportText' => null,
+            'footerNote' => null,
+            'badge' => null,
+            'highlightPanel' => $this->htmlBody,
+            'warning' => null,
+        ])->render();
+
         return $this->subject($this->subject)
-            ->html($this->htmlBody)
+            ->html($html)
             ->text('emails.email_template_test_plain', [
                 'textBody' => $this->textBody,
             ]);

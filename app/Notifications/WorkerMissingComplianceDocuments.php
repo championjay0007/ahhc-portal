@@ -5,7 +5,7 @@ namespace App\Notifications;
 use App\Models\Worker;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class WorkerMissingComplianceDocuments extends Notification implements ShouldQueue
@@ -25,22 +25,25 @@ class WorkerMissingComplianceDocuments extends Notification implements ShouldQue
         return ['mail', 'database'];
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable)
     {
-        $message = new MailMessage;
-        $message->subject("Worker Missing Compliance Documents - {$this->worker->first_name} {$this->worker->last_name}")
-            ->greeting("Hello {$notifiable->name},")
-            ->line("The following compliance documents are missing for worker {$this->worker->first_name} {$this->worker->last_name}:");
+        $subject = "Worker Missing Compliance Documents - {$this->worker->first_name} {$this->worker->last_name}";
+        $intro = "The following compliance documents are missing for worker {$this->worker->first_name} {$this->worker->last_name}:";
 
+        $details = [];
         foreach ($this->missingDocuments as $documentType) {
-            $message->line("• {$documentType}");
+            $details[$documentType] = '';
         }
 
-        $message->line('These documents are required before the worker can be assigned to tasks.')
-            ->action('Review Compliance', config('app.url').'/admin/compliance/workers/'.$this->worker->id)
-            ->line('Thank you');
-
-        return $message;
+        return new StyledEmail(
+            $subject,
+            'Missing Compliance Documents',
+            '',
+            $intro,
+            $details,
+            config('app.url').'/admin/compliance/workers/'.$this->worker->id,
+            'Review Compliance'
+        );
     }
 
     public function toDatabase(object $notifiable): array

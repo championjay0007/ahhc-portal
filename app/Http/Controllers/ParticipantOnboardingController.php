@@ -511,73 +511,8 @@ class ParticipantOnboardingController extends Controller
         }
 
         if ($shouldCompleteOnboarding) {
-            $requiredCategories = Document::mandatoryParticipantDocumentCategories();
-
-            $documents = Document::query()
-                ->where('owner_type', Participant::class)
-                ->where('owner_id', $participant->id)
-                ->get();
-
-            $uploadedRequiredCount = $documents->pluck('document_type')
-                ->map(fn ($type) => Document::normalizeParticipantDocumentCategory($type))
-                ->unique()
-                ->filter(fn ($type) => in_array($type, $requiredCategories, true) || $type === 'Onboarding Document')
-                ->count();
-
-            // require at least one mandatory onboarding document, not all three.
-            if ($uploadedRequiredCount === 0) {
-                return back()->withErrors([
-                    'documents' => 'Please upload at least one onboarding document before completing onboarding. The remaining documents are optional.',
-                ])->withInput();
-            }
-
-            // check admin-assigned onboarding documents for this participant
-            $adminAssignedDocs = Document::query()
-                ->where('owner_type', Participant::class)
-                ->where('owner_id', $participant->id)
-                ->where('onboarding_required', true)
-                ->where('status', 'active')
-                ->get();
-
-            $missingAdminDocs = [];
-            foreach ($adminAssignedDocs as $adminDoc) {
-                $hasSignature = ParticipantDocumentSignature::where('participant_id', $participant->id)
-                    ->where('document_id', $adminDoc->id)
-                    ->exists();
-
-                if (! $hasSignature) {
-                    $missingAdminDocs[] = $adminDoc->title ?: 'Form #'.$adminDoc->id;
-                }
-            }
-
-            $invalidFiles = [];
-            foreach ($documents as $doc) {
-                if (! Storage::disk($doc->storage_disk)->exists($doc->path) || (Storage::disk($doc->storage_disk)->size($doc->path) ?? 0) === 0) {
-                    $invalidFiles[] = $doc->title ?: $doc->document_type;
-
-                    continue;
-                }
-
-                // enforce allowed formats for onboarding required documents
-                $allowedMimes = ['application/pdf', 'image/jpeg', 'image/png'];
-                if (! in_array($doc->mime_type, $allowedMimes, true)) {
-                    $invalidFiles[] = $doc->title ?: $doc->document_type;
-                }
-            }
-
-            if (! empty($invalidFiles)) {
-                return back()->withErrors([
-                    'documents' => 'Some uploaded documents are missing or invalid: '.implode(', ', $invalidFiles),
-                ])->withInput();
-            }
-
-            if (! empty($missingAdminDocs)) {
-                return back()->withErrors([
-                    'documents' => 'Please sign the required onboarding forms: '.implode(', ', $missingAdminDocs),
-                ])->withInput();
-            }
-
-            // Check required signed agreements
+            // Only the profile step and agreement step are mandatory for completion.
+            // Emergency contacts, support person details, and uploaded documents remain optional.
             $requiredAgreements = array_values(OnboardingAgreementService::requiredAgreements());
             $signedAgreementDocs = Document::query()
                 ->where('owner_type', Participant::class)
@@ -675,10 +610,7 @@ class ParticipantOnboardingController extends Controller
                 'signature_image' => ['required', 'string'],
             ],
             8 => array_merge(
-                $this->validationRulesForCurrentStep(1),
                 $this->validationRulesForCurrentStep(3),
-                $this->validationRulesForCurrentStep(4),
-                $this->validationRulesForCurrentStep(5),
                 $this->validationRulesForCurrentStep(7),
             ),
             default => [],

@@ -433,4 +433,30 @@ class ParticipantPortalController extends Controller
             'upcomingShifts'
         ));
     }
+
+    public function createShift(Request $request)
+    {
+        $user = Auth::user();
+        $participant = Participant::where('user_id', $user->id)->firstOrFail();
+
+        $validated = $request->validate([
+            'worker_id' => ['required', 'exists:workers,id'],
+            'service_type' => ['nullable', 'string', 'max:150'],
+            'service_category' => ['nullable', 'string', 'max:150'],
+            'shift_date' => ['required', 'date_format:Y-m-d'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+            'status' => ['nullable', 'in:scheduled,confirmed'],
+        ]);
+
+        $validated['participant_id'] = $participant->id;
+        $validated['status'] = $validated['status'] ?? Shift::STATUS_SCHEDULED;
+
+        $shift = Shift::create($validated);
+
+        return redirect()->route('portal.participant.services')
+            ->with('status', 'Shift created successfully.');
+    }
 }

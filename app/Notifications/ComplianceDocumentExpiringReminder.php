@@ -5,7 +5,7 @@ namespace App\Notifications;
 use App\Models\WorkerComplianceDocument;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class ComplianceDocumentExpiringReminder extends Notification implements ShouldQueue
@@ -25,29 +25,28 @@ class ComplianceDocumentExpiringReminder extends Notification implements ShouldQ
         return ['mail', 'database'];
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable)
     {
-        $message = new MailMessage;
-        $message->subject("Worker Compliance Reminder: {$this->document->document_type} Expiring");
+        $subject = "Worker Compliance Reminder: {$this->document->document_type} Expiring";
+        $intro = '';
 
         if ($this->days === 30) {
-            $message->greeting("Hello {$notifiable->name},");
-            $message->line("Reminder: The {$this->document->document_type} for worker {$this->document->worker->first_name} {$this->document->worker->last_name} will expire in 30 days.");
-            $message->line("Please arrange for renewal before {$this->document->expiry_date->format('F j, Y')}.");
+            $intro = "Reminder: The {$this->document->document_type} for worker {$this->document->worker->first_name} {$this->document->worker->last_name} will expire in 30 days. Please arrange for renewal before {$this->document->expiry_date->format('F j, Y')}.";
         } elseif ($this->days === 14) {
-            $message->greeting("Hello {$notifiable->name},");
-            $message->line("URGENT: The {$this->document->document_type} for worker {$this->document->worker->first_name} {$this->document->worker->last_name} will expire in 14 days.");
-            $message->line("Please prioritize renewal before {$this->document->expiry_date->format('F j, Y')}.");
+            $intro = "URGENT: The {$this->document->document_type} for worker {$this->document->worker->first_name} {$this->document->worker->last_name} will expire in 14 days. Please prioritize renewal before {$this->document->expiry_date->format('F j, Y')}.";
         } elseif ($this->days === 7) {
-            $message->greeting("Hello {$notifiable->name},");
-            $message->line("CRITICAL: The {$this->document->document_type} for worker {$this->document->worker->first_name} {$this->document->worker->last_name} expires in 7 days!");
-            $message->line("Immediate action required: Renew before {$this->document->expiry_date->format('F j, Y')}.");
+            $intro = "CRITICAL: The {$this->document->document_type} for worker {$this->document->worker->first_name} {$this->document->worker->last_name} expires in 7 days! Immediate action required: Renew before {$this->document->expiry_date->format('F j, Y')}.";
         }
 
-        $message->action('View Dashboard', config('app.url').'/admin/compliance');
-        $message->line('Thank you');
-
-        return $message;
+        return new StyledEmail(
+            $subject,
+            'Compliance Document Expiry',
+            '',
+            $intro,
+            [],
+            config('app.url').'/admin/compliance',
+            'View Dashboard'
+        );
     }
 
     public function toDatabase(object $notifiable): array

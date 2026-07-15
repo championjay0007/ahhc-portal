@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use App\Models\WorkerNomination;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class WorkerNominationRejected extends Notification
@@ -27,22 +27,24 @@ class WorkerNominationRejected extends Notification
     {
         $nomination = $this->nomination;
 
-        return (new MailMessage)
-            ->subject("Worker Nomination - Unable to Proceed - {$nomination->worker_full_name}")
-            ->greeting("Hello {$notifiable->name},")
-            ->line('Unfortunately, your worker nomination has not been approved at this time.')
-            ->line('')
-            ->line('**Nomination Details:**')
-            ->line('Worker Name: '.$nomination->worker_full_name)
-            ->line('Service Type: '.$nomination->service_type)
-            ->line('Status: Rejected')
-            ->line('')
-            ->line('**Reason for Rejection:**')
-            ->line($nomination->rejection_reason ?? 'No reason provided.')
-            ->line('')
-            ->line('If you have any questions or would like to discuss this decision, please contact AHHC support.')
-            ->action('View Nomination Details', route('portal.participant.nominations.show', $nomination->id))
-            ->line('We appreciate your understanding.');
+        $intro = 'Unfortunately, your worker nomination has not been approved at this time.';
+
+        $details = [
+            'Worker Name' => $nomination->worker_full_name,
+            'Service Type' => $nomination->service_type,
+            'Status' => 'Rejected',
+            'Reason' => $nomination->rejection_reason ?? 'No reason provided.',
+        ];
+
+        return new StyledEmail(
+            "Worker Nomination - Unable to Proceed - {$nomination->worker_full_name}",
+            "Nomination Update",
+            '',
+            $intro,
+            $details,
+            route('portal.participant.nominations.show', $nomination->id),
+            'View Nomination Details'
+        );
     }
 
     public function toArray($notifiable)

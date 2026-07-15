@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use App\Models\WorkerNomination;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class WorkerNominationSubmitted extends Notification
@@ -28,18 +28,25 @@ class WorkerNominationSubmitted extends Notification
         $nomination = $this->nomination;
         $participant = $nomination->participant;
 
-        return (new MailMessage)
-            ->subject("New Worker Nomination Submitted (#{$nomination->id})")
-            ->greeting('Hello,')
-            ->line('A new worker nomination has been submitted by participant: '.$participant->user->name)
-            ->line('**Worker Details:**')
-            ->line('Name: '.$nomination->worker_full_name)
-            ->line('Email: '.$nomination->worker_email)
-            ->line('Phone: '.$nomination->worker_phone)
-            ->line('Type: '.$nomination->worker_type)
-            ->line('Service Type: '.$nomination->service_type)
-            ->action('Review Nomination', route('portal.admin.nominations.show', $nomination->id))
-            ->line('Please review this nomination and take appropriate action.');
+        $intro = 'A new worker nomination has been submitted by participant: '.$participant->user->name;
+
+        $details = [
+            'Worker Name' => $nomination->worker_full_name,
+            'Email' => $nomination->worker_email,
+            'Phone' => $nomination->worker_phone,
+            'Type' => $nomination->worker_type,
+            'Service Type' => $nomination->service_type,
+        ];
+
+        return new StyledEmail(
+            "New Worker Nomination Submitted (#{$nomination->id})",
+            'New Worker Nomination Submitted',
+            '',
+            $intro,
+            $details,
+            route('portal.admin.nominations.show', $nomination->id),
+            'Review Nomination'
+        );
     }
 
     public function toArray($notifiable)

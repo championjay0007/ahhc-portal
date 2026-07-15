@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use App\Models\CareNote;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class CareNoteSubmitted extends Notification
@@ -34,14 +34,23 @@ class CareNoteSubmitted extends Notification
                 : $careNote->shift_date->format('Y-m-d'))
             : '—';
 
-        return (new MailMessage)
-            ->subject("Care note submitted for {$participant->first_name} {$participant->last_name} (#{$careNote->id})")
-            ->line("A care note has been submitted for participant: {$participant->first_name} {$participant->last_name}")
-            ->line("Worker: {$worker->first_name} {$worker->last_name}")
-            ->line("Shift date: {$shiftDate}")
-            ->line("Status: ".ucfirst($careNote->status))
-            ->action('Review care note', route('portal.admin.care_notes.show', $careNote))
-            ->line('Please review and approve when ready.');
+        $intro = "A care note has been submitted for participant: {$participant->first_name} {$participant->last_name}";
+
+        $details = [
+            'Worker' => $worker->first_name.' '.$worker->last_name,
+            'Shift date' => $shiftDate,
+            'Status' => ucfirst($careNote->status),
+        ];
+
+        return new StyledEmail(
+            "Care note submitted for {$participant->first_name} {$participant->last_name} (#{$careNote->id})",
+            'Care Note Submitted',
+            '',
+            $intro,
+            $details,
+            route('portal.admin.care_notes.show', $careNote),
+            'Review care note'
+        );
     }
 
     public function toArray($notifiable)

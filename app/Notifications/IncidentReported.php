@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Incident;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
 
@@ -27,15 +27,23 @@ class IncidentReported extends Notification
     public function toMail($notifiable)
     {
         $incident = $this->incident;
+        $intro = 'A high severity incident has been reported for participant: '.optional($incident->participant)->first_name;
 
-        return (new MailMessage)
-            ->subject("High severity incident reported (#{$incident->id})")
-            ->line('A high severity incident has been reported for participant: '.optional($incident->participant)->first_name)
-            ->line('Type: '.$incident->incident_type)
-            ->line('Severity: '.ucfirst($incident->severity))
-            ->line('Description: '.Str::limit($incident->description, 200))
-            ->action('View incident', route('portal.admin.incidents.show', $incident))
-            ->line('Please review and take appropriate action.');
+        $details = [
+            'Type' => $incident->incident_type,
+            'Severity' => ucfirst($incident->severity),
+            'Description' => Str::limit($incident->description, 200),
+        ];
+
+        return new StyledEmail(
+            "High severity incident reported (#{$incident->id})",
+            'Incident Reported',
+            '',
+            $intro,
+            $details,
+            route('portal.admin.incidents.show', $incident),
+            'View incident'
+        );
     }
 
     public function toArray($notifiable)

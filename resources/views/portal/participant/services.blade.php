@@ -122,7 +122,10 @@
                         <h5 class="mb-1">Worker Assignment Record</h5>
                         <small class="text-muted">All recent shift bookings and assignment details.</small>
                     </div>
-                    <span class="badge bg-secondary">{{ $recentAssignments->count() }} records</span>
+                    <div class="d-flex gap-2 align-items-center">
+                        <span class="badge bg-secondary">{{ $recentAssignments->count() }} records</span>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createShiftModal">Create Shift</button>
+                    </div>
                 </div>
 
                 @if($recentAssignments->isEmpty())
@@ -165,6 +168,75 @@
                         </table>
                     </div>
                 @endif
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="createShiftModal" tabindex="-1" aria-labelledby="createShiftModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('portal.participant.services.shifts.create') }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createShiftModalLabel">Create Shift</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label" for="worker_id">Worker</label>
+                            <select class="form-select" id="worker_id" name="worker_id" required>
+                                <option value="">Select a worker</option>
+                                @foreach($participant->assignments()->where('status', 'active')->with('worker')->get() as $assignment)
+                                    @if($assignment->worker)
+                                        <option value="{{ $assignment->worker->id }}">{{ $assignment->worker->first_name }} {{ $assignment->worker->last_name }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="shift_date">Date</label>
+                                <input type="date" class="form-control" id="shift_date" name="shift_date" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="status">Status</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="scheduled">Scheduled</option>
+                                    <option value="confirmed">Confirmed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label class="form-label" for="start_time">Start Time</label>
+                                <input type="time" class="form-control" id="start_time" name="start_time" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="end_time">End Time</label>
+                                <input type="time" class="form-control" id="end_time" name="end_time" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <label class="form-label" for="service_type">Service Type</label>
+                            <input type="text" class="form-control" id="service_type" name="service_type" placeholder="e.g. Personal Care">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="service_category">Service Category</label>
+                            <input type="text" class="form-control" id="service_category" name="service_category" placeholder="e.g. Domestic Assistance">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="location">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" placeholder="Enter location">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="notes">Notes</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Shift</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

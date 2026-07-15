@@ -1779,7 +1779,6 @@
                         <i class="bi bi-exclamation-triangle"></i>
                         <span>Incidents</span>
                     </a>
-                    <a href="{{ route('portal.admin.shifts.index') }}" class="@if(request()->routeIs('portal.admin.shifts*')) active @endif">
                         <i class="bi bi-calendar-event"></i>
                         <span>Shift Scheduling</span>
                     </a>

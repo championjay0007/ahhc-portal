@@ -5,7 +5,7 @@ namespace App\Notifications;
 use App\Models\Complaint;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
 
@@ -26,15 +26,23 @@ class ComplaintSubmitted extends Notification implements ShouldQueue
     {
         $complaint = $this->complaint;
         $participant = optional($complaint->participant);
+        $intro = "A complaint has been submitted by participant: {$participant->first_name} {$participant->last_name}";
 
-        return (new MailMessage)
-            ->subject("New complaint submitted by {$participant->first_name} {$participant->last_name}")
-            ->line("A complaint has been submitted by participant: {$participant->first_name} {$participant->last_name}")
-            ->line("Category: {$complaint->category}")
-            ->line("Priority: ".ucfirst($complaint->priority))
-            ->line("Description: ".Str::limit($complaint->description, 200))
-            ->action('Review complaint', route('portal.admin.complaints.show', $complaint))
-            ->line('Please review and take appropriate action.');
+        $details = [
+            'Category' => $complaint->category,
+            'Priority' => ucfirst($complaint->priority),
+            'Description' => Str::limit($complaint->description, 200),
+        ];
+
+        return new StyledEmail(
+            "New complaint submitted by {$participant->first_name} {$participant->last_name}",
+            'Complaint Submitted',
+            '',
+            $intro,
+            $details,
+            route('portal.admin.complaints.show', $complaint),
+            'Review complaint'
+        );
     }
 
     public function toArray($notifiable)

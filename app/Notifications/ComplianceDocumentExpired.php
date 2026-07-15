@@ -5,7 +5,7 @@ namespace App\Notifications;
 use App\Models\WorkerComplianceDocument;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class ComplianceDocumentExpired extends Notification implements ShouldQueue
@@ -19,16 +19,19 @@ class ComplianceDocumentExpired extends Notification implements ShouldQueue
         return ['mail', 'database'];
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable)
     {
-        return (new MailMessage)
-            ->subject("CRITICAL: Worker Compliance Document Expired - {$this->document->document_type}")
-            ->greeting("Hello {$notifiable->name},")
-            ->line("CRITICAL ALERT: The {$this->document->document_type} for worker {$this->document->worker->first_name} {$this->document->worker->last_name} has EXPIRED.")
-            ->line("Expiry Date: {$this->document->expiry_date->format('F j, Y')}")
-            ->line('The worker cannot be assigned to new tasks until this document is renewed.')
-            ->action('Review Compliance', config('app.url').'/admin/compliance')
-            ->line('Immediate action required.');
+        $intro = "CRITICAL ALERT: The {$this->document->document_type} for worker {$this->document->worker->first_name} {$this->document->worker->last_name} has EXPIRED. Expiry Date: {$this->document->expiry_date->format('F j, Y')}. The worker cannot be assigned to new tasks until this document is renewed.";
+
+        return new StyledEmail(
+            "CRITICAL: Worker Compliance Document Expired - {$this->document->document_type}",
+            'Compliance Document Expired',
+            '',
+            $intro,
+            [],
+            config('app.url').'/admin/compliance',
+            'Review Compliance'
+        );
     }
 
     public function toDatabase(object $notifiable): array

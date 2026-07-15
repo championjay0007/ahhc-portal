@@ -25,8 +25,23 @@ class EmailTemplateTestEmail extends Mailable
     {
         $rendered = $this->template->render($this->variables);
 
+        $html = view('emails.shared-layout', [
+            'subjectLine' => $rendered['subject'],
+            'headline' => $rendered['subject'],
+            'subtitle' => null,
+            'intro' => null,
+            'details' => [],
+            'actionUrl' => null,
+            'actionText' => null,
+            'supportText' => null,
+            'footerNote' => null,
+            'badge' => null,
+            'highlightPanel' => $rendered['html'],
+            'warning' => null,
+        ])->render();
+
         return $this->subject($rendered['subject'])
-            ->html($rendered['html'])
+            ->html($html)
             ->text('emails.email_template_test_plain', [
                 'textBody' => $rendered['text'],
             ]);

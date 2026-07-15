@@ -17,10 +17,24 @@ class TemplateMailer
         try {
             Mail::to($recipientEmail)->send(new AdminEmailTemplate($subject, $html, $text));
         } catch (\Throwable $e) {
-            Mail::raw($text ?? strip_tags($html), function ($message) use ($recipientEmail, $subject) {
-                $message->to($recipientEmail)
-                    ->subject($subject);
-            });
+            try {
+                Mail::to($recipientEmail)->send(new \App\Mail\StyledEmail(
+                    $subject,
+                    $subject,
+                    '',
+                    strip_tags($html),
+                    [],
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    $html,
+                    null
+                ));
+            } catch (\Throwable $inner) {
+                // final fallback: nothing we can do here
+            }
         }
     }
 

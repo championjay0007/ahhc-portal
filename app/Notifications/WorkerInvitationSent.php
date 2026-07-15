@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use App\Models\WorkerNomination;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class WorkerInvitationSent extends Notification
@@ -27,21 +27,24 @@ class WorkerInvitationSent extends Notification
     {
         $nomination = $this->nomination;
 
-        return (new MailMessage)
-            ->subject("Worker Invitation Sent - {$nomination->worker_full_name}")
-            ->greeting("Hello {$notifiable->name},")
-            ->line('Excellent news! An invitation has been sent to your nominated worker.')
-            ->line('')
-            ->line('**Invitation Details:**')
-            ->line('Worker Name: '.$nomination->worker_full_name)
-            ->line('Worker Email: '.$nomination->worker_email)
-            ->line('Service Type: '.$nomination->service_type)
-            ->line('Status: Invitation Sent')
-            ->line('')
-            ->line('The worker will receive an invitation email at '.$nomination->worker_email.' with instructions to join the AHHC platform.')
-            ->line('Once the worker accepts and completes their profile, they will be assigned to provide you with services.')
-            ->action('View Nomination', route('portal.participant.nominations.show', $nomination->id))
-            ->line('Thank you for your patience!');
+        $intro = 'Excellent news! An invitation has been sent to your nominated worker. The worker will receive an email at '.$nomination->worker_email.' with instructions to join.';
+
+        $details = [
+            'Worker Name' => $nomination->worker_full_name,
+            'Worker Email' => $nomination->worker_email,
+            'Service Type' => $nomination->service_type,
+            'Status' => 'Invitation Sent',
+        ];
+
+        return new StyledEmail(
+            "Worker Invitation Sent - {$nomination->worker_full_name}",
+            'Worker Invitation Sent',
+            '',
+            $intro,
+            $details,
+            route('portal.participant.nominations.show', $nomination->id),
+            'View Nomination'
+        );
     }
 
     public function toArray($notifiable)

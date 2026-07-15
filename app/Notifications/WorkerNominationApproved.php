@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use App\Models\WorkerNomination;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Mail\StyledEmail;
 use Illuminate\Notifications\Notification;
 
 class WorkerNominationApproved extends Notification
@@ -27,19 +27,23 @@ class WorkerNominationApproved extends Notification
     {
         $nomination = $this->nomination;
 
-        return (new MailMessage)
-            ->subject("Worker Nomination Approved - {$nomination->worker_full_name}")
-            ->greeting("Hello {$notifiable->name},")
-            ->line('Good news! Your worker nomination has been approved by AHHC.')
-            ->line('')
-            ->line('**Nomination Details:**')
-            ->line('Worker Name: '.$nomination->worker_full_name)
-            ->line('Service Type: '.$nomination->service_type)
-            ->line('Status: Approved')
-            ->line('')
-            ->line('The next step is to invite the worker to join. AHHC will send an invitation to the worker at '.$nomination->worker_email)
-            ->action('View Nomination', route('portal.participant.nominations.show', $nomination->id))
-            ->line('Thank you for using AHHC services.');
+        $intro = 'Good news! Your worker nomination has been approved by AHHC. The next step is to invite the worker to join at '.$nomination->worker_email;
+
+        $details = [
+            'Worker Name' => $nomination->worker_full_name,
+            'Service Type' => $nomination->service_type,
+            'Status' => 'Approved',
+        ];
+
+        return new StyledEmail(
+            "Worker Nomination Approved - {$nomination->worker_full_name}",
+            'Nomination Approved',
+            '',
+            $intro,
+            $details,
+            route('portal.participant.nominations.show', $nomination->id),
+            'View Nomination'
+        );
     }
 
     public function toArray($notifiable)

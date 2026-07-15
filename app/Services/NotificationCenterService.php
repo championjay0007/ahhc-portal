@@ -66,14 +66,25 @@ class NotificationCenterService
         $sendEmail = $channels ? in_array('email', $channels, true) : $pref->channel_email;
         if ($sendEmail && $user && $user->email) {
             try {
-                $emailBody = $data['message'];
+                $emailBody = $data['message'] ?? '';
                 if (! empty($data['url'])) {
                     $emailBody .= "\n\n".$data['url'];
                 }
 
-                Mail::raw($emailBody, function ($m) use ($user, $data) {
-                    $m->to($user->email)->subject($data['title']);
-                });
+                Mail::to($user->email)->send(new \App\Mail\StyledEmail(
+                    $data['title'] ?? config('app.name'),
+                    $data['title'] ?? config('app.name'),
+                    '',
+                    $emailBody,
+                    [],
+                    $data['url'] ?? null,
+                    'View details',
+                    null,
+                    null,
+                    $event ?? null,
+                    null,
+                    null
+                ));
             } catch (\Exception $e) {
                 // ignore mail failures for now
             }
