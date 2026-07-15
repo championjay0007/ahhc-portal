@@ -69,7 +69,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-3">{{ $complaints->links() }}</div>
+                    <div class="mt-3">
+                        @include('components.admin-pagination', ['paginator' => $complaints])
+                    </div>
                 @endif
             </div>
         </div>

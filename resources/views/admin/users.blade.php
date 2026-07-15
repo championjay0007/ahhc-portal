@@ -91,7 +91,7 @@
         </div>
         @if($users->hasPages())
             <div class="card-footer border-top py-3">
-                {{ $users->withQueryString()->links() }}
+                @include('components.admin-pagination', ['paginator' => $users->withQueryString()])
             </div>
         @endif
     </div>

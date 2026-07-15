@@ -91,6 +91,8 @@
             </div>
         </div>
 
-        <div class="mt-4">{{ $participants->links() }}</div>
+        <div class="mt-4">
+            @include('components.admin-pagination', ['paginator' => $participants])
+        </div>
     </div>
 @endsection
