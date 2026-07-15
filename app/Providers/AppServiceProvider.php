@@ -110,6 +110,9 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::policy(PreApprovalRequest::class, PreApprovalRequestPolicy::class);
 
+        \Illuminate\Pagination\Paginator::defaultView('pagination::custom');
+        \Illuminate\Pagination\Paginator::defaultSimpleView('pagination::custom');
+
         // Apply portal SMTP settings globally for all mail operations
         $this->applyPortalMailConfig();
     }
