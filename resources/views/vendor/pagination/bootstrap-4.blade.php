@@ -3,9 +3,9 @@
         <ul class="pagination">
             <li class="page-item {{ $paginator->onFirstPage() ? 'disabled' : '' }}">
                 @if ($paginator->onFirstPage())
-                    <span class="page-link" aria-disabled="true">Prev</span>
+                    <span class="page-link" aria-disabled="true"></span>
                 @else
-                    <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">Prev</a>
+                    <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev"></a>
                 @endif
             </li>
 
@@ -31,9 +31,9 @@
 
             <li class="page-item {{ $paginator->hasMorePages() ? '' : 'disabled' }}">
                 @if ($paginator->hasMorePages())
-                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next">Next</a>
+                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next"></a>
                 @else
-                    <span class="page-link" aria-disabled="true">Next</span>
+                    <span class="page-link" aria-disabled="true"></span>
                 @endif
             </li>
         </ul>
