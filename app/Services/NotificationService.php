@@ -35,11 +35,13 @@ class NotificationService
                 }
 
                 try {
+                    $usesHtml = preg_match('/<\/?[a-z][\s\S]*>/i', $intro);
                     Mail::to($user->email)->send(new \App\Mail\StyledEmail(
                         $notification->title ?? config('app.name').' Notification', // subjectLine
                         $notification->title ?? config('app.name'), // headline
                         '', // subtitle
-                        $intro, // intro/body text
+                        $usesHtml ? '' : $intro, // intro/body text
+                        $usesHtml ? $intro : null, // introHtml
                         [], // details
                         $attrs['data']['url'] ?? null, // actionUrl
                         'View details', // actionText

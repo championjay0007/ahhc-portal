@@ -52,7 +52,11 @@
             <p class="subtitle">{{ $subtitle }}</p>
         </div>
         <div class="body">
-            <p>{!! nl2br(e($intro)) !!}</p>
+            @if(!empty($introHtml))
+                {!! $introHtml !!}
+            @else
+                <p>{!! nl2br(e($intro)) !!}</p>
+            @endif
             @if(!empty($warning))
                 <div class="warning-panel"><div class="panel-inner"><p><strong>{{ $warning }}</strong></p></div></div>
             @endif

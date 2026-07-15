@@ -27,6 +27,7 @@ class StyledEmail extends Mailable
         public ?string $highlightPanel = null,
         public ?string $warning = null,
         public ?string $logo = null,
+        public ?string $introHtml = null,
     ) {
     }
 
@@ -56,6 +57,7 @@ class StyledEmail extends Mailable
             'headline' => $this->headline,
             'subtitle' => $this->subtitle,
             'intro' => $this->intro,
+            'introHtml' => $this->introHtml,
             'details' => $this->details,
             'actionUrl' => $this->actionUrl,
             'actionText' => $this->actionText,

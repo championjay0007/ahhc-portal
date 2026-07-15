@@ -71,11 +71,13 @@ class NotificationCenterService
                     $emailBody .= "\n\n".$data['url'];
                 }
 
+                $usesHtml = preg_match('/<\/?[a-z][\s\S]*>/i', $emailBody);
                 Mail::to($user->email)->send(new \App\Mail\StyledEmail(
                     $data['title'] ?? config('app.name'),
                     $data['title'] ?? config('app.name'),
                     '',
-                    $emailBody,
+                    $usesHtml ? '' : $emailBody,
+                    $usesHtml ? $emailBody : null,
                     [],
                     $data['url'] ?? null,
                     'View details',

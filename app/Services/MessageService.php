@@ -256,13 +256,14 @@ class MessageService
             if (isset($preference->channel_email) && ! $preference->channel_email) {
                 return;
             }
+            $usesHtml = preg_match('/<\/?[a-z][\s\S]*>/i', $body);
             Mail::to($recipient->email)->send(new \App\Mail\StyledEmail(
                 $subject,
                 $subject,
                 '',
-                $body,
+                $usesHtml ? '' : $body,
+                $usesHtml ? $body : null,
                 [],
-                null,
                 null,
                 null,
                 null,
