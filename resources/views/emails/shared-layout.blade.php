@@ -54,7 +54,7 @@
                 <div class="warning-panel"><div class="panel-inner"><p><strong>{{ $warning }}</strong></p></div></div>
             @endif
             @if(!empty($highlightPanel))
-                <div class="panel"><div class="panel-inner"><p class="panel-heading">{{ $highlightPanel }}</p></div></div>
+                <div class="panel"><div class="panel-inner">{!! $highlightPanel !!}</div></div>
             @endif
             @if(!empty($details))
                 <div class="panel">
@@ -64,7 +64,7 @@
                             @foreach($details as $label => $value)
                                 <tr>
                                     <td class="label">{{ $label }}</td>
-                                    <td>{{ $value }}</td>
+                                    <td>{!! $value !!}</td>
                                 </tr>
                             @endforeach
                         </table>
