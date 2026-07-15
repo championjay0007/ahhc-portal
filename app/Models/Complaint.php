@@ -39,4 +39,18 @@ class Complaint extends Model
     {
         return $this->belongsTo(User::class, 'submitted_by_id');
     }
+
+    public function submittedBy(): BelongsTo
+    {
+        return $this->submitter();
+    }
+
+    public function getSubmittedByDisplayNameAttribute(): ?string
+    {
+        $submitter = $this->relationLoaded('submitter')
+            ? $this->getRelation('submitter')
+            : $this->submitter()->first();
+
+        return $submitter?->name;
+    }
 }

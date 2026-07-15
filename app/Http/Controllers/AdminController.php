@@ -2108,7 +2108,7 @@ class AdminController extends Controller
 
     public function showComplaint(Complaint $complaint)
     {
-        $complaint->load(['participant', 'supportPerson', 'submittedBy']);
+        $complaint->loadMissing(['participant', 'supportPerson', 'submitter']);
 
         return view('admin.complaint', compact('complaint'));
     }

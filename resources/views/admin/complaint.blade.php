@@ -19,7 +19,7 @@
                     <dt class="col-sm-3">Participant</dt>
                     <dd class="col-sm-9">{{ optional($complaint->participant)->first_name }} {{ optional($complaint->participant)->last_name }}</dd>
                     <dt class="col-sm-3">Submitted by</dt>
-                    <dd class="col-sm-9">{{ optional($complaint->submittedBy)->name ?? '—' }}</dd>
+                    <dd class="col-sm-9">{{ $complaint->submitted_by_display_name ?? '—' }}</dd>
                     <dt class="col-sm-3">Support Person</dt>
                     <dd class="col-sm-9">{{ optional($complaint->supportPerson)->first_name }} {{ optional($complaint->supportPerson)->last_name ?? '—' }}</dd>
                     <dt class="col-sm-3">Category</dt>
