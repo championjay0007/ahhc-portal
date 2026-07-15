@@ -7,6 +7,7 @@ use App\Models\MessageTemplate;
 use App\Models\PortalNotification;
 use App\Models\PortalSetting;
 use App\Models\User;
+use App\Services\HtmlSanitizer;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 
@@ -14,6 +15,11 @@ class MessageService
 {
     public static function sendMessage(int $senderId, int $recipientId, string $subject, string $body, ?int $templateId = null): Message
     {
+        // Sanitize user-provided message bodies. Template messages are assumed authored by admins and kept as-is.
+        if (is_null($templateId)) {
+            $body = HtmlSanitizer::sanitize($body);
+        }
+
         $message = Message::create([
             'sender_id' => $senderId,
             'recipient_id' => $recipientId,
