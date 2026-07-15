@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Markdown;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Str;
 
 class StyledEmail extends Mailable
 {
@@ -35,7 +36,16 @@ class StyledEmail extends Mailable
         if (empty($this->logo)) {
             $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
             if (! empty($logoPath)) {
-                $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
+                $logoPath = ltrim($logoPath, '/');
+                if (Str::startsWith($logoPath, ['http://', 'https://', 'data:'])) {
+                    $logoUrl = $logoPath;
+                } else {
+                    // avoid double 'storage/storage' if path already contains storage/
+                    if (Str::startsWith($logoPath, 'storage/')) {
+                        $logoPath = substr($logoPath, strlen('storage/'));
+                    }
+                    $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
+                }
             }
         } else {
             $logoUrl = $this->logo;

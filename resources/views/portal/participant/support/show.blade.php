@@ -328,7 +328,7 @@
                             </div>
                             <span class="message-time">{{ $response->created_at->diffForHumans() }}</span>
                         </div>
-                        <p class="message-text">{{ $response->message }}</p>
+                        <p class="message-text">{!! nl2br(html_entity_decode($response->message)) !!}</p>
                     </div>
                 </div>
             @endforeach

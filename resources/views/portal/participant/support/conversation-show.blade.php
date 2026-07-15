@@ -85,7 +85,7 @@
                                         </span>
                                     </div>
                                     <div class="message-content">
-                                        {!! nl2br(e($message->message)) !!}
+                                        {!! nl2br(html_entity_decode($message->message)) !!}
                                     </div>
                                 </div>
                             </div>

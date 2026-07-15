@@ -61,9 +61,9 @@
 
                     <div class="message-content">
                         @if($message->template_id)
-                            {!! $message->body !!}
+                            {!! html_entity_decode($message->body) !!}
                         @else
-                            {!! nl2br(e($message->body)) !!}
+                            {!! nl2br(html_entity_decode($message->body)) !!}
                         @endif
                     </div>
                 </div>

@@ -22,7 +22,7 @@
                                 <div class="chat-meta small text-muted mb-2">
                                     {{ $message->sender->name }} • {{ $message->created_at->format('H:i') }}
                                 </div>
-                                <div>{!! nl2br(e($message->body)) !!}</div>
+                                <div>{!! nl2br(html_entity_decode($message->body)) !!}</div>
                             </div>
                         </div>
                     @endforeach
