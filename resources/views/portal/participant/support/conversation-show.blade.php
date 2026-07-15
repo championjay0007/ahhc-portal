@@ -84,8 +84,16 @@
                                             {{ $message->created_at->format('H:i') }}
                                         </span>
                                     </div>
+                                    @php
+                                        $decodedMessage = html_entity_decode($message->message);
+                                        $messageHasHtml = preg_match('/<\s*[^>]+>/', $decodedMessage);
+                                    @endphp
                                     <div class="message-content">
-                                        {!! nl2br(html_entity_decode($message->message)) !!}
+                                        @if($messageHasHtml)
+                                            {!! $decodedMessage !!}
+                                        @else
+                                            {!! nl2br(e($decodedMessage)) !!}
+                                        @endif
                                     </div>
                                 </div>
                             </div>

@@ -60,10 +60,14 @@
                     </div>
 
                     <div class="message-content">
-                        @if($message->template_id)
-                            {!! html_entity_decode($message->body) !!}
+                        @php
+                            $decodedBody = html_entity_decode($message->body);
+                            $bodyHasHtml = preg_match('/<\s*[^>]+>/', $decodedBody);
+                        @endphp
+                        @if($message->template_id || $bodyHasHtml)
+                            {!! $decodedBody !!}
                         @else
-                            {!! nl2br(html_entity_decode($message->body)) !!}
+                            {!! nl2br(e($decodedBody)) !!}
                         @endif
                     </div>
                 </div>
