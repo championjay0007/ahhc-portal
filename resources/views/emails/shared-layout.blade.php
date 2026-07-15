@@ -44,6 +44,9 @@
 <div class="wrapper">
     <div class="card">
         <div class="header">
+            @if(!empty($logo))
+                <div style="margin-bottom:12px;"><img src="{{ $logo }}" alt="logo" style="max-height:60px; max-width:280px; object-fit:contain; display:block; margin:0 auto;" /></div>
+            @endif
             <div class="badge">{{ $badge ?? 'AHHC Portal' }}</div>
             <h1 class="title">{{ $headline }}</h1>
             <p class="subtitle">{{ $subtitle }}</p>

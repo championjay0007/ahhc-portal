@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\PortalSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Mail\Markdown;
@@ -24,11 +25,22 @@ class StyledEmail extends Mailable
         public ?string $badge = null,
         public ?string $highlightPanel = null,
         public ?string $warning = null,
+        public ?string $logo = null,
     ) {
     }
 
     public function build(): self
     {
+        $logoUrl = null;
+        if (empty($this->logo)) {
+            $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
+            if (! empty($logoPath)) {
+                $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
+            }
+        } else {
+            $logoUrl = $this->logo;
+        }
+
         $html = view('emails.shared-layout', [
             'subjectLine' => $this->subjectLine,
             'headline' => $this->headline,
@@ -42,6 +54,7 @@ class StyledEmail extends Mailable
             'badge' => $this->badge,
             'highlightPanel' => $this->highlightPanel,
             'warning' => $this->warning,
+            'logo' => $logoUrl,
         ])->render();
 
         return $this->subject($this->subjectLine)

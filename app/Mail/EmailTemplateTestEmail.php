@@ -25,6 +25,12 @@ class EmailTemplateTestEmail extends Mailable
     {
         $rendered = $this->template->render($this->variables);
 
+        $logoUrl = null;
+        $logoPath = \App\Models\PortalSetting::where('key', 'logo_path')->value('value');
+        if (! empty($logoPath)) {
+            $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
+        }
+
         $html = view('emails.shared-layout', [
             'subjectLine' => $rendered['subject'],
             'headline' => $rendered['subject'],
@@ -38,6 +44,7 @@ class EmailTemplateTestEmail extends Mailable
             'badge' => null,
             'highlightPanel' => $rendered['html'],
             'warning' => null,
+            'logo' => $logoUrl,
         ])->render();
 
         return $this->subject($rendered['subject'])

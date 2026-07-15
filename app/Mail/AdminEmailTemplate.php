@@ -23,6 +23,12 @@ class AdminEmailTemplate extends Mailable
 
     public function build()
     {
+        $logoUrl = null;
+        $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
+        if (! empty($logoPath)) {
+            $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
+        }
+
         $html = view('emails.shared-layout', [
             'subjectLine' => $this->subject,
             'headline' => $this->subject,
@@ -36,6 +42,7 @@ class AdminEmailTemplate extends Mailable
             'badge' => null,
             'highlightPanel' => $this->htmlBody,
             'warning' => null,
+            'logo' => $logoUrl,
         ])->render();
 
         return $this->subject($this->subject)
