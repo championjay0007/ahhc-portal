@@ -197,6 +197,9 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     // Admin dashboard and management
     Route::get('/portal/admin', [AdminDashboardController::class, 'index'])->name('portal.admin.dashboard');
     Route::get('/portal/admin/search', [AdminSearchController::class, 'index'])->name('portal.admin.search');
+    // Branding: upload/change logo
+    Route::get('/portal/admin/branding', [\App\Http\Controllers\Admin\BrandingController::class, 'edit'])->name('portal.admin.branding.edit');
+    Route::post('/portal/admin/branding', [\App\Http\Controllers\Admin\BrandingController::class, 'update'])->name('portal.admin.branding.update');
 
     // ====================================================
     // NEW ONBOARDING WORKFLOW - Admin Routes
