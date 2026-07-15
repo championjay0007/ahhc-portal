@@ -44,6 +44,15 @@
                                 <a href="{{ route('portal.gallery.download', $document) }}" class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-download"></i> Download
                                 </a>
+                                @if(auth()->user() && $document->canBeDeletedBy(auth()->user()))
+                                    <form method="POST" action="{{ route('portal.gallery.destroy', $document) }}" class="d-inline" onsubmit="return confirm('Delete this gallery item?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 pt-0">

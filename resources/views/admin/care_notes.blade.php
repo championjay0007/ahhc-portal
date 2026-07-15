@@ -36,7 +36,16 @@
                                         <td>{{ \Illuminate\Support\Str::limit($note->tasks_completed, 80) }}</td>
                                         <td>{!! $note->risks_flag ? '<span class="text-danger">Yes</span>' : '<span class="text-muted">No</span>' !!}</td>
                                         <td>{{ ucfirst($note->status) }}</td>
-                                        <td><a href="{{ route('portal.admin.care_notes.show', $note) }}" class="btn btn-sm btn-outline-secondary">View</a></td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('portal.admin.care_notes.show', $note) }}" class="btn btn-sm btn-outline-secondary">View</a>
+                                                <form method="POST" action="{{ route('portal.admin.care_notes.destroy', $note) }}" class="d-inline" onsubmit="return confirm('Delete this care note?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

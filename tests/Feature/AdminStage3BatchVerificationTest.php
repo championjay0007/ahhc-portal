@@ -125,4 +125,38 @@ class AdminStage3BatchVerificationTest extends TestCase
         // verify declarations created
         $this->assertDatabaseCount('worker_declarations', count(WorkerDeclarationType::cases()));
     }
+
+    public function test_approve_stage3_route_moves_worker_to_stage4(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin',
+            'email' => 'admin6@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'password' => bcrypt('Password123!'),
+        ]);
+
+        $worker = Worker::create([
+            'worker_number' => 'W-3003',
+            'first_name' => 'Approve',
+            'last_name' => 'Stage3',
+            'phone' => '0400000004',
+            'email' => 'approvestage3@example.com',
+            'role_type' => 'Independent',
+            'status' => 'pending',
+            'onboarding_stage' => 3,
+            'onboarding_token' => 'token-approve-stage3',
+            'onboarding_expires_at' => now()->addDays(30),
+        ]);
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.worker_onboarding.stage3.approve', $worker), ['notes' => 'Reviewed and approved.']);
+
+        $response->assertRedirect();
+
+        $worker->refresh();
+        $this->assertSame(4, $worker->onboarding_stage);
+        $this->assertNotNull($worker->stage_3_completed_at);
+        $this->assertSame('Reviewed and approved.', $worker->notes);
+    }
 }

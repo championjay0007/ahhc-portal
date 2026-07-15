@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Document extends Model
@@ -57,6 +59,7 @@ class Document extends Model
         'is_sensitive' => 'boolean',
         'metadata' => 'array',
         'size_bytes' => 'integer',
+        'uploaded_by_id' => 'integer',
         'onboarding_required' => 'boolean',
     ];
 
@@ -131,6 +134,25 @@ class Document extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by_id');
+    }
+
+    public function hasStoredFilePath(): bool
+    {
+        return is_string($this->path) && trim($this->path) !== '';
+    }
+
+    public function hasStoredFile(): bool
+    {
+        return $this->hasStoredFilePath()
+            && is_string($this->storage_disk)
+            && trim($this->storage_disk) !== ''
+            && Storage::disk($this->storage_disk)->exists($this->path);
+    }
+
+    public function canBeDeletedBy(User $user): bool
+    {
+        return $user->hasRole(['admin', 'system_admin', 'super_admin'])
+            || $this->uploaded_by_id === $user->id;
     }
 
     public function signatures(): HasMany

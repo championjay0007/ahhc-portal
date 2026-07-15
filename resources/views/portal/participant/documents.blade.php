@@ -196,8 +196,10 @@
                                 </td>
                                 <td>{{ $document->created_at->format('Y-m-d') }}</td>
                                 <td class="text-end">
-                                    <a href="{{ route('portal.participant.documents.preview', $document) }}" class="btn btn-sm btn-outline-secondary me-2">Preview</a>
-                                    <a href="{{ route('portal.participant.documents.download', $document) }}" class="btn btn-sm btn-outline-primary me-2">Download</a>
+                                    @if($document->hasStoredFilePath())
+                                        <a href="{{ route('portal.participant.documents.preview', $document) }}" class="btn btn-sm btn-outline-secondary me-2">Preview</a>
+                                        <a href="{{ route('portal.participant.documents.download', $document) }}" class="btn btn-sm btn-outline-primary me-2">Download</a>
+                                    @endif
                                     <a href="{{ route('portal.participant.documents.show', $document) }}" class="btn btn-sm btn-primary">View</a>
                                 </td>
                             </tr>

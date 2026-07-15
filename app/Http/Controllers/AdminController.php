@@ -1441,6 +1441,17 @@ class AdminController extends Controller
         return view('admin.activity', compact('activities', 'users', 'actions'));
     }
 
+    public function destroyActivity(AuditLog $auditLog)
+    {
+        if (! auth()->user()?->role || ! in_array(auth()->user()->role, ['admin', 'system_admin'], true)) {
+            abort(403);
+        }
+
+        $auditLog->delete();
+
+        return redirect()->route('portal.admin.activity')->with('status', 'Activity log entry deleted successfully.');
+    }
+
     public function workers(Request $request)
     {
         $query = Worker::with(['user', 'assignments.participant'])
@@ -1881,6 +1892,22 @@ class AdminController extends Controller
         ]);
     }
 
+    public function destroyPreApproval(PreApprovalRequest $preApprovalRequest)
+    {
+        if (! auth()->user()?->role || ! in_array(auth()->user()->role, ['admin', 'system_admin'], true)) {
+            abort(403);
+        }
+
+        DB::transaction(function () use ($preApprovalRequest) {
+            $preApprovalRequest->invoices()->delete();
+            $preApprovalRequest->attachments()->delete();
+            $preApprovalRequest->comments()->delete();
+            $preApprovalRequest->delete();
+        });
+
+        return redirect()->route('portal.admin.pre_approvals')->with('status', 'Pre-approval deleted successfully.');
+    }
+
     public function downloadPreApprovalQuote(PreApprovalRequest $preApprovalRequest)
     {
         if (! $preApprovalRequest->quote_file_path || ! Storage::disk('local')->exists($preApprovalRequest->quote_file_path)) {
@@ -1989,6 +2016,17 @@ class AdminController extends Controller
         return view('admin.care_note', compact('careNote'));
     }
 
+    public function destroyCareNote(CareNote $careNote)
+    {
+        if (! auth()->user()?->role || ! in_array(auth()->user()->role, ['admin', 'system_admin'], true)) {
+            abort(403);
+        }
+
+        $careNote->delete();
+
+        return redirect()->route('portal.admin.care_notes')->with('status', 'Care note deleted successfully.');
+    }
+
     public function incidents(Request $request)
     {
         $query = Incident::with(['participant', 'worker', 'reporter'])->orderBy('created_at', 'desc');
@@ -2017,6 +2055,17 @@ class AdminController extends Controller
         $incident->load(['participant', 'worker', 'reporter']);
 
         return view('admin.incident', compact('incident'));
+    }
+
+    public function destroyIncident(Incident $incident)
+    {
+        if (! auth()->user()?->role || ! in_array(auth()->user()->role, ['admin', 'system_admin'], true)) {
+            abort(403);
+        }
+
+        $incident->delete();
+
+        return redirect()->route('portal.admin.incidents')->with('status', 'Incident deleted successfully.');
     }
 
     public function updateIncidentStatus(Request $request, Incident $incident)
@@ -2062,6 +2111,17 @@ class AdminController extends Controller
         $complaint->load(['participant', 'supportPerson', 'submittedBy']);
 
         return view('admin.complaint', compact('complaint'));
+    }
+
+    public function destroyComplaint(Complaint $complaint)
+    {
+        if (! auth()->user()?->role || ! in_array(auth()->user()->role, ['admin', 'system_admin'], true)) {
+            abort(403);
+        }
+
+        $complaint->delete();
+
+        return redirect()->route('portal.admin.complaints')->with('status', 'Complaint deleted successfully.');
     }
 
     public function updateComplaintStatus(Request $request, Complaint $complaint)
@@ -2286,6 +2346,23 @@ class AdminController extends Controller
         $invoice->load(['participant', 'worker', 'approver', 'preApprovalRequest']);
 
         return view('admin.invoice', compact('invoice'));
+    }
+
+    public function destroyInvoice(Invoice $invoice)
+    {
+        if (! auth()->user()?->role || ! in_array(auth()->user()->role, ['admin', 'system_admin'], true)) {
+            abort(403);
+        }
+
+        DB::transaction(function () use ($invoice) {
+            Document::where('owner_type', Invoice::class)
+                ->where('owner_id', $invoice->id)
+                ->delete();
+
+            $invoice->delete();
+        });
+
+        return redirect()->route('portal.admin.invoices')->with('status', 'Invoice deleted successfully.');
     }
 
     public function reviewInvoice(Request $request, Invoice $invoice)

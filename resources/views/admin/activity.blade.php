@@ -151,6 +151,9 @@
                                     <th class="pe-4 py-3 text-muted fw-semibold small text-uppercase">
                                         <i class="fas fa-clock me-1"></i>Timestamp
                                     </th>
+                                    <th class="pe-4 py-3 text-muted fw-semibold small text-uppercase">
+                                        <i class="fas fa-trash me-1"></i>Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -195,6 +198,15 @@
                                                     {{ optional($activity->created_at)->format('H:i') }}
                                                 </span>
                                             </div>
+                                        </td>
+                                        <td class="pe-4">
+                                            <form method="POST" action="{{ route('portal.admin.activity.destroy', $activity) }}" class="d-inline" onsubmit="return confirm('Delete this activity log entry?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach

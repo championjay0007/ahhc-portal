@@ -139,6 +139,47 @@ class ParticipantPortalTest extends TestCase
         $response->assertSee('invalid-feedback');
     }
 
+    public function test_participant_cannot_download_document_without_stored_file_path(): void
+    {
+        $user = User::create([
+            'name' => 'Participant No File',
+            'email' => 'participant-nofile@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $user->id,
+            'participant_number' => 'P-1008',
+            'first_name' => 'Participant',
+            'last_name' => 'NoFile',
+            'status' => 'active',
+        ]);
+
+        $document = Document::create([
+            'owner_type' => Participant::class,
+            'owner_id' => $participant->id,
+            'document_type' => 'monthly_care_management_checklist',
+            'title' => 'Checklist Document',
+            'storage_disk' => 'local',
+            'path' => '',
+            'mime_type' => '',
+            'size_bytes' => 0,
+            'uploaded_by_id' => $user->id,
+            'status' => 'uploaded',
+            'metadata' => ['items' => ['item1', 'item2'], 'submitted_at' => now()->toDateTimeString()],
+            'is_sensitive' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('portal.participant.documents.download', $document));
+
+        $response->assertRedirect(route('portal.participant.documents.show', $document));
+        $response->assertSessionHas('error', 'This document is not available for download.');
+    }
+
     public function test_participant_can_download_an_uploaded_document(): void
     {
         Storage::fake('local');

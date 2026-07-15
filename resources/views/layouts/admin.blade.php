@@ -2527,15 +2527,6 @@
             window.addEventListener('load', updateOfflineState);
         }
 
-        var deferredPwaPrompt;
-        var pwaInstallBanner = document.getElementById('pwaInstallBanner');
-        var pwaInstallButton = document.getElementById('pwaInstallButton');
-        var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
-        var deferredPwaPrompt;
-        var pwaInstallBanner = document.getElementById('pwaInstallBanner');
-        var pwaInstallButton = document.getElementById('pwaInstallButton');
-        var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
-
         function isIos() {
             return /iphone|ipad|ipod/i.test(navigator.userAgent);
         }
@@ -2543,6 +2534,11 @@
         function isInStandaloneMode() {
             return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
         }
+
+        var deferredPwaPrompt;
+        var pwaInstallBanner = document.getElementById('pwaInstallBanner');
+        var pwaInstallButton = document.getElementById('pwaInstallButton');
+        var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
 
         window.addEventListener('beforeinstallprompt', function(event) {
             if (!PWA_ENABLED) {
@@ -2580,15 +2576,13 @@
                     return;
                 }
 
-                // If no install prompt available (e.g. iOS), show manual instructions
                 if (isIos()) {
-                    alert('To install this app on iOS: tap the Share button in Safari, then select "Add to Home Screen".');
+                    alert('To install this app on iOS, tap the Share button in Safari and choose "Add to Home Screen".');
                     if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
                     return;
                 }
 
-                // Generic fallback
-                alert('Your browser does not support automatic installation. Please use the browser menu and choose "Add to Home screen".');
+                alert('Your browser cannot automatically prompt installation. Use the browser menu and choose "Add to Home screen".');
                 if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
             });
         }

@@ -42,7 +42,16 @@
                                             @endif
                                         </td>
                                         <td>{{ ucfirst($inc->status) }}</td>
-                                        <td><a href="{{ route('portal.admin.incidents.show', $inc) }}" class="btn btn-sm btn-outline-secondary">View</a></td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('portal.admin.incidents.show', $inc) }}" class="btn btn-sm btn-outline-secondary">View</a>
+                                                <form method="POST" action="{{ route('portal.admin.incidents.destroy', $inc) }}" class="d-inline" onsubmit="return confirm('Delete this incident?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

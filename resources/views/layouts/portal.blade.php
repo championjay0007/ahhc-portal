@@ -1624,8 +1624,16 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    
+
                     <!-- Error Alert -->
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-custom d-flex align-items-center" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-3"></i>
+                            <div class="flex-grow-1">{{ session('error') }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     @if($errors->any())
                         <div class="alert alert-danger alert-custom" role="alert">
                             <div class="d-flex align-items-center mb-2">
@@ -2204,6 +2212,14 @@
             }
         });
 
+        function isIos() {
+            return /iphone|ipad|ipod/i.test(navigator.userAgent);
+        }
+
+        function isInStandaloneMode() {
+            return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+        }
+
         var deferredPwaPrompt;
         var pwaInstallBanner = document.getElementById('pwaInstallBanner');
         var pwaInstallButton = document.getElementById('pwaInstallButton');
@@ -2243,7 +2259,12 @@
         if (pwaInstallButton) {
             pwaInstallButton.addEventListener('click', function() {
                 if (!deferredPwaPrompt) {
-                    showPwaInstallBanner();
+                    if (isIos()) {
+                        alert('To install this app on iOS, tap the Share button in Safari and choose "Add to Home Screen".');
+                    } else {
+                        alert('Your browser cannot automatically prompt installation. Use the browser menu and choose "Add to Home screen".');
+                    }
+                    hidePwaInstallBanner();
                     return;
                 }
 

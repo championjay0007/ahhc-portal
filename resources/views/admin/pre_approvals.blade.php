@@ -36,7 +36,16 @@
                                         <td>${{ number_format(($request->requested_amount_cents ?? 0) / 100, 2) }}</td>
                                         <td>{{ ucfirst($request->status) }}</td>
                                         <td>{{ optional($request->submitted_at)->format('Y-m-d H:i') }}</td>
-                                        <td><a href="{{ route('portal.admin.pre_approvals.show', $request) }}" class="btn btn-sm btn-outline-secondary">View</a></td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('portal.admin.pre_approvals.show', $request) }}" class="btn btn-sm btn-outline-secondary">View</a>
+                                                <form method="POST" action="{{ route('portal.admin.pre_approvals.destroy', $request) }}" class="d-inline" onsubmit="return confirm('Delete this pre-approval request?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

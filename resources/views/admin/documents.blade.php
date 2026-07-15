@@ -90,6 +90,11 @@
                                                 {{ $document->onboarding_required ? 'Unassign' : 'Assign' }}
                                             </button>
                                         </form>
+                                        <form method="POST" action="{{ route('portal.admin.documents.destroy', $document) }}" class="d-inline ms-1" onsubmit="return confirm('Delete this document?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

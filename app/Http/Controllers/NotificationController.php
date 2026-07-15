@@ -113,6 +113,9 @@ class NotificationController extends Controller
     private function resolveNotificationUrl($user, array $data): ?string
     {
         $url = $data['url'] ?? null;
+        if (empty($url) && ! empty($data['action_url'])) {
+            $url = $data['action_url'];
+        }
 
         if (! empty($data['message_id'])) {
             $message = Message::find($data['message_id']);

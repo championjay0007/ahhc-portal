@@ -430,6 +430,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     Route::get('/portal/admin/budgets', [AdminController::class, 'budgets'])->name('portal.admin.budgets');
     Route::post('/portal/admin/assign-worker', [AdminController::class, 'assignWorker'])->name('portal.admin.assign_worker');
     Route::get('/portal/admin/pre-approvals', [AdminController::class, 'preApprovals'])->name('portal.admin.pre_approvals');
+    Route::delete('/portal/admin/pre-approvals/{preApprovalRequest}', [AdminController::class, 'destroyPreApproval'])->name('portal.admin.pre_approvals.destroy');
     Route::get('/portal/admin/pre-approvals/{preApprovalRequest}', [AdminController::class, 'showPreApproval'])->name('portal.admin.pre_approvals.show');
     Route::get('/portal/admin/pre-approvals/{preApprovalRequest}/quote', [AdminController::class, 'downloadPreApprovalQuote'])->name('portal.admin.pre_approvals.quote.download');
     Route::get('/portal/admin/pre-approvals/{preApprovalRequest}/attachments/{attachment}/download', [AdminController::class, 'downloadPreApprovalAttachment'])->name('portal.admin.pre_approvals.attachments.download');
@@ -438,16 +439,20 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     Route::post('/portal/admin/pre-approvals/{preApprovalRequest}/reject', [AdminController::class, 'rejectPreApproval'])->name('portal.admin.pre_approvals.reject');
     Route::post('/portal/admin/pre-approvals/{preApprovalRequest}/cancel', [AdminController::class, 'cancelPreApproval'])->name('portal.admin.pre_approvals.cancel');
     Route::get('/portal/admin/care-notes', [AdminController::class, 'careNotes'])->name('portal.admin.care_notes');
+    Route::delete('/portal/admin/care-notes/{careNote}', [AdminController::class, 'destroyCareNote'])->name('portal.admin.care_notes.destroy');
     Route::get('/portal/admin/care-notes/{careNote}', [AdminController::class, 'showCareNote'])->name('portal.admin.care_notes.show');
     Route::post('/portal/admin/care-notes/{careNote}/approve', [AdminController::class, 'approveCareNote'])->name('portal.admin.care_notes.approve');
     Route::get('/portal/admin/care-notes/{careNote}/attachment/download', [AdminController::class, 'downloadCareNoteAttachment'])->name('portal.admin.care_notes.attachment.download');
     Route::get('/portal/admin/incidents', [AdminController::class, 'incidents'])->name('portal.admin.incidents');
+    Route::delete('/portal/admin/incidents/{incident}', [AdminController::class, 'destroyIncident'])->name('portal.admin.incidents.destroy');
     Route::get('/portal/admin/incidents/{incident}', [AdminController::class, 'showIncident'])->name('portal.admin.incidents.show');
     Route::post('/portal/admin/incidents/{incident}/status', [AdminController::class, 'updateIncidentStatus'])->name('portal.admin.incidents.status');
     Route::get('/portal/admin/complaints', [AdminController::class, 'complaints'])->name('portal.admin.complaints');
+    Route::delete('/portal/admin/complaints/{complaint}', [AdminController::class, 'destroyComplaint'])->name('portal.admin.complaints.destroy');
     Route::get('/portal/admin/complaints/{complaint}', [AdminController::class, 'showComplaint'])->name('portal.admin.complaints.show');
     Route::post('/portal/admin/complaints/{complaint}/status', [AdminController::class, 'updateComplaintStatus'])->name('portal.admin.complaints.status');
     Route::get('/portal/admin/invoices', [AdminController::class, 'invoices'])->name('portal.admin.invoices');
+    Route::delete('/portal/admin/invoices/{invoice}', [AdminController::class, 'destroyInvoice'])->name('portal.admin.invoices.destroy');
     Route::get('/portal/admin/invoices/{invoice}', [AdminController::class, 'showInvoice'])->name('portal.admin.invoices.show');
     Route::post('/portal/admin/invoices/{invoice}/review', [AdminController::class, 'reviewInvoice'])->name('portal.admin.invoices.review');
     Route::post('/portal/admin/invoices/{invoice}/reject', [AdminController::class, 'rejectInvoice'])->name('portal.admin.invoices.reject');
@@ -455,6 +460,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     Route::get('/portal/admin/invoices/{invoice}/attachment/download', [AdminController::class, 'downloadInvoiceAttachment'])->name('portal.admin.invoices.attachment.download');
     Route::get('/portal/admin/budgets/{budget}/export-pdf', [AdminController::class, 'exportBudgetPdf'])->name('portal.admin.budgets.export-pdf');
     Route::get('/portal/admin/documents', [AdminController::class, 'documents'])->name('portal.admin.documents');
+    Route::delete('/portal/admin/documents/{document}', [DocumentController::class, 'destroy'])->name('portal.admin.documents.destroy');
     Route::get('/portal/admin/documents/create', [AdminController::class, 'createDocument'])->name('portal.admin.documents.create');
     Route::post('/portal/admin/documents', [AdminController::class, 'storeDocument'])->name('portal.admin.documents.store');
     Route::get('/portal/admin/documents/{document}', [AdminController::class, 'showDocument'])->name('portal.admin.documents.show');
@@ -473,6 +479,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     Route::post('/portal/admin/settings/clear-cache', [AdminController::class, 'clearCache'])->name('portal.admin.settings.clear_cache');
     Route::post('/portal/admin/settings/test-email', [AdminController::class, 'sendTestEmail'])->name('portal.admin.settings.test_email');
     Route::get('/portal/admin/activity', [AdminController::class, 'activity'])->name('portal.admin.activity');
+    Route::delete('/portal/admin/activity/{auditLog}', [AdminController::class, 'destroyActivity'])->name('portal.admin.activity.destroy');
     Route::get('/portal/admin/reports', [AdminController::class, 'reports'])->name('portal.admin.reports');
     Route::get('/portal/admin/reports/{type}/export', [AdminController::class, 'exportReport'])->name('portal.admin.reports.export');
 
@@ -607,6 +614,7 @@ Route::middleware(['auth', 'mfa', 'role:worker', 'onboarding_complete'])->prefix
 
 Route::middleware(['auth', 'mfa', 'assessment_workflow'])->group(function () {
     Route::get('/portal/gallery', [DocumentController::class, 'gallery'])->name('portal.gallery');
+    Route::delete('/portal/gallery/{document}', [DocumentController::class, 'destroy'])->name('portal.gallery.destroy');
     Route::get('/portal/gallery/{document}/preview', [DocumentController::class, 'previewGallery'])->name('portal.gallery.preview');
     Route::get('/portal/gallery/{document}/download', [DocumentController::class, 'downloadGallery'])->name('portal.gallery.download');
 });

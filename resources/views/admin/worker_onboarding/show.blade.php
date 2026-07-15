@@ -282,7 +282,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mt-2 g-2 align-items-center">
-                                                        <input type="hidden" name="documents[{{ $index }}][id]" value="{{ $doc->id }}">
+                                                        <input type="hidden" id="id_{{ $index }}" name="documents[{{ $index }}][id]" value="{{ $doc->id }}" disabled>
                                                         <div class="col-auto">
                                                             <select name="documents[{{ $index }}][action]" id="action_{{ $index }}" class="form-select form-select-sm" disabled>
                                                                 <option value="active">Mark Active</option>
@@ -302,10 +302,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="auto_approve" name="auto_approve" value="1">
-                                    <label class="form-check-label" for="auto_approve">Auto-approve Stage 3 if all required documents active</label>
-                                </div>
+                                <input type="hidden" name="auto_approve" value="1">
 
                                 <div class="mb-3">
                                     <label for="notes" class="form-label">Review Notes (Optional)</label>
@@ -314,8 +311,12 @@
 
                                 <div class="d-flex flex-wrap gap-2">
                                     <button type="submit" class="btn btn-primary flex-fill">Process Selected Documents</button>
-                                    <a href="{{ route('admin.worker_onboarding.stage3.approve', $worker) }}" class="btn btn-success flex-fill">Approve & Move to Stage 4</a>
                                 </div>
+                            </form>
+
+                            <form method="POST" action="{{ route('admin.worker_onboarding.stage3.approve', $worker) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-success w-100">Approve & Move to Stage 4</button>
                             </form>
                         @endif
                     </div>
@@ -517,16 +518,15 @@
 </div>
         <script>
             function toggleRow(index) {
-                const checkbox = document.getElementById('select_' + document.querySelectorAll('[id^="select_"]')[index].id.split('_')[1]);
-                // fallback simple toggle based on elements existence
+                const cb = document.getElementById('select_' + index);
                 const action = document.getElementById('action_' + index);
                 const reason = document.getElementById('reason_' + index);
-                if (!action || !reason) return;
-                // determine checkbox by index
-                const cb = document.getElementById('select_' + document.querySelectorAll('[id^="select_"]')[index].id.split('_')[1]);
-                const enabled = cb && cb.checked;
+                const idInput = document.getElementById('id_' + index);
+                if (!cb || !action || !reason || !idInput) return;
+                const enabled = cb.checked;
                 action.disabled = !enabled;
                 reason.disabled = !enabled;
+                idInput.disabled = !enabled;
             }
         </script>
 @endsection

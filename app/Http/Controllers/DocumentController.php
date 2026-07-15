@@ -13,6 +13,7 @@ use App\Services\AuditLogService;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
@@ -134,6 +135,47 @@ class DocumentController extends Controller
             ->with('success', 'Your document has been uploaded successfully. Our admin team will review it shortly. Please wait for their response.');
     }
 
+    public function destroy(Document $document)
+    {
+        $user = Auth::user();
+        $canDelete = $user && $document->canBeDeletedBy($user);
+
+        if (! $canDelete) {
+            abort(403);
+        }
+
+        DB::transaction(function () use ($document) {
+            $document->loadMissing(['signatures', 'versions']);
+
+            foreach ($document->signatures as $signature) {
+                foreach (['signature_path', 'signed_document_path', 'certificate_path'] as $pathColumn) {
+                    $path = $signature->{$pathColumn};
+                    if ($path && Storage::disk($signature->signature_disk ?? $document->storage_disk)->exists($path)) {
+                        Storage::disk($signature->signature_disk ?? $document->storage_disk)->delete($path);
+                    }
+                }
+            }
+
+            foreach ($document->versions as $version) {
+                if ($version->path && Storage::disk($version->storage_disk ?? $document->storage_disk)->exists($version->path)) {
+                    Storage::disk($version->storage_disk ?? $document->storage_disk)->delete($version->path);
+                }
+            }
+
+            if ($document->path && Storage::disk($document->storage_disk)->exists($document->path)) {
+                Storage::disk($document->storage_disk)->delete($document->path);
+            }
+
+            $document->delete();
+        });
+
+        if ($user->role === 'admin' || $user->role === 'system_admin') {
+            return redirect()->route('portal.admin.documents')->with('status', 'Document deleted successfully.');
+        }
+
+        return redirect()->route('portal.gallery')->with('status', 'Document deleted successfully.');
+    }
+
     public function previewForParticipant(Document $document)
     {
         $user = Auth::user();
@@ -145,8 +187,10 @@ class DocumentController extends Controller
             ->where('owner_id', $participant->id)
             ->firstOrFail();
 
-        if (! Storage::disk($document->storage_disk)->exists($document->path)) {
-            abort(404);
+        if (! $document->hasStoredFile()) {
+            return redirect()
+                ->route('portal.participant.documents.show', $document)
+                ->with('error', 'This document is not available for preview.');
         }
 
         AuditLogService::record('Document Previewed', $document, [], []);
@@ -174,8 +218,10 @@ class DocumentController extends Controller
             ->where('owner_id', $participant->id)
             ->firstOrFail();
 
-        if (! Storage::disk($document->storage_disk)->exists($document->path)) {
-            abort(404);
+        if (! $document->hasStoredFile()) {
+            return redirect()
+                ->route('portal.participant.documents.show', $document)
+                ->with('error', 'This document is not available for download.');
         }
 
         AuditLogService::record('Document Download', $document, [], []);

@@ -222,9 +222,21 @@ class ParticipantPortalController extends Controller
             'notes' => $validated['notes'] ?? null,
         ]);
 
-        // Send notification to all admins
-        User::where('role', 'admin')->get()->each(function ($admin) use ($complaint) {
-            $admin->notify(new ComplaintSubmitted($complaint));
+        // Send in-app notification to all admins and include the complaint review URL
+        User::where('role', 'admin')->get()->each(function ($admin) use ($complaint, $participant) {
+            NotificationService::notify([
+                'user_id' => $admin->id,
+                'recipient_id' => $admin->id,
+                'participant_id' => $participant->id,
+                'type' => 'complaint_submitted',
+                'title' => 'Complaint Submitted',
+                'message' => "Complaint submitted by {$participant->first_name} {$participant->last_name}.",
+                'url' => route('portal.admin.complaints.show', $complaint),
+                'data' => [
+                    'complaint_id' => $complaint->id,
+                    'action_url' => route('portal.admin.complaints.show', $complaint),
+                ],
+            ]);
         });
 
         return redirect()->route('portal.dashboard')->with('status', 'Complaint submitted successfully.');

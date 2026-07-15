@@ -63,7 +63,16 @@
                                             @endif
                                         </td>
                                         <td>{{ ucfirst($complaint->status) }}</td>
-                                        <td><a href="{{ route('portal.admin.complaints.show', $complaint) }}" class="btn btn-sm btn-outline-secondary">View</a></td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('portal.admin.complaints.show', $complaint) }}" class="btn btn-sm btn-outline-secondary">View</a>
+                                                <form method="POST" action="{{ route('portal.admin.complaints.destroy', $complaint) }}" class="d-inline" onsubmit="return confirm('Delete this complaint?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

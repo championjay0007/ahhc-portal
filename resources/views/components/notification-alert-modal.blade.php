@@ -13,7 +13,7 @@
             </div>
             <div class="modal-body p-0">
                 @forelse($portalUnreadNotifications as $notification)
-                    <div class="notification-item border-bottom p-3 hover-light transition" style="cursor: pointer;" data-notification-url="{{ route('portal.notifications.show', $notification) }}">
+                    <div class="notification-item border-bottom p-3 hover-light transition" style="cursor: pointer;" data-notification-url="{{ $notification->data['action_url'] ?? $notification->data['url'] ?? route('portal.notifications.show', $notification) }}">
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="flex-grow-1">
                                 <!-- Notification Icon/Badge -->

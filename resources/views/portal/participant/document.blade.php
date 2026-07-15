@@ -61,8 +61,10 @@
                 </dl>
             </div>
             <div class="text-end">
-                <a href="{{ route('portal.participant.documents.preview', $document) }}" class="btn btn-outline-primary me-2">Preview</a>
-                <a href="{{ route('portal.participant.documents.download', $document) }}" class="btn btn-primary">Download document</a>
+                @if($document->hasStoredFilePath())
+                    <a href="{{ route('portal.participant.documents.preview', $document) }}" class="btn btn-outline-primary me-2">Preview</a>
+                    <a href="{{ route('portal.participant.documents.download', $document) }}" class="btn btn-primary">Download document</a>
+                @endif
             </div>
         </div>
     </div>
