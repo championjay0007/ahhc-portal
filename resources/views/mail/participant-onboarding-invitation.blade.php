@@ -49,7 +49,7 @@
         <div class="card">
             <div class="header">
                 <a href="{{ url('/') }}" style="display:inline-block;">
-                    <img src="{{ asset('storage/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
+                    <img src="{{ asset('images/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
                 </a>
                 <div class="badge">Onboarding Invitation</div>
                 <h1 class="title">Complete your AHHC onboarding</h1>

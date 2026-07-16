@@ -235,7 +235,7 @@
                 <tr>
                     <td class="email-header">
                         <a href="{{ url('/') }}" style="display:inline-block;">
-                            <img src="{{ asset('storage/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
+                            <img src="{{ asset('images/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
                         </a>
                         <div class="email-badge">Worker Invitation</div>
                         <h1 class="email-title">Welcome to AHHC</h1>

@@ -23,7 +23,7 @@ class EmailBrandingService
             return static::normalizeLogoUrl($logoPath);
         }
 
-        return asset('storage/branding/logo.jpg');
+        return asset('images/branding/logo.jpg');
     }
 
     protected static function localLogoFile(string $logo): ?string

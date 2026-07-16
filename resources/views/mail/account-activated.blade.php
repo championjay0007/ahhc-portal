@@ -6,7 +6,7 @@
     <title>Your account is now active</title>
     @php
         $portalSettings = $portalSettings ?? [];
-        $logo = $logo ?? \App\Services\EmailBrandingService::logoUrl();
+        $logo = asset('storage/branding/logo.jpg');
         $organization = $organization ?? config('app.name', 'AHHC Portal');
         $year = $year ?? now()->year;
     @endphp
@@ -37,7 +37,7 @@
         <div class="card">
             <div class="header">
                 <a href="{{ url('/') }}" style="display:inline-block;">
-                    <img src="{{ asset('storage/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
+                    <img src="{{ asset('images/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
                 </a>
                 <div class="badge">Account Activated</div>
                 <h1 class="title">Your account is now active</h1>
