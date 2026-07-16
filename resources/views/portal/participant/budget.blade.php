@@ -137,7 +137,7 @@
 
         <div class="mt-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted">Usage <strong>{{ number_format($budgetPercent, 1) }}%</strong></span>
+                <span class="text-muted">Usage <strong>{{ number_format($budgetPercent, 2) }}%</strong></span>
                 @if($overBudget)
                     <span class="badge bg-danger">Over budget</span>
                 @else

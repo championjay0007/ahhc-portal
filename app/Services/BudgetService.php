@@ -738,7 +738,7 @@ class BudgetService
         // Remaining = total - committed - used
         $remaining = (int) $totalAvailable - (int) $committed - (int) $used;
 
-        $utilization = $totalAvailable > 0 ? round((($used / $totalAvailable) * 100), 1) : 0;
+        $utilization = $totalAvailable > 0 ? round((($used / $totalAvailable) * 100), 2) : 0;
 
         return [
             'opening_balance' => (int) $opening,

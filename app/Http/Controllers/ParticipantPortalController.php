@@ -273,7 +273,7 @@ class ParticipantPortalController extends Controller
         }
         $remainingBudgetCents = (int) $computedRemaining;
 
-        $budgetPercent = $limitBudgetCents ? round(($usedBudgetCents / $limitBudgetCents) * 100, 1) : 0;
+        $budgetPercent = $limitBudgetCents ? round(($usedBudgetCents / $limitBudgetCents) * 100, 2) : 0;
         $overBudget = $usedBudgetCents > $limitBudgetCents;
         $currentQuarterLabel = $this->formatFiscalQuarterLabel(now());
 

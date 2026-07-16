@@ -114,7 +114,7 @@
                     $budgetLimit = $participant->budget_limit_cents ?? 0;
                     $budgetUsed = $participant->current_budget_used_cents ?? 0;
                     $budgetRemaining = max(0, $budgetLimit - $budgetUsed);
-                    $budgetPercent = $budgetLimit ? min(100, round(($budgetUsed / $budgetLimit) * 100)) : 0;
+                    $budgetPercent = $budgetLimit ? min(100, round(($budgetUsed / $budgetLimit) * 100, 2)) : 0;
                 @endphp
                 <h6>Budget</h6>
                 <p class="mb-1"><strong>Limit:</strong> ${{ number_format($budgetLimit / 100, 2) }}</p>
