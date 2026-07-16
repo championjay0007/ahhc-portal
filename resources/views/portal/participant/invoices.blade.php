@@ -36,7 +36,7 @@
                     <input type="number" step="0.01" name="amount" class="form-control" value="{{ old('amount') }}" min="0.01" required>
                     <small class="text-muted">Enter the invoice amount in dollars, e.g. 1500.00</small>
                 </div>
-                @if($invoiceBudgetMode !== 'committed_amount')
+                @if($invoiceBudgetMode === 'preapproval_amount')
                     <div class="col-md-3">
                         <label class="form-label">Pre-approval</label>
                         <select name="pre_approval_id" class="form-select">
@@ -99,6 +99,11 @@
                                 @if($invoice->preApprovalRequest)
                                     <div class="small text-muted mt-2">
                                         Linked pre-approval: <strong>{{ $invoice->preApprovalRequest->request_number }}</strong>
+                                    </div>
+                                @endif
+                                @if($invoice->committed_amount_cents !== null)
+                                    <div class="small text-muted mt-2">
+                                        Committed amount: <strong>${{ number_format($invoice->committed_amount_cents / 100, 2) }}</strong>
                                     </div>
                                 @endif
                             </div>

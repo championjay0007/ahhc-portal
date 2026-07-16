@@ -235,12 +235,13 @@ class AdminController extends Controller
                 }
             }
 
-            $participant->current_budget = $budgetService->calculateTotalAvailable($budget);
-            $participant->committed = $budget->committed_cents;
-            $participant->approved_spend = $budget->approved_spend_cents;
-            $participant->paid_spend = $budget->paid_spend_cents;
-            $participant->remaining_budget = $budgetService->calculateRemaining($budget);
-            $participant->utilization = $participant->current_budget ? min(100, round((($participant->committed + $participant->approved_spend) / $participant->current_budget) * 100, 1)) : 0;
+            $budgetMetrics = $budgetService->getBudgetMetrics($budget);
+            $participant->current_budget = $budgetMetrics['total_available'] ?? 0;
+            $participant->committed = $budgetMetrics['committed'] ?? 0;
+            $participant->approved_spend = $budgetMetrics['approved'] ?? 0;
+            $participant->paid_spend = $budgetMetrics['paid'] ?? 0;
+            $participant->remaining_budget = $budgetMetrics['remaining'] ?? 0;
+            $participant->utilization = $budgetMetrics['utilization_percent'] ?? 0;
             $participant->budget = $budget;
 
             return $participant;
@@ -2351,13 +2352,20 @@ class AdminController extends Controller
             return back()->withErrors(['invoice' => 'Only submitted invoices can be approved.']);
         }
 
+        $invoiceBudgetMode = PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
+
         $validated = $request->validate([
             'committed_amount' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $committedAmountCents = isset($validated['committed_amount'])
-            ? (int) round((float) $validated['committed_amount'] * 100)
-            : null;
+        $committedAmountCents = null;
+        if ($invoiceBudgetMode === 'preapproval_amount') {
+            $committedAmountCents = isset($validated['committed_amount'])
+                ? (int) round((float) $validated['committed_amount'] * 100)
+                : null;
+        } else {
+            $committedAmountCents = $invoice->amount_cents;
+        }
 
         DB::transaction(function () use ($invoice, $committedAmountCents) {
             $invoice->update([

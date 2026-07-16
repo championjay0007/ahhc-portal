@@ -62,8 +62,9 @@ class InvoiceController extends Controller
         $amountCents = (int) round($validated['amount'] * 100);
         $invoiceBudgetMode = PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
 
-        if ($invoiceBudgetMode === 'committed_amount') {
+        if ($invoiceBudgetMode !== 'preapproval_amount') {
             unset($validated['pre_approval_id']);
+            $validated['committed_amount_cents'] = $amountCents;
         } elseif (! empty($validated['pre_approval_id'])) {
             $preApproval = PreApprovalRequest::where('id', $validated['pre_approval_id'])
                 ->where('participant_id', $participant->id)

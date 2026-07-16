@@ -38,6 +38,9 @@
                     <div class="col-md-6">
                         <h5>Amount</h5>
                         <p class="mb-1"><strong>Amount:</strong> ${{ number_format(($invoice->amount_cents ?? 0) / 100, 2) }}</p>
+                        @if($invoice->committed_amount_cents !== null)
+                            <p class="mb-1"><strong>Committed amount:</strong> ${{ number_format($invoice->committed_amount_cents / 100, 2) }}</p>
+                        @endif
                         <p class="mb-1"><strong>Paid at:</strong> {{ optional($invoice->paid_at)->format('Y-m-d H:i') ?? '—' }}</p>
                     </div>
                 </div>
@@ -88,31 +91,17 @@
                 @else
                     <form method="POST" action="{{ route('portal.admin.invoices.review', $invoice) }}" class="d-inline">
                         @csrf
-                        <div class="mb-3">
-                            <label for="committed_amount" class="form-label">Committed amount</label>
-                            <input type="text" id="committed_amount" name="committed_amount" value="{{ old('committed_amount', number_format(($invoice->amount_cents ?? 0) / 100, 2)) }}" class="form-control" placeholder="e.g. 1500.00">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Approve invoice</button>
-                    </form>
-                    <button class="btn btn-danger ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#rejectInvoiceForm" aria-expanded="false" aria-controls="rejectInvoiceForm">
-                        Reject invoice
-                    </button>
-                @endif
-
-                <div class="collapse mt-4" id="rejectInvoiceForm">
-                    <div class="card card-body bg-light">
-                        <form method="POST" action="{{ route('portal.admin.invoices.reject', $invoice) }}">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="rejection_reason" class="form-label">Rejection reason</label>
-                                <textarea id="rejection_reason" name="rejection_reason" rows="4" class="form-control" placeholder="Explain why the invoice was rejected" required>{{ old('rejection_reason') }}</textarea>
-                                @error('rejection_reason')
-                                    <div class="text-danger mt-1">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <button type="submit" class="btn btn-danger">Confirm reject invoice</button>
-                        </form>
-                    </div>
+                                @if($invoiceBudgetMode === 'preapproval_amount')
+                                    <div class="mb-3">
+                                        <label for="committed_amount" class="form-label">Committed amount</label>
+                                        <input type="text" id="committed_amount" name="committed_amount" value="{{ old('committed_amount', number_format(($invoice->amount_cents ?? 0) / 100, 2)) }}" class="form-control" placeholder="e.g. 1500.00">
+                                    </div>
+                                @else
+                                    <div class="mb-3">
+                                        <label class="form-label">Approved amount</label>
+                                        <div class="form-control-plaintext fw-bold">${{ number_format(($invoice->amount_cents ?? 0) / 100, 2) }}</div>
+                                    </div>
+                                @endif
                 </div>
             </div>
         </div>
