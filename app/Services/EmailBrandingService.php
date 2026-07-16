@@ -10,16 +10,31 @@ class EmailBrandingService
     public static function logoUrl(?string $logo = null): string
     {
         if (! empty($logo)) {
+            if (! static::isRemoteLogo($logo) && static::localLogoFile($logo) === null) {
+                return asset('storage/branding/logo.jpg');
+            }
+
             return static::normalizeLogoUrl($logo);
         }
 
         $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
 
-        if (! empty($logoPath)) {
+        if (! empty($logoPath) && static::localLogoFile($logoPath) !== null) {
             return static::normalizeLogoUrl($logoPath);
         }
 
         return asset('storage/branding/logo.jpg');
+    }
+
+    protected static function localLogoFile(string $logo): ?string
+    {
+        if (static::isRemoteLogo($logo)) {
+            return null;
+        }
+
+        $file = storage_path('app/public/'.ltrim(preg_replace('#^storage/[\\/]*#', '', $logo), '/'));
+
+        return file_exists($file) ? $file : null;
     }
 
     public static function logoSource(?string $logo = null): ?string
