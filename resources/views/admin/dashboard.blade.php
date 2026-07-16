@@ -283,7 +283,7 @@
                             <thead>
                                 <tr class="text-muted small">
                                     <th>Participant</th>
-                                    <th>Assigned</th>
+                                    <th>Budget</th>
                                     <th>Used</th>
                                     <th>Committed</th>
                                     <th>Available</th>

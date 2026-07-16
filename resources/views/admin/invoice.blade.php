@@ -14,6 +14,7 @@
 
         <div class="card">
             <div class="card-body">
+                @php $invoiceBudgetMode = $portalSettings['invoice_budget_mode'] ?? 'preapproval_amount'; @endphp
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <h5>Invoice details</h5>
@@ -21,13 +22,15 @@
                         <p class="mb-1"><strong>Status:</strong> {{ ucfirst($invoice->status) }}</p>
                         <p class="mb-1"><strong>Invoice date:</strong> {{ optional($invoice->invoice_date)->format('Y-m-d') }}</p>
                         <p class="mb-1"><strong>Service date:</strong> {{ optional($invoice->service_date)->format('Y-m-d') ?? '—' }}</p>
-                        <p class="mb-1"><strong>Linked pre-approval:</strong>
-                            @if($invoice->preApprovalRequest)
-                                <a href="{{ route('portal.admin.pre_approvals.show', $invoice->preApprovalRequest) }}">{{ $invoice->preApprovalRequest->request_number }}</a>
-                            @else
-                                <span class="text-warning">Not linked</span>
-                            @endif
-                        </p>
+                        @if($invoiceBudgetMode !== 'committed_amount')
+                            <p class="mb-1"><strong>Linked pre-approval:</strong>
+                                @if($invoice->preApprovalRequest)
+                                    <a href="{{ route('portal.admin.pre_approvals.show', $invoice->preApprovalRequest) }}">{{ $invoice->preApprovalRequest->request_number }}</a>
+                                @else
+                                    <span class="text-warning">Not linked</span>
+                                @endif
+                            </p>
+                        @endif
                         <p class="mb-1"><strong>Due date:</strong> {{ optional($invoice->due_date)->format('Y-m-d') }}</p>
                         <p class="mb-1"><strong>Approved at:</strong> {{ optional($invoice->approved_at)->format('Y-m-d H:i') ?? '—' }}</p>
                         <p class="mb-1"><strong>Approved by:</strong> {{ optional($invoice->approver)->name ?? '—' }}</p>
@@ -55,7 +58,7 @@
                     </div>
                 @endif
 
-                @if(! $invoice->pre_approval_id)
+                @if($invoiceBudgetMode !== 'committed_amount' && ! $invoice->pre_approval_id)
                     <div class="alert alert-warning">This invoice is not linked to a pre-approval.</div>
                 @endif
 

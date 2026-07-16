@@ -13,6 +13,7 @@
         <p class="text-muted small mb-3">Submit invoices after services are delivered. Once submitted, Allegiance Heart & Home Care will review the invoice, update your budget status, and let you know when it is approved or paid.</p>
         <form method="POST" action="{{ route('portal.participant.invoices.store') }}" enctype="multipart/form-data">
             @csrf
+            @php $invoiceBudgetMode = $portalSettings['invoice_budget_mode'] ?? 'preapproval_amount'; @endphp
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Invoice number</label>
@@ -35,18 +36,20 @@
                     <input type="number" step="0.01" name="amount" class="form-control" value="{{ old('amount') }}" min="0.01" required>
                     <small class="text-muted">Enter the invoice amount in dollars, e.g. 1500.00</small>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">Pre-approval</label>
-                    <select name="pre_approval_id" class="form-select">
-                        <option value="">None</option>
-                        @foreach($preApprovals as $preApproval)
-                            <option value="{{ $preApproval->id }}" @selected(old('pre_approval_id') == $preApproval->id)>
-                                {{ $preApproval->request_number }} — ${{ number_format(($preApproval->committed_amount_cents ?? $preApproval->requested_amount_cents) / 100, 2) }}
-                                ({{ ucfirst($preApproval->status) }})
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                @if($invoiceBudgetMode !== 'committed_amount')
+                    <div class="col-md-3">
+                        <label class="form-label">Pre-approval</label>
+                        <select name="pre_approval_id" class="form-select">
+                            <option value="">None</option>
+                            @foreach($preApprovals as $preApproval)
+                                <option value="{{ $preApproval->id }}" @selected(old('pre_approval_id') == $preApproval->id)>
+                                    {{ $preApproval->request_number }} — ${{ number_format(($preApproval->committed_amount_cents ?? $preApproval->requested_amount_cents) / 100, 2) }}
+                                    ({{ ucfirst($preApproval->status) }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
                 <div class="col-12">
                     <label class="form-label">Notes</label>
                     <textarea name="notes" rows="3" class="form-control">{{ old('notes') }}</textarea>

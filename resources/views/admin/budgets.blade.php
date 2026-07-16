@@ -21,19 +21,19 @@
         <div class="row g-3 mb-4">
             <div class="col-md-3">
                 <div class="card p-3 h-100">
-                    <div class="text-muted small">Current quarter</div>
-                    <div class="fw-bold display-6">{{ $currentQuarterLabel }}</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card p-3 h-100">
                     <div class="text-muted small">Total available</div>
                     <div class="fw-bold display-6">${{ number_format(($totalBudget ?? 0) / 100, 2) }}</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-3 h-100">
-                    <div class="text-muted small">Committed + approved</div>
+                    <div class="text-muted small">Committed</div>
+                    <div class="fw-bold display-6">${{ number_format(($totalCommitted ?? 0) / 100, 2) }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card p-3 h-100">
+                    <div class="text-muted small">Used</div>
                     <div class="fw-bold display-6">${{ number_format(($totalUsed ?? 0) / 100, 2) }}</div>
                 </div>
             </div>
@@ -78,6 +78,7 @@
                             <th>Status</th>
                             <th class="text-end">Quarter total</th>
                             <th class="text-end">Committed</th>
+                            <th class="text-end">Used</th>
                             <th class="text-end">Approved</th>
                             <th class="text-end">Remaining</th>
                             <th class="text-end">Utilization</th>
@@ -90,6 +91,8 @@
                                 $total = $participant->current_budget ?? 0;
                                 $committed = $participant->committed ?? 0;
                                 $approved = $participant->approved_spend ?? 0;
+                                $paid = $participant->paid_spend ?? 0;
+                                $used = $approved + $paid;
                                 $remaining = $participant->remaining_budget ?? 0;
                                 $utilization = $participant->utilization ?? 0;
                             @endphp
@@ -100,6 +103,7 @@
                                 <td>{{ ucfirst($participant->status) }}</td>
                                 <td class="text-end">${{ number_format($total / 100, 2) }}</td>
                                 <td class="text-end">${{ number_format($committed / 100, 2) }}</td>
+                                <td class="text-end">${{ number_format($used / 100, 2) }}</td>
                                 <td class="text-end">${{ number_format($approved / 100, 2) }}</td>
                                 <td class="text-end">${{ number_format($remaining / 100, 2) }}</td>
                                 <td class="text-end">{{ $utilization }}%</td>

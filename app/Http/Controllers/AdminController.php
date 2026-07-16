@@ -250,13 +250,16 @@ class AdminController extends Controller
             ->where('quarter_end_date', $currentQuarterPeriod['quarter_end_date']);
 
         $totalBudget = $budgetQuery->sum(DB::raw('opening_balance_cents + carry_over_cents'));
-        $totalUsed = $budgetQuery->sum(DB::raw('committed_cents + approved_spend_cents'));
-        $totalRemaining = max(0, $totalBudget - $totalUsed);
-        $overBudgetCount = $budgetQuery->whereRaw('committed_cents + approved_spend_cents > opening_balance_cents + carry_over_cents')->count();
+        $totalCommitted = $budgetQuery->sum('committed_cents');
+        $totalApproved = $budgetQuery->sum('approved_spend_cents');
+        $totalPaid = $budgetQuery->sum('paid_spend_cents');
+        $totalUsed = $totalApproved + $totalPaid;
+        $totalRemaining = max(0, $totalBudget - $totalCommitted - $totalUsed);
+        $overBudgetCount = $budgetQuery->whereRaw('committed_cents + approved_spend_cents + paid_spend_cents > opening_balance_cents + carry_over_cents')->count();
 
         $currentQuarterLabel = $this->formatFiscalQuarterLabel($currentQuarter);
 
-        return view('admin.budgets', compact('participants', 'totalBudget', 'totalUsed', 'totalRemaining', 'overBudgetCount', 'currentQuarterLabel'));
+        return view('admin.budgets', compact('participants', 'totalBudget', 'totalCommitted', 'totalApproved', 'totalUsed', 'totalRemaining', 'overBudgetCount', 'currentQuarterLabel'));
     }
 
     protected function moneyDollarsToCents($amount)
