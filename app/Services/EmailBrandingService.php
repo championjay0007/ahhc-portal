@@ -25,7 +25,7 @@ class EmailBrandingService
     public static function logoSource(?string $logo = null): ?string
     {
         if (! empty($logo) && ! static::isRemoteLogo($logo)) {
-            $file = storage_path('app/public/'.ltrim($logo, '/'));
+            $file = storage_path('app/public/'.ltrim(preg_replace('#^storage/[\\/]*#', '', $logo), '/'));
             if (file_exists($file)) {
                 return $file;
             }
@@ -33,7 +33,7 @@ class EmailBrandingService
 
         $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
         if (! empty($logoPath)) {
-            $file = storage_path('app/public/'.ltrim($logoPath, '/'));
+            $file = storage_path('app/public/'.ltrim(preg_replace('#^storage/[\\/]*#', '', $logoPath), '/'));
             if (file_exists($file)) {
                 return $file;
             }

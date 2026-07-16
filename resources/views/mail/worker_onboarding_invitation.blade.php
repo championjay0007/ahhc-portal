@@ -4,6 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AHHC Portal - Worker Onboarding Invitation</title>
+    @php
+        $portalSettings = $portalSettings ?? [];
+        $logo = $logo ?? \App\Services\EmailBrandingService::logoUrl();
+        $organization = $organization ?? config('app.name', 'AHHC Portal');
+        $year = $year ?? now()->year;
+    @endphp
     <style>
         body {
             margin: 0;

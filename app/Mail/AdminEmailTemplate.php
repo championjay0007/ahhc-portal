@@ -35,17 +35,10 @@ class AdminEmailTemplate extends Mailable
             }
         }
 
-        // Extract body content from the HTML if it contains a complete email template
         $introHtml = $this->htmlBody;
-        
-        // If the HTML contains doctype/html/head tags, extract just the body content
-        if (preg_match('/<body[^>]*>(.*)<\/body>/is', $this->htmlBody, $matches)) {
-            $bodyContent = $matches[1];
-            // Remove the header div if present (from old email templates)
-            $bodyContent = preg_replace('/<div\s+class="header"[^>]*>.*?<\/div>\s*<div\s+class="body"[^>]*>/is', '', $bodyContent);
-            // Remove the footer div if present
-            $bodyContent = preg_replace('/<\/div>\s*<div\s+class="footer"[^>]*>.*?<\/div>\s*<\/div>/is', '</div>', $bodyContent);
-            $introHtml = $bodyContent;
+
+        if (preg_match('/<body[^>]*>(.*?)<\/body>/is', $this->htmlBody, $matches)) {
+            $introHtml = $matches[1];
         }
 
         $html = view('emails.shared-layout', [

@@ -38,7 +38,7 @@
         
         /* Button */
         .button-wrapper { text-align: center; margin: 40px 0; }
-        .button { display: inline-block; padding: 16px 42px; background-color: #19B0A5; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold; }
+        .button { display: inline-block; padding: 16px 42px; background-color: #19B0A5; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold; text-align: center; line-height: 1.2; }
         .button:hover { background-color: #138a82; }
         
         /* Panels */

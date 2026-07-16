@@ -27,7 +27,7 @@ class PortalTestEmail extends Mailable
     public function build()
     {
         $subject = ($this->settings['website_name'] ?? 'Portal').' — Test Email';
-        $inner = view('emails.portal_test', ['settings' => $this->settings])->render();
+        $inner = $this->extractBodyContent(view('emails.portal_test', ['settings' => $this->settings])->render());
 
         $logoSource = EmailBrandingService::logoSource();
         $logoUrl = EmailBrandingService::logoUrl();
@@ -57,5 +57,18 @@ class PortalTestEmail extends Mailable
         ])->render();
 
         return $this->subject($subject)->html($html);
+    }
+
+    protected function extractBodyContent(string $html): string
+    {
+        if (preg_match('/<body[^>]*>(.*?)<\/body>/is', $html, $matches)) {
+            return $matches[1];
+        }
+
+        if (preg_match('/<html[^>]*>(.*?)<\/html>/is', $html, $matches)) {
+            return $matches[1];
+        }
+
+        return $html;
     }
 }

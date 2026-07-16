@@ -43,6 +43,11 @@ class StyledEmail extends Mailable
             }
         }
 
+        $introHtml = $this->introHtml;
+        if ($introHtml && preg_match('/<body[^>]*>(.*?)<\/body>/is', $introHtml, $matches)) {
+            $introHtml = $matches[1];
+        }
+
         $html = view('emails.shared-layout', [
             'subjectLine' => $this->subjectLine,
             'headline' => $this->headline,

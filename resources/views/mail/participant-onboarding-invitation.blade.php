@@ -4,6 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Complete your AHHC onboarding</title>
+    @php
+        $portalSettings = $portalSettings ?? [];
+        $logo = $logo ?? \App\Services\EmailBrandingService::logoUrl();
+        $organization = $organization ?? config('app.name', 'AHHC Portal');
+        $year = $year ?? now()->year;
+    @endphp
     <style>
         body { margin: 0; padding: 0; background: #f6f7f9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1f2937; }
         .wrapper { width: 100%; padding: 20px; }

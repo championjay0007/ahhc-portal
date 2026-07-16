@@ -35,7 +35,7 @@ class TemplateMailer
                     highlightPanel: null,
                     warning: null,
                     logo: null,
-                    introHtml: $html,
+                    introHtml: static::extractBodyContent($html),
                 ));
             } catch (\Throwable $inner) {
                 // final fallback: nothing we can do here
@@ -73,5 +73,18 @@ class TemplateMailer
         }
 
         return $variables;
+    }
+
+    protected static function extractBodyContent(string $html): string
+    {
+        if (preg_match('/<body[^>]*>(.*?)<\/body>/is', $html, $matches)) {
+            return $matches[1];
+        }
+
+        if (preg_match('/<html[^>]*>(.*?)<\/html>/is', $html, $matches)) {
+            return $matches[1];
+        }
+
+        return $html;
     }
 }
