@@ -73,19 +73,19 @@ class NotificationCenterService
 
                 $usesHtml = preg_match('/<\/?[a-z][\s\S]*>/i', $emailBody);
                 Mail::to($user->email)->send(new \App\Mail\StyledEmail(
-                    $data['title'] ?? config('app.name'),
-                    $data['title'] ?? config('app.name'),
-                    '',
-                    $usesHtml ? '' : $emailBody,
-                    $usesHtml ? $emailBody : null,
-                    [],
-                    $data['url'] ?? null,
-                    'View details',
-                    null,
-                    null,
-                    $event ?? null,
-                    null,
-                    null
+                    subjectLine: $data['title'] ?? config('app.name'),
+                    headline: $data['title'] ?? config('app.name'),
+                    subtitle: '',
+                    intro: $usesHtml ? '' : $emailBody,
+                    actionUrl: $data['url'] ?? null,
+                    actionText: 'View details',
+                    supportText: null,
+                    footerNote: null,
+                    badge: $event ?? null,
+                    highlightPanel: null,
+                    warning: null,
+                    logo: null,
+                    introHtml: $usesHtml ? $emailBody : null,
                 ));
             } catch (\Exception $e) {
                 // ignore mail failures for now

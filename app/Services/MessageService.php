@@ -258,18 +258,19 @@ class MessageService
             }
             $usesHtml = preg_match('/<\/?[a-z][\s\S]*>/i', $body);
             Mail::to($recipient->email)->send(new \App\Mail\StyledEmail(
-                $subject,
-                $subject,
-                '',
-                $usesHtml ? '' : $body,
-                $usesHtml ? $body : null,
-                [],
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+                subjectLine: $subject,
+                headline: $subject,
+                subtitle: '',
+                intro: $usesHtml ? '' : $body,
+                actionUrl: null,
+                actionText: null,
+                supportText: null,
+                footerNote: null,
+                badge: null,
+                highlightPanel: null,
+                warning: null,
+                logo: null,
+                introHtml: $usesHtml ? $body : null
             ));
         } catch (\Exception $e) {
             // Log but don't throw - message was still created in database

@@ -37,19 +37,19 @@ class NotificationService
                 try {
                     $usesHtml = preg_match('/<\/?[a-z][\s\S]*>/i', $intro);
                     Mail::to($user->email)->send(new \App\Mail\StyledEmail(
-                        $notification->title ?? config('app.name').' Notification', // subjectLine
-                        $notification->title ?? config('app.name'), // headline
-                        '', // subtitle
-                        $usesHtml ? '' : $intro, // intro/body text
-                        $usesHtml ? $intro : null, // introHtml
-                        [], // details
-                        $attrs['data']['url'] ?? null, // actionUrl
-                        'View details', // actionText
-                        null, // supportText
-                        null, // footerNote
-                        $notification->type ?? null, // badge
-                        null, // highlightPanel
-                        null // warning
+                        subjectLine: $notification->title ?? config('app.name').' Notification',
+                        headline: $notification->title ?? config('app.name'),
+                        subtitle: '',
+                        intro: $usesHtml ? '' : $intro,
+                        actionUrl: $attrs['data']['url'] ?? null,
+                        actionText: 'View details',
+                        supportText: null,
+                        footerNote: null,
+                        badge: $notification->type ?? null,
+                        highlightPanel: null,
+                        warning: null,
+                        logo: null,
+                        introHtml: $usesHtml ? $intro : null
                     ));
                 } catch (\Exception $e) {
                     // ignore mail failures for now

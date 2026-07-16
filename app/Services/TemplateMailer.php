@@ -19,18 +19,19 @@ class TemplateMailer
         } catch (\Throwable $e) {
             try {
                 Mail::to($recipientEmail)->send(new \App\Mail\StyledEmail(
-                    $subject,
-                    $subject,
-                    '',
-                    strip_tags($html),
-                    [],
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    $html,
-                    null
+                    subjectLine: $subject,
+                    headline: $subject,
+                    subtitle: '',
+                    intro: strip_tags($html),
+                    actionUrl: null,
+                    actionText: null,
+                    supportText: null,
+                    footerNote: null,
+                    badge: null,
+                    highlightPanel: null,
+                    warning: null,
+                    logo: null,
+                    introHtml: $html,
                 ));
             } catch (\Throwable $inner) {
                 // final fallback: nothing we can do here
