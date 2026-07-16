@@ -20,11 +20,15 @@ class WorkerInvitationSent extends Notification
 
     public function via($notifiable)
     {
-        return ['mail'];
+        return $this->shouldSendMail($notifiable) ? ['mail'] : [];
     }
 
     public function toMail($notifiable)
     {
+        if (! $this->shouldSendMail($notifiable)) {
+            return null;
+        }
+
         $nomination = $this->nomination;
 
         $intro = 'Excellent news! An invitation has been sent to your nominated worker. The worker will receive an email at '.$nomination->worker_email.' with instructions to join.';
@@ -45,6 +49,32 @@ class WorkerInvitationSent extends Notification
             route('portal.participant.nominations.show', $nomination->id),
             'View Nomination'
         );
+    }
+
+    protected function shouldSendMail($notifiable): bool
+    {
+        return (bool) $this->resolveRecipientEmail($notifiable);
+    }
+
+    protected function resolveRecipientEmail($notifiable): ?string
+    {
+        if (! $notifiable) {
+            return null;
+        }
+
+        $email = null;
+
+        if (is_object($notifiable) && isset($notifiable->email)) {
+            $email = $notifiable->email;
+        } elseif (is_array($notifiable) && isset($notifiable['email'])) {
+            $email = $notifiable['email'];
+        }
+
+        if (! is_string($email) || trim($email) === '') {
+            return null;
+        }
+
+        return filter_var($email, FILTER_VALIDATE_EMAIL) ?: null;
     }
 
     public function toArray($notifiable)
