@@ -3,53 +3,46 @@
 namespace App\Mail;
 
 use App\Models\Participant;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Bus\Queueable;
 
-class ParticipantOnboardingInvitation extends Mailable
+class ParticipantOnboardingInvitation extends StyledEmail
 {
     use Queueable, SerializesModels;
 
     public function __construct(
         public Participant $participant,
-    ) {}
-
-    public function build()
-    {
+    ) {
         $subject = 'Complete your AHHC portal onboarding';
 
-        $inner = view('mail.participant-onboarding-invitation', ['participant' => $this->participant])->render();
+        $intro = "Hello <strong>{$this->participant->first_name ?? 'Participant'}</strong>,<br><br>" .
+                 "You're invited to begin your onboarding with <strong>" . config('app.name', 'AHHC Portal') . "</strong>. This helps us confirm your details, review your documentation, and prepare your portal access.<br><br>" .
+                 "Please use the secure link below to continue. The link remains active until <strong>" . optional($this->participant->onboarding_expires_at)->format('d M Y H:i') . "</strong>.";
 
-        $logoUrl = null;
-        $logoPath = \App\Models\PortalSetting::where('key', 'logo_path')->value('value');
-        if (! empty($logoPath)) {
-            $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
-        }
+        $details = [
+            'Name' => trim(($this->participant->first_name ?? '') . ' ' . ($this->participant->last_name ?? '')),
+            'Email' => $this->participant->email ?? '—',
+            'Expires' => '<span style="color: #eb3035; font-weight: bold;">' . optional($this->participant->onboarding_expires_at)->format('d M Y H:i') . '</span>',
+        ];
 
-        $html = view('emails.shared-layout', [
-            'subjectLine' => $subject,
-            'headline' => $subject,
-            'subtitle' => null,
-            'intro' => null,
-            'details' => [],
-            'actionUrl' => null,
-            'actionText' => null,
-            'supportText' => null,
-            'footerNote' => null,
-            'badge' => null,
-            'highlightPanel' => $inner,
-            'warning' => null,
-            'logo' => $logoUrl,
-        ])->render();
+        $supportText = 'If you have any questions or did not expect this invitation, please contact our support team for assistance.';
 
-        return $this->subject($subject)->html($html);
-    }
-
-    public function attachments(): array
-    {
-        return [];
+        parent::__construct(
+            subjectLine: $subject,
+            headline: 'Complete your AHHC onboarding',
+            subtitle: 'Your secure onboarding link is ready. Please follow the steps to activate your portal access.',
+            intro: $intro,
+            details: $details,
+            actionUrl: route('portal.onboarding.show', ['token' => $this->participant->onboarding_token]),
+            actionText: 'Continue onboarding',
+            supportText: $supportText,
+            footerNote: null,
+            badge: 'Onboarding Invitation',
+            highlightPanel: null,
+            warning: null,
+            logo: null,
+            introHtml: null,
+        );
     }
 }
+

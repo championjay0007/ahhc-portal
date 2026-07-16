@@ -3,72 +3,49 @@
 namespace App\Mail;
 
 use App\Models\Worker;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Bus\Queueable;
 
-class WorkerOnboardingInvitation extends Mailable
+class WorkerOnboardingInvitation extends StyledEmail
 {
     use Queueable, SerializesModels;
 
-    public Worker $worker;
-
     public string $onboardingUrl;
 
-    /**
-     * Create a new message instance.
-     */
     public function __construct(Worker $worker)
     {
-        $this->worker = $worker;
         $this->onboardingUrl = route('worker.onboarding.show', ['token' => $worker->onboarding_token]);
-    }
 
-    /**
-     * Get the message envelope.
-     */
-    public function build()
-    {
         $subject = 'AHHC Portal - Worker Onboarding Invitation';
 
-        $inner = view('mail.worker_onboarding_invitation', [
-            'worker' => $this->worker,
-            'onboardingUrl' => $this->onboardingUrl,
-            'expiresAt' => $this->worker->onboarding_expires_at,
-        ])->render();
+        $intro = "Hello <strong>{$worker->first_name ?? 'Worker'}</strong>,<br><br>" .
+                 "You're invited to begin your onboarding with <strong>" . config('app.name', 'AHHC Portal') . "</strong>. This helps us verify your qualifications, confirm your background checks, and prepare your portal access as a care team member.<br><br>" .
+                 "Please use the secure link below to begin. The link remains active until <strong>" . optional($worker->onboarding_expires_at)->format('d M Y H:i') . "</strong>.";
 
-        $logoUrl = null;
-        $logoPath = \App\Models\PortalSetting::where('key', 'logo_path')->value('value');
-        if (! empty($logoPath)) {
-            $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
-        }
+        $details = [
+            'Name' => trim(($worker->first_name ?? '') . ' ' . ($worker->last_name ?? '')),
+            'Email' => $worker->email ?? '—',
+            'Expires' => '<span style="color: #eb3035; font-weight: bold;">' . optional($worker->onboarding_expires_at)->format('d M Y H:i') . '</span>',
+        ];
 
-        $html = view('emails.shared-layout', [
-            'subjectLine' => $subject,
-            'headline' => $subject,
-            'subtitle' => null,
-            'intro' => null,
-            'details' => [],
-            'actionUrl' => null,
-            'actionText' => null,
-            'supportText' => null,
-            'footerNote' => null,
-            'badge' => null,
-            'highlightPanel' => $inner,
-            'warning' => null,
-            'logo' => $logoUrl,
-        ])->render();
+        $supportText = 'If you have any questions or did not expect this invitation, please contact our support team for assistance.';
 
-        return $this->subject($subject)->html($html);
-    }
-
-    /**
-     * Get the attachments for the message.
-     */
-    public function attachments(): array
-    {
-        return [];
+        parent::__construct(
+            subjectLine: $subject,
+            headline: 'Worker Onboarding Invitation',
+            subtitle: 'Your secure onboarding link is ready. Complete your profile to join the care team.',
+            intro: $intro,
+            details: $details,
+            actionUrl: $this->onboardingUrl,
+            actionText: 'Begin Onboarding',
+            supportText: $supportText,
+            footerNote: null,
+            badge: 'Worker Onboarding',
+            highlightPanel: null,
+            warning: null,
+            logo: null,
+            introHtml: null,
+        );
     }
 }
+
