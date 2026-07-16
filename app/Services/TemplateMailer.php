@@ -61,7 +61,7 @@ class TemplateMailer
             if (! empty($logoPath)) {
                 $variables['logo'] = asset('storage/' . ltrim($logoPath, '/'));
             } else {
-                $variables['logo'] = 'https://via.placeholder.com/160x90.png?text=AHHC+Logo';
+                $variables['logo'] = asset('storage/branding/logo.jpg');
             }
         }
 

@@ -34,7 +34,12 @@ class StyledEmail extends Mailable
     public function build(): self
     {
         $logoUrl = null;
-        if (empty($this->logo)) {
+        
+        if (! empty($this->logo)) {
+            // Use explicitly provided logo
+            $logoUrl = $this->logo;
+        } else {
+            // Try to get logo from database settings
             $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
             if (! empty($logoPath)) {
                 $logoPath = ltrim($logoPath, '/');
@@ -47,9 +52,10 @@ class StyledEmail extends Mailable
                     }
                     $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
                 }
+            } else {
+                // Fall back to default logo
+                $logoUrl = asset('storage/branding/logo.jpg');
             }
-        } else {
-            $logoUrl = $this->logo;
         }
 
         $html = view('emails.shared-layout', [
