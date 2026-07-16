@@ -24,7 +24,8 @@ class AdminEmailTemplate extends Mailable
 
     public function build()
     {
-        $logoUrl = EmailBrandingService::logoUrl();
+        $logoSource = EmailBrandingService::logoSource();
+        $logoUrl = $logoSource ? $this->embed($logoSource) : EmailBrandingService::logoUrl();
 
         // Extract body content from the HTML if it contains a complete email template
         $introHtml = $this->htmlBody;

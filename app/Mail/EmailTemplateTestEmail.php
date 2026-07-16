@@ -26,7 +26,8 @@ class EmailTemplateTestEmail extends Mailable
     {
         $rendered = $this->template->render($this->variables);
 
-        $logoUrl = EmailBrandingService::logoUrl();
+        $logoSource = EmailBrandingService::logoSource();
+        $logoUrl = $logoSource ? $this->embed($logoSource) : EmailBrandingService::logoUrl();
 
         $html = view('emails.shared-layout', [
             'subjectLine' => $rendered['subject'],

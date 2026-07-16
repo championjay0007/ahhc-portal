@@ -29,7 +29,8 @@ class PortalTestEmail extends Mailable
         $subject = ($this->settings['website_name'] ?? 'Portal').' — Test Email';
         $inner = view('emails.portal_test', ['settings' => $this->settings])->render();
 
-        $logoUrl = EmailBrandingService::logoUrl();
+        $logoSource = EmailBrandingService::logoSource();
+        $logoUrl = $logoSource ? $this->embed($logoSource) : EmailBrandingService::logoUrl();
 
         $html = view('emails.shared-layout', [
             'subjectLine' => $subject,

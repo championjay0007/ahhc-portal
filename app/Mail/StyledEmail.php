@@ -32,10 +32,12 @@ class StyledEmail extends Mailable
 
     public function build(): self
     {
-        $logoUrl = EmailBrandingService::logoUrl($this->logo);
+        $logoSource = EmailBrandingService::logoSource($this->logo);
+        $logoUrl = $logoSource ? $this->embed($logoSource) : EmailBrandingService::logoUrl($this->logo);
 
         $html = view('emails.shared-layout', [
             'subjectLine' => $this->subjectLine,
+            'headline' => $this->headline,
             'headline' => $this->headline,
             'subtitle' => $this->subtitle,
             'intro' => $this->intro,
