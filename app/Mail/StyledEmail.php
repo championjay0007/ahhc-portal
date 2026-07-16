@@ -32,40 +32,42 @@ class StyledEmail extends Mailable
 
     public function build(): self
     {
-        $logoSource = EmailBrandingService::logoSource($this->logo);
         $logoUrl = EmailBrandingService::logoUrl($this->logo);
 
-        if ($logoSource) {
-            try {
-                $logoUrl = $this->embed($logoSource);
-            } catch (\Throwable $e) {
-                $logoUrl = EmailBrandingService::logoUrl($this->logo);
-            }
-        }
-
-        $introHtml = $this->introHtml;
-        if ($introHtml && preg_match('/<body[^>]*>(.*?)<\/body>/is', $introHtml, $matches)) {
-            $introHtml = $matches[1];
-        }
+        $introHtml = $this->introHtml ? $this->extractEmailFragment($this->introHtml) : null;
+        $highlightPanel = $this->highlightPanel ? $this->extractEmailFragment($this->highlightPanel) : null;
 
         $html = view('emails.shared-layout', [
             'subjectLine' => $this->subjectLine,
             'headline' => $this->headline,
             'subtitle' => $this->subtitle,
             'intro' => $this->intro,
-            'introHtml' => $this->introHtml,
+            'introHtml' => $introHtml,
             'details' => $this->details,
             'actionUrl' => $this->actionUrl,
             'actionText' => $this->actionText,
             'supportText' => $this->supportText,
             'footerNote' => $this->footerNote,
             'badge' => $this->badge,
-            'highlightPanel' => $this->highlightPanel,
+            'highlightPanel' => $highlightPanel,
             'warning' => $this->warning,
             'logo' => $logoUrl,
         ])->render();
 
         return $this->subject($this->subjectLine)
             ->html($html);
+    }
+
+    protected function extractEmailFragment(string $html): string
+    {
+        if (preg_match('/<body[^>]*>(.*?)<\/body>/is', $html, $matches)) {
+            return trim($matches[1]);
+        }
+
+        if (preg_match('/<html[^>]*>(.*?)<\/html>/is', $html, $matches)) {
+            return trim($matches[1]);
+        }
+
+        return trim($html);
     }
 }

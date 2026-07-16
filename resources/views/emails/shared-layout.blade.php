@@ -78,29 +78,36 @@
     </style>
 </head>
 <body>
-<table class="wrapper" cellpadding="0" cellspacing="0" border="0">
+<table class="wrapper" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0;padding:0;background-color:#f6f7f9;">
     <tr>
-        <td>
-            <table class="card-container" cellpadding="0" cellspacing="0" border="0">
+        <td align="center" style="padding:20px 0;background-color:#f6f7f9;">
+            <table class="card-container" cellpadding="0" cellspacing="0" border="0" width="650" style="width:100%;max-width:650px;margin:0 auto;background-color:#ffffff;">
                 <!-- Header -->
                 <tr>
-                    <td class="header-gradient header">
+                    <td class="header-gradient header" bgcolor="#356991" style="background: linear-gradient(to right, #356991 0%, #19B0A5 50%, #72CEAC 100%); padding:45px 30px; text-align:center; color:#ffffff;">
                         @if(!empty($logo))
-                            <div class="logo"><img src="{{ $logo }}" alt="logo" /></div>
+                            <div class="logo" style="margin-bottom:12px;"><img src="{{ $logo }}" width="200" height="60" alt="{{ $badge ?? 'AHHC Portal' }} logo" style="display:block;margin:0 auto;max-width:200px;width:auto;height:auto;border:none;outline:none;text-decoration:none;" /></div>
                         @endif
-                        <div class="badge">{{ $badge ?? 'AHHC Portal' }}</div>
-                        <h1 class="title">{{ $headline }}</h1>
-                        <p class="subtitle">{{ $subtitle }}</p>
+                        <div class="badge" style="display:inline-block;padding:6px 16px;background-color:rgba(255,255,255,0.2);color:#ffffff;font-size:12px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;">{{ $badge ?? 'AHHC Portal' }}</div>
+                        <h1 class="title" style="margin:20px 0 10px;font-size:32px;line-height:1.1;font-weight:bold;color:#ffffff;">{{ $headline }}</h1>
+                        <p class="subtitle" style="margin:0;font-size:16px;line-height:1.75;color:rgba(255,255,255,0.95);">{{ $subtitle }}</p>
                     </td>
                 </tr>
                 
                 <!-- Body -->
                 <tr>
-                    <td class="body">
-                        @if(!empty($introHtml))
-                            {!! $introHtml !!}
-                        @else
-                            <p>{!! nl2br(e($intro)) !!}</p>
+                    <td class="body" style="padding:45px 40px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;color:#4b5563;">
+                        @php
+                            $bodyIntro = null;
+                            if (! empty($introHtml)) {
+                                $bodyIntro = $introHtml;
+                            } elseif (! empty($intro)) {
+                                $bodyIntro = preg_match('/<[^>]+>/', $intro) ? $intro : nl2br(e($intro));
+                            }
+                        @endphp
+
+                        @if(! empty($bodyIntro))
+                            {!! $bodyIntro !!}
                         @endif
                         
                         @if(!empty($warning))
