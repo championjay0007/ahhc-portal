@@ -47,6 +47,9 @@
 
         <div class="card mb-4">
             <div class="card-body">
+                <p class="text-muted small mb-3">
+                    Committed shows the remaining invoice commitment balance still attached to submitted invoices. Paid shows the portion already paid out, while Used is the total approved and paid invoice amount.
+                </p>
                 <form method="GET" action="{{ route('portal.admin.budgets') }}" class="row g-2 align-items-end">
                     <div class="col-md-5">
                         <label class="form-label">Search</label>
@@ -78,6 +81,7 @@
                             <th>Status</th>
                             <th class="text-end">Quarter total</th>
                             <th class="text-end">Committed</th>
+                            <th class="text-end">Paid</th>
                             <th class="text-end">Used</th>
                             <th class="text-end">Approved</th>
                             <th class="text-end">Remaining</th>
@@ -103,6 +107,7 @@
                                 <td>{{ ucfirst($participant->status) }}</td>
                                 <td class="text-end">${{ number_format($total / 100, 2) }}</td>
                                 <td class="text-end">${{ number_format($committed / 100, 2) }}</td>
+                                <td class="text-end">${{ number_format($paid / 100, 2) }}</td>
                                 <td class="text-end">${{ number_format($used / 100, 2) }}</td>
                                 <td class="text-end">${{ number_format($approved / 100, 2) }}</td>
                                 <td class="text-end">${{ number_format($remaining / 100, 2) }}</td>
