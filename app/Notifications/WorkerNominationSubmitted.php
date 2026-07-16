@@ -68,9 +68,13 @@ class WorkerNominationSubmitted extends Notification
 
         $email = null;
 
-        if (is_object($notifiable) && isset($notifiable->email)) {
+        if (is_object($notifiable) && method_exists($notifiable, 'routeNotificationForMail')) {
+            $email = $notifiable->routeNotificationForMail($this);
+        }
+
+        if (empty($email) && is_object($notifiable) && isset($notifiable->email)) {
             $email = $notifiable->email;
-        } elseif (is_array($notifiable) && isset($notifiable['email'])) {
+        } elseif (empty($email) && is_array($notifiable) && isset($notifiable['email'])) {
             $email = $notifiable['email'];
         }
 

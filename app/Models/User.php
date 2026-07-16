@@ -77,6 +77,15 @@ class User extends Authenticatable
         return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=0E3863&color=fff&rounded=true';
     }
 
+    public function routeNotificationForMail($notification = null): ?string
+    {
+        if (! is_string($this->email) || trim($this->email) === '') {
+            return null;
+        }
+
+        return filter_var($this->email, FILTER_VALIDATE_EMAIL) ?: null;
+    }
+
     public function participant(): HasOne
     {
         return $this->hasOne(Participant::class);
