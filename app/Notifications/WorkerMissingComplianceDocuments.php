@@ -22,11 +22,15 @@ class WorkerMissingComplianceDocuments extends Notification implements ShouldQue
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return $this->shouldSendMail($notifiable) ? ['mail', 'database'] : ['database'];
     }
 
     public function toMail(object $notifiable)
     {
+        if (! $this->shouldSendMail($notifiable)) {
+            return null;
+        }
+
         $subject = "Worker Missing Compliance Documents - {$this->worker->first_name} {$this->worker->last_name}";
         $intro = "The following compliance documents are missing for worker {$this->worker->first_name} {$this->worker->last_name}:";
 
@@ -44,6 +48,30 @@ class WorkerMissingComplianceDocuments extends Notification implements ShouldQue
             config('app.url').'/admin/compliance/workers/'.$this->worker->id,
             'Review Compliance'
         );
+    }
+
+    protected function shouldSendMail(object $notifiable): bool
+    {
+        return (bool) $this->resolveRecipientEmail($notifiable);
+    }
+
+    protected function resolveRecipientEmail(object $notifiable): ?string
+    {
+        $email = null;
+
+        if (method_exists($notifiable, 'routeNotificationForMail')) {
+            $email = $notifiable->routeNotificationForMail($this);
+        }
+
+        if (empty($email) && isset($notifiable->email)) {
+            $email = $notifiable->email;
+        }
+
+        if (! is_string($email) || trim($email) === '') {
+            return null;
+        }
+
+        return filter_var($email, FILTER_VALIDATE_EMAIL) ?: null;
     }
 
     public function toDatabase(object $notifiable): array

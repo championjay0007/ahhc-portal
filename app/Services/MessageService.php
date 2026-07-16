@@ -256,6 +256,11 @@ class MessageService
             if (isset($preference->channel_email) && ! $preference->channel_email) {
                 return;
             }
+
+            if (! is_string($recipient->email ?? null) || ! filter_var($recipient->email, FILTER_VALIDATE_EMAIL)) {
+                return;
+            }
+
             $usesHtml = preg_match('/<\/?[a-z][\s\S]*>/i', $body);
             Mail::to($recipient->email)->send(new \App\Mail\StyledEmail(
                 subjectLine: $subject,

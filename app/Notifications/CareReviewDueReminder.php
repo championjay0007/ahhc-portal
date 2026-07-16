@@ -22,11 +22,15 @@ class CareReviewDueReminder extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return $this->shouldSendMail($notifiable) ? ['mail', 'database'] : ['database'];
     }
 
     public function toMail(object $notifiable)
     {
+        if (! $this->shouldSendMail($notifiable)) {
+            return null;
+        }
+
         $participant = $this->review->participant;
         $intro = '';
         $subject = '';
@@ -48,6 +52,30 @@ class CareReviewDueReminder extends Notification implements ShouldQueue
             config('app.url').'/portal/admin/care-reviews/'.$this->review->id,
             'View Review'
         );
+    }
+
+    protected function shouldSendMail(object $notifiable): bool
+    {
+        return (bool) $this->resolveRecipientEmail($notifiable);
+    }
+
+    protected function resolveRecipientEmail(object $notifiable): ?string
+    {
+        $email = null;
+
+        if (method_exists($notifiable, 'routeNotificationForMail')) {
+            $email = $notifiable->routeNotificationForMail($this);
+        }
+
+        if (empty($email) && isset($notifiable->email)) {
+            $email = $notifiable->email;
+        }
+
+        if (! is_string($email) || trim($email) === '') {
+            return null;
+        }
+
+        return filter_var($email, FILTER_VALIDATE_EMAIL) ?: null;
     }
 
     public function toDatabase(object $notifiable): array

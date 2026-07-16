@@ -64,7 +64,7 @@ class NotificationCenterService
 
         // send email if allowed
         $sendEmail = $channels ? in_array('email', $channels, true) : $pref->channel_email;
-        if ($sendEmail && $user && $user->email) {
+        if ($sendEmail && $user && is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
             try {
                 $emailBody = $data['message'] ?? '';
                 if (! empty($data['url'])) {

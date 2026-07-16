@@ -19,11 +19,15 @@ class ComplaintSubmitted extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return $this->shouldSendMail($notifiable) ? ['mail', 'database'] : ['database'];
     }
 
     public function toMail($notifiable)
     {
+        if (! $this->shouldSendMail($notifiable)) {
+            return null;
+        }
+
         $complaint = $this->complaint;
         $participant = optional($complaint->participant);
         $intro = "A complaint has been submitted by participant: {$participant->first_name} {$participant->last_name}";
@@ -43,6 +47,36 @@ class ComplaintSubmitted extends Notification implements ShouldQueue
             route('portal.admin.complaints.show', $complaint),
             'Review complaint'
         );
+    }
+
+    protected function shouldSendMail($notifiable): bool
+    {
+        return (bool) $this->resolveRecipientEmail($notifiable);
+    }
+
+    protected function resolveRecipientEmail($notifiable): ?string
+    {
+        if (! $notifiable) {
+            return null;
+        }
+
+        $email = null;
+
+        if (is_object($notifiable) && method_exists($notifiable, 'routeNotificationForMail')) {
+            $email = $notifiable->routeNotificationForMail($this);
+        }
+
+        if (empty($email) && is_object($notifiable) && isset($notifiable->email)) {
+            $email = $notifiable->email;
+        } elseif (empty($email) && is_array($notifiable) && isset($notifiable['email'])) {
+            $email = $notifiable['email'];
+        }
+
+        if (! is_string($email) || trim($email) === '') {
+            return null;
+        }
+
+        return filter_var($email, FILTER_VALIDATE_EMAIL) ?: null;
     }
 
     public function toArray($notifiable)

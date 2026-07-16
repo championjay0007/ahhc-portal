@@ -970,11 +970,13 @@ class AdminController extends Controller
         }
 
         // Send activation email to the user
-        try {
-            Mail::to($user->email)->send(new \App\Mail\AccountActivated($user));
-        } catch (\Throwable $e) {
-            // Log the error but don't fail the operation
-            \Log::error('Failed to send account activated email', ['error' => $e->getMessage()]);
+        if (is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+            try {
+                Mail::to($user->email)->send(new \App\Mail\AccountActivated($user));
+            } catch (\Throwable $e) {
+                // Log the error but don't fail the operation
+                \Log::error('Failed to send account activated email', ['error' => $e->getMessage()]);
+            }
         }
 
         return back()->with('status', 'User activated and permitted to access the dashboard immediately.');

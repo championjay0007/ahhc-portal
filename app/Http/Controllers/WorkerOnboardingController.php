@@ -154,11 +154,13 @@ class WorkerOnboardingController extends Controller
         $worker->update(['user_id' => $user->id]);
 
         // Send account-activated email prompting the worker to sign in and continue onboarding.
-        try {
-            Mail::to($worker->email)->send(new \App\Mail\AccountActivated($user));
-        } catch (\Throwable $e) {
-            // Log error but don't block onboarding flow if email fails
-            \Log::error('Failed to send account activated email', ['error' => $e->getMessage()]);
+        if (is_string($worker->email ?? null) && filter_var($worker->email, FILTER_VALIDATE_EMAIL)) {
+            try {
+                Mail::to($worker->email)->send(new \App\Mail\AccountActivated($user));
+            } catch (\Throwable $e) {
+                // Log error but don't block onboarding flow if email fails
+                \Log::error('Failed to send account activated email', ['error' => $e->getMessage()]);
+            }
         }
 
         return redirect()->route('portal.login')->with('success', 'Account created successfully. Please log in to continue with your onboarding.');
@@ -191,7 +193,9 @@ class WorkerOnboardingController extends Controller
         }
 
         $requirements = $this->getStage2ComplianceRequirements();
-        $validationRules = [];
+        $validationRules = [
+            'apn' => ['nullable', 'string', 'max:50'],
+        ];
 
         foreach ($requirements as $requirement) {
             $field = 'documents.'.$requirement['slug'];
@@ -238,6 +242,7 @@ class WorkerOnboardingController extends Controller
 
             $worker->update([
                 'stage_2_submitted_at' => now(),
+                'notes' => trim(($worker->notes ? $worker->notes.PHP_EOL : '').'APN: '.$validated['apn']),
             ]);
         });
 

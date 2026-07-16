@@ -28,7 +28,7 @@ class NotificationService
                 ['channel_email' => true, 'channel_in_app' => true, 'channel_push' => true, 'channel_sms' => false]
             );
 
-            if ($preference->channel_email && $user && $user->email && ($notification->title || $notification->message)) {
+            if ($preference->channel_email && $user && is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL) && ($notification->title || $notification->message)) {
                 $intro = trim($notification->message ?: $notification->title ?: 'You have a new notification.');
                 if (! empty($attrs['data']['url'])) {
                     $intro .= "\n\n".$attrs['data']['url'];

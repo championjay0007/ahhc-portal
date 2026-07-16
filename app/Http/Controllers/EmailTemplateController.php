@@ -216,6 +216,10 @@ class EmailTemplateController extends Controller
             'test_email' => 'required|email|max:255',
         ]);
 
+        if (! is_string($validated['test_email'] ?? null) || ! filter_var($validated['test_email'], FILTER_VALIDATE_EMAIL)) {
+            return back()->with('error', 'The provided test email address is invalid.');
+        }
+
         try {
             Mail::to($validated['test_email'])->send(
                 new EmailTemplateTestEmail($emailTemplate, $emailTemplate->sampleVariables())

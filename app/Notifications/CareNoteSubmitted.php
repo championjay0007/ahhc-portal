@@ -20,11 +20,15 @@ class CareNoteSubmitted extends Notification
 
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return $this->shouldSendMail($notifiable) ? ['mail', 'database'] : ['database'];
     }
 
     public function toMail($notifiable)
     {
+        if (! $this->shouldSendMail($notifiable)) {
+            return null;
+        }
+
         $careNote = $this->careNote;
         $participant = optional($careNote->participant);
         $worker = optional($careNote->worker);
@@ -51,6 +55,36 @@ class CareNoteSubmitted extends Notification
             route('portal.admin.care_notes.show', $careNote),
             'Review care note'
         );
+    }
+
+    protected function shouldSendMail($notifiable): bool
+    {
+        return (bool) $this->resolveRecipientEmail($notifiable);
+    }
+
+    protected function resolveRecipientEmail($notifiable): ?string
+    {
+        if (! $notifiable) {
+            return null;
+        }
+
+        $email = null;
+
+        if (is_object($notifiable) && method_exists($notifiable, 'routeNotificationForMail')) {
+            $email = $notifiable->routeNotificationForMail($this);
+        }
+
+        if (empty($email) && is_object($notifiable) && isset($notifiable->email)) {
+            $email = $notifiable->email;
+        } elseif (empty($email) && is_array($notifiable) && isset($notifiable['email'])) {
+            $email = $notifiable['email'];
+        }
+
+        if (! is_string($email) || trim($email) === '') {
+            return null;
+        }
+
+        return filter_var($email, FILTER_VALIDATE_EMAIL) ?: null;
     }
 
     public function toArray($notifiable)

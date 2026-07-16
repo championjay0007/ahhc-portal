@@ -14,6 +14,10 @@ class TemplateMailer
 
         [$subject, $html, $text] = static::render($slug, $variables, $defaultSubject, $defaultHtml, $defaultText, $name, $category);
 
+        if (! is_string($recipientEmail ?? null) || ! filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
+            return;
+        }
+
         try {
             Mail::to($recipientEmail)->send(new AdminEmailTemplate($subject, $html, $text));
         } catch (\Throwable $e) {

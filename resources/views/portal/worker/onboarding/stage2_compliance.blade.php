@@ -55,6 +55,12 @@
                                     </ul>
                                 </div>
 
+                                <div class="mb-4">
+                                    <label class="form-label" for="apn">APN number</label>
+                                    <input id="apn" type="text" class="form-control" name="apn" value="{{ old('apn') }}" placeholder="Enter APN number" inputmode="numeric">
+                                    <small class="text-muted d-block mt-2">Submit the APN number as a number entry, not a document upload.</small>
+                                </div>
+
                                 @foreach ($complianceTypes as $requirement)
                                     @php
                                         $uploaded = $uploadedDocuments->firstWhere('document_type', $requirement['name']);
