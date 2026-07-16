@@ -45,12 +45,12 @@ class IncidentController extends Controller
 
         // notify admins
         try {
-            $admins = User::where('role', 'admin')->get();
+            $admins = User::where('role', 'admin')->get()->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
             if ($admins->isNotEmpty()) {
                 Notification::send($admins, new IncidentReported($incident));
             }
-        } catch (\Exception $e) {
-            // ignore notification failures
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return redirect()->back()->with('status', 'Incident recorded.');

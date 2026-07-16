@@ -73,12 +73,14 @@ class CareNoteController extends Controller
 
         // Notify admins
         try {
-            $admins = User::where('role', 'admin')->get();
+            $admins = User::where('role', 'admin')->get()
+                ->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
+
             if ($admins->isNotEmpty()) {
                 Notification::send($admins, new CareNoteSubmitted($careNote));
             }
-        } catch (\Exception $e) {
-            // swallow notification errors to not block user flow
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return redirect()->route('portal.admin.participants.care_notes', $participant)->with('status', 'Care note saved.');
@@ -192,12 +194,14 @@ class CareNoteController extends Controller
 
         // Notify admins
         try {
-            $admins = User::where('role', 'admin')->get();
+            $admins = User::where('role', 'admin')->get()
+                ->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
+
             if ($admins->isNotEmpty()) {
                 Notification::send($admins, new CareNoteSubmitted($careNote));
             }
-        } catch (\Exception $e) {
-            // swallow notification errors to not block user flow
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return redirect()->route('portal.participant.care_notes.index')->with('status', 'Care note saved.');

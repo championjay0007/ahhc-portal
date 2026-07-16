@@ -44,9 +44,16 @@ class ComplianceNotificationService
      */
     public function sendExpiryNotification(WorkerComplianceDocument $document): void
     {
-        $admins = $this->getAdminUsers();
+        $admins = $this->getAdminUsers()->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
 
-        Notification::send($admins, new ComplianceDocumentExpired($document));
+        if ($admins->isNotEmpty()) {
+            try {
+                Notification::send($admins, new ComplianceDocumentExpired($document));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
         WorkerComplianceAlert::create([
             'worker_id' => $document->worker_id,
             'worker_compliance_document_id' => $document->id,
@@ -69,9 +76,16 @@ class ComplianceNotificationService
      */
     public function sendMissingDocumentsNotification($worker, array $missingDocumentTypes): void
     {
-        $admins = $this->getAdminUsers();
+        $admins = $this->getAdminUsers()->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
 
-        Notification::send($admins, new WorkerMissingComplianceDocuments($worker, $missingDocumentTypes));
+        if ($admins->isNotEmpty()) {
+            try {
+                Notification::send($admins, new WorkerMissingComplianceDocuments($worker, $missingDocumentTypes));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
         WorkerComplianceAlert::create([
             'worker_id' => $worker->id,
             'alert_type' => 'compliance_missing',
@@ -88,9 +102,16 @@ class ComplianceNotificationService
      */
     private function sendReminderToAdmins(WorkerComplianceDocument $document, int $days): void
     {
-        $admins = $this->getAdminUsers();
+        $admins = $this->getAdminUsers()->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
 
-        Notification::send($admins, new ComplianceDocumentExpiringReminder($document, $days));
+        if ($admins->isNotEmpty()) {
+            try {
+                Notification::send($admins, new ComplianceDocumentExpiringReminder($document, $days));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
         WorkerComplianceAlert::create([
             'worker_id' => $document->worker_id,
             'worker_compliance_document_id' => $document->id,

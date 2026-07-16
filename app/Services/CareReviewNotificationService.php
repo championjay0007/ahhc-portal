@@ -16,8 +16,15 @@ class CareReviewNotificationService
      */
     public function send7DayReminder(MonthlyCareReview $review): void
     {
-        $careManagers = $this->getNotificationRecipients($review);
-        Notification::send($careManagers, new CareReviewDueReminder($review, 7));
+        $careManagers = $this->getNotificationRecipients($review)->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
+
+        if ($careManagers->isNotEmpty()) {
+            try {
+                Notification::send($careManagers, new CareReviewDueReminder($review, 7));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         $review->update(['due_date_reminder_sent_at' => now()]);
     }
@@ -27,8 +34,15 @@ class CareReviewNotificationService
      */
     public function sendDueTodayReminder(MonthlyCareReview $review): void
     {
-        $careManagers = $this->getNotificationRecipients($review);
-        Notification::send($careManagers, new CareReviewDueReminder($review, 0));
+        $careManagers = $this->getNotificationRecipients($review)->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
+
+        if ($careManagers->isNotEmpty()) {
+            try {
+                Notification::send($careManagers, new CareReviewDueReminder($review, 0));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         $review->update(['today_reminder_sent_at' => now()]);
     }
@@ -38,8 +52,15 @@ class CareReviewNotificationService
      */
     public function sendOverdueNotification(MonthlyCareReview $review): void
     {
-        $careManagers = $this->getNotificationRecipients($review);
-        Notification::send($careManagers, new CareReviewOverdue($review));
+        $careManagers = $this->getNotificationRecipients($review)->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
+
+        if ($careManagers->isNotEmpty()) {
+            try {
+                Notification::send($careManagers, new CareReviewOverdue($review));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         $review->update(['overdue_reminder_sent_at' => now()]);
     }

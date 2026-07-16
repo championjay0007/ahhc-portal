@@ -227,8 +227,16 @@ class WorkerNominationController extends Controller
 
         $nomination->refresh();
 
-        // Send approval email to participant
-        Notification::send($nomination->participant->user, new WorkerNominationApproved($nomination));
+        // Send approval email to participant (explicit mail route to avoid notification routing ambiguity)
+        $participantUser = $nomination->participant->user;
+        if ($participantUser && is_string($participantUser->email ?? null) && filter_var($participantUser->email, FILTER_VALIDATE_EMAIL)) {
+            try {
+                Notification::route('mail', $participantUser->email)
+                    ->notify(new WorkerNominationApproved($nomination));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         // Create in-app notification for participant
         NotificationService::notify([
@@ -254,7 +262,15 @@ class WorkerNominationController extends Controller
                 Auth::id()
             );
 
-            Notification::send($nomination->participant->user, new WorkerInvitationSent($nomination));
+            $participantUser = $nomination->participant->user;
+            if ($participantUser && is_string($participantUser->email ?? null) && filter_var($participantUser->email, FILTER_VALIDATE_EMAIL)) {
+                try {
+                    Notification::route('mail', $participantUser->email)
+                        ->notify(new WorkerInvitationSent($nomination));
+                } catch (\Throwable $e) {
+                    report($e);
+                }
+            }
             NotificationService::notify([
                 'user_id' => $nomination->participant->user_id,
                 'title' => 'Worker Invitation Sent',
@@ -395,7 +411,15 @@ class WorkerNominationController extends Controller
         );
 
         // Send rejection email to participant
-        Notification::send($nomination->participant->user, new WorkerNominationRejected($nomination));
+        $participantUser = $nomination->participant->user;
+        if ($participantUser && is_string($participantUser->email ?? null) && filter_var($participantUser->email, FILTER_VALIDATE_EMAIL)) {
+            try {
+                Notification::route('mail', $participantUser->email)
+                    ->notify(new WorkerNominationRejected($nomination));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         // Create in-app notification for participant
         NotificationService::notify([
@@ -435,7 +459,15 @@ class WorkerNominationController extends Controller
                 Auth::id()
             );
 
-            Notification::send($nomination->participant->user, new WorkerInvitationSent($nomination));
+            $participantUser = $nomination->participant->user;
+            if ($participantUser && is_string($participantUser->email ?? null) && filter_var($participantUser->email, FILTER_VALIDATE_EMAIL)) {
+                try {
+                    Notification::route('mail', $participantUser->email)
+                        ->notify(new WorkerInvitationSent($nomination));
+                } catch (\Throwable $e) {
+                    report($e);
+                }
+            }
 
             NotificationService::notify([
                 'user_id' => $nomination->participant->user_id,

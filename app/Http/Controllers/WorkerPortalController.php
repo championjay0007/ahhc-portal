@@ -280,12 +280,12 @@ class WorkerPortalController extends Controller
 
         // Notify admins
         try {
-            $admins = User::where('role', 'admin')->get();
+            $admins = User::where('role', 'admin')->get()->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
             if ($admins->isNotEmpty()) {
                 Notification::send($admins, new CareNoteSubmitted($careNote));
             }
-        } catch (\Exception $e) {
-            // swallow notification errors to not block user flow
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return redirect()->route('portal.worker.care_notes.create')->with('status', 'Care note submitted successfully.');
@@ -337,12 +337,12 @@ class WorkerPortalController extends Controller
 
         // Notify admins
         try {
-            $admins = User::where('role', 'admin')->get();
+            $admins = User::where('role', 'admin')->get()->filter(fn ($user) => is_string($user->email ?? null) && filter_var($user->email, FILTER_VALIDATE_EMAIL));
             if ($admins->isNotEmpty()) {
                 Notification::send($admins, new IncidentReported($incident));
             }
-        } catch (\Exception $e) {
-            // swallow notification errors to not block user flow
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return redirect()->route('portal.worker.incidents.create')->with('status', 'Incident report submitted.');
