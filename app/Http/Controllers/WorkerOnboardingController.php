@@ -15,6 +15,7 @@ use App\Services\TemplateMailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
@@ -154,31 +155,10 @@ class WorkerOnboardingController extends Controller
 
         // Send account-activated email prompting the worker to sign in and continue onboarding.
         try {
-            $defaultHtml = view('mail.account_activated', [
-                'name' => $user->name,
-                'login_url' => route('portal.login'),
-                'dashboard_url' => url('/dashboard'),
-            ])->render();
-
-            TemplateMailer::send(
-                $worker->email,
-                'account-activated',
-                [
-                    'name' => $user->name,
-                    'email' => $worker->email,
-                    'worker_email' => $worker->email,
-                    'worker_id' => $worker->worker_number,
-                    'login_url' => route('portal.login'),
-                    'dashboard_url' => url('/dashboard'),
-                ],
-                'Your account is now active',
-                $defaultHtml,
-                strip_tags($defaultHtml),
-                'Account Activated',
-                'Account'
-            );
+            Mail::to($worker->email)->send(new \App\Mail\AccountActivated($user));
         } catch (\Throwable $e) {
-            // Best-effort: don't block onboarding flow if email fails.
+            // Log error but don't block onboarding flow if email fails
+            \Log::error('Failed to send account activated email', ['error' => $e->getMessage()]);
         }
 
         return redirect()->route('portal.login')->with('success', 'Account created successfully. Please log in to continue with your onboarding.');

@@ -967,37 +967,10 @@ class AdminController extends Controller
 
         // Send activation email to the user
         try {
-            $dashboardUrl = route('portal.dashboard');
-            if ($user->role === 'worker') {
-                $dashboardUrl = route('portal.worker.dashboard');
-            } elseif ($user->role === 'admin') {
-                $dashboardUrl = route('portal.admin.dashboard');
-            }
-
-            $html = view('mail.account-activated', [
-                'name' => $user->name,
-                'dashboard_url' => $dashboardUrl,
-                'login_url' => route('portal.login'),
-                'organization' => config('app.name', 'AHHC Portal'),
-            ])->render();
-
-            TemplateMailer::send(
-                $user->email,
-                'account-activated',
-                [
-                    'name' => $user->name,
-                    'dashboard_url' => $dashboardUrl,
-                    'login_url' => route('portal.login'),
-                    'organization' => config('app.name', 'AHHC Portal'),
-                ],
-                'Your account is active — '.config('app.name', 'AHHC Portal'),
-                $html,
-                strip_tags($html),
-                'Account Activated',
-                'Account'
-            );
+            Mail::to($user->email)->send(new \App\Mail\AccountActivated($user));
         } catch (\Throwable $e) {
-            // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
+            // Log the error but don't fail the operation
+            \Log::error('Failed to send account activated email', ['error' => $e->getMessage()]);
         }
 
         return back()->with('status', 'User activated and permitted to access the dashboard immediately.');
