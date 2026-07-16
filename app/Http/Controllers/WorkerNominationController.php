@@ -95,8 +95,9 @@ class WorkerNominationController extends Controller
         $admins = User::whereIn('role', ['admin', 'system_admin'])->where('status', 'active')->get();
 
         foreach ($admins as $admin) {
-            // Send email notification
-            Notification::send($admin, new WorkerNominationSubmitted($nomination));
+            if (! empty($admin->email) && filter_var($admin->email, FILTER_VALIDATE_EMAIL)) {
+                Notification::send($admin, new WorkerNominationSubmitted($nomination));
+            }
 
             // Create in-app notification
             NotificationService::notify([
