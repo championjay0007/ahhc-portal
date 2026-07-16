@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\PortalSetting;
+use App\Services\EmailBrandingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -24,11 +24,7 @@ class AdminEmailTemplate extends Mailable
 
     public function build()
     {
-        $logoUrl = null;
-        $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
-        if (! empty($logoPath)) {
-            $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
-        }
+        $logoUrl = EmailBrandingService::logoUrl();
 
         // Extract body content from the HTML if it contains a complete email template
         $introHtml = $this->htmlBody;

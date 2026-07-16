@@ -2,12 +2,11 @@
 
 namespace App\Mail;
 
-use App\Models\PortalSetting;
+use App\Services\EmailBrandingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Markdown;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
 
 class StyledEmail extends Mailable
 {
@@ -33,30 +32,7 @@ class StyledEmail extends Mailable
 
     public function build(): self
     {
-        $logoUrl = null;
-        
-        if (! empty($this->logo)) {
-            // Use explicitly provided logo
-            $logoUrl = $this->logo;
-        } else {
-            // Try to get logo from database settings
-            $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
-            if (! empty($logoPath)) {
-                $logoPath = ltrim($logoPath, '/');
-                if (Str::startsWith($logoPath, ['http://', 'https://', 'data:'])) {
-                    $logoUrl = $logoPath;
-                } else {
-                    // avoid double 'storage/storage' if path already contains storage/
-                    if (Str::startsWith($logoPath, 'storage/')) {
-                        $logoPath = substr($logoPath, strlen('storage/'));
-                    }
-                    $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
-                }
-            } else {
-                // Fall back to default logo
-                $logoUrl = asset('storage/branding/logo.jpg');
-            }
-        }
+        $logoUrl = EmailBrandingService::logoUrl($this->logo);
 
         $html = view('emails.shared-layout', [
             'subjectLine' => $this->subjectLine,

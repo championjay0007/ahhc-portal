@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Mail\AdminEmailTemplate;
-use App\Models\PortalSetting;
+use App\Services\EmailBrandingService;
 use Illuminate\Support\Facades\Mail;
 
 class TemplateMailer
@@ -61,12 +61,7 @@ class TemplateMailer
     protected static function normalizeVariables(array $variables): array
     {
         if (! array_key_exists('logo', $variables)) {
-            $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
-            if (! empty($logoPath)) {
-                $variables['logo'] = asset('storage/' . ltrim($logoPath, '/'));
-            } else {
-                $variables['logo'] = asset('storage/branding/logo.jpg');
-            }
+            $variables['logo'] = EmailBrandingService::logoUrl();
         }
 
         if (! array_key_exists('organization', $variables)) {

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 use App\Models\PortalSetting;
+use App\Services\EmailBrandingService;
 use App\Services\TemplateVariableService;
 
 class EmailTemplate extends Model
@@ -193,10 +194,8 @@ class EmailTemplate extends Model
 
     protected function defaultVariables(): array
     {
+        $logoUrl = EmailBrandingService::logoUrl();
         $logoPath = PortalSetting::where('key', 'logo_path')->value('value');
-        $logoUrl = ! empty($logoPath)
-            ? asset('storage/' . ltrim($logoPath, '/'))
-            : 'https://via.placeholder.com/160x90.png?text=AHHC+Logo';
 
         return [
             'logo' => $logoUrl,

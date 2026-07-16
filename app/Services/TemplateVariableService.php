@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\PortalSetting;
+use App\Services\EmailBrandingService;
 use Illuminate\Support\Str;
 
 class TemplateVariableService
@@ -71,10 +71,7 @@ class TemplateVariableService
      */
     public static function sampleValuesFor(array $variables): array
     {
-        $customLogoPath = PortalSetting::where('key', 'logo_path')->value('value');
-        $logoUrl = ! empty($customLogoPath)
-            ? asset('storage/' . ltrim($customLogoPath, '/'))
-            : 'https://via.placeholder.com/160x90.png?text=Logo';
+        $logoUrl = EmailBrandingService::logoUrl();
 
         $appName = htmlspecialchars(config('app.name', 'Logo'), ENT_QUOTES, 'UTF-8');
 

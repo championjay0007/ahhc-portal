@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Services\EmailBrandingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -28,11 +29,7 @@ class PortalTestEmail extends Mailable
         $subject = ($this->settings['website_name'] ?? 'Portal').' — Test Email';
         $inner = view('emails.portal_test', ['settings' => $this->settings])->render();
 
-        $logoUrl = null;
-        $logoPath = \App\Models\PortalSetting::where('key', 'logo_path')->value('value');
-        if (! empty($logoPath)) {
-            $logoUrl = asset('storage/' . ltrim($logoPath, '/'));
-        }
+        $logoUrl = EmailBrandingService::logoUrl();
 
         $html = view('emails.shared-layout', [
             'subjectLine' => $subject,
