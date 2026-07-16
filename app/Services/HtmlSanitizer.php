@@ -30,7 +30,7 @@ class HtmlSanitizer
         $clean = preg_replace_callback('/<(a|img)\b[^>]*>/i', function ($m) {
             $tag = $m[0];
             // remove javascript: from href/src
-            $tag = preg_replace('/(href|src)\s*=\s*("|\')?\s*javascript:[^"'\s>]*("|\')?/i', '$1="#"', $tag);
+            $tag = preg_replace('/(href|src)\s*=\s*("|\')?\s*javascript:[^"\'\s>]*("|\')?/i', '$1="#"', $tag);
             return $tag;
         }, $clean);
 
