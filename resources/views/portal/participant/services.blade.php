@@ -114,6 +114,42 @@
         </div>
     </div>
 
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card portal-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
+                    <div>
+                        <h5 class="mb-1">Recent Care Notes</h5>
+                        <small class="text-muted">Worker-submitted notes from your recent visits.</small>
+                    </div>
+                    <a href="{{ route('portal.participant.care_notes.index') }}" class="btn btn-sm btn-outline-primary">View all care notes</a>
+                </div>
+
+                @if($recentCareNotes->isEmpty())
+                    <div class="text-center py-4 text-muted">
+                        No care notes have been recorded yet.
+                    </div>
+                @else
+                    <div class="list-group list-group-flush">
+                        @foreach($recentCareNotes as $note)
+                            <a href="{{ route('portal.participant.care_notes.show', $note) }}" class="list-group-item list-group-item-action py-3">
+                                <div class="d-flex justify-content-between align-items-center gap-3">
+                                    <div>
+                                        <strong>{{ $note->shift_date?->format('d M Y') ?? 'No date' }}</strong>
+                                        <div class="small text-muted">{{ $note->service_type ?? 'General care note' }}</div>
+                                        <div class="small text-muted">Worker: {{ optional($note->worker)->first_name }} {{ optional($note->worker)->last_name }}</div>
+                                    </div>
+                                    <span class="badge bg-{{ $note->status === 'approved' ? 'success' : ($note->status === 'rejected' ? 'danger' : 'secondary') }}">{{ ucfirst($note->status) }}</span>
+                                </div>
+                                <p class="mt-2 mb-0 small text-truncate">{{ \Illuminate\Support\Str::limit($note->care_summary, 120) }}</p>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
     <div class="row g-3">
         <div class="col-12">
             <div class="card portal-card p-4 border-start border-secondary">

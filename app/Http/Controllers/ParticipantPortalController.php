@@ -427,12 +427,19 @@ class ParticipantPortalController extends Controller
             ->orderBy('start_time', 'asc')
             ->get();
 
+        $recentCareNotes = $participant->careNotes()
+            ->with('worker')
+            ->latest()
+            ->take(5)
+            ->get();
+
         return view('portal.participant.services', compact(
             'participant',
             'activeAssignments',
             'recentShifts',
             'approvedServices',
-            'upcomingShifts'
+            'upcomingShifts',
+            'recentCareNotes'
         ));
     }
 

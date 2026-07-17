@@ -35,5 +35,6 @@ class ParticipantCanViewCareNotesTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Care note history');
         $response->assertSee('Checked medication and provided support');
+        $response->assertDontSee('Monthly Care Management Checklist');
     }
 }
