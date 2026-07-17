@@ -33,7 +33,7 @@
                             <h6 class="mb-0">Compliance Documents</h6>
                         </div>
                         <div class="card-body">
-                            <p class="text-muted mb-4">Please upload the documents below to continue your onboarding. Police Check is required; all other documents are optional.</p>
+                            <p class="text-muted mb-4">Please upload the documents below to continue your onboarding. Police Check is required; all other documents are optional. ABN verification is entered as a number.</p>
 
                             <form method="POST" action="{{ route('worker.onboarding.stage2.submit', ['token' => $token]) }}" enctype="multipart/form-data">
                                 @csrf
@@ -56,9 +56,9 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <label class="form-label" for="apn">APN number</label>
-                                    <input id="apn" type="text" class="form-control" name="apn" value="{{ old('apn') }}" placeholder="Enter APN number" inputmode="numeric">
-                                    <small class="text-muted d-block mt-2">Submit the APN number as a number entry, not a document upload.</small>
+                                    <label class="form-label" for="apn">ABN number</label>
+                                    <input id="apn" type="text" class="form-control" name="apn" value="{{ old('apn') }}" placeholder="Enter ABN number" inputmode="numeric">
+                                    <small class="text-muted d-block mt-2">Enter your ABN number here. This is not a document upload.</small>
                                 </div>
 
                                 @foreach ($complianceTypes as $requirement)
