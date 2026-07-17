@@ -132,4 +132,73 @@ class ParticipantShiftCreationTest extends TestCase
         $response->assertSee('Alice Example');
         $response->assertSee('Personal Care');
     }
+
+    public function test_worker_shift_link_prefills_care_note_and_incident_forms(): void
+    {
+        $participantUser = User::create([
+            'name' => 'Participant User',
+            'email' => 'participant-shift-3@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'password' => bcrypt('Password123!'),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $participantUser->id,
+            'participant_number' => 'P-2003',
+            'first_name' => 'Alice',
+            'last_name' => 'Example',
+            'email' => 'alice3@example.com',
+            'phone' => '0400000005',
+            'status' => 'active',
+        ]);
+
+        $workerUser = User::create([
+            'name' => 'Worker User',
+            'email' => 'worker-shift-2@example.com',
+            'role' => 'worker',
+            'status' => 'active',
+            'password' => bcrypt('Password123!'),
+        ]);
+
+        $worker = Worker::create([
+            'user_id' => $workerUser->id,
+            'worker_number' => 'W-2003',
+            'first_name' => 'Bob',
+            'last_name' => 'Worker',
+            'email' => 'bob3@example.com',
+            'phone' => '0400000006',
+            'status' => 'approved',
+            'role_type' => 'Independent',
+            'onboarding_stage' => 6,
+        ]);
+
+        $shift = Shift::create([
+            'participant_id' => $participant->id,
+            'worker_id' => $worker->id,
+            'service_type' => 'Personal Care',
+            'service_category' => 'Domestic Assistance',
+            'shift_date' => '2030-01-16',
+            'start_time' => '10:00',
+            'end_time' => '11:00',
+            'location' => 'Home',
+            'notes' => 'Visible to worker',
+            'status' => Shift::STATUS_SCHEDULED,
+        ]);
+
+        $careNoteResponse = $this->actingAs($workerUser)
+            ->get(route('portal.worker.care_notes.create', ['shift_id' => $shift->id, 'participant_id' => $participant->id]));
+
+        $careNoteResponse->assertStatus(200);
+        $careNoteResponse->assertSee('Link to a shift');
+        $this->assertMatchesRegularExpression('/<option[^>]*value="'.$shift->id.'"[^>]*selected/', $careNoteResponse->getContent());
+        $this->assertMatchesRegularExpression('/<input[^>]*id="shift_date"[^>]*value="2030-01-16"/', $careNoteResponse->getContent());
+
+        $incidentResponse = $this->actingAs($workerUser)
+            ->get(route('portal.worker.incidents.create', ['shift_id' => $shift->id, 'participant_id' => $participant->id]));
+
+        $incidentResponse->assertStatus(200);
+        $incidentResponse->assertSee('Link to a shift');
+        $this->assertMatchesRegularExpression('/<option[^>]*value="'.$shift->id.'"[^>]*selected/', $incidentResponse->getContent());
+    }
 }

@@ -71,6 +71,9 @@
                                         <button type="submit" class="btn btn-sm btn-outline-success">Complete</button>
                                     </form>
                                 @endif
+
+                                <a href="{{ route('portal.worker.care_notes.create', ['shift_id' => $shift->id, 'participant_id' => $shift->participant_id]) }}" class="btn btn-sm btn-outline-secondary mt-1">Care Note</a>
+                                <a href="{{ route('portal.worker.incidents.create', ['shift_id' => $shift->id, 'participant_id' => $shift->participant_id]) }}" class="btn btn-sm btn-outline-danger mt-1">Incident</a>
                             </td>
                         </tr>
                     @endforeach

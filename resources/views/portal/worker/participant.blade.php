@@ -62,10 +62,10 @@
 
     <div class="row g-4">
         <div class="col-md-4">
-            <a href="{{ route('portal.worker.care_notes.create') }}" class="btn btn-primary w-100">Create Care Note</a>
+            <a href="{{ route('portal.worker.care_notes.create', ['participant_id' => $participant->id]) }}" class="btn btn-primary w-100">Create Care Note</a>
         </div>
         <div class="col-md-4">
-            <a href="{{ route('portal.worker.incidents.create') }}" class="btn btn-danger w-100">Report Incident</a>
+            <a href="{{ route('portal.worker.incidents.create', ['participant_id' => $participant->id]) }}" class="btn btn-danger w-100">Report Incident</a>
         </div>
         <div class="col-md-4">
             <a href="{{ route('portal.worker.documents.upload') }}" class="btn btn-secondary w-100">Upload Document</a>

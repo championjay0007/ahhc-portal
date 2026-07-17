@@ -216,7 +216,7 @@ class WorkerPortalController extends Controller
         return redirect()->route('portal.worker.shifts')->with('status', 'Shift completed successfully.');
     }
 
-    public function createCareNote()
+    public function createCareNote(Request $request)
     {
         $worker = $this->worker();
         $assignments = $worker->assignments()->with('participant')->where('status', 'active')->get();
@@ -226,7 +226,14 @@ class WorkerPortalController extends Controller
             ->orderBy('shift_date', 'desc')
             ->get();
 
-        return view('portal.worker.care-note', compact('worker', 'assignments', 'shifts'));
+        $selectedShift = null;
+        if ($request->query('shift_id')) {
+            $selectedShift = Shift::where('id', $request->query('shift_id'))
+                ->where('worker_id', $worker->id)
+                ->first();
+        }
+
+        return view('portal.worker.care-note', compact('worker', 'assignments', 'shifts', 'selectedShift'));
     }
 
     public function storeCareNote(Request $request)
@@ -252,6 +259,9 @@ class WorkerPortalController extends Controller
             $shift = Shift::findOrFail($validated['shift_id']);
             if ((int)$shift->worker_id !== (int)$worker->id) {
                 abort(403, 'Invalid shift selection.');
+            }
+            if ((int)$shift->participant_id !== (int)$validated['participant_id']) {
+                abort(422, 'Selected shift does not belong to the chosen participant.');
             }
         }
 
@@ -294,7 +304,7 @@ class WorkerPortalController extends Controller
         return redirect()->route('portal.worker.care_notes.create')->with('status', 'Care note submitted successfully.');
     }
 
-    public function createIncident()
+    public function createIncident(Request $request)
     {
         $worker = $this->worker();
         $assignments = $worker->assignments()->with('participant')->where('status', 'active')->get();
@@ -304,7 +314,14 @@ class WorkerPortalController extends Controller
             ->orderBy('shift_date', 'desc')
             ->get();
 
-        return view('portal.worker.incident', compact('worker', 'assignments', 'shifts'));
+        $selectedShift = null;
+        if ($request->query('shift_id')) {
+            $selectedShift = Shift::where('id', $request->query('shift_id'))
+                ->where('worker_id', $worker->id)
+                ->first();
+        }
+
+        return view('portal.worker.incident', compact('worker', 'assignments', 'shifts', 'selectedShift'));
     }
 
     public function storeIncident(Request $request)
@@ -324,6 +341,9 @@ class WorkerPortalController extends Controller
             $shift = Shift::findOrFail($validated['shift_id']);
             if ((int)$shift->worker_id !== (int)$worker->id) {
                 abort(403, 'Invalid shift selection.');
+            }
+            if ((int)$shift->participant_id !== (int)$validated['participant_id']) {
+                abort(422, 'Selected shift does not belong to the chosen participant.');
             }
         }
 

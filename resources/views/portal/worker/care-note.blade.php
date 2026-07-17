@@ -20,7 +20,10 @@
             <select id="participant_id" name="participant_id" class="form-control" required>
                 <option value="">Select a participant</option>
                 @foreach($assignments as $assignment)
-                    <option value="{{ $assignment->participant->id }}">{{ $assignment->participant->first_name }} {{ $assignment->participant->last_name }}</option>
+                    <option value="{{ $assignment->participant->id }}"
+                        {{ old('participant_id', optional($selectedShift)->participant_id ?? request('participant_id')) == $assignment->participant->id ? 'selected' : '' }}>
+                        {{ $assignment->participant->first_name }} {{ $assignment->participant->last_name }}
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -31,32 +34,26 @@
                 <select id="shift_id" name="shift_id" class="form-control">
                     <option value="">Link to a shift</option>
                     @foreach($shifts as $shift)
-                        <option value="{{ $shift->id }}" {{ old('shift_id') == $shift->id ? 'selected' : '' }}>
-                            {{ $shift->shift_date?->format('d M Y') }} {{ $shift->start_time }}-{{ $shift->end_time }} — {{ $shift->participant?->first_name }} {{ $shift->participant?->last_name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        @endif
+                                <option value="{{ $shift->id }}" {{ old('shift_id', optional($selectedShift)->id ?? request('shift_id')) == $shift->id ? 'selected' : '' }}>
+                                    {{ $shift->shift_date?->format('d M Y') }} {{ $shift->start_time }}-{{ $shift->end_time }} — {{ $shift->participant?->first_name }} {{ $shift->participant?->last_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
 
         <div class="row g-3 mb-3">
             <div class="col-md-4">
                 <label for="shift_date" class="form-label">Shift Date</label>
-                <input type="date" id="shift_date" name="shift_date" class="form-control" value="{{ old('shift_date', now()->format('Y-m-d')) }}" required>
+                <input type="date" id="shift_date" name="shift_date" class="form-control" value="{{ old('shift_date', optional($selectedShift)->shift_date?->format('Y-m-d') ?? now()->format('Y-m-d')) }}" required>
             </div>
             <div class="col-md-4">
                 <label for="start_time" class="form-label">Start Time</label>
-                <input type="time" id="start_time" name="start_time" class="form-control" value="{{ old('start_time') }}" required>
+                <input type="time" id="start_time" name="start_time" class="form-control" value="{{ old('start_time', optional($selectedShift)->start_time ?? '') }}" required>
             </div>
             <div class="col-md-4">
                 <label for="end_time" class="form-label">End Time</label>
-                <input type="time" id="end_time" name="end_time" class="form-control" value="{{ old('end_time') }}" required>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="tasks_completed" class="form-label">Tasks Completed</label>
-            <textarea id="tasks_completed" name="tasks_completed" rows="5" class="form-control" required>{{ old('tasks_completed') }}</textarea>
+                <input type="time" id="end_time" name="end_time" class="form-control" value="{{ old('end_time', optional($selectedShift)->end_time ?? '') }}" required>
         </div>
 
         <div class="mb-3">
