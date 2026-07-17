@@ -118,6 +118,37 @@ class WorkerOnboardingStage2UploadTest extends TestCase
         ]);
     }
 
+    public function test_worker_stage2_submission_persists_abn_number_in_worker_notes(): void
+    {
+        Storage::fake('private');
+
+        $worker = Worker::create([
+            'worker_number' => 'W-1003',
+            'first_name' => 'ABN',
+            'last_name' => 'Worker',
+            'phone' => '0400111224',
+            'email' => 'abn.worker@example.com',
+            'role_type' => 'Independent',
+            'status' => 'pending',
+            'onboarding_stage' => 2,
+            'onboarding_token' => 'abn-token-123',
+            'onboarding_expires_at' => now()->addDays(30),
+        ]);
+
+        $response = $this->post(route('worker.onboarding.stage2.submit', ['token' => $worker->onboarding_token]), [
+            'abn_number' => '12345678901',
+            'documents' => [
+                'police_check' => UploadedFile::fake()->create('policecheck.pdf', 100, 'application/pdf'),
+            ],
+        ]);
+
+        $response->assertRedirect(route('worker.onboarding.show', ['token' => $worker->onboarding_token]));
+
+        $worker->refresh();
+
+        $this->assertStringContainsString('ABN: 12345678901', $worker->notes);
+    }
+
     public function test_worker_is_shown_stage3_review_after_submitting_stage2_documents(): void
     {
         Storage::fake('private');

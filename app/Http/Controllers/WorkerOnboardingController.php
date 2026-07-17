@@ -194,7 +194,7 @@ class WorkerOnboardingController extends Controller
 
         $requirements = $this->getStage2ComplianceRequirements();
         $validationRules = [
-            'apn' => ['nullable', 'string', 'max:50'],
+            'abn_number' => ['nullable', 'string', 'max:50'],
         ];
 
         foreach ($requirements as $requirement) {
@@ -233,11 +233,11 @@ class WorkerOnboardingController extends Controller
                 $hasAnyUploadedDocument = true;
             }
 
-            $apn = $validated['apn'] ?? null;
+            $abnNumber = $validated['abn_number'] ?? null;
 
             $worker->update([
                 'stage_2_submitted_at' => now(),
-                'notes' => trim(($worker->notes ? $worker->notes.PHP_EOL : '').($apn ? 'APN: '.$apn : '')),
+                'notes' => trim(($worker->notes ? $worker->notes.PHP_EOL : '').($abnNumber ? 'ABN: '.$abnNumber : '')),
             ]);
         });
 
@@ -610,7 +610,7 @@ class WorkerOnboardingController extends Controller
             ],
             [
                 'slug' => 'registration',
-                'name' => 'Registration',
+                'name' => 'APHRA Registration',
                 'required' => false,
                 'description' => 'Professional registration or licensing documents.',
             ],

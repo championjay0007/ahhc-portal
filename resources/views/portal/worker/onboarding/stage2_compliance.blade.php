@@ -56,8 +56,8 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <label class="form-label" for="apn">ABN number</label>
-                                    <input id="apn" type="text" class="form-control" name="apn" value="{{ old('apn') }}" placeholder="Enter ABN number" inputmode="numeric">
+                                    <label class="form-label" for="abn_number">ABN number</label>
+                                    <input id="abn_number" type="text" class="form-control" name="abn_number" value="{{ old('abn_number') }}" placeholder="Enter ABN number" inputmode="numeric">
                                     <small class="text-muted d-block mt-2">Enter your ABN number here. This is not a document upload.</small>
                                 </div>
 
