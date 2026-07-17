@@ -19,14 +19,15 @@ class ParticipantCanViewCareNotesTest extends TestCase
 
         $worker = Worker::factory()->create();
 
-        CareNote::create([
+        $note = CareNote::create([
             'participant_id' => $participant->id,
             'worker_id' => $worker->id,
             'shift_date' => now()->toDateString(),
             'tasks_completed' => 'Checked medication and provided support',
             'care_summary' => 'Checked medication and provided support',
-            'status' => 'submitted',
+            'status' => 'approved',
             'submitted_at' => now(),
+            'approved_at' => now(),
             'created_by_id' => $user->id,
         ]);
 

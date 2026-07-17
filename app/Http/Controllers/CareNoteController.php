@@ -91,7 +91,7 @@ class CareNoteController extends Controller
     {
         $user = auth()->user();
         $participant = Participant::where('user_id', $user->id)->firstOrFail();
-        $notes = $participant->careNotes()->latest()->get();
+        $notes = $participant->careNotes()->with('worker')->latest()->get();
 
         // Determine missing service evidence for active assignments (last 30 days)
         $assignments = $participant->assignments()->where('status', 'active')->get();

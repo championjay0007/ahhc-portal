@@ -12,6 +12,12 @@
         <h5>{{ optional($careNote->shift_date)->format('Y-m-d') }} - {{ $careNote->service_type ?? 'General' }}</h5>
         <p class="mb-1"><strong>Worker:</strong> {{ optional($careNote->worker)->first_name }} {{ optional($careNote->worker)->last_name }}</p>
         <p class="mb-1"><strong>Status:</strong> {{ ucfirst($careNote->status) }}</p>
+        @if($careNote->approved_at)
+            <p class="mb-1"><strong>Approved:</strong> {{ \Illuminate\Support\Carbon::parse($careNote->approved_at)->format('Y-m-d H:i') }}</p>
+        @endif
+        @if($careNote->approved_by)
+            <p class="mb-1"><strong>Approved by:</strong> {{ optional($careNote->approved_by)->name ?? 'Administrator' }}</p>
+        @endif
         <hr />
         <h6>Summary</h6>
         <p>{{ $careNote->care_summary }}</p>

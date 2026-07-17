@@ -30,16 +30,20 @@
         @else
             <div class="list-group">
                 @foreach($notes as $note)
-                    <div class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ route('portal.participant.care_notes.show', $note) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
                             <div>
                                 <strong>{{ optional($note->shift_date)->format('Y-m-d') }}</strong>
                                 <div class="small text-muted">{{ $note->service_type ?? 'General care note' }}</div>
+                                <div class="small text-muted">Worker: {{ optional($note->worker)->first_name }} {{ optional($note->worker)->last_name }}</div>
                             </div>
-                            <span class="badge bg-{{ $note->status === 'approved' ? 'success' : ($note->status === 'rejected' ? 'danger' : 'secondary') }}">{{ ucfirst($note->status) }}</span>
+                            <div class="text-end">
+                                <span class="badge bg-{{ $note->status === 'approved' ? 'success' : ($note->status === 'rejected' ? 'danger' : 'secondary') }}">{{ ucfirst($note->status) }}</span>
+                                <div class="small text-muted mt-1">View</div>
+                            </div>
                         </div>
                         <p class="mt-2 mb-0">{{ \Illuminate\Support\Str::limit($note->care_summary, 140) }}</p>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         @endif
