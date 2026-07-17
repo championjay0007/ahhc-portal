@@ -78,7 +78,7 @@ class WorkerOnboardingStage2UploadTest extends TestCase
         Storage::disk('private')->assertExists($document->document_path);
     }
 
-    public function test_worker_can_submit_stage2_with_required_documents_and_skip_optional_uploads(): void
+    public function test_worker_can_submit_stage2_with_only_police_check_document(): void
     {
         Storage::fake('private');
 
@@ -97,14 +97,7 @@ class WorkerOnboardingStage2UploadTest extends TestCase
 
         $response = $this->post(route('worker.onboarding.stage2.submit', ['token' => $worker->onboarding_token]), [
             'documents' => [
-                'abn_verification' => UploadedFile::fake()->create('abn.pdf', 100, 'application/pdf'),
                 'police_check' => UploadedFile::fake()->create('policecheck.pdf', 100, 'application/pdf'),
-                'ndis_worker_screening' => UploadedFile::fake()->create('screening.pdf', 100, 'application/pdf'),
-                'insurance' => UploadedFile::fake()->create('insurance.pdf', 100, 'application/pdf'),
-                'qualification' => UploadedFile::fake()->create('qualification.pdf', 100, 'application/pdf'),
-                'first_aid_certificate' => UploadedFile::fake()->create('firstaid.pdf', 100, 'application/pdf'),
-                'cpr_certificate' => UploadedFile::fake()->create('cpr.pdf', 100, 'application/pdf'),
-                'registration' => UploadedFile::fake()->create('registration.pdf', 100, 'application/pdf'),
             ],
         ]);
 

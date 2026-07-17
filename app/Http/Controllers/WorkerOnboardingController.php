@@ -199,12 +199,9 @@ class WorkerOnboardingController extends Controller
 
         foreach ($requirements as $requirement) {
             $field = 'documents.'.$requirement['slug'];
-            $validationRules[$field] = array_filter([
-                $requirement['required'] ? 'required' : 'nullable',
-                'file',
-                'max:10240',
-                'mimes:pdf,jpg,jpeg,png,doc,docx',
-            ]);
+            $validationRules[$field] = $requirement['required']
+                ? ['required', 'file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx']
+                : ['nullable', 'file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx'];
         }
 
         $validated = $request->validate($validationRules);
@@ -234,10 +231,6 @@ class WorkerOnboardingController extends Controller
                 );
 
                 $hasAnyUploadedDocument = true;
-            }
-
-            if (! $hasAnyUploadedDocument) {
-                $worker->complianceDocuments()->where('status', 'submitted')->delete();
             }
 
             $apn = $validated['apn'] ?? null;
@@ -576,7 +569,7 @@ class WorkerOnboardingController extends Controller
             [
                 'slug' => 'abn_verification',
                 'name' => 'ABN Verification',
-                'required' => true,
+                'required' => false,
                 'description' => 'Australian Business Number verification.',
             ],
             [
@@ -588,37 +581,37 @@ class WorkerOnboardingController extends Controller
             [
                 'slug' => 'ndis_worker_screening',
                 'name' => 'NDIS Worker Screening',
-                'required' => true,
+                'required' => false,
                 'description' => 'NDIS worker screening certificate.',
             ],
             [
                 'slug' => 'insurance',
                 'name' => 'Insurance',
-                'required' => true,
+                'required' => false,
                 'description' => 'Professional indemnity or public liability insurance.',
             ],
             [
                 'slug' => 'qualification',
                 'name' => 'Qualification',
-                'required' => true,
+                'required' => false,
                 'description' => 'Relevant qualifications and certifications.',
             ],
             [
                 'slug' => 'first_aid_certificate',
                 'name' => 'First Aid Certificate',
-                'required' => true,
+                'required' => false,
                 'description' => 'First Aid certification evidence.',
             ],
             [
                 'slug' => 'cpr_certificate',
                 'name' => 'CPR Certificate',
-                'required' => true,
+                'required' => false,
                 'description' => 'CPR training certification.',
             ],
             [
                 'slug' => 'registration',
                 'name' => 'Registration',
-                'required' => true,
+                'required' => false,
                 'description' => 'Professional registration or licensing documents.',
             ],
             [

@@ -33,7 +33,7 @@
                             <h6 class="mb-0">Compliance Documents</h6>
                         </div>
                         <div class="card-body">
-                            <p class="text-muted mb-4">Please upload the documents below to continue your onboarding. Some documents are required, while others are optional.</p>
+                            <p class="text-muted mb-4">Please upload the documents below to continue your onboarding. Police Check is required; all other documents are optional.</p>
 
                             <form method="POST" action="{{ route('worker.onboarding.stage2.submit', ['token' => $token]) }}" enctype="multipart/form-data">
                                 @csrf
@@ -41,22 +41,24 @@
                                 <div class="alert alert-info">
                                     <strong>Requirements:</strong>
                                     <ul class="mb-0 mt-2">
-                                        <li><strong>ABN Verification</strong> — required for onboarding.</li>
-                                        <li><strong>Police Check</strong> — required for onboarding.</li>
-                                        <li><strong>NDIS Worker Screening</strong> — required for onboarding.</li>
-                                        <li><strong>Insurance</strong> — required for onboarding.</li>
-                                        <li><strong>Qualification</strong> — required for onboarding.</li>
-                                        <li><strong>First Aid Certificate</strong> — required for onboarding.</li>
-                                        <li><strong>CPR Certificate</strong> — required for onboarding.</li>
-                                        <li><strong>Registration</strong> — required for onboarding.</li>
-                                        <li><strong>Marketplace Agreement</strong> — optional if applicable.</li>
+                                        @foreach ($complianceTypes as $requirement)
+                                            <li>
+                                                {{ $requirement['name'] }}
+                                                @if ($requirement['required'])
+                                                    <span class="badge bg-danger">Required</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Optional</span>
+                                                @endif
+                                                <small class="text-muted d-block">{{ $requirement['description'] }}</small>
+                                            </li>
+                                        @endforeach
                                     </ul>
                                 </div>
 
                                 <div class="mb-4">
                                     <label class="form-label" for="apn">APN number</label>
                                     <input id="apn" type="text" class="form-control" name="apn" value="{{ old('apn') }}" placeholder="Enter APN number" inputmode="numeric">
-                                    <small class="text-muted d-block mt-2">Enter the APN number here. This is not a document upload.</small>
+                                    <small class="text-muted d-block mt-2">Submit the APN number as a number entry, not a document upload.</small>
                                 </div>
 
                                 @foreach ($complianceTypes as $requirement)
@@ -142,7 +144,7 @@
                                     <div class="timeline-marker">○</div>
                                     <div class="timeline-content">
                                         <h6>Stage 3: Document Review</h6>
-                                        <small class="text-muted">AHHC will review your documents</small>
+                                        <small class="text-muted">Allegiance Heart &amp; Home Care reviews documents</small>
                                     </div>
                                 </div>
                                 <div class="timeline-item">
