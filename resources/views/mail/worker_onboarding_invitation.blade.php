@@ -9,6 +9,11 @@
         $logo = $logo ?? \App\Services\EmailBrandingService::logoUrl();
         $organization = $organization ?? config('app.name', 'AHHC Portal');
         $year = $year ?? now()->year;
+
+        // Prefer a locally uploaded branding logo when available to avoid remote fetch issues.
+        $localBrandingPath = storage_path('app/public/branding/logo.jpg');
+        $localBrandingUrl = file_exists($localBrandingPath) ? asset('storage/branding/logo.jpg') : null;
+        $emailLogoSrc = $localBrandingUrl ?? ($logo ?? asset('images/branding/logo.jpg'));
     @endphp
     <style>
         body {
@@ -235,7 +240,7 @@
                 <tr>
                     <td class="email-header">
                         <a href="{{ url('/') }}" style="display:inline-block;">
-                            <img src="{{ $logo ?? asset('images/branding/logo.jpg') }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" width="200" height="60" style="display:block;margin:0 auto;max-width:220px;height:auto;border:0;" />
+                            <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" width="200" height="60" style="display:block;margin:0 auto;max-width:220px;height:auto;border:0;" />
                         </a>
                         <div class="email-badge">Worker Invitation</div>
                         <h1 class="email-title">Welcome to AHHC</h1>

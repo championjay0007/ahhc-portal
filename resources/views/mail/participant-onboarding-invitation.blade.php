@@ -9,6 +9,11 @@
         $logo = $logo ?? \App\Services\EmailBrandingService::logoUrl();
         $organization = $organization ?? config('app.name', 'AHHC Portal');
         $year = $year ?? now()->year;
+
+        // Prefer a locally uploaded branding logo when available to avoid remote fetch issues.
+        $localBrandingPath = storage_path('app/public/branding/logo.jpg');
+        $localBrandingUrl = file_exists($localBrandingPath) ? asset('storage/branding/logo.jpg') : null;
+        $emailLogoSrc = $localBrandingUrl ?? ($logo ?? asset('images/branding/logo.jpg'));
     @endphp
     <style>
         body { margin: 0; padding: 0; background: #f6f7f9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1f2937; }
@@ -49,7 +54,7 @@
         <div class="card">
             <div class="header">
                 <a href="{{ url('/') }}" style="display:inline-block;">
-                    <img src="{{ $logo ?? asset('images/branding/logo.jpg') }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" width="200" height="60" style="display:block;margin:0 auto;max-width:220px;height:auto;border:0;" />
+                    <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" width="200" height="60" style="display:block;margin:0 auto;max-width:220px;height:auto;border:0;" />
                 </a>
                 <div class="badge">Onboarding Invitation</div>
                 <h1 class="title">Complete your AHHC onboarding</h1>
