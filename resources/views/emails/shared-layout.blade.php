@@ -67,6 +67,11 @@
                 <table role="presentation" class="email-body" width="650" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td class="email-header" style="padding:28px 24px; text-align:center;">
+                            @php
+                                $portalSettings = $portalSettings ?? [];
+                                $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value'));
+                            @endphp
+
                             @if(!empty($logo))
                                 <div class="email-logo" style="margin:0 auto 12px;">
                                     <img src="{{ $logo }}" alt="{{ $badge ?? 'AHHC Portal' }}" width="200" height="60" style="max-width:220px; height:auto; display:block; border:0;" />
@@ -133,10 +138,15 @@
                                 </table>
                             @endif
 
-                            @if($supportText)
+                            @if($supportText || !empty($supportEmail))
                                 <div class="support">
                                     <h4 style="margin:0 0 8px 0;color:#356991;">Need help?</h4>
-                                    <p style="margin:0;">{{ $supportText }}</p>
+                                    @if(!empty($supportText))
+                                        <p style="margin:0 0 8px 0;">{{ $supportText }}</p>
+                                    @endif
+                                    @if(!empty($supportEmail))
+                                        <p style="margin:0;">Contact our support team: <a href="mailto:{{ $supportEmail }}" style="color:#1f6f6a;font-weight:700;">{{ $supportEmail }}</a></p>
+                                    @endif
                                 </div>
                             @endif
 
