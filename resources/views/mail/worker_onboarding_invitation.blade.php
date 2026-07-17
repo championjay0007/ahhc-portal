@@ -13,7 +13,12 @@
         // Prefer a locally uploaded branding logo when available to avoid remote fetch issues.
         $localBrandingPath = storage_path('app/public/branding/logo.jpg');
         $localBrandingUrl = file_exists($localBrandingPath) ? asset('storage/branding/logo.jpg') : null;
-        $emailLogoSrc = $localBrandingUrl ?? ($logo ?? asset('images/branding/logo.jpg'));
+
+        // Inline SVG fallback (base64) used when no local branding and remote image unavailable.
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="120"><rect width="100%" height="100%" fill="#19B0A5" rx="12" ry="12"/><text x="50%" y="50%" font-family="Segoe UI, Roboto, Arial, Helvetica, sans-serif" font-size="36" fill="#ffffff" dominant-baseline="middle" text-anchor="middle">AHHC</text></svg>';
+        $inlineLogoData = 'data:image/svg+xml;base64,' . base64_encode($svg);
+
+        $emailLogoSrc = $localBrandingUrl ?? ($logo ?? $inlineLogoData);
     @endphp
     <style>
         body {
