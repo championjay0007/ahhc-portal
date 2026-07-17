@@ -409,9 +409,10 @@ class ParticipantPortalController extends Controller
             ->orderBy('start_date', 'asc')
             ->get();
 
-        $recentAssignments = $participant->assignments()
+        $recentShifts = $participant->shifts()
             ->with('worker')
-            ->orderBy('start_date', 'desc')
+            ->orderBy('shift_date', 'desc')
+            ->orderBy('start_time', 'desc')
             ->take(10)
             ->get();
 
@@ -429,7 +430,7 @@ class ParticipantPortalController extends Controller
         return view('portal.participant.services', compact(
             'participant',
             'activeAssignments',
-            'recentAssignments',
+            'recentShifts',
             'approvedServices',
             'upcomingShifts'
         ));

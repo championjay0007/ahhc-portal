@@ -39,8 +39,8 @@
                     </div>
                     <div class="col-6">
                         <div class="card bg-light p-3 h-100">
-                            <p class="text-muted mb-1">Recent assignments</p>
-                            <h5 class="mb-0">{{ $recentAssignments->count() }}</h5>
+                            <p class="text-muted mb-1">Recent shifts</p>
+                            <h5 class="mb-0">{{ $recentShifts->count() }}</h5>
                         </div>
                     </div>
                 </div>
@@ -123,14 +123,14 @@
                         <small class="text-muted">All recent shift bookings and assignment details.</small>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <span class="badge bg-secondary">{{ $recentAssignments->count() }} records</span>
+                        <span class="badge bg-secondary">{{ $recentShifts->count() }} records</span>
                         <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createShiftModal">Create Shift</button>
                     </div>
                 </div>
 
-                @if($recentAssignments->isEmpty())
+                @if($recentShifts->isEmpty())
                     <div class="text-center py-5 text-muted">
-                        No assignment record available yet.
+                        No shift bookings available yet.
                     </div>
                 @else
                     <div class="table-responsive">
@@ -139,29 +139,22 @@
                                 <tr>
                                     <th>Service</th>
                                     <th>Worker</th>
-                                    <th>Period</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
                                     <th>Status</th>
-                                    <th>Primary</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($recentAssignments as $assignment)
+                                @foreach($recentShifts as $shift)
                                     <tr>
-                                        <td class="small text-muted">{{ $assignment->assignment_type ?? 'Care Worker' }}</td>
+                                        <td class="small text-muted">{{ $shift->service_type ?? 'Service' }}</td>
                                         <td class="small">
-                                            <strong>{{ $assignment->worker->first_name }} {{ $assignment->worker->last_name }}</strong><br>
-                                            <span class="text-muted small">{{ $assignment->worker->role_type ?? 'Worker' }}</span>
+                                            <strong>{{ $shift->worker?->first_name ?? 'Worker' }} {{ $shift->worker?->last_name ?? '' }}</strong><br>
+                                            <span class="text-muted small">{{ $shift->worker?->role_type ?? 'Worker' }}</span>
                                         </td>
-                                        <td class="small">
-                                            {{ $assignment->start_date?->format('d M Y') ?? 'TBC' }}
-                                            @if($assignment->end_date)
-                                                &ndash; {{ $assignment->end_date->format('d M Y') }}
-                                            @else
-                                                &ndash; ongoing
-                                            @endif
-                                        </td>
-                                        <td class="small text-uppercase fw-semibold">{{ $assignment->status }}</td>
-                                        <td class="small">{{ $assignment->is_primary ? 'Yes' : 'No' }}</td>
+                                        <td class="small">{{ $shift->shift_date?->format('d M Y') ?? 'TBC' }}</td>
+                                        <td class="small">{{ $shift->start_time }} &ndash; {{ $shift->end_time }}</td>
+                                        <td class="small text-uppercase fw-semibold">{{ ucfirst(str_replace('_', ' ', $shift->status)) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
