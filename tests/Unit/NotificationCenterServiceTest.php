@@ -51,6 +51,7 @@ class NotificationCenterServiceTest extends TestCase
 
         NotificationCenterService::send('onboarding_submitted', $admin->id, [
             'participant_id' => $participant->id,
+            'submission_id' => 123,
             'title' => 'Onboarding submitted',
             'message' => "{$participant->first_name} {$participant->last_name} submitted onboarding for review.",
         ]);

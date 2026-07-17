@@ -179,13 +179,10 @@ class NotificationCenterService
             }
 
             if (in_array($event, ['onboarding_submitted', 'onboarding_resubmitted'], true) && isset($data['participant_id'])) {
-                if (isset($data['submission_id'])) {
-                    $data['url'] = route('admin.onboarding.show', $data['submission_id']);
-                    $data['reference_id'] = $data['reference_id'] ?? $data['submission_id'];
-                } else {
-                    $data['url'] = route('portal.admin.participants.show', $data['participant_id']);
-                    $data['reference_id'] = $data['reference_id'] ?? $data['participant_id'];
-                }
+                // Always route onboarding alerts to the participant's admin detail page,
+                // since submission_id may refer to progress records rather than actual onboarding submission entities.
+                $data['url'] = route('portal.admin.participants.show', $data['participant_id']);
+                $data['reference_id'] = $data['reference_id'] ?? $data['participant_id'];
             }
 
             if ($event === 'document_resubmitted') {
