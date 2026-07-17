@@ -285,7 +285,7 @@ class AdminOnboardingController extends Controller
         // TODO: Send activation notification
         // TODO: Log audit trail
 
-        return redirect()->route('admin.participants.show', $participant)
+        return redirect()->route('portal.admin.participants.show', $participant)
             ->with('success', 'Participant activated.');
     }
 
