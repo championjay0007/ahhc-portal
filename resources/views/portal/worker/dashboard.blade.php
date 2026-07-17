@@ -163,8 +163,8 @@
                         @forelse($todaysShifts as $shift)
                             @php
                                 $participant = $shift->participant;
-                                $timeRange = $shift->start_date ? $shift->start_date->format('H:i') . ' - ' . $shift->end_date->format('H:i') : 'TBA';
-                                $serviceLabel = $shift->assignment_type ? ucwords(str_replace('_', ' ', $shift->assignment_type)) : 'Support';
+                                $timeRange = $shift->start_time ? $shift->start_time . ' - ' . $shift->end_time : 'TBA';
+                                $serviceLabel = $shift->service_type ? $shift->service_type : 'Support';
                                 $riskLabel = $participant?->medical_alerts ? 'Falls Risk' : 'No Alerts';
                                 $riskClass = $participant?->medical_alerts ? 'risk-high' : 'risk-low';
                             @endphp

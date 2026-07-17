@@ -419,7 +419,8 @@ class ParticipantPortalController extends Controller
             return $assignment->assignment_type ? ucfirst($assignment->assignment_type) : 'Care Worker';
         });
 
-        $upcomingShifts = Shift::where('participant_id', $participant->id)
+        $upcomingShifts = Shift::with('worker')
+            ->where('participant_id', $participant->id)
             ->whereDate('shift_date', '>=', now()->toDateString())
             ->orderBy('shift_date', 'asc')
             ->orderBy('start_time', 'asc')

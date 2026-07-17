@@ -40,9 +40,16 @@
                     <ul class="list-unstyled">
                         @foreach($shifts as $s)
                             <li>
-                                <strong>{{ optional($s->start_date)->format('d M Y') ?? 'TBA' }}</strong>
-                                @if($s->end_date) - <small>{{ optional($s->end_date)->format('d M Y') }}</small>@endif
-                                @if($s->assignment_type) <div class="small text-muted">{{ ucfirst($s->assignment_type) }}</div>@endif
+                                <strong>{{ optional($s->shift_date)->format('d M Y') ?? 'TBA' }}</strong>
+                                <div class="small text-muted">
+                                    {{ $s->start_time }} &ndash; {{ $s->end_time }}
+                                    @if($s->service_type)
+                                        · {{ $s->service_type }}
+                                    @endif
+                                </div>
+                                @if($s->location)
+                                    <div class="small text-muted">{{ $s->location }}</div>
+                                @endif
                             </li>
                         @endforeach
                     </ul>

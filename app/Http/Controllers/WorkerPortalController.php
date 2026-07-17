@@ -72,9 +72,12 @@ class WorkerPortalController extends Controller
         $assignments = $worker->assignments()->with('participant')->where('status', 'active')->get();
         $today = now()->startOfDay();
 
-        $todaysShifts = $assignments->filter(function ($assignment) use ($today) {
-            return $assignment->start_date && $assignment->start_date->isSameDay($today);
-        });
+        $todaysShifts = Shift::with('participant')
+            ->where('worker_id', $worker->id)
+            ->whereDate('shift_date', $today)
+            ->whereIn('status', [Shift::STATUS_SCHEDULED, Shift::STATUS_CONFIRMED, Shift::STATUS_IN_PROGRESS])
+            ->orderBy('start_time', 'asc')
+            ->get();
 
         $notesDueCount = CareNote::where('worker_id', $worker->id)
             ->whereNull('submitted_at')
@@ -123,11 +126,11 @@ class WorkerPortalController extends Controller
 
         // Only expose limited participant data to workers/suppliers.
         // Workers should only see the participant's name, address, phone, and the shifts assigned to them.
-        $shifts = $worker->assignments()
+        $shifts = Shift::where('worker_id', $worker->id)
             ->where('participant_id', $participant->id)
-            ->where('status', 'active')
-            ->orderBy('start_date', 'asc')
-            ->get(['id', 'start_date', 'end_date', 'assignment_type']);
+            ->whereDate('shift_date', '>=', now()->toDateString())
+            ->orderBy('shift_date', 'asc')
+            ->get();
 
         return view('portal.worker.participant', compact('worker', 'participant', 'assignment', 'shifts'));
     }
