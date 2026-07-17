@@ -598,14 +598,16 @@
             z-index: 1000 !important;
         }
 
-        .modal-backdrop {
-            z-index: 1040 !important;
+        .modal-backdrop,
+        .modal-backdrop.show {
+            z-index: 1080 !important;
             backdrop-filter: blur(4px);
         }
 
         .modal,
-        .modal.show {
-            z-index: 1055 !important;
+        .modal.show,
+        .modal-dialog {
+            z-index: 1090 !important;
         }
 
         /* ========================================
