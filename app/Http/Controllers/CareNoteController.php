@@ -147,6 +147,18 @@ class CareNoteController extends Controller
         return redirect()->route('portal.participant.care_notes.index')->with('status', 'Monthly checklist saved.');
     }
 
+    public function show(CareNote $careNote)
+    {
+        $user = auth()->user();
+        $participant = Participant::where('user_id', $user->id)->firstOrFail();
+
+        if ($careNote->participant_id !== $participant->id) {
+            abort(403);
+        }
+
+        return view('portal.participant.care_note', compact('participant', 'careNote'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
