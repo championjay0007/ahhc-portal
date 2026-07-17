@@ -32,7 +32,16 @@ class StyledEmail extends Mailable
 
     public function build(): self
     {
-        $logoUrl = EmailBrandingService::logoUrl($this->logo);
+        $logoSource = EmailBrandingService::logoSource($this->logo ?? null);
+        $logoUrl = EmailBrandingService::logoUrl($this->logo ?? null);
+
+        if ($logoSource) {
+            try {
+                $logoUrl = $this->embed($logoSource);
+            } catch (\Throwable $e) {
+                $logoUrl = EmailBrandingService::logoUrl($this->logo ?? null);
+            }
+        }
 
         $introHtml = $this->introHtml ? $this->extractEmailFragment($this->introHtml) : null;
         $highlightPanel = $this->highlightPanel ? $this->extractEmailFragment($this->highlightPanel) : null;
