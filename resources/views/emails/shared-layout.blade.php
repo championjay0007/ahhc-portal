@@ -69,7 +69,7 @@
                         <td class="email-header" style="padding:28px 24px; text-align:center;">
                             @php
                                 $portalSettings = $portalSettings ?? [];
-                                $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value'));
+                                $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value')) ?? config('app.support_email', 'support@example.com');
                             @endphp
 
                             @if(!empty($logo))

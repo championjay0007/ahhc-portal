@@ -110,7 +110,7 @@
                 </div>
                 @php
                     $portalSettings = $portalSettings ?? [];
-                    $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value'));
+                    $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value')) ?? config('app.support_email', 'support@example.com');
                 @endphp
                 <div class="support-panel">
                     <div class="panel-inner">
