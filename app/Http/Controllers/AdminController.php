@@ -454,8 +454,8 @@ class AdminController extends Controller
             'medical_alerts' => $validated['medical_alerts'] ?? null,
             'notes' => $validated['notes'] ?? null,
             'consent_to_share' => $request->boolean('consent_to_share'),
-            'budget_limit_cents' => $validated['budget_limit_dollars'] !== null ? $this->moneyDollarsToCents($validated['budget_limit_dollars']) : 0,
-            'current_budget_used_cents' => $validated['current_budget_used_dollars'] !== null ? $this->moneyDollarsToCents($validated['current_budget_used_dollars']) : 0,
+            'budget_limit_cents' => isset($validated['budget_limit_dollars']) && $validated['budget_limit_dollars'] !== null ? $this->moneyDollarsToCents($validated['budget_limit_dollars']) : 0,
+            'current_budget_used_cents' => isset($validated['current_budget_used_dollars']) && $validated['current_budget_used_dollars'] !== null ? $this->moneyDollarsToCents($validated['current_budget_used_dollars']) : 0,
             'assigned_support_person_id' => $validated['assigned_support_person_id'] ?? null,
             'updated_by_id' => auth()->id(),
         ];
@@ -515,23 +515,6 @@ class AdminController extends Controller
     protected function validateParticipantActivationRequirements(Participant $participant): array
     {
         $errors = [];
-
-        $requiredCategories = Document::mandatoryParticipantDocumentCategories();
-        $uploadedCategories = Document::query()
-            ->where('owner_type', Participant::class)
-            ->where('owner_id', $participant->id)
-            ->pluck('document_type')
-            ->map(fn ($type) => Document::denormalizeParticipantDocumentCategory($type))
-            ->unique();
-
-        $uploadedRequiredCount = $uploadedCategories->filter(fn ($type) => in_array($type, $requiredCategories, true))->count();
-        $hasOnboardingDocument = $uploadedCategories->contains(fn ($type) => strtolower($type) === 'onboarding document');
-
-        if ($uploadedRequiredCount === 0 && ! $hasOnboardingDocument) {
-            $msg = 'At least one onboarding document is required before activation. Upload any one of: '.implode(', ', $requiredCategories).'.';
-            $errors['documents'] = $msg;
-            $errors['status'] = ($errors['status'] ?? 'Participant onboarding must be completed before the account can be activated.').' '.$msg;
-        }
 
         $requiredAgreements = array_values(OnboardingAgreementService::requiredAgreements());
         $signedAgreements = Document::query()
