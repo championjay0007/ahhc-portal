@@ -66,7 +66,7 @@
         }
 
         .email-badge {
-            display: inline-block;
+            display: block;
             padding: 6px 16px;
             border-radius: 50px;
             background: rgba(255, 255, 255, 0.18);
@@ -75,7 +75,8 @@
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin: 0 auto 18px;
+            width: max-content;
         }
 
         .email-title {
@@ -253,7 +254,7 @@
             <tbody>
                 <tr>
                     <td class="email-header">
-                        <a href="{{ url('/') }}" style="display:inline-block;">
+                        <a href="{{ url('/') }}" style="display:block;text-align:center;">
                             <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" style="width:110px;height:110px;border-radius:50%;display:block;margin:0 auto 14px;object-fit:cover;background:#fff;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,0.08);border:0;" />
                         </a>
                         <div class="email-badge">Worker Invitation</div>
