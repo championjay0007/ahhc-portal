@@ -347,10 +347,17 @@
                             </div>
                         </div>
 
+                        @php
+                            $portalSettings = $portalSettings ?? [];
+                            $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value'));
+                        @endphp
                         <div class="support-panel">
                             <div class="panel-inner">
                                 <h3>Need Assistance?</h3>
                                 <p>If you experience any issues during onboarding or have questions about the required documents, please contact the AHHC Support Team. We're here to help every step of the way.</p>
+                                @if(!empty($supportEmail))
+                                    <p style="margin-top:10px;">Contact support: <a href="mailto:{{ $supportEmail }}">{{ $supportEmail }}</a></p>
+                                @endif
                             </div>
                         </div>
 

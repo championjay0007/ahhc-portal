@@ -108,10 +108,17 @@
                         </table>
                     </div>
                 </div>
+                @php
+                    $portalSettings = $portalSettings ?? [];
+                    $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value'));
+                @endphp
                 <div class="support-panel">
                     <div class="panel-inner">
                         <h3>Need help?</h3>
                         <p>If you have any questions or did not expect this invitation, please contact our support team for assistance.</p>
+                        @if(!empty($supportEmail))
+                            <p style="margin-top:10px;">Contact support: <a href="mailto:{{ $supportEmail }}">{{ $supportEmail }}</a></p>
+                        @endif
                     </div>
                 </div>
                 <hr style="border:none;border-top:1px solid #E5E7EB;margin:40px 0;">
