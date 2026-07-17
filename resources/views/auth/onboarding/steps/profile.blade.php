@@ -22,17 +22,17 @@
 
     <div class="row g-3 mt-3">
         <div class="col-md-6">
-            <label class="form-label">Date of birth</label>
+            <label class="form-label">Date of birth (optional)</label>
             <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth', $draftData['date_of_birth'] ?? optional($participant->date_of_birth)->format('Y-m-d')) }}">
         </div>
         <div class="col-md-6">
-            <label class="form-label">Primary language</label>
+            <label class="form-label">Primary language (optional)</label>
             <input type="text" name="primary_language" class="form-control" value="{{ old('primary_language', $draftData['primary_language'] ?? $participant->primary_language) }}">
         </div>
     </div>
 
     <div class="mt-3">
-        <label class="form-label">Address</label>
+        <label class="form-label">Address (optional)</label>
         <input type="text" name="address" class="form-control" value="{{ old('address', $draftData['address'] ?? $participant->address) }}">
     </div>
 

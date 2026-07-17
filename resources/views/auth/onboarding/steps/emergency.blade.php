@@ -26,7 +26,7 @@
             <input type="text" name="emergency_contact_phone" class="form-control" value="{{ old('emergency_contact_phone', $draftData['emergency_contact_phone'] ?? '') }}" data-required="true">
         </div>
         <div class="col-md-6">
-            <label class="form-label">Email address</label>
+            <label class="form-label">Email address (optional)</label>
             <input type="email" name="emergency_contact_email" class="form-control" value="{{ old('emergency_contact_email', $draftData['emergency_contact_email'] ?? '') }}">
         </div>
     </div>

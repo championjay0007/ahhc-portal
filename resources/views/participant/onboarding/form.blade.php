@@ -40,11 +40,11 @@
 
                         <!-- SECTION 1: ACCOUNT SETUP -->
                         <div class="section mb-5" id="section-account">
-                            <h4 class="mb-3"><i class="bi bi-shield-lock me-2"></i>Account Setup</h4>
+                            <h4 class="mb-3"><i class="bi bi-shield-lock me-2"></i>Account Setup (Optional)</h4>
                             <p class="text-muted mb-4">Create a secure password for your account</p>
 
                             <div class="mb-3">
-                                <label for="password" class="form-label">Password *</label>
+                                <label for="password" class="form-label">Password (optional)</label>
                                 <input type="password" class="form-control @error('password') is-invalid @enderror" 
                                        id="password" name="password" required minlength="8">
                                 <small class="form-text text-muted">Minimum 8 characters</small>
@@ -54,7 +54,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label for="password_confirmation" class="form-label">Confirm Password *</label>
+                                <label for="password_confirmation" class="form-label">Confirm Password (optional)</label>
                                 <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" 
                                        id="password_confirmation" name="password_confirmation" required minlength="8">
                                 @error('password_confirmation')
@@ -195,13 +195,13 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="support_person_first_name" class="form-label">First Name</label>
+                                    <label for="support_person_first_name" class="form-label">First Name (optional)</label>
                                     <input type="text" class="form-control" id="support_person_first_name" 
                                            name="support_person_first_name" value="{{ old('support_person_first_name') }}">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="support_person_last_name" class="form-label">Last Name</label>
+                                    <label for="support_person_last_name" class="form-label">Last Name (optional)</label>
                                     <input type="text" class="form-control" id="support_person_last_name" 
                                            name="support_person_last_name" value="{{ old('support_person_last_name') }}">
                                 </div>
@@ -209,20 +209,20 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="support_person_email" class="form-label">Email</label>
+                                    <label for="support_person_email" class="form-label">Email (optional)</label>
                                     <input type="email" class="form-control" id="support_person_email" 
                                            name="support_person_email" value="{{ old('support_person_email') }}">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="support_person_phone" class="form-label">Phone</label>
+                                    <label for="support_person_phone" class="form-label">Phone (optional)</label>
                                     <input type="tel" class="form-control" id="support_person_phone" 
                                            name="support_person_phone" value="{{ old('support_person_phone') }}">
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="support_person_relationship" class="form-label">Relationship</label>
+                                <label for="support_person_relationship" class="form-label">Relationship (optional)</label>
                                 <input type="text" class="form-control" id="support_person_relationship" 
                                        name="support_person_relationship" value="{{ old('support_person_relationship') }}">
                             </div>

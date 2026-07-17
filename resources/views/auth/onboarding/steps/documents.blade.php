@@ -15,7 +15,7 @@
     @endphp
 
     <div class="mb-3">
-        <label class="form-label">Document category</label>
+        <label class="form-label">Document category (optional)</label>
         <select name="document_type" class="form-select" aria-label="Document category">
             <option value="">Select a category</option>
             @foreach($documentCategories as $category)
@@ -25,17 +25,17 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Document title</label>
+        <label class="form-label">Document title (optional)</label>
         <input type="text" name="document_title" class="form-control" value="{{ old('document_title', $draftData['document_title'] ?? '') }}">
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Document description</label>
+        <label class="form-label">Document description (optional)</label>
         <textarea name="document_description" class="form-control" rows="3">{{ old('document_description', $draftData['document_description'] ?? '') }}</textarea>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Upload file</label>
+        <label class="form-label">Upload file (optional)</label>
         <input type="file" name="document_file" class="form-control">
     </div>
 

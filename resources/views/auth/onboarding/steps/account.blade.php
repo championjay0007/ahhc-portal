@@ -15,13 +15,13 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Password</label>
+        <label class="form-label">Password (optional)</label>
         <input type="password" name="password" class="form-control" data-required="true" required>
         <div class="invalid-feedback">Enter a secure password at least 8 characters long.</div>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Confirm password</label>
+        <label class="form-label">Confirm password (optional)</label>
         <input type="password" name="password_confirmation" class="form-control" data-required="true" required>
         <div class="invalid-feedback">Confirm your password.</div>
     </div>

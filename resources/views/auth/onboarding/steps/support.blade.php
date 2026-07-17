@@ -11,50 +11,50 @@
 
     <div class="row g-3 mb-3">
         <div class="col-md-6">
-            <label class="form-label">Support person first name</label>
+            <label class="form-label">Support person first name (optional)</label>
             <input type="text" name="support_first_name" class="form-control" value="{{ old('support_first_name', $draftData['support_first_name'] ?? $supportPerson?->first_name ?? '') }}">
         </div>
         <div class="col-md-6">
-            <label class="form-label">Support person last name</label>
+            <label class="form-label">Support person last name (optional)</label>
             <input type="text" name="support_last_name" class="form-control" value="{{ old('support_last_name', $draftData['support_last_name'] ?? $supportPerson?->last_name ?? '') }}">
         </div>
     </div>
 
     <div class="row g-3 mb-3">
         <div class="col-md-6">
-            <label class="form-label">Relationship</label>
+            <label class="form-label">Relationship (optional)</label>
             <input type="text" name="support_relationship" class="form-control" value="{{ old('support_relationship', $draftData['support_relationship'] ?? $supportPerson?->relationship ?? '') }}">
         </div>
         <div class="col-md-6">
-            <label class="form-label">Phone</label>
+            <label class="form-label">Phone (optional)</label>
             <input type="text" name="support_phone" class="form-control" value="{{ old('support_phone', $draftData['support_phone'] ?? $supportPerson?->phone ?? '') }}">
         </div>
     </div>
 
     <div class="row g-3">
         <div class="col-md-6">
-            <label class="form-label">Email</label>
+            <label class="form-label">Email (optional)</label>
             <input type="email" name="support_email" class="form-control" value="{{ old('support_email', $draftData['support_email'] ?? $supportPerson?->email ?? '') }}">
         </div>
         <div class="col-md-6">
-            <label class="form-label">Address</label>
+            <label class="form-label">Address (optional)</label>
             <input type="text" name="support_address" class="form-control" value="{{ old('support_address', $draftData['support_address'] ?? $supportPerson?->address ?? '') }}">
         </div>
     </div>
 
     <div class="row g-3 mt-3">
         <div class="col-md-6">
-            <label class="form-label">City</label>
+            <label class="form-label">City (optional)</label>
             <input type="text" name="support_city" class="form-control" value="{{ old('support_city', $draftData['support_city'] ?? $supportPerson?->city ?? '') }}">
         </div>
         <div class="col-md-6">
-            <label class="form-label">State</label>
+            <label class="form-label">State (optional)</label>
             <input type="text" name="support_state" class="form-control" value="{{ old('support_state', $draftData['support_state'] ?? $supportPerson?->state ?? '') }}">
         </div>
     </div>
 
     <div class="mt-3">
-        <label class="form-label">Postcode</label>
+        <label class="form-label">Postcode (optional)</label>
         <input type="text" name="support_postcode" class="form-control" value="{{ old('support_postcode', $draftData['support_postcode'] ?? $supportPerson?->postcode ?? '') }}">
     </div>
 
