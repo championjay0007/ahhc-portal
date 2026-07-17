@@ -9,6 +9,13 @@
         $logo = $logo ?? \App\Services\EmailBrandingService::logoUrl();
         $organization = $organization ?? config('app.name', 'AHHC Portal');
         $year = $year ?? now()->year;
+
+        $localBrandingPath = storage_path('app/public/branding/logo.jpg');
+        $localBrandingUrl = file_exists($localBrandingPath) ? asset('storage/branding/logo.jpg') : null;
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="120"><rect width="100%" height="100%" fill="#19B0A5" rx="12" ry="12"/><text x="50%" y="50%" font-family="Segoe UI, Roboto, Arial, Helvetica, sans-serif" font-size="36" fill="#ffffff" dominant-baseline="middle" text-anchor="middle">AHHC</text></svg>';
+        $inlineLogoData = 'data:image/svg+xml;base64,' . base64_encode($svg);
+        $emailLogoSrc = $localBrandingUrl ?? ($logo ?? $inlineLogoData);
+        $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value')) ?? config('app.support_email', 'support@example.com');
     @endphp
     <style>
         body { margin: 0; padding: 0; background: #f6f7f9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1f2937; }
@@ -36,8 +43,8 @@
     <div class="wrapper">
         <div class="card">
             <div class="header">
-                <a href="{{ url('/') }}" style="display:inline-block;">
-                    <img src="{{ asset('images/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
+                <a href="{{ url('/') }}" style="display:block;text-align:center;">
+                    <img src="{{ $emailLogoSrc }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo" style="width:110px;height:110px;border-radius:50%;display:block;margin:0 auto 14px;object-fit:cover;background:#fff;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,0.08);border:0;" />
                 </a>
                 <div class="badge">Account Activated</div>
                 <h1 class="title">Your account is now active</h1>
@@ -55,7 +62,7 @@
                 <p style="margin-top:8px;font-size:14px;color:#6b7280;">Compassion you can Trust.<br>Care you deserve.</p>
             </div>
             <div class="footer">
-                <p>If you did not expect this message, please contact our support team.</p>
+                <p>If you did not expect this message, please contact our support team at <a href="mailto:{{ $supportEmail }}" style="color:#d8eef3;font-weight:700;">{{ $supportEmail }}</a>.</p>
                 <p class="footer-brand">© {{ $year ?? now()->year }} {{ $organization ?? config('app.name', 'AHHC Portal') }}. All rights reserved.</p>
             </div>
         </div>

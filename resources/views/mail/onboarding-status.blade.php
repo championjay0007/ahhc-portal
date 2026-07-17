@@ -40,8 +40,16 @@
     <div class="wrapper">
         <div class="card">
             <div class="header">
-                <a href="{{ url('/') }}" style="display:inline-block;">
-                    <img src="{{ asset('images/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
+                @php
+                    $localBrandingPath = storage_path('app/public/branding/logo.jpg');
+                    $localBrandingUrl = file_exists($localBrandingPath) ? asset('storage/branding/logo.jpg') : null;
+                    $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="120"><rect width="100%" height="100%" fill="#19B0A5" rx="12" ry="12"/><text x="50%" y="50%" font-family="Segoe UI, Roboto, Arial, Helvetica, sans-serif" font-size="36" fill="#ffffff" dominant-baseline="middle" text-anchor="middle">AHHC</text></svg>';
+                    $inlineLogoData = 'data:image/svg+xml;base64,' . base64_encode($svg);
+                    $emailLogoSrc = $localBrandingUrl ?? ($logo ?? $inlineLogoData);
+                    $supportEmail = $supportEmail ?? ($portalSettings['support_email'] ?? \App\Models\PortalSetting::where('key', 'support_email')->value('value')) ?? config('app.support_email', 'support@example.com');
+                @endphp
+                <a href="{{ url('/') }}" style="display:block;text-align:center;">
+                    <img src="{{ $emailLogoSrc }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo" style="width:110px;height:110px;border-radius:50%;display:block;margin:0 auto 14px;object-fit:cover;background:#fff;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,0.08);border:0;" />
                 </a>
                 <div class="badge">{{ $organization ?? config('app.name', 'AHHC Portal') }}</div>
                 <h1 class="title">{{ $title ?? 'Onboarding update' }}</h1>

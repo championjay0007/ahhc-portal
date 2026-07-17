@@ -537,6 +537,41 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     });
 });
 
+// Local development email preview routes
+if (app()->isLocal() || config('app.debug')) {
+    Route::get('/_dev/mail/preview/onboarding/{type?}', function ($type = 'participant') {
+        $organization = config('app.name', 'AHHC Portal');
+        if ($type === 'worker') {
+            $worker = (object) [
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'worker_number' => 'W-1001',
+                'email' => 'john@example.com',
+                'phone' => '0400 000 000',
+                'role_type' => 'Support Worker',
+            ];
+
+            $onboardingUrl = url('/worker/onboarding/sample-token');
+            $expiresAt = now()->addDays(14);
+
+            return view('mail.worker_onboarding_invitation', compact('worker', 'onboardingUrl', 'expiresAt', 'organization'));
+        }
+
+        $participant = (object) [
+            'first_name' => 'Jane',
+            'last_name' => 'Smith',
+            'onboarding_token' => 'sample-token',
+            'onboarding_expires_at' => now()->addDays(14),
+            'email' => 'jane@example.com',
+            'phone' => '0400 111 222',
+        ];
+
+        $onboarding_url = url('/onboarding/sample-token');
+
+        return view('mail.participant-onboarding-invitation', compact('participant', 'onboarding_url', 'organization'));
+    })->name('dev.mail.preview.onboarding');
+}
+
 Route::middleware(['auth', 'mfa'])->prefix('/portal/messages')->name('portal.messages.')->group(function () {
     Route::get('/compose/{recipient?}', [MessageController::class, 'compose'])
         ->where('recipient', '[0-9]+')
