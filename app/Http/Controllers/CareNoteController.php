@@ -10,6 +10,7 @@ use App\Notifications\CareNoteSubmitted;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class CareNoteController extends Controller
 {
@@ -157,6 +158,27 @@ class CareNoteController extends Controller
         }
 
         return view('portal.participant.care_note', compact('participant', 'careNote'));
+    }
+
+    public function downloadAttachment(CareNote $careNote)
+    {
+        $user = auth()->user();
+        $participant = Participant::where('user_id', $user->id)->firstOrFail();
+
+        if ($careNote->participant_id !== $participant->id) {
+            abort(403);
+        }
+
+        if (empty($careNote->attachment_path)) {
+            abort(404);
+        }
+
+        $disk = Storage::disk('local');
+        if (! $disk->exists($careNote->attachment_path)) {
+            abort(404);
+        }
+
+        return $disk->download($careNote->attachment_path);
     }
 
     public function store(Request $request)

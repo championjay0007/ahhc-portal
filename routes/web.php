@@ -645,6 +645,7 @@ Route::middleware(['auth', 'mfa', 'onboarding_complete', 'assessment_workflow'])
     // Care notes (participants can view; workers create care notes)
     Route::get('/portal/participant/care-notes', [CareNoteController::class, 'index'])->name('portal.participant.care_notes.index');
     Route::get('/portal/participant/care-notes/{careNote}', [CareNoteController::class, 'show'])->name('portal.participant.care_notes.show');
+    Route::get('/portal/participant/care-notes/{careNote}/attachment/download', [CareNoteController::class, 'downloadAttachment'])->name('portal.participant.care_notes.attachment.download');
     Route::post('/portal/participant/checklist', [CareNoteController::class, 'storeChecklist'])->name('portal.participant.checklist.store');
 
     // Complaints (kept on ParticipantPortalController for now)

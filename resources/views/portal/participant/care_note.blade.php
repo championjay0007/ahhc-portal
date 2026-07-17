@@ -22,7 +22,7 @@
         @endif
 
         @if($careNote->attachment_path)
-            <p class="mt-3"><a href="#" class="btn btn-sm btn-outline-secondary">Download attachment</a></p>
+            <p class="mt-3"><a href="{{ route('portal.participant.care_notes.attachment.download', $careNote) }}" class="btn btn-sm btn-outline-secondary">Download attachment</a></p>
         @endif
     </div>
 
