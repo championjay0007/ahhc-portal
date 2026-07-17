@@ -44,7 +44,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Dynamic PWA manifest route (serves application/manifest+json)
-Route::get('/manifest.json', [\App\Http\Controllers\ManifestController::class, 'show'])->name('portal.manifest');
+Route::get('/portal/manifest.json', [\App\Http\Controllers\ManifestController::class, 'show'])->name('portal.manifest');
 
 Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');

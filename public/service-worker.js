@@ -3,7 +3,7 @@ const OFFLINE_PAGE = '/offline.html';
 const PRECACHE_URLS = [
     '/',
     '/portal/dashboard?source=pwa',
-    '/manifest.json',
+    '/portal/manifest.json',
     '/offline.html',
     '/favicon.ico',
     '/icons/icon-192.png',
