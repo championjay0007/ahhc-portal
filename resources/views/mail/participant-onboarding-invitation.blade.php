@@ -49,7 +49,7 @@
         <div class="card">
             <div class="header">
                 <a href="{{ url('/') }}" style="display:inline-block;">
-                    <img src="{{ asset('images/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
+                    <img src="{{ $logo ?? asset('images/branding/logo.jpg') }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" width="200" height="60" style="display:block;margin:0 auto;max-width:220px;height:auto;border:0;" />
                 </a>
                 <div class="badge">Onboarding Invitation</div>
                 <h1 class="title">Complete your AHHC onboarding</h1>
@@ -60,7 +60,21 @@
                 <p>You're invited to begin your onboarding with <strong style="color:#19B0A5;">{{ $organization ?? config('app.name', 'AHHC Portal') }}</strong>. This helps us confirm your details, review your documentation, and prepare your portal access.</p>
                 <p>Please use the secure link below to continue. The link remains active until <strong>{{ $expires_at ?? optional($participant->onboarding_expires_at)->format('d M Y H:i') }}</strong>.</p>
                 <div class="button-wrap">
-                    <a class="button" href="{{ $onboarding_url ?? route('portal.onboarding.show', ['token' => $participant->onboarding_token]) }}">Continue onboarding</a>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+                        <tr>
+                            <td align="center">
+                                <!--[if mso]>
+                                <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ $onboarding_url ?? route('portal.onboarding.show', ['token' => $participant->onboarding_token]) }}" style="height:44px;v-text-anchor:middle;width:240px;" arcsize="8%" strokecolor="#19B0A5" fillcolor="#19B0A5">
+                                    <w:anchorlock/>
+                                    <center style="color:#ffffff;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:700;">Continue onboarding</center>
+                                </v:roundrect>
+                                <![endif]-->
+                                <!--[if !mso]><!-- -->
+                                <a href="{{ $onboarding_url ?? route('portal.onboarding.show', ['token' => $participant->onboarding_token]) }}" class="button" style="background:#19B0A5;color:#ffffff;padding:12px 26px;border-radius:8px;font-weight:700;display:inline-block;white-space:nowrap;text-decoration:none;">Continue onboarding</a>
+                                <!--<![endif]-->
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <div class="panel">
                     <div class="panel-inner">

@@ -235,7 +235,7 @@
                 <tr>
                     <td class="email-header">
                         <a href="{{ url('/') }}" style="display:inline-block;">
-                            <img src="{{ asset('images/branding/logo.jpg') }}" alt="{{ $organization ?? config('app.name', 'AHHC Portal') }} Logo">
+                            <img src="{{ $logo ?? asset('images/branding/logo.jpg') }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" width="200" height="60" style="display:block;margin:0 auto;max-width:220px;height:auto;border:0;" />
                         </a>
                         <div class="email-badge">Worker Invitation</div>
                         <h1 class="email-title">Welcome to AHHC</h1>
@@ -249,7 +249,21 @@
                         <p>To begin providing services, please complete your secure onboarding through the AHHC Portal.</p>
 
                         <div class="button-wrap">
-                            <a class="button-link" href="{{ $onboardingUrl ?? '#' }}">Start My Onboarding</a>
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+                                <tr>
+                                    <td align="center">
+                                        <!--[if mso]>
+                                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ $onboardingUrl ?? '#' }}" style="height:44px;v-text-anchor:middle;width:240px;" arcsize="8%" strokecolor="#19B0A5" fillcolor="#19B0A5">
+                                            <w:anchorlock/>
+                                            <center style="color:#ffffff;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:700;">Start My Onboarding</center>
+                                        </v:roundrect>
+                                        <![endif]-->
+                                        <!--[if !mso]><!-- -->
+                                        <a class="button-link" href="{{ $onboardingUrl ?? '#' }}" style="background:#19B0A5;color:#ffffff;padding:12px 26px;border-radius:8px;font-weight:700;display:inline-block;white-space:nowrap;text-decoration:none;">Start My Onboarding</a>
+                                        <!--<![endif]-->
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
 
                         <div class="panel">
