@@ -25,7 +25,19 @@
         .wrapper { width: 100%; padding: 20px; }
         .card { max-width: 650px; margin: 0 auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 12px 35px rgba(0,0,0,.08); }
         .header { background: linear-gradient(135deg,#356991,#19B0A5,#72CEAC); padding: 45px 30px; text-align: center; color: #ffffff; }
-        .header img { width: 90px; margin-bottom: 20px; }
+        .header img {
+            width: 110px;
+            height: 110px;
+            margin-bottom: 14px;
+            border-radius: 50%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            object-fit: cover;
+            background: #ffffff;
+            padding: 6px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        }
         .badge { display: inline-block; padding: 6px 16px; background: rgba(255,255,255,.18); border-radius: 50px; color: #ffffff; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
         .title { margin: 20px 0 10px; font-size: 32px; line-height: 1.1; }
         .subtitle { margin: 0; font-size: 16px; line-height: 1.75; color: #eafdfc; }
@@ -59,7 +71,7 @@
         <div class="card">
             <div class="header">
                 <a href="{{ url('/') }}" style="display:inline-block;">
-                    <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" width="200" height="60" style="display:block;margin:0 auto;max-width:220px;height:auto;border:0;" />
+                    <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" style="width:110px;height:110px;border-radius:50%;display:block;margin:0 auto 14px;object-fit:cover;background:#fff;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,0.08);border:0;" />
                 </a>
                 <div class="badge">Onboarding Invitation</div>
                 <h1 class="title">Complete your AHHC onboarding</h1>
