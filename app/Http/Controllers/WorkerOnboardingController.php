@@ -209,10 +209,10 @@ class WorkerOnboardingController extends Controller
 
         $validated = $request->validate($validationRules);
 
-        DB::transaction(function () use ($worker, $request, $requirements) {
+        DB::transaction(function () use ($worker, $request, $requirements, $validated) {
             WorkerComplianceType::ensureDefaults();
 
-            $anyUploaded = false;
+            $hasAnyUploadedDocument = false;
 
             foreach ($requirements as $requirement) {
                 if (! $request->hasFile('documents.'.$requirement['slug'])) {
@@ -233,16 +233,18 @@ class WorkerOnboardingController extends Controller
                     ]
                 );
 
-                $anyUploaded = true;
+                $hasAnyUploadedDocument = true;
             }
 
-            if (! $anyUploaded) {
-                throw new \RuntimeException('No documents were uploaded.');
+            if (! $hasAnyUploadedDocument) {
+                $worker->complianceDocuments()->where('status', 'submitted')->delete();
             }
+
+            $apn = $validated['apn'] ?? null;
 
             $worker->update([
                 'stage_2_submitted_at' => now(),
-                'notes' => trim(($worker->notes ? $worker->notes.PHP_EOL : '').'APN: '.$validated['apn']),
+                'notes' => trim(($worker->notes ? $worker->notes.PHP_EOL : '').($apn ? 'APN: '.$apn : '')),
             ]);
         });
 

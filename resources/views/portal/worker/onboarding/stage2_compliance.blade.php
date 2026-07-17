@@ -41,17 +41,15 @@
                                 <div class="alert alert-info">
                                     <strong>Requirements:</strong>
                                     <ul class="mb-0 mt-2">
-                                        @foreach ($complianceTypes as $requirement)
-                                            <li>
-                                                {{ $requirement['name'] }}
-                                                @if ($requirement['required'])
-                                                    <span class="badge bg-danger">Required</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Optional</span>
-                                                @endif
-                                                <small class="text-muted d-block">{{ $requirement['description'] }}</small>
-                                            </li>
-                                        @endforeach
+                                        <li><strong>ABN Verification</strong> — optional Australian Business Number verification.</li>
+                                        <li><strong>Police Check</strong> — required valid police clearance document.</li>
+                                        <li><strong>NDIS Worker Screening</strong> — optional NDIS worker screening certificate.</li>
+                                        <li><strong>Insurance</strong> — optional professional indemnity or public liability insurance.</li>
+                                        <li><strong>Qualification</strong> — optional relevant qualifications and certifications.</li>
+                                        <li><strong>First Aid Certificate</strong> — optional first aid certification evidence.</li>
+                                        <li><strong>CPR Certificate</strong> — optional CPR training certification.</li>
+                                        <li><strong>Registration</strong> — optional professional registration or licensing documents.</li>
+                                        <li><strong>Marketplace Agreement</strong> — optional marketplace agreement if applicable.</li>
                                     </ul>
                                 </div>
 

@@ -78,6 +78,53 @@ class WorkerOnboardingStage2UploadTest extends TestCase
         Storage::disk('private')->assertExists($document->document_path);
     }
 
+    public function test_worker_can_submit_stage2_with_required_documents_and_skip_optional_uploads(): void
+    {
+        Storage::fake('private');
+
+        $worker = Worker::create([
+            'worker_number' => 'W-1002',
+            'first_name' => 'Optional',
+            'last_name' => 'Worker',
+            'phone' => '0400111223',
+            'email' => 'optional.worker@example.com',
+            'role_type' => 'Independent',
+            'status' => 'pending',
+            'onboarding_stage' => 2,
+            'onboarding_token' => 'optional-token-123',
+            'onboarding_expires_at' => now()->addDays(30),
+        ]);
+
+        $response = $this->post(route('worker.onboarding.stage2.submit', ['token' => $worker->onboarding_token]), [
+            'documents' => [
+                'abn_verification' => UploadedFile::fake()->create('abn.pdf', 100, 'application/pdf'),
+                'police_check' => UploadedFile::fake()->create('policecheck.pdf', 100, 'application/pdf'),
+                'ndis_worker_screening' => UploadedFile::fake()->create('screening.pdf', 100, 'application/pdf'),
+                'insurance' => UploadedFile::fake()->create('insurance.pdf', 100, 'application/pdf'),
+                'qualification' => UploadedFile::fake()->create('qualification.pdf', 100, 'application/pdf'),
+                'first_aid_certificate' => UploadedFile::fake()->create('firstaid.pdf', 100, 'application/pdf'),
+                'cpr_certificate' => UploadedFile::fake()->create('cpr.pdf', 100, 'application/pdf'),
+                'registration' => UploadedFile::fake()->create('registration.pdf', 100, 'application/pdf'),
+            ],
+        ]);
+
+        $response->assertRedirect(route('worker.onboarding.show', ['token' => $worker->onboarding_token]));
+        $response->assertSessionHas('success', 'Compliance documents submitted successfully. AHHC will review them and notify you when complete.');
+
+        $worker->refresh();
+
+        $this->assertNotNull($worker->stage_2_submitted_at);
+        $this->assertDatabaseHas('worker_compliance_documents', [
+            'worker_id' => $worker->id,
+            'document_type' => 'Police Check',
+            'status' => 'submitted',
+        ]);
+        $this->assertDatabaseMissing('worker_compliance_documents', [
+            'worker_id' => $worker->id,
+            'document_type' => 'Marketplace Agreement',
+        ]);
+    }
+
     public function test_worker_is_shown_stage3_review_after_submitting_stage2_documents(): void
     {
         Storage::fake('private');

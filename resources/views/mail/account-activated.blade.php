@@ -6,7 +6,7 @@
     <title>Your account is now active</title>
     @php
         $portalSettings = $portalSettings ?? [];
-        $logo = asset('storage/branding/logo.jpg');
+        $logo = asset('images/branding/logo.jpg');
         $organization = $organization ?? config('app.name', 'AHHC Portal');
         $year = $year ?? now()->year;
     @endphp
