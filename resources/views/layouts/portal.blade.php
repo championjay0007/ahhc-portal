@@ -579,11 +579,11 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
             z-index: 1030;
+            will-change: opacity;
         }
 
         .portal-overlay.show {
@@ -598,16 +598,34 @@
             z-index: 1000 !important;
         }
 
-        .modal-backdrop,
-        .modal-backdrop.show {
-            z-index: 1080 !important;
-            backdrop-filter: blur(4px);
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 1040 !important;
+            background-color: transparent !important;
+            pointer-events: none !important;
+            opacity: 0 !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            filter: none !important;
         }
 
-        .modal,
+        .modal-backdrop.show {
+            opacity: 0 !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        .modal {
+            z-index: 1060 !important;
+            isolation: isolate;
+        }
+
         .modal.show,
-        .modal-dialog {
-            z-index: 1090 !important;
+        .modal-dialog,
+        .modal-content {
+            z-index: 1060 !important;
+            position: relative;
         }
 
         /* ========================================
@@ -2254,31 +2272,48 @@
             }
         });
 
-        document.addEventListener('show.bs.modal', function() {
+        function resetPortalOverlay() {
             const portalOverlay = document.getElementById('portalOverlay');
             if (portalOverlay) {
                 portalOverlay.classList.remove('show');
+                portalOverlay.style.opacity = '0';
                 portalOverlay.style.pointerEvents = 'none';
+                portalOverlay.style.visibility = 'hidden';
             }
-            document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-                if (!backdrop.classList.contains('fade')) {
-                    backdrop.remove();
-                }
-            });
+        }
+
+        function cleanupModalBackdrops() {
+            document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+        }
+
+        function clearModalBodyState() {
+            cleanupModalBackdrops();
+            resetPortalOverlay();
+            document.body.classList.remove('modal-open');
+            document.documentElement.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            document.body.style.removeProperty('overflow');
+        }
+
+        document.addEventListener('show.bs.modal', function() {
+            cleanupModalBackdrops();
+            resetPortalOverlay();
         });
 
         document.addEventListener('shown.bs.modal', function(event) {
             const modal = event.target;
             if (modal instanceof HTMLElement) {
-                modal.style.zIndex = '1055';
+                modal.style.zIndex = '1060';
             }
         });
 
+        document.addEventListener('hide.bs.modal', function() {
+            clearModalBodyState();
+        });
+
         document.addEventListener('hidden.bs.modal', function() {
-            document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
+            clearModalBodyState();
         });
 
         function isIos() {
@@ -3284,7 +3319,7 @@
         }
 
         .modal-backdrop {
-            backdrop-filter: blur(4px);
+            backdrop-filter: none;
         }
 
         #notificationAlertModal,
@@ -3327,7 +3362,6 @@
             position: fixed;
             inset: 0;
             background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
             justify-content: center;
