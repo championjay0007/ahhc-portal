@@ -583,12 +583,29 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
-            z-index: 1040;
+            z-index: 1030;
         }
 
         .portal-overlay.show {
             opacity: 1;
             pointer-events: auto;
+        }
+
+        .modal-open .portal-overlay {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            visibility: hidden !important;
+            z-index: 1000 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 1040 !important;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal,
+        .modal.show {
+            z-index: 1055 !important;
         }
 
         /* ========================================
@@ -2233,6 +2250,33 @@
             if (typeof window.enablePwaNotifications === 'function') {
                 window.enablePwaNotifications();
             }
+        });
+
+        document.addEventListener('show.bs.modal', function() {
+            const portalOverlay = document.getElementById('portalOverlay');
+            if (portalOverlay) {
+                portalOverlay.classList.remove('show');
+                portalOverlay.style.pointerEvents = 'none';
+            }
+            document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+                if (!backdrop.classList.contains('fade')) {
+                    backdrop.remove();
+                }
+            });
+        });
+
+        document.addEventListener('shown.bs.modal', function(event) {
+            const modal = event.target;
+            if (modal instanceof HTMLElement) {
+                modal.style.zIndex = '1055';
+            }
+        });
+
+        document.addEventListener('hidden.bs.modal', function() {
+            document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
         });
 
         function isIos() {
