@@ -18,7 +18,7 @@
     <meta name="apple-mobile-web-app-title" content="{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Admin' }}">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="msapplication-TileColor" content="{{ $dashboardPrimary }}">
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="manifest" href="{{ route('portal.manifest') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icons/apple-touch-icon.png') }}">
     <link rel="mask-icon" href="{{ asset('icons/icon-192.png') }}" color="{{ $dashboardPrimary }}">
     

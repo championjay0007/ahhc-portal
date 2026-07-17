@@ -18,12 +18,12 @@
     <meta name="apple-mobile-web-app-title" content="{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Portal' }}">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="msapplication-TileColor" content="{{ $dashboardPrimary }}">
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="manifest" href="{{ route('portal.manifest') }}">
     <script>
         // Log manifest loading and content-type for debugging installability
         (async function(){
             try {
-                const res = await fetch('{{ asset('manifest.json') }}', {cache: 'no-store'});
+                const res = await fetch('{{ route('portal.manifest') }}', {cache: 'no-store'});
                 console.log('PWA manifest fetch status:', res.status, res.statusText);
                 console.log('PWA manifest content-type:', res.headers.get('Content-Type'));
                 if (res.ok) {
