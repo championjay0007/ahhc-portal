@@ -2,7 +2,7 @@ const CACHE_NAME = 'ahhc-portal-cache-v1';
 const OFFLINE_PAGE = '/offline.html';
 const PRECACHE_URLS = [
     '/',
-    '/portal/dashboard',
+    '/portal/dashboard?source=pwa',
     '/manifest.json',
     '/offline.html',
     '/favicon.ico',
@@ -86,19 +86,26 @@ async function clearPendingRequest(id) {
 }
 
 self.addEventListener('install', event => {
+    console.log('[SW] Install event');
     self.skipWaiting();
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE_URLS))
+        caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE_URLS)).then(() => {
+            console.log('[SW] Precache complete');
+        }).catch(err => {
+            console.error('[SW] Precache failed', err);
+        })
     );
 });
 
 self.addEventListener('activate', event => {
+    console.log('[SW] Activate event');
     event.waitUntil(
         caches.keys().then(keys => Promise.all(
             keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
         ))
     );
     self.clients.claim();
+    console.log('[SW] Claiming clients');
 });
 
 self.addEventListener('fetch', event => {

@@ -19,6 +19,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="msapplication-TileColor" content="{{ $dashboardPrimary }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <script>
+        // Log manifest loading and content-type for debugging installability
+        (async function(){
+            try {
+                const res = await fetch('{{ asset('manifest.json') }}', {cache: 'no-store'});
+                console.log('PWA manifest fetch status:', res.status, res.statusText);
+                console.log('PWA manifest content-type:', res.headers.get('Content-Type'));
+                if (res.ok) {
+                    const manifest = await res.clone().json().catch(()=>null);
+                    console.log('PWA manifest parsed:', manifest);
+                }
+            } catch (e) {
+                console.error('PWA manifest fetch failed', e);
+            }
+        })();
+    </script>
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icons/apple-touch-icon.png') }}">
     <link rel="mask-icon" href="{{ asset('icons/icon-192.png') }}" color="{{ $dashboardPrimary }}">
     
@@ -2189,11 +2205,16 @@
                 if (PWA_ENABLED) {
                     navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function(registration) {
                         console.log('PWA service worker registered:', registration);
+                        console.log('Service worker controller at registration time:', navigator.serviceWorker.controller);
                         if (typeof initializePushSubscription === 'function') {
                             initializePushSubscription(registration);
                         }
                         if (typeof setupServiceWorkerUpdates === 'function') {
                             setupServiceWorkerUpdates(registration);
+                        }
+                        // If the service worker is active but page not controlled yet, log it
+                        if (!navigator.serviceWorker.controller) {
+                            console.warn('Service worker is registered but page is not yet controlled.');
                         }
                     }).catch(function(error) {
                         console.error('PWA service worker registration failed:', error);
@@ -2207,6 +2228,8 @@
         }
 
         window.addEventListener('appinstalled', function() {
+            console.log('PWA installed event fired');
+            hidePwaInstallBanner();
             if (typeof window.enablePwaNotifications === 'function') {
                 window.enablePwaNotifications();
             }
@@ -2244,6 +2267,7 @@
         }
 
         window.addEventListener('beforeinstallprompt', function(event) {
+            console.log('beforeinstallprompt fired:', event);
             if (!PWA_ENABLED) {
                 event.preventDefault();
                 return;
