@@ -624,21 +624,60 @@ class AdminWorkerOnboardingController extends Controller
             return back()->with('success', 'Worker is already active.');
         }
 
+        // Activate worker
         $worker->update(['status' => 'active']);
 
-        NotificationService::notify([
-            'user_id' => $worker->user_id,
-            'title' => 'Worker Account Activated',
-            'message' => 'Your worker onboarding is complete and your account is now active.',
-            'type' => 'success',
-            'channel' => 'in_app',
-            'data' => [
-                'worker_id' => $worker->id,
-                'url' => route('worker.portal.dashboard'),
-            ],
-        ]);
+        // Send account activated email to the worker user if present
+        if ($worker->user) {
+            try {
+                Mail::to($worker->user->email)->send(new \App\Mail\AccountActivated($worker->user));
+            } catch (\Throwable $e) {
+                // log but don't block
+                \Log::error('Failed to send AccountActivated email to worker', ['worker_id' => $worker->id, 'error' => $e->getMessage()]);
+            }
 
-        return back()->with('success', 'Worker activated successfully.');
+            // In-app + email notification via NotificationService
+            NotificationService::notify([
+                'user_id' => $worker->user->id,
+                'title' => 'Worker Account Activated',
+                'message' => 'Your worker onboarding is complete and your account is now active.',
+                'type' => 'success',
+                'channel' => 'in_app',
+                'data' => [
+                    'worker_id' => $worker->id,
+                    'url' => route('portal.worker.dashboard'),
+                ],
+            ]);
+        }
+
+        // Notify assigned participants (email + in-app) that this worker has been assigned
+        $assignments = $worker->assignments()->where('status', 'active')->with('participant.user')->get();
+        foreach ($assignments as $assignment) {
+            $participant = $assignment->participant;
+            if (! $participant) {
+                continue;
+            }
+
+            $message = sprintf('%s %s has been assigned as a worker for you.', $worker->first_name, $worker->last_name);
+
+            if ($participant->user) {
+                NotificationService::notify([
+                    'user_id' => $participant->user->id,
+                    'participant_id' => $participant->id,
+                    'title' => 'New Worker Assigned',
+                    'message' => $message,
+                    'type' => 'info',
+                    'channel' => 'in_app',
+                    'data' => [
+                        'worker_id' => $worker->id,
+                        'participant_id' => $participant->id,
+                        'url' => route('portal.participant.show', $participant),
+                    ],
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Worker activated successfully. Notifications sent.');
     }
 
     /**
