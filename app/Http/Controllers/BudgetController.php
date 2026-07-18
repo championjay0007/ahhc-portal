@@ -116,8 +116,17 @@ class BudgetController extends Controller
         }
 
         if ($existingBudget = $existingBudgetQuery->first()) {
+            // If a placeholder budget was created (e.g. by the admin listing),
+            // apply the submitted opening values so the UI reflects them immediately.
+            $existingBudget->update([
+                'opening_budget' => $data['opening_budget'],
+                'carry_over' => $data['carry_over'] ?? 0,
+            ]);
+
+            $this->service->calculateTotals($existingBudget);
+
             return redirect()->route('budgets.show', $existingBudget)
-                ->with('status', 'A budget already exists for this participant and quarter.');
+                ->with('status', 'Existing budget updated with submitted values.');
         }
 
         try {
@@ -136,8 +145,16 @@ class BudgetController extends Controller
             if ($e->getCode() === '23000') {
                 $existing = $existingBudgetQuery->first();
                 if ($existing) {
+                    // Update existing budget with submitted values if possible
+                    $existing->update([
+                        'opening_budget' => $data['opening_budget'],
+                        'carry_over' => $data['carry_over'] ?? 0,
+                    ]);
+
+                    $this->service->calculateTotals($existing);
+
                     return redirect()->route('budgets.show', $existing)
-                        ->with('status', 'A budget already exists for this participant and quarter.');
+                        ->with('status', 'Existing budget updated with submitted values.');
                 }
             }
 
