@@ -68,7 +68,7 @@
                             <div class="form-control-plaintext ps-0">{{ $worker->qualification ?: 'Not provided' }}</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold small text-muted">ABN</label>
+                            <label class="form-label fw-semibold small text-muted">ABN <small class="text-muted">(optional)</small></label>
                             <div class="form-control-plaintext ps-0">{{ $worker->abn_number ?: 'Not provided' }}</div>
                         </div>
                         <div class="col-md-6">
