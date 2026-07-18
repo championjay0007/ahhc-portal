@@ -37,6 +37,7 @@ use App\Services\TemplateMailer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -205,33 +206,57 @@ class AdminController extends Controller
         $participants->getCollection()->transform(function (Participant $participant) use ($budgetService, $currentQuarterPeriod) {
             $budget = Budget::where('participant_id', $participant->id)
                 ->where(function ($query) use ($currentQuarterPeriod) {
-                    $query->where(function ($inner) use ($currentQuarterPeriod) {
-                        $inner->whereDate('quarter_start_date', $currentQuarterPeriod['quarter_start_date'])
-                            ->whereDate('quarter_end_date', $currentQuarterPeriod['quarter_end_date']);
-                    })->orWhere(function ($inner) use ($currentQuarterPeriod) {
-                        $inner->whereDate('quarter_start_date', '<=', $currentQuarterPeriod['quarter_end_date'])
-                            ->whereDate('quarter_end_date', '>=', $currentQuarterPeriod['quarter_start_date']);
-                    });
+                    if (Schema::hasColumn('budgets', 'quarter_start_date')) {
+                        $query->where(function ($inner) use ($currentQuarterPeriod) {
+                            $inner->whereDate('quarter_start_date', $currentQuarterPeriod['quarter_start_date'])
+                                ->whereDate('quarter_end_date', $currentQuarterPeriod['quarter_end_date']);
+                        })->orWhere(function ($inner) use ($currentQuarterPeriod) {
+                            $inner->whereDate('quarter_start_date', '<=', $currentQuarterPeriod['quarter_end_date'])
+                                ->whereDate('quarter_end_date', '>=', $currentQuarterPeriod['quarter_start_date']);
+                        });
+                    } else {
+                        $query->where(function ($inner) use ($currentQuarterPeriod) {
+                            $inner->whereDate('quarter_start', $currentQuarterPeriod['quarter_start'])
+                                ->whereDate('quarter_end', $currentQuarterPeriod['quarter_end']);
+                        })->orWhere(function ($inner) use ($currentQuarterPeriod) {
+                            $inner->whereDate('quarter_start', '<=', $currentQuarterPeriod['quarter_end'])
+                                ->whereDate('quarter_end', '>=', $currentQuarterPeriod['quarter_start']);
+                        });
+                    }
                 })
                 ->first();
 
             if (! $budget) {
                 try {
-                    $budget = Budget::create([
+                    $createData = [
                         'participant_id' => $participant->id,
-                        'quarter_start_date' => $currentQuarterPeriod['quarter_start_date'],
-                        'quarter_end_date' => $currentQuarterPeriod['quarter_end_date'],
                         'opening_balance_cents' => 0,
                         'carry_over_cents' => 0,
                         'committed_cents' => 0,
                         'approved_spend_cents' => 0,
                         'paid_spend_cents' => 0,
-                    ]);
+                    ];
+
+                    if (Schema::hasColumn('budgets', 'quarter_start_date')) {
+                        $createData['quarter_start_date'] = $currentQuarterPeriod['quarter_start_date'];
+                        $createData['quarter_end_date'] = $currentQuarterPeriod['quarter_end_date'];
+                    } else {
+                        $createData['quarter_start'] = $currentQuarterPeriod['quarter_start'];
+                        $createData['quarter_end'] = $currentQuarterPeriod['quarter_end'];
+                    }
+
+                    $budget = Budget::create($createData);
                 } catch (\Illuminate\Database\QueryException $e) {
-                    $budget = Budget::where('participant_id', $participant->id)
-                        ->whereDate('quarter_start_date', '<=', $currentQuarterPeriod['quarter_end_date'])
-                        ->whereDate('quarter_end_date', '>=', $currentQuarterPeriod['quarter_start_date'])
-                        ->first();
+                    $budgetQuery = Budget::where('participant_id', $participant->id);
+                    if (Schema::hasColumn('budgets', 'quarter_start_date')) {
+                        $budgetQuery->whereDate('quarter_start_date', '<=', $currentQuarterPeriod['quarter_end_date'])
+                            ->whereDate('quarter_end_date', '>=', $currentQuarterPeriod['quarter_start_date']);
+                    } else {
+                        $budgetQuery->whereDate('quarter_start', '<=', $currentQuarterPeriod['quarter_end'])
+                            ->whereDate('quarter_end', '>=', $currentQuarterPeriod['quarter_start']);
+                    }
+
+                    $budget = $budgetQuery->first();
                 }
             }
 

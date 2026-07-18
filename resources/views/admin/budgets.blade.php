@@ -11,6 +11,7 @@
             <div class="d-flex gap-2">
                 <a href="{{ route('portal.admin.participants') }}" class="btn btn-sm btn-outline-secondary">View participants</a>
                 <a href="{{ route('portal.admin.invoices') }}" class="btn btn-sm btn-outline-secondary">View invoices</a>
+                <a href="{{ route('budgets.create') }}" class="btn btn-sm btn-primary">Create budget</a>
             </div>
         </div>
 
