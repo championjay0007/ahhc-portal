@@ -44,8 +44,9 @@ class BudgetController extends Controller
         $participant = null;
         $participants = null;
 
-        if ($request->filled('participant_id')) {
-            $participant = Participant::find($request->input('participant_id'));
+        $participantId = $request->old('participant_id') ?? $request->input('participant_id');
+        if ($participantId) {
+            $participant = Participant::find($participantId);
         }
 
         if (! $participant) {
