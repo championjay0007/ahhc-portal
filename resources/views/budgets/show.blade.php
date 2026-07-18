@@ -47,38 +47,6 @@
                 @endcan
             </p>
         </div>
-        <div class="col-md-6">
-            <h4>Record Transaction</h4>
-            <form method="POST" action="{{ route('budgets.transactions.store', $budget) }}">
-                @csrf
-                <div class="mb-2">
-                    <label>Type</label>
-                    <select name="type" class="form-select">
-                        <option value="opening_balance">Opening Balance</option>
-                        <option value="carry_over">Carry Over</option>
-                        <option value="commitment">Commitment</option>
-                        <option value="invoice_pending">Invoice Pending</option>
-                        <option value="invoice_approved">Invoice Approved</option>
-                        <option value="invoice_paid">Invoice Paid</option>
-                        <option value="release_commitment">Release Commitment</option>
-                        <option value="adjustment">Adjustment</option>
-                    </select>
-                </div>
-                <div class="mb-2">
-                    <label>Amount</label>
-                    <input type="number" step="0.01" name="amount" class="form-control" required>
-                </div>
-                <div class="mb-2">
-                    <label>Category (optional)</label>
-                    <input type="number" name="category_id" class="form-control">
-                </div>
-                <div class="mb-2">
-                    <label>Meta JSON (optional)</label>
-                    <input type="text" name="meta[field]" class="form-control" placeholder="meta[field]=opening_budget">
-                </div>
-                <button class="btn btn-success">Apply</button>
-            </form>
-        </div>
     </div>
 
     <hr>

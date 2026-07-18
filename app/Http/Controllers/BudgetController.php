@@ -143,7 +143,8 @@ class BudgetController extends Controller
             throw $e;
         }
 
-        return redirect()->route('budgets.index')->with('status', 'Budget created successfully for participant ID '.$participantId.'.');
+        return redirect()->route('budgets.show', $budget)
+            ->with('status', 'Budget created successfully for participant ID '.$participantId.'.');
     }
 
     public function show(Budget $budget)
