@@ -86,8 +86,8 @@ class Worker extends Model
     protected static function booted(): void
     {
         static::updating(function (Worker $worker) {
-            if ($worker->isDirty('status') && $worker->status === 'active' && $worker->onboarding_stage < WorkerOnboardingStage::SIX->value) {
-                $worker->onboarding_stage = WorkerOnboardingStage::SIX->value;
+            if ($worker->isDirty('status') && $worker->status === 'active' && $worker->onboarding_stage < WorkerOnboardingStage::STAGE_6_ASSIGNED->value) {
+                $worker->onboarding_stage = WorkerOnboardingStage::STAGE_6_ASSIGNED->value;
                 $worker->stage_6_assigned_at = $worker->stage_6_assigned_at ?? Carbon::now();
             }
         });
