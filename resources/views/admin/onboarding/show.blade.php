@@ -55,45 +55,25 @@
                         </div>
                     </div>
 
-                    <h3 class="h6 mt-4 mb-3">Personal Onboarding Details</h3>
+                    <h3 class="h6 mt-4 mb-3">Submitted Onboarding Answers</h3>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <strong>Full Name</strong>
-                            <p class="mb-0">{{ $submission->personal_data['full_name'] ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <strong>Emergency Contact</strong>
-                            <p class="mb-0">{{ $submission->personal_data['emergency_contact_name'] ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <strong>Contact Phone</strong>
-                            <p class="mb-0">{{ $submission->personal_data['emergency_contact_phone'] ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <strong>Relationship</strong>
-                            <p class="mb-0">{{ $submission->personal_data['emergency_contact_relationship'] ?? 'N/A' }}</p>
-                        </div>
+                        @foreach($submission->personal_data ?? [] as $field => $value)
+                            <div class="col-md-6 mb-3">
+                                <strong>{{ ucwords(str_replace('_', ' ', $field)) }}</strong>
+                                <p class="mb-0">{{ $value ?: 'N/A' }}</p>
+                            </div>
+                        @endforeach
                     </div>
 
                     @if($submission->support_person_data)
-                        <h3 class="h6 mt-4 mb-3">Support Person</h3>
+                        <h3 class="h6 mt-4 mb-3">Support Person Details</h3>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <strong>Name</strong>
-                                <p class="mb-0">{{ $submission->support_person_data['first_name'] ?? '' }} {{ $submission->support_person_data['last_name'] ?? '' }}</p>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <strong>Relationship</strong>
-                                <p class="mb-0">{{ $submission->support_person_data['relationship'] ?? 'N/A' }}</p>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <strong>Email</strong>
-                                <p class="mb-0">{{ $submission->support_person_data['email'] ?? 'N/A' }}</p>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <strong>Phone</strong>
-                                <p class="mb-0">{{ $submission->support_person_data['phone'] ?? 'N/A' }}</p>
-                            </div>
+                            @foreach($submission->support_person_data as $field => $value)
+                                <div class="col-md-6 mb-3">
+                                    <strong>{{ ucwords(str_replace('_', ' ', $field)) }}</strong>
+                                    <p class="mb-0">{{ $value ?: 'N/A' }}</p>
+                                </div>
+                            @endforeach
                         </div>
                     @endif
 
