@@ -1544,11 +1544,6 @@
                             <i class="bi bi-wallet2 nav-icon"></i>
                             <span>My Budget</span>
                         </a>
-                        <a href="{{ route('portal.participant.pre_approvals.index') }}" 
-                           class="nav-link-custom {{ request()->routeIs('portal.participant.pre_approvals.*') ? 'active' : '' }}">
-                            <i class="bi bi-check2-circle-fill nav-icon"></i>
-                            <span>Pre-Approvals</span>
-                        </a>
                         <a href="{{ route('portal.participant.invoices.index') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.participant.invoices.*') ? 'active' : '' }}">
                             <i class="bi bi-receipt-fill nav-icon"></i>
