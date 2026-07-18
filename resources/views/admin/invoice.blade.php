@@ -102,6 +102,11 @@
                                         <div class="form-control-plaintext fw-bold">${{ number_format(($invoice->amount_cents ?? 0) / 100, 2) }}</div>
                                     </div>
                                 @endif
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">Mark as reviewed</button>
+                                </div>
+                            </form>
                 </div>
             </div>
         </div>
