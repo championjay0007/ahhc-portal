@@ -446,6 +446,13 @@
                             <button type="submit" class="btn btn-success">Save Assignments</button>
                         </form>
 
+                            @if ($worker->status !== 'active')
+                                <form method="POST" action="{{ route('admin.worker_onboarding.activate', $worker) }}" class="mt-3">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary">Activate Worker</button>
+                                </form>
+                            @endif
+
                         @if ($worker->assignments->isNotEmpty())
                             <div class="mt-4">
                                 <h6>Current Assignments</h6>

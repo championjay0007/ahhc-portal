@@ -346,6 +346,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
         Route::post('/{worker}/stage5/services', [AdminWorkerOnboardingController::class, 'addServiceApproval'])->name('stage5.services.add');
         Route::post('/{worker}/stage5/approve', [AdminWorkerOnboardingController::class, 'approveStage5'])->name('stage5.approve');
         Route::post('/{worker}/stage6/assign-participants', [AdminWorkerOnboardingController::class, 'assignStage6Participants'])->name('stage6.assign_participants');
+        Route::post('/{worker}/activate', [AdminWorkerOnboardingController::class, 'activateWorker'])->name('activate');
         Route::post('/{worker}/resend-invitation', [AdminWorkerOnboardingController::class, 'resendInvitation'])->name('resend_invitation');
         Route::post('/{worker}/reject', [AdminWorkerOnboardingController::class, 'rejectWorker'])->name('reject');
     });

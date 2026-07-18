@@ -608,28 +608,6 @@ class AdminWorkerOnboardingController extends Controller
             }
         });
 
-
-        // If we have assigned at least one participant, activate the worker automatically
-        if (! empty($participantIds) && $worker->status !== 'active') {
-            $worker->update([
-                'status' => 'active',
-                'stage_6_assigned_at' => $worker->stage_6_assigned_at ?? now(),
-                'stage_6_assignor_id' => $worker->stage_6_assignor_id ?? Auth::id(),
-            ]);
-
-            NotificationService::notify([
-                'user_id' => $worker->user_id,
-                'title' => 'Worker Account Activated',
-                'message' => 'Your worker onboarding is complete and your account is now active.',
-                'type' => 'success',
-                'channel' => 'in_app',
-                'data' => [
-                    'worker_id' => $worker->id,
-                    'url' => route('worker.portal.dashboard'),
-                ],
-            ]);
-        }
-
         return back()->with('success', 'Worker participant assignments updated successfully.');
     }
 
