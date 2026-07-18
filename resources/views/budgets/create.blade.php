@@ -8,7 +8,7 @@
         <div class="alert alert-success">{{ session('status') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('budgets.store') }}">
+    <form method="POST" action="{{ route('budgets.create.post') }}">
         @csrf
 
         @if($participant)
