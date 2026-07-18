@@ -63,7 +63,7 @@ class AdminDashboardController extends Controller
 
         // BUDGET DATA FOR PARTICIPANTS (including committed amounts)
         $budgetService = new \App\Services\BudgetService();
-        $participants = Participant::orderByDesc('budget_limit_cents')->take(5)->get();
+        $participants = Participant::latest()->take(5)->get();
         $budgetData = $participants->map(function ($participant) use ($budgetService) {
             try {
                 $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant);
