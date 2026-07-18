@@ -1440,7 +1440,7 @@
 
     <!-- Notifications / Status Modal (shown on login or when there are unread notifications) -->
     <div class="modal fade" id="portalNotificationsModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="portalNotificationsModalLabel">Notifications</h5>
@@ -3332,6 +3332,25 @@
         #portalNotificationsModal .modal-dialog,
         #adminNotificationsModal .modal-dialog {
             pointer-events: auto;
+            margin: 2.5rem auto 1rem;
+            max-width: 900px;
+        }
+
+        #notificationAlertModal .modal-content,
+        #portalNotificationsModal .modal-content,
+        #adminNotificationsModal .modal-content {
+            animation: slideDownModal 220ms ease-out;
+        }
+
+        @keyframes slideDownModal {
+            from {
+                opacity: 0;
+                transform: translateY(-0.75rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ========================================
