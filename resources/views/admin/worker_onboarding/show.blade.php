@@ -421,16 +421,47 @@
                         <p><strong>Status:</strong> Onboarding complete</p>
                         <p><strong>Assigned At:</strong> {{ $worker->stage_6_assigned_at ? $worker->stage_6_assigned_at->format('M d, Y') : 'N/A' }}</p>
 
-                        @if ($worker->assignments->isEmpty())
-                            <div class="alert alert-info">No participants assigned yet.</div>
-                        @else
-                            <div class="list-group">
-                                @foreach ($worker->assignments as $assignment)
-                                    <div class="list-group-item">
-                                        <h6 class="mb-1">{{ $assignment->participant->first_name }} {{ $assignment->participant->last_name }}</h6>
-                                        <small class="text-muted">Assigned: {{ $assignment->start_date->format('M d, Y') }}</small>
-                                    </div>
-                                @endforeach
+                        <form method="POST" action="{{ route('admin.worker_onboarding.stage6.assign_participants', $worker) }}">
+                            @csrf
+
+                            <div class="mb-3">
+                                <label for="participant_ids" class="form-label">Assign Participants</label>
+                                <select id="participant_ids" name="participant_ids[]" class="form-select" multiple size="10">
+                                    @foreach($participants as $participant)
+                                        <option value="{{ $participant->id }}"
+                                            {{ in_array($participant->id, $selectedParticipantIds ?? []) ? 'selected' : '' }}>
+                                            {{ $participant->first_name }} {{ $participant->last_name }} · {{ $participant->participant_number ?? 'No ID' }}
+                                            @if(in_array($participant->id, $nominatedParticipantIds))
+                                                (Nominated Participant)
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="form-text">Search by name or participant number. Nominated participants are pre-selected.</div>
+                                @error('participant_ids')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Save Assignments</button>
+                        </form>
+
+                        @if ($worker->assignments->isNotEmpty())
+                            <div class="mt-4">
+                                <h6>Current Assignments</h6>
+                                <div class="list-group">
+                                    @foreach ($worker->assignments as $assignment)
+                                        <div class="list-group-item">
+                                            <div class="d-flex justify-content-between flex-wrap align-items-center">
+                                                <div>
+                                                    <h6 class="mb-1">{{ $assignment->participant->first_name }} {{ $assignment->participant->last_name }}</h6>
+                                                    <small class="text-muted">Assigned: {{ optional($assignment->start_date)->format('M d, Y') }}</small>
+                                                </div>
+                                                <span class="badge bg-success mt-2 mt-md-0">Active</span>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
                     </div>

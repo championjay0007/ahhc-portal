@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Worker extends Model
 {
@@ -80,6 +81,16 @@ class Worker extends Model
     public function careNotes(): HasMany
     {
         return $this->hasMany(CareNote::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::updating(function (Worker $worker) {
+            if ($worker->isDirty('status') && $worker->status === 'active' && $worker->onboarding_stage < WorkerOnboardingStage::SIX->value) {
+                $worker->onboarding_stage = WorkerOnboardingStage::SIX->value;
+                $worker->stage_6_assigned_at = $worker->stage_6_assigned_at ?? Carbon::now();
+            }
+        });
     }
 
     public function incidents(): HasMany

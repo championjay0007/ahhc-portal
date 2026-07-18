@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Enums\ComplianceStatus;
 use App\Enums\WorkerDeclarationType;
+use App\Enums\WorkerNominationStatus;
+use App\Models\Participant;
+use App\Models\ParticipantAssignment;
 use App\Models\User;
 use App\Models\Worker;
 use App\Models\WorkerComplianceDocument;
 use App\Models\WorkerComplianceType;
 use App\Models\WorkerDeclaration;
+use App\Models\WorkerNomination;
 use App\Models\WorkerServiceApproval;
 use App\Services\AuditLogService;
 use App\Services\NotificationService;
@@ -17,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Rule;
 use Illuminate\Support\Str;
 
 class AdminWorkerOnboardingController extends Controller
@@ -55,10 +60,38 @@ class AdminWorkerOnboardingController extends Controller
 
         $stage = $worker->getCurrentStage();
 
+        $nominatedParticipantIds = WorkerNomination::where('worker_email', $worker->email)
+            ->whereIn('status', [
+                WorkerNominationStatus::Approved->value,
+                WorkerNominationStatus::WorkerInvited->value,
+                WorkerNominationStatus::CompliancePending->value,
+                WorkerNominationStatus::PendingSignature->value,
+                WorkerNominationStatus::Active->value,
+                WorkerNominationStatus::Assigned->value,
+            ])
+            ->pluck('participant_id')
+            ->unique()
+            ->toArray();
+
+        $participants = Participant::where('status', 'active')
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get()
+            ->sortByDesc(fn ($participant) => in_array($participant->id, $nominatedParticipantIds))
+            ->values();
+
+        $selectedParticipantIds = array_unique(array_merge(
+            $worker->assignments()->where('status', 'active')->pluck('participant_id')->toArray(),
+            $nominatedParticipantIds
+        ));
+
         return view('admin.worker_onboarding.show', [
             'worker' => $worker,
             'stage' => $stage,
             'declarations' => WorkerDeclarationType::all(),
+            'participants' => $participants,
+            'nominatedParticipantIds' => $nominatedParticipantIds,
+            'selectedParticipantIds' => $selectedParticipantIds,
         ]);
     }
 
@@ -503,6 +536,79 @@ class AdminWorkerOnboardingController extends Controller
 
         return redirect()->route('admin.worker_onboarding.show', $worker)
             ->with('success', 'Stage 5 approved. Worker is ready for participant assignment.');
+    }
+
+    /**
+     * Assign participants during Stage 6.
+     */
+    public function assignStage6Participants(Request $request, Worker $worker)
+    {
+        if ($worker->onboarding_stage !== 6) {
+            return back()->withErrors(['participant_ids' => 'Worker must be in Stage 6 before participants can be assigned.']);
+        }
+
+        $validated = $request->validate([
+            'participant_ids' => ['nullable', 'array'],
+            'participant_ids.*' => ['integer', 'distinct', Rule::exists('participants', 'id')->where(fn ($query) => $query->where('status', 'active'))],
+        ]);
+
+        $participantIds = collect($validated['participant_ids'] ?? [])
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $validParticipantIds = Participant::whereIn('id', $participantIds)
+            ->where('status', 'active')
+            ->pluck('id')
+            ->all();
+
+        $invalidIds = array_diff($participantIds, $validParticipantIds);
+        if (! empty($invalidIds)) {
+            return back()->withInput()->withErrors(['participant_ids' => 'One or more selected participants are inactive or invalid.']);
+        }
+
+        DB::transaction(function () use ($worker, $participantIds) {
+            $currentAssignedIds = $worker->assignments()->where('status', 'active')->pluck('participant_id')->toArray();
+            $toKeep = collect($participantIds)->intersect($currentAssignedIds)->all();
+            $toAdd = array_diff($participantIds, $currentAssignedIds);
+            $toRemove = array_diff($currentAssignedIds, $participantIds);
+
+            if (! empty($toRemove)) {
+                ParticipantAssignment::where('worker_id', $worker->id)
+                    ->whereIn('participant_id', $toRemove)
+                    ->where('status', 'active')
+                    ->update([
+                        'status' => 'inactive',
+                        'end_date' => now()->toDateString(),
+                    ]);
+            }
+
+            $assignType = empty($currentAssignedIds) ? 'primary' : 'secondary';
+            $usePrimary = empty($currentAssignedIds);
+
+            foreach ($toAdd as $participantId) {
+                if (ParticipantAssignment::where('participant_id', $participantId)
+                    ->where('worker_id', $worker->id)
+                    ->where('status', 'active')
+                    ->exists()) {
+                    continue;
+                }
+
+                ParticipantAssignment::create([
+                    'participant_id' => $participantId,
+                    'worker_id' => $worker->id,
+                    'start_date' => now()->toDateString(),
+                    'status' => 'active',
+                    'assignment_type' => $usePrimary ? 'primary' : 'secondary',
+                    'is_primary' => $usePrimary,
+                ]);
+
+                $usePrimary = false;
+            }
+        });
+
+        return back()->with('success', 'Worker participant assignments updated successfully.');
     }
 
     /**
