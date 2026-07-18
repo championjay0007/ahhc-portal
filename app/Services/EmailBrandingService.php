@@ -23,7 +23,7 @@ class EmailBrandingService
             return static::normalizeLogoUrl($logoPath);
         }
 
-        return asset('images/branding/logo.jpg');
+        return 'https://allegiancehearthomecare.com.au/images/logo.jpg';
     }
 
     protected static function localLogoFile(string $logo): ?string
