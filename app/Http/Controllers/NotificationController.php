@@ -147,7 +147,21 @@ class NotificationController extends Controller
             return route('portal.admin.support.conversation.show', ['conversation' => $data['conversation_id']]);
         }
 
-        return is_string($url) && $url !== '' ? $url : null;
+        return $this->sanitizeNotificationRedirectUrl(is_string($url) && $url !== '' ? $url : null);
+    }
+
+    private function sanitizeNotificationRedirectUrl(?string $url): ?string
+    {
+        if (! is_string($url) || $url === '') {
+            return null;
+        }
+
+        $path = parse_url($url, PHP_URL_PATH) ?: '';
+        if (preg_match('#^/portal/admin/invoices/(\d+)/(review|reject|pay)(?:/.*)?$#', $path, $matches)) {
+            return route('portal.admin.invoices.show', $matches[1]);
+        }
+
+        return $url;
     }
 
     private function canAccessMessage($user, Message $message): bool
