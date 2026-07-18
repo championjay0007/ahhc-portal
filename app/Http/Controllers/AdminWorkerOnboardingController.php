@@ -671,7 +671,7 @@ class AdminWorkerOnboardingController extends Controller
                     'data' => [
                         'worker_id' => $worker->id,
                         'participant_id' => $participant->id,
-                        'url' => route('portal.participant.show', $participant),
+                        'url' => route('portal.participant.team'),
                     ],
                 ]);
             }
