@@ -1040,35 +1040,6 @@
         }
 
         /* ========================================
-           PWA INSTALL BANNER
-           ======================================== */
-        #pwaInstallBanner {
-            background: var(--bg-surface);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border-light);
-            max-width: 380px;
-            animation: slideUp 0.4s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        #pwaInstallBanner .btn {
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            padding: 0.5rem 1.25rem;
-        }
-
-        /* ========================================
            MOBILE MENU TOGGLE
            ======================================== */
         .mobile-menu-toggle {
@@ -1416,7 +1387,6 @@
             .topbar,
             .mobile-bottom-nav,
             .notification-menu,
-            #pwaInstallBanner,
             .admin-overlay {
                 display: none !important;
             }
@@ -1681,21 +1651,6 @@
     @stack('styles')
 </head>
 <body>
-    <!-- PWA Install Banner -->
-    <div id="pwaInstallBanner" class="alert alert-info p-3 position-fixed bottom-0 end-0 m-3 shadow d-none" style="z-index:1080;">
-        <div class="d-flex align-items-start gap-2">
-            <i class="bi bi-cloud-arrow-down-fill fs-3 text-primary"></i>
-            <div class="flex-grow-1">
-                <strong class="d-block mb-1">Install Allegiance Heart &amp; Home Care Admin</strong>
-                <div class="small text-muted">Add to home screen for faster access</div>
-            </div>
-        </div>
-        <div class="mt-3 d-flex gap-2">
-            <button id="pwaInstallButton" class="btn btn-sm btn-primary flex-grow-1">Install</button>
-            <button id="pwaInstallDismiss" class="btn btn-sm btn-outline-secondary">Dismiss</button>
-        </div>
-    </div>
-
     <!-- Mobile Menu Toggle -->
     <div class="mobile-menu-toggle d-md-none">
         <button type="button" id="adminMenuToggle">
@@ -2020,9 +1975,6 @@
             </a>
 
             <!-- PWA Install Topbar Button -->
-            <button id="pwaInstallTopbarButton" class="topbar-icon" title="Install">
-                <i class="bi bi-cloud-arrow-down-fill"></i>
-            </button>
 
             <!-- User Dropdown -->
             <div class="user-dropdown dropdown">
@@ -2532,89 +2484,6 @@
 
         function isInStandaloneMode() {
             return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
-        }
-
-        var deferredPwaPrompt;
-        var pwaInstallBanner = document.getElementById('pwaInstallBanner');
-        var pwaInstallButton = document.getElementById('pwaInstallButton');
-        var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
-
-        window.addEventListener('beforeinstallprompt', function(event) {
-            if (!PWA_ENABLED) {
-                event.preventDefault();
-                return;
-            }
-
-            event.preventDefault();
-            deferredPwaPrompt = event;
-            if (pwaInstallBanner) {
-                setTimeout(function() {
-                    pwaInstallBanner.classList.remove('d-none');
-                }, 1000);
-            }
-        });
-
-        // Fallback: on iOS show the banner with manual instructions if not already installed
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!PWA_ENABLED) return;
-            if (!deferredPwaPrompt && isIos() && !isInStandaloneMode()) {
-                if (pwaInstallBanner) {
-                    pwaInstallBanner.classList.remove('d-none');
-                }
-            }
-        });
-
-        if (pwaInstallButton) {
-            pwaInstallButton.addEventListener('click', function() {
-                if (deferredPwaPrompt) {
-                    deferredPwaPrompt.prompt();
-                    deferredPwaPrompt.userChoice.then(function(choiceResult) {
-                        if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-                        deferredPwaPrompt = null;
-                    });
-                    return;
-                }
-
-                if (isIos()) {
-                    alert('To install this app on iOS, tap the Share button in Safari and choose "Add to Home Screen".');
-                    if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-                    return;
-                }
-
-                alert('Your browser cannot automatically prompt installation. Use the browser menu and choose "Add to Home screen".');
-                if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-            });
-        }
-
-        if (pwaInstallDismiss) {
-            pwaInstallDismiss.addEventListener('click', function() {
-                if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-            });
-        }
-
-        // Wire topbar install button to the same behavior
-        var pwaInstallTopbarButton = document.getElementById('pwaInstallTopbarButton');
-        if (pwaInstallTopbarButton) {
-            pwaInstallTopbarButton.addEventListener('click', function() {
-                // If the banner button exists, trigger its click to reuse logic
-                if (pwaInstallButton) { pwaInstallButton.click(); return; }
-
-                if (deferredPwaPrompt) {
-                    deferredPwaPrompt.prompt();
-                    deferredPwaPrompt.userChoice.then(function(choiceResult) {
-                        if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-                        deferredPwaPrompt = null;
-                    });
-                    return;
-                }
-
-                if (isIos()) {
-                    alert('To install this app on iOS: tap the Share button in Safari, then select "Add to Home Screen".');
-                    return;
-                }
-
-                alert('Your browser does not support automatic installation. Please use the browser menu and choose "Add to Home screen".');
-            });
         }
 
         function registerPendingSync() {

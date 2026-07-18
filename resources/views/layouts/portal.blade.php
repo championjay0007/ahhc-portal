@@ -930,35 +930,6 @@
         }
 
         /* ========================================
-           PWA INSTALL BANNER
-           ======================================== */
-        #pwaInstallBanner {
-            background: var(--bg-surface);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border-light);
-            max-width: 380px;
-            animation: slideUp 0.4s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        #pwaInstallBanner .btn {
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            padding: 0.5rem 1.25rem;
-        }
-
-        /* ========================================
            RESPONSIVE DESIGN
            ======================================== */
         
@@ -1276,21 +1247,6 @@
     </style>
 </head>
 <body>
-    <!-- PWA Install Banner -->
-    <div id="pwaInstallBanner" class="alert alert-info p-3 position-fixed bottom-0 end-0 m-3 shadow d-none" style="z-index:1080;">
-        <div class="d-flex align-items-start gap-2">
-            <i class="bi bi-cloud-arrow-down-fill fs-3 text-primary"></i>
-            <div class="flex-grow-1">
-                <strong class="d-block mb-1">Install Allegiance Heart &amp; Home Care Portal</strong>
-                <div class="small text-muted">Add to home screen for faster access</div>
-            </div>
-        </div>
-        <div class="mt-3 d-flex gap-2">
-            <button id="pwaInstallButton" class="btn btn-sm btn-primary flex-grow-1">Install</button>
-            <button id="pwaInstallDismiss" class="btn btn-sm btn-outline-secondary">Dismiss</button>
-        </div>
-    </div>
-
     <!-- Top Navigation Bar -->
     <nav class="navbar-portal">
         <div class="container-fluid">
@@ -2266,7 +2222,6 @@
 
         window.addEventListener('appinstalled', function() {
             console.log('PWA installed event fired');
-            hidePwaInstallBanner();
             if (typeof window.enablePwaNotifications === 'function') {
                 window.enablePwaNotifications();
             }
@@ -2322,75 +2277,6 @@
 
         function isInStandaloneMode() {
             return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
-        }
-
-        var deferredPwaPrompt;
-        var pwaInstallBanner = document.getElementById('pwaInstallBanner');
-        var pwaInstallButton = document.getElementById('pwaInstallButton');
-        var pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
-
-        function showPwaInstallBanner() {
-            if (!pwaInstallBanner) {
-                return;
-            }
-
-            pwaInstallBanner.classList.remove('d-none');
-            pwaInstallBanner.classList.add('show');
-        }
-
-        function hidePwaInstallBanner() {
-            if (!pwaInstallBanner) {
-                return;
-            }
-
-            pwaInstallBanner.classList.add('d-none');
-            pwaInstallBanner.classList.remove('show');
-        }
-
-        window.addEventListener('beforeinstallprompt', function(event) {
-            console.log('beforeinstallprompt fired:', event);
-            if (!PWA_ENABLED) {
-                event.preventDefault();
-                return;
-            }
-
-            event.preventDefault();
-            deferredPwaPrompt = event;
-            if (pwaInstallBanner) {
-                setTimeout(showPwaInstallBanner, 1200);
-            }
-        });
-
-        if (pwaInstallButton) {
-            pwaInstallButton.addEventListener('click', function() {
-                if (!deferredPwaPrompt) {
-                    if (isIos()) {
-                        alert('To install this app on iOS, tap the Share button in Safari and choose "Add to Home Screen".');
-                    } else {
-                        alert('Your browser cannot automatically prompt installation. Use the browser menu and choose "Add to Home screen".');
-                    }
-                    hidePwaInstallBanner();
-                    return;
-                }
-
-                deferredPwaPrompt.prompt();
-                deferredPwaPrompt.userChoice.then(function(choiceResult) {
-                    hidePwaInstallBanner();
-                    deferredPwaPrompt = null;
-                });
-            });
-        }
-
-        if (pwaInstallDismiss) {
-            pwaInstallDismiss.addEventListener('click', function() {
-                hidePwaInstallBanner();
-            });
-        }
-
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-            hidePwaInstallBanner();
-        } else if (PWA_ENABLED && pwaInstallBanner) {
-            setTimeout(showPwaInstallBanner, 2500);
         }
 
         function registerPendingSync() {
@@ -3139,7 +3025,6 @@
             .portal-sidebar,
             .mobile-bottom-nav,
             .notification-menu,
-            #pwaInstallBanner,
             .portal-overlay {
                 display: none !important;
             }

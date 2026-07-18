@@ -107,6 +107,43 @@ class AdminController extends Controller
         }
 
         $participants = $query->paginate(20)->withQueryString();
+        $currentQuarterPeriod = $this->budgetService->getQuarterPeriodForDate(now());
+
+        $participants->getCollection()->transform(function (Participant $participant) use ($currentQuarterPeriod) {
+            $budget = Budget::where('participant_id', $participant->id)
+                ->where(function ($query) use ($currentQuarterPeriod) {
+                    if (Schema::hasColumn('budgets', 'quarter_start_date')) {
+                        $query->where(function ($inner) use ($currentQuarterPeriod) {
+                            $inner->whereDate('quarter_start_date', $currentQuarterPeriod['quarter_start_date'])
+                                ->whereDate('quarter_end_date', $currentQuarterPeriod['quarter_end_date']);
+                        })->orWhere(function ($inner) use ($currentQuarterPeriod) {
+                            $inner->whereDate('quarter_start_date', '<=', $currentQuarterPeriod['quarter_end_date'])
+                                ->whereDate('quarter_end_date', '>=', $currentQuarterPeriod['quarter_start_date']);
+                        });
+                    } else {
+                        $query->where(function ($inner) use ($currentQuarterPeriod) {
+                            $inner->whereDate('quarter_start', $currentQuarterPeriod['quarter_start'])
+                                ->whereDate('quarter_end', $currentQuarterPeriod['quarter_end']);
+                        })->orWhere(function ($inner) use ($currentQuarterPeriod) {
+                            $inner->whereDate('quarter_start', '<=', $currentQuarterPeriod['quarter_end'])
+                                ->whereDate('quarter_end', '>=', $currentQuarterPeriod['quarter_start']);
+                        });
+                    }
+                })
+                ->first();
+
+            if (! $budget) {
+                $budget = $this->budgetService->getOrCreateBudgetForParticipantQuarter($participant, now());
+            }
+
+            $budgetMetrics = $this->budgetService->getBudgetMetrics($budget);
+            $participant->budget_limit_cents = $budgetMetrics['total_available'] ?? 0;
+            $participant->current_budget_used_cents = $budgetMetrics['used'] ?? 0;
+            $participant->remaining_budget = $budgetMetrics['remaining'] ?? 0;
+
+            return $participant;
+        });
+
         $workers = Worker::orderBy('first_name')->orderBy('last_name')->get();
 
         return view('admin.participants', compact('participants', 'workers'));

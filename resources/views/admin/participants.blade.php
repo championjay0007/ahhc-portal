@@ -49,7 +49,7 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Participant #</th>
-                            <th>Budget</th>
+                            <th>Available</th>
                             <th>Used</th>
                             <th>Remaining</th>
                             <th>Status</th>
@@ -59,7 +59,7 @@
                     <tbody>
                         @forelse($participants as $p)
                             @php
-                                $remaining = max(0, ($p->budget_limit_cents ?? 0) - ($p->current_budget_used_cents ?? 0));
+                                $remaining = max(0, ($p->remaining_budget ?? 0));
                             @endphp
                             <tr>
                                 <td>{{ $p->id }}</td>
