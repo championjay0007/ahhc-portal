@@ -235,10 +235,15 @@ class WorkerOnboardingController extends Controller
 
             $abnNumber = $validated['abn_number'] ?? null;
 
-            $worker->update([
+            $update = [
                 'stage_2_submitted_at' => now(),
-                'notes' => trim(($worker->notes ? $worker->notes.PHP_EOL : '').($abnNumber ? 'ABN: '.$abnNumber : '')),
-            ]);
+            ];
+
+            if ($abnNumber) {
+                $update['abn_number'] = $abnNumber;
+            }
+
+            $worker->update($update);
         });
 
         if ($worker->user_id) {

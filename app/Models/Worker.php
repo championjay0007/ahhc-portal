@@ -28,6 +28,7 @@ class Worker extends Model
         'background_check_expiry_at',
         'vehicle_type',
         'notes',
+        'abn_number',
         'onboarding_stage',
         'onboarding_token',
         'onboarding_expires_at',
