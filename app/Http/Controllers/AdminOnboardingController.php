@@ -7,6 +7,7 @@ use App\Models\Participant;
 use App\Services\NotificationCenterService;
 use App\Services\TemplateMailer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -38,6 +39,24 @@ class AdminOnboardingController extends Controller
         $participant = $submission->participant;
 
         return view('admin.onboarding.show', compact('submission', 'participant'));
+    }
+
+    public function downloadDocument(OnboardingSubmission $submission, int $index)
+    {
+        $document = $submission->uploaded_documents[$index] ?? null;
+
+        if (! $document || ! isset($document['path'])) {
+            abort(404);
+        }
+
+        if (! Storage::disk('private')->exists($document['path'])) {
+            abort(404);
+        }
+
+        return Storage::disk('private')->download(
+            $document['path'], 
+            $document['name'] ?? basename($document['path'])
+        );
     }
 
     /**

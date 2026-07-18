@@ -27,8 +27,40 @@
                         </div>
                     </div>
 
-                    <h3 class="h6 mt-4 mb-3">Onboarding Data</h3>
+                    <h3 class="h6 mt-4 mb-3">Contact & Address</h3>
                     <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Preferred Name</strong>
+                            <p class="mb-0">{{ $participant->preferred_name ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Phone</strong>
+                            <p class="mb-0">{{ $participant->phone ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Address</strong>
+                            <p class="mb-0">{{ $participant->address ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>City</strong>
+                            <p class="mb-0">{{ $participant->city ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>State</strong>
+                            <p class="mb-0">{{ $participant->state ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Postcode</strong>
+                            <p class="mb-0">{{ $participant->postcode ?? 'N/A' }}</p>
+                        </div>
+                    </div>
+
+                    <h3 class="h6 mt-4 mb-3">Personal Onboarding Details</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Full Name</strong>
+                            <p class="mb-0">{{ $submission->personal_data['full_name'] ?? 'N/A' }}</p>
+                        </div>
                         <div class="col-md-6 mb-3">
                             <strong>Emergency Contact</strong>
                             <p class="mb-0">{{ $submission->personal_data['emergency_contact_name'] ?? 'N/A' }}</p>
@@ -43,13 +75,35 @@
                         </div>
                     </div>
 
+                    @if($submission->support_person_data)
+                        <h3 class="h6 mt-4 mb-3">Support Person</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Name</strong>
+                                <p class="mb-0">{{ $submission->support_person_data['first_name'] ?? '' }} {{ $submission->support_person_data['last_name'] ?? '' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Relationship</strong>
+                                <p class="mb-0">{{ $submission->support_person_data['relationship'] ?? 'N/A' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Email</strong>
+                                <p class="mb-0">{{ $submission->support_person_data['email'] ?? 'N/A' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Phone</strong>
+                                <p class="mb-0">{{ $submission->support_person_data['phone'] ?? 'N/A' }}</p>
+                            </div>
+                        </div>
+                    @endif
+
                     <h3 class="h6 mt-4 mb-3">Uploaded Documents</h3>
                     @if($submission->uploaded_documents && count($submission->uploaded_documents))
                         <ul class="list-group list-group-flush mb-0">
-                            @foreach($submission->uploaded_documents as $document)
+                            @foreach($submission->uploaded_documents as $index => $document)
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>{{ $document['name'] }}</span>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary">Download</a>
+                                    <span>{{ $document['name'] ?? 'Document '.$index }}</span>
+                                    <a href="{{ route('admin.onboarding.download_document', ['submission' => $submission, 'index' => $index]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
                                 </li>
                             @endforeach
                         </ul>

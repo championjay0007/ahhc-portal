@@ -224,6 +224,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
         Route::post('/{submission}/approve', [AdminOnboardingController::class, 'approve'])->name('approve');
         Route::post('/{submission}/request-changes', [AdminOnboardingController::class, 'requestChanges'])->name('request_changes');
         Route::post('/{submission}/reject', [AdminOnboardingController::class, 'reject'])->name('reject');
+        Route::get('/{submission}/document/{index}/download', [AdminOnboardingController::class, 'downloadDocument'])->name('download_document');
         Route::post('/participant/{participant}/activate', [AdminOnboardingController::class, 'activate'])->name('activate');
     });
 
