@@ -496,6 +496,20 @@ class WorkerPortalController extends Controller
             'amount_cents' => $invoice->amount_cents,
         ]);
 
+        // Notify all admins with a direct link to the invoice review page
+        User::where('role', 'admin')->get()->each(function ($admin) use ($invoice) {
+            NotificationService::notify([
+                'user_id' => $admin->id,
+                'participant_id' => $invoice->participant_id,
+                'type' => 'info',
+                'data' => [
+                    'title' => 'Invoice submitted',
+                    'message' => "Invoice {$invoice->invoice_number} submitted by worker for participant {$invoice->participant_id}.",
+                    'url' => route('portal.admin.invoices.show', $invoice),
+                ],
+            ]);
+        });
+
         return redirect()->route('portal.worker.invoices')->with('status', 'Invoice submitted successfully.');
     }
 
