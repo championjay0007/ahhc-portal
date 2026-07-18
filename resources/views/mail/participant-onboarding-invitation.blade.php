@@ -70,9 +70,11 @@
     <div class="wrapper">
         <div class="card">
             <div class="header">
-                <a href="{{ url('/') }}" style="display:block;text-align:center;">
-                    <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" style="width:110px;height:110px;border-radius:50%;display:block;margin:0 auto 14px;object-fit:cover;background:#fff;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,0.08);border:0;" />
-                </a>
+                <div class="email-logo">
+                    <a href="{{ url('/') }}" style="display:block;text-align:center;">
+                        <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" style="width:100%;max-width:110px;height:auto;display:block;border:0;outline:none;text-decoration:none;border-radius:999px;background:#ffffff;" />
+                    </a>
+                </div>
                 <div class="badge">Onboarding Invitation</div>
                 <h1 class="title">Complete your AHHC onboarding</h1>
                 <p class="subtitle">Your secure onboarding link is ready. Please follow the steps to activate your portal access.</p>

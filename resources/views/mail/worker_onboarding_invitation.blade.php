@@ -46,23 +46,28 @@
 
         .email-header {
             background: linear-gradient(135deg, #356991, #19B0A5, #72CEAC);
+            background-color: #356991;
             padding: 45px 30px;
             text-align: center;
             color: #ffffff;
         }
 
-        .email-header img {
+        .email-logo {
             width: 110px;
-            height: 110px;
-            margin-bottom: 14px;
-            border-radius: 50%;
+            max-width: 110px;
+            margin: 0 auto 14px;
+        }
+
+        .email-logo img {
+            width: 100%;
+            max-width: 110px;
+            height: auto;
             display: block;
-            margin-left: auto;
-            margin-right: auto;
-            object-fit: cover;
+            border: 0;
+            outline: none;
+            text-decoration: none;
+            border-radius: 999px;
             background: #ffffff;
-            padding: 6px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
         }
 
         .email-badge {
@@ -254,9 +259,11 @@
             <tbody>
                 <tr>
                     <td class="email-header">
+                        <div class="email-logo">
                         <a href="{{ url('/') }}" style="display:block;text-align:center;">
-                            <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" style="width:110px;height:110px;border-radius:50%;display:block;margin:0 auto 14px;object-fit:cover;background:#fff;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,0.08);border:0;" />
+                            <img src="{{ $emailLogoSrc }}" alt="{{ $badge ?? ($organization ?? config('app.name', 'AHHC Portal')) }}" style="width:100%;max-width:110px;height:auto;display:block;border:0;outline:none;text-decoration:none;border-radius:999px;background:#ffffff;" />
                         </a>
+                    </div>
                         <div class="email-badge">Worker Invitation</div>
                         <h1 class="email-title">Welcome to AHHC</h1>
                         <p class="email-intro">You've been invited to join the AHHC Care Team.</p>
