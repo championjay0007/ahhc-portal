@@ -88,7 +88,7 @@ class AdminOnboardingController extends Controller
             'participant_id' => $participant->id,
             'url' => route('portal.login'),
             'message' => 'Your onboarding has been approved. We are preparing your account for activation.',
-        ]);
+        ], ['in_app']);
 
         try {
             $html = view('mail.onboarding-status', [
@@ -166,7 +166,7 @@ class AdminOnboardingController extends Controller
             'participant_id' => $submission->participant->id,
             'url' => route('portal.onboarding.show', ['token' => $submission->participant->onboarding_token]),
             'message' => 'Changes were requested for your onboarding. Please review the comments and complete the updates.',
-        ]);
+        ], ['in_app']);
 
         try {
             $html = view('mail.onboarding-status', [
@@ -237,7 +237,7 @@ class AdminOnboardingController extends Controller
             'participant_id' => $submission->participant->id,
             'url' => route('portal.login'),
             'message' => 'Your onboarding has been rejected. Please contact AHHC support for next steps.',
-        ]);
+        ], ['in_app']);
 
         try {
             $html = view('mail.onboarding-status', [

@@ -395,18 +395,24 @@ class AdminController extends Controller
             } catch (\Throwable $e) {
                 // TemplateMailer already handles fallback delivery. Keep this as best-effort only.
             }
-        }
 
-        NotificationService::notify([
-            'user_id' => $user->id,
-            'participant_id' => $participant->id,
-            'type' => 'success',
-            'data' => [
-                'title' => 'Participant account created',
-                'message' => $isOnboarding ? 'Your participant account has been created and an onboarding invitation has been sent.' : 'Your participant account has been created by AHHC admin. Sign in to complete onboarding.',
-                'url' => route('portal.dashboard'),
-            ],
-        ]);
+            NotificationCenterService::send('portal_invitation', $user->id, [
+                'participant_id' => $participant->id,
+                'url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
+                'message' => 'Your participant account has been created and an onboarding invitation has been sent.',
+            ], ['in_app']);
+        } else {
+            NotificationService::notify([
+                'user_id' => $user->id,
+                'participant_id' => $participant->id,
+                'type' => 'success',
+                'data' => [
+                    'title' => 'Participant account created',
+                    'message' => 'Your participant account has been created by AHHC admin. Sign in to complete onboarding.',
+                    'url' => route('portal.dashboard'),
+                ],
+            ]);
+        }
 
         return redirect()->route('portal.admin.participants')->with('status', 'Participant created successfully.');
     }
@@ -608,7 +614,7 @@ class AdminController extends Controller
                 'participant_id' => $participant->id,
                 'url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
                 'message' => 'Your onboarding invitation has been resent. Please use the link to resume your onboarding.',
-            ]);
+            ], ['in_app']);
         }
 
         return back()->with('status', 'Onboarding invitation resent successfully.');

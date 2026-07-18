@@ -130,7 +130,7 @@ class AdminApplicationsController extends Controller
             'participant_id' => $participant->id,
             'url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
             'message' => 'Your onboarding invitation has been sent. Click the link to complete your onboarding.',
-        ]);
+        ], ['in_app']);
 
         // Log audit trail
         // TODO: AuditLogService::record(...)

@@ -167,7 +167,7 @@ class EnquiryController extends Controller
             'participant_id' => $participant->id,
             'url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
             'message' => 'Your onboarding invitation has been sent. Use the link to complete your onboarding.',
-        ]);
+        ], ['in_app']);
 
         $enquiry->update([
             'status' => Enquiry::STATUS_APPROVED,
