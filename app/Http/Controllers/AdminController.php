@@ -2354,12 +2354,6 @@ class AdminController extends Controller
 
     public function reviewInvoice(Request $request, Invoice $invoice)
     {
-        // Only proceed to approve if the admin explicitly clicked the approve action.
-        // If this endpoint is reached without an explicit approve flag, redirect to the invoice view.
-        if (! $request->has('approve')) {
-            return redirect()->route('portal.admin.invoices.show', $invoice);
-        }
-
         if ($invoice->status === 'approved') {
             return back()->with('status', 'Invoice is already approved.');
         }
