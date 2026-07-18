@@ -107,6 +107,7 @@
                                     <button type="submit" class="btn btn-primary">Mark as reviewed</button>
                                 </div>
                             </form>
+                        @endif
                 </div>
             </div>
         </div>
