@@ -104,7 +104,7 @@
                                 @endif
 
                                 <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary">Mark as reviewed</button>
+                                    <button type="submit" name="approve" value="1" class="btn btn-primary">Approve invoice</button>
                                 </div>
                             </form>
                         @endif
