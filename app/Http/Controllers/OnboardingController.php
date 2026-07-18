@@ -125,6 +125,7 @@ class OnboardingController extends Controller
             ],
             'support_person_data' => $supportPersonData,
             'uploaded_documents' => $uploadedDocuments,
+            'signed_agreements' => $validated['agreement_signatures'] ?? null,
             'status' => 'pending_review',
             'submitted_at' => now(),
         ]);

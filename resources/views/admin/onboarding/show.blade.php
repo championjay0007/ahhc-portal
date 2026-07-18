@@ -102,13 +102,46 @@
                         <ul class="list-group list-group-flush mb-0">
                             @foreach($submission->uploaded_documents as $index => $document)
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>{{ $document['name'] ?? 'Document '.$index }}</span>
+                                    <div>
+                                        <strong class="d-block">{{ $document['name'] ?? 'Document '.$index }}</strong>
+                                        <small class="text-muted">Uploaded at: {{ $document['uploaded_at'] ? \Illuminate\Support\Carbon::parse($document['uploaded_at'])->format('d M Y H:i') : 'Unknown' }}</small>
+                                    </div>
                                     <a href="{{ route('admin.onboarding.download_document', ['submission' => $submission, 'index' => $index]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
                                 </li>
                             @endforeach
                         </ul>
                     @else
                         <p class="text-muted">No documents uploaded.</p>
+                    @endif
+
+                    <h3 class="h6 mt-4 mb-3">Signed Agreements</h3>
+                    @if($submission->signed_agreements && count($submission->signed_agreements))
+                        <div class="list-group mb-4">
+                            @foreach($submission->signed_agreements as $agreementId => $signatureData)
+                                @php
+                                    $agreement = $participant->agreements->firstWhere('id', $agreementId);
+                                @endphp
+                                <div class="list-group-item py-3">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="mb-1">{{ $agreement?->title ?? 'Agreement '.$agreementId }}</h5>
+                                            <p class="mb-1 text-muted small">{{ $agreement?->description ?? 'Agreement signature submitted.' }}</p>
+                                        </div>
+                                        <span class="badge bg-success text-white">Signed</span>
+                                    </div>
+                                    @if($signatureData)
+                                        <div class="mt-3">
+                                            <span class="small text-muted">Signature preview</span>
+                                            <div class="border rounded overflow-hidden mt-2" style="max-width: 320px;">
+                                                <img src="{{ $signatureData }}" alt="Signature preview" class="img-fluid" style="display:block;" />
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-muted">No agreement signatures were submitted with this onboarding package.</p>
                     @endif
 
                     <h3 class="h6 mt-4 mb-3">Agreements</h3>
@@ -131,6 +164,23 @@
                     @else
                         <p class="text-muted">No agreements assigned.</p>
                     @endif
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h3 class="h6 mb-3">Raw Submission Payload</h3>
+                            <pre class="small text-muted" style="white-space: pre-wrap; word-break: break-word;">{{ e(json_encode([
+                                'personal_data' => $submission->personal_data,
+                                'support_person_data' => $submission->support_person_data,
+                                'uploaded_documents' => $submission->uploaded_documents,
+                                'signed_agreements' => $submission->signed_agreements,
+                                'status' => $submission->status,
+                                'admin_comments' => $submission->admin_comments,
+                                'submitted_at' => optional($submission->submitted_at)->toDateTimeString(),
+                                'reviewed_at' => optional($submission->reviewed_at)->toDateTimeString(),
+                                'reviewed_by' => $submission->reviewer?->name,
+                            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) }}</pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
