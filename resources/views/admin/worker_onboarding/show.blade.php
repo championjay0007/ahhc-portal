@@ -67,6 +67,18 @@
                             <label class="form-label fw-semibold small text-muted">Qualification</label>
                             <div class="form-control-plaintext ps-0">{{ $worker->qualification ?: 'Not provided' }}</div>
                         </div>
+                        @php
+                            $abn = null;
+                            if (! empty($worker->notes)) {
+                                if (preg_match('/ABN:\s*([0-9A-Za-z\-]+)/i', $worker->notes, $m)) {
+                                    $abn = $m[1];
+                                }
+                            }
+                        @endphp
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">ABN</label>
+                            <div class="form-control-plaintext ps-0">{{ $abn ?? 'Not provided' }}</div>
+                        </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-muted">Availability</label>
                             <div class="form-control-plaintext ps-0">{{ $worker->availability ?: 'Not provided' }}</div>

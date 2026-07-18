@@ -566,12 +566,7 @@ class WorkerOnboardingController extends Controller
     private function getStage2ComplianceRequirements(): array
     {
         return [
-            [
-                'slug' => 'abn_verification',
-                'name' => 'ABN Verification',
-                'required' => false,
-                'description' => 'Australian Business Number verification.',
-            ],
+            // ABN is collected as a number field, not an uploaded document.
             [
                 'slug' => 'police_check',
                 'name' => 'Police Check',
