@@ -15,9 +15,10 @@ class ParticipantOnboardingInvitation extends StyledEmail
     ) {
         $subject = 'Complete your AHHC portal onboarding';
 
-        $intro = "Hello <strong>{$this->participant->first_name ?? 'Participant'}</strong>,<br><br>" .
+        $name = $this->participant->first_name ?? 'Participant';
+        $intro = "Hello <strong>{$name}</strong>,<br><br>" .
                  "You're invited to begin your onboarding with <strong>" . config('app.name', 'AHHC Portal') . "</strong>. This helps us confirm your details, review your documentation, and prepare your portal access.<br><br>" .
-                 "Please use the secure link below to continue. The link remains active until <strong>" . optional($this->participant->onboarding_expires_at)->format('d M Y H:i') . "</strong>.";
+                 "Please use the secure link below to continue. The link remains active until <strong>" . optional($this->participant->onboarding_expires_at)->format('d M Y H:i') . "</strong>";
 
         $details = [
             'Name' => trim(($this->participant->first_name ?? '') . ' ' . ($this->participant->last_name ?? '')),

@@ -1733,10 +1733,7 @@
                     <a href="{{ route('portal.admin.incidents') }}" class="@if(request()->routeIs('portal.admin.incidents*')) active @endif">
                         <i class="bi bi-exclamation-triangle"></i>
                         <span>Incidents</span>
-                    </a>
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Shift Scheduling</span>
-                    </a>
+                  
                     <a href="{{ route('portal.admin.documents') }}" class="@if(request()->routeIs('portal.admin.documents*')) active @endif">
                         <i class="bi bi-file-earmark-text"></i>
                         <span>Forms & E-sign</span>
