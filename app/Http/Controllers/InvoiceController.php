@@ -127,15 +127,15 @@ class InvoiceController extends Controller
             'amount_cents' => $invoice->amount_cents,
         ]);
 
-        User::where('role', 'admin')->get()->each(function ($admin) use ($participant, $validated) {
+        User::where('role', 'admin')->get()->each(function ($admin) use ($participant, $invoice) {
             NotificationService::notify([
                 'user_id' => $admin->id,
                 'participant_id' => $participant->id,
                 'type' => 'info',
                 'data' => [
                     'title' => 'Invoice submitted',
-                    'message' => "{$participant->first_name} submitted invoice {$validated['invoice_number']}.",
-                    'url' => route('portal.admin.invoices'),
+                    'message' => "{$participant->first_name} submitted invoice {$invoice->invoice_number}.",
+                    'url' => route('portal.admin.invoices.show', $invoice),
                 ],
             ]);
         });
