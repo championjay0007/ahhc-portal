@@ -239,8 +239,9 @@ class AdminController extends Controller
         }
 
         $participants = $query->paginate(20)->withQueryString();
+        $summaryBudgetMetrics = [];
 
-        $participants->getCollection()->transform(function (Participant $participant) use ($budgetService, $currentQuarterPeriod) {
+        $participants->getCollection()->transform(function (Participant $participant) use ($budgetService, $currentQuarterPeriod, &$summaryBudgetMetrics) {
             $budget = Budget::where('participant_id', $participant->id)
                 ->where(function ($query) use ($currentQuarterPeriod) {
                     if (Schema::hasColumn('budgets', 'quarter_start_date')) {
@@ -306,19 +307,20 @@ class AdminController extends Controller
             $participant->utilization = $budgetMetrics['utilization_percent'] ?? 0;
             $participant->budget = $budget;
 
+            $summaryBudgetMetrics[] = $budgetMetrics;
+
             return $participant;
         });
 
-        $budgetQuery = Budget::where('quarter_start_date', $currentQuarterPeriod['quarter_start_date'])
-            ->where('quarter_end_date', $currentQuarterPeriod['quarter_end_date']);
-
-        $totalBudget = $budgetQuery->sum(DB::raw('opening_balance_cents + carry_over_cents'));
-        $totalCommitted = $budgetQuery->sum('committed_cents');
-        $totalApproved = $budgetQuery->sum('approved_spend_cents');
-        $totalPaid = $budgetQuery->sum('paid_spend_cents');
+        $totalBudget = array_sum(array_column($summaryBudgetMetrics, 'total_available'));
+        $totalCommitted = array_sum(array_column($summaryBudgetMetrics, 'committed'));
+        $totalApproved = array_sum(array_column($summaryBudgetMetrics, 'approved'));
+        $totalPaid = array_sum(array_column($summaryBudgetMetrics, 'paid'));
         $totalUsed = $totalApproved + $totalPaid;
-        $totalRemaining = max(0, $totalBudget - $totalCommitted - $totalUsed);
-        $overBudgetCount = $budgetQuery->whereRaw('committed_cents + approved_spend_cents + paid_spend_cents > opening_balance_cents + carry_over_cents')->count();
+        $totalRemaining = $totalBudget - $totalUsed;
+        $overBudgetCount = count(array_filter($summaryBudgetMetrics, function ($metrics) {
+            return ($metrics['remaining'] ?? 0) < 0;
+        }));
 
         $currentQuarterLabel = $this->formatFiscalQuarterLabel($currentQuarter);
 
@@ -2405,20 +2407,11 @@ class AdminController extends Controller
             return back()->withErrors(['invoice' => 'Only submitted invoices can be approved.']);
         }
 
-        $invoiceBudgetMode = PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
-
         $validated = $request->validate([
-            'committed_amount' => ['nullable', 'numeric', 'min:0'],
+            'committed_amount' => ['required', 'numeric', 'min:0'],
         ]);
 
-        $committedAmountCents = null;
-        if ($invoiceBudgetMode === 'preapproval_amount') {
-            $committedAmountCents = isset($validated['committed_amount'])
-                ? (int) round((float) $validated['committed_amount'] * 100)
-                : null;
-        } else {
-            $committedAmountCents = $invoice->amount_cents;
-        }
+        $committedAmountCents = (int) round((float) $validated['committed_amount'] * 100);
 
         DB::transaction(function () use ($invoice, $committedAmountCents) {
             $invoice->update([

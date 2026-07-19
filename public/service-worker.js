@@ -4,7 +4,6 @@ const PRECACHE_URLS = [
     '/',
     '/portal/dashboard?source=pwa',
     '/portal/manifest.json',
-    '/offline.html',
     '/favicon.ico',
     '/icons/icon-192.png',
     '/icons/icon-512.png',
@@ -134,11 +133,7 @@ self.addEventListener('fetch', event => {
 
     if (request.mode === 'navigate') {
         event.respondWith(
-            fetch(request)
-                .then(response => {
-                    return response.ok ? response : caches.match(OFFLINE_PAGE);
-                })
-                .catch(() => caches.match(OFFLINE_PAGE))
+            fetch(request).catch(() => fetch(request.url, { method: 'GET', mode: 'same-origin' }))
         );
         return;
     }
@@ -231,11 +226,26 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
     event.notification.close();
     event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async clientList => {
+            // If the push payload includes an `open_url` (the portal notification show route),
+            // call it first to ensure the server marks the notification as read.
+            try {
+                const openUrl = event.notification.data?.open_url;
+                if (openUrl) {
+                    await fetch(openUrl, { method: 'GET', credentials: 'include' }).catch(() => {});
+                }
+            } catch (e) {
+                // ignore network errors
+            }
+
             const urlToOpen = new URL(event.notification.data?.url || '/portal/dashboard', self.location.origin).href;
             for (const client of clientList) {
-                if (client.url === urlToOpen && 'focus' in client) {
-                    return client.focus();
+                try {
+                    if (client.url === urlToOpen && 'focus' in client) {
+                        return client.focus();
+                    }
+                } catch (e) {
+                    // ignore
                 }
             }
             if (clients.openWindow) {

@@ -18,6 +18,109 @@ class AdminInvoiceWorkflowTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_admin_invoice_detail_page_defaults_committed_amount_and_shows_action_buttons(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Invoice View',
+            'email' => 'admin-invoice-view@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participantUser = User::create([
+            'name' => 'Participant Invoice View',
+            'email' => 'participant-invoice-view@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $participantUser->id,
+            'participant_number' => 'P-3001',
+            'first_name' => 'Participant',
+            'last_name' => 'Invoice',
+            'status' => 'active',
+        ]);
+
+        $invoice = Invoice::create([
+            'participant_id' => $participant->id,
+            'invoice_number' => 'INV-3001',
+            'status' => 'submitted',
+            'amount_cents' => 5000,
+            'invoice_date' => now()->toDateString(),
+            'service_date' => now()->subDay()->toDateString(),
+            'due_date' => now()->addDays(14)->toDateString(),
+            'invoice_file_path' => 'invoices/invoice-3001.pdf',
+            'attachment_path' => 'invoices/invoice-3001.pdf',
+            'attachment_disk' => 'local',
+            'attachment_mime_type' => 'application/pdf',
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('portal.admin.invoices.show', $invoice));
+
+        $response->assertOk();
+        $response->assertSee('Approve invoice');
+        $response->assertSee('Reject invoice');
+        $response->assertSee('value="50.00"', false);
+        $response->assertDontSee('Committed amount:');
+    }
+
+    public function test_admin_must_enter_committed_amount_before_approving_invoice(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Required Commit',
+            'email' => 'admin-required-commit@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participantUser = User::create([
+            'name' => 'Participant Required Commit',
+            'email' => 'participant-required-commit@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $participantUser->id,
+            'participant_number' => 'P-2002',
+            'first_name' => 'Participant',
+            'last_name' => 'Required',
+            'status' => 'active',
+        ]);
+
+        $invoice = Invoice::create([
+            'participant_id' => $participant->id,
+            'invoice_number' => 'INV-2002',
+            'status' => 'submitted',
+            'amount_cents' => 5000,
+            'invoice_date' => now()->toDateString(),
+            'service_date' => now()->subDay()->toDateString(),
+            'due_date' => now()->addDays(14)->toDateString(),
+            'invoice_file_path' => 'invoices/invoice-2002.pdf',
+            'attachment_path' => 'invoices/invoice-2002.pdf',
+            'attachment_disk' => 'local',
+            'attachment_mime_type' => 'application/pdf',
+        ]);
+
+        $response = $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice), []);
+
+        $response->assertSessionHasErrors(['committed_amount']);
+        $this->assertSame('submitted', $invoice->fresh()->status);
+    }
+
     public function test_admin_can_approve_submitted_invoice_and_reconcile_budget(): void
     {
         $admin = User::create([
@@ -88,7 +191,9 @@ class AdminInvoiceWorkflowTest extends TestCase
             'attachment_mime_type' => 'application/pdf',
         ]);
 
-        $response = $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice));
+        $response = $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice), [
+            'committed_amount' => '50.00',
+        ]);
 
         $response->assertSessionHas('status', 'Invoice approved.');
         $invoice->refresh();
@@ -98,7 +203,7 @@ class AdminInvoiceWorkflowTest extends TestCase
         $this->assertSame($admin->id, $invoice->approved_by_id);
 
         $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant, now());
-        $this->assertSame(0, $budget->committed_cents);
+        $this->assertSame(5000, $budget->committed_cents);
         $this->assertSame(5000, $budget->approved_spend_cents);
     }
 
@@ -177,7 +282,9 @@ class AdminInvoiceWorkflowTest extends TestCase
             'attachment_mime_type' => 'application/pdf',
         ]);
 
-        $response = $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice));
+        $response = $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice), [
+            'committed_amount' => '80.00',
+        ]);
 
         $response->assertSessionHas('status', 'Invoice approved.');
 
@@ -247,8 +354,9 @@ class AdminInvoiceWorkflowTest extends TestCase
             'attachment_mime_type' => 'application/pdf',
         ]);
 
-        $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice))
-            ->assertSessionHas('status', 'Invoice approved.');
+        $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice), [
+            'committed_amount' => '80.00',
+        ])->assertSessionHas('status', 'Invoice approved.');
 
         $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant, now());
         $this->assertSame(2000, $budget->committed_cents);
@@ -334,7 +442,71 @@ class AdminInvoiceWorkflowTest extends TestCase
 
         $this->assertSame(3000, $invoice->committed_amount_cents);
         $this->assertSame(3000, $budget->approved_spend_cents);
-        $this->assertSame(2000, $budget->committed_cents);
+        $this->assertSame(5000, $budget->committed_cents);
+    }
+
+    public function test_budget_metrics_include_committed_amount_for_approved_invoices(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Budget Metrics',
+            'email' => 'admin-budget-metrics@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participantUser = User::create([
+            'name' => 'Participant Budget Metrics',
+            'email' => 'participant-budget-metrics@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $participantUser->id,
+            'participant_number' => 'P-2006',
+            'first_name' => 'Participant',
+            'last_name' => 'Metrics',
+            'status' => 'active',
+        ]);
+
+        $budgetService = new BudgetService;
+        $budgetPeriod = $budgetService->getQuarterPeriodForDate(now());
+        $budget = Budget::create([
+            'participant_id' => $participant->id,
+            'quarter_start_date' => $budgetPeriod['quarter_start_date'],
+            'quarter_end_date' => $budgetPeriod['quarter_end_date'],
+            'opening_balance_cents' => 10000,
+            'carry_over_cents' => 0,
+            'committed_cents' => 0,
+            'approved_spend_cents' => 0,
+            'paid_spend_cents' => 0,
+        ]);
+
+        Invoice::create([
+            'participant_id' => $participant->id,
+            'invoice_number' => 'INV-2006',
+            'status' => 'approved',
+            'amount_cents' => 5000,
+            'committed_amount_cents' => 5000,
+            'invoice_date' => now()->toDateString(),
+            'service_date' => now()->subDay()->toDateString(),
+            'due_date' => now()->addDays(14)->toDateString(),
+            'invoice_file_path' => 'invoices/invoice-2006.pdf',
+            'attachment_path' => 'invoices/invoice-2006.pdf',
+            'attachment_disk' => 'local',
+            'attachment_mime_type' => 'application/pdf',
+        ]);
+
+        $metrics = $budgetService->getBudgetMetrics($budget);
+
+        $this->assertSame(5000, $metrics['committed']);
+        $this->assertSame(5000, $metrics['approved']);
     }
 
     public function test_participant_can_submit_invoice_in_committed_amount_mode_without_preapproval_limit(): void
@@ -390,7 +562,7 @@ class AdminInvoiceWorkflowTest extends TestCase
 
         $this->assertDatabaseHas('invoices', [
             'participant_id' => $participant->id,
-            'pre_approval_id' => $preApproval->id,
+            'pre_approval_id' => null,
             'invoice_number' => 'INV-2004',
             'amount_cents' => 800000,
         ]);
@@ -477,6 +649,7 @@ class AdminInvoiceWorkflowTest extends TestCase
         $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant, now());
         $this->assertSame(0, $budget->approved_spend_cents);
         $this->assertSame(5000, $budget->paid_spend_cents);
+        $this->assertSame(0, $budget->committed_cents);
     }
 
     public function test_admin_approval_sends_participant_notification_and_updates_budget(): void
@@ -549,14 +722,16 @@ class AdminInvoiceWorkflowTest extends TestCase
             'attachment_mime_type' => 'application/pdf',
         ]);
 
-        $response = $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice));
+        $response = $this->actingAs($admin)->post(route('portal.admin.invoices.review', $invoice), [
+            'committed_amount' => '50.00',
+        ]);
 
         $response->assertSessionHas('status', 'Invoice approved.');
         $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'status' => 'approved']);
         $this->assertDatabaseHas('portal_notifications', ['participant_id' => $participant->id, 'type' => 'invoice_approved']);
 
         $budget = $budgetService->getOrCreateBudgetForParticipantQuarter($participant, now());
-        $this->assertSame(0, $budget->committed_cents);
+        $this->assertSame(5000, $budget->committed_cents);
         $this->assertSame(5000, $budget->approved_spend_cents);
     }
 

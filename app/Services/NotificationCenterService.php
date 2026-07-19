@@ -135,7 +135,11 @@ class NotificationCenterService
             'icon' => asset('icons/icon-192.png'),
             'badge' => asset('icons/icon-192.png'),
             'data' => [
+                // `url` is the final destination the client should open.
                 'url' => $notification->data['url'] ?? route('portal.notifications'),
+                // `open_url` points to the notification open route which marks it as read server-side.
+                'open_url' => route('portal.notifications.show', $notification->id),
+                'notification_id' => $notification->id,
             ],
         ]);
 

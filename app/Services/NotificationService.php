@@ -94,6 +94,8 @@ class NotificationService
             'badge' => asset('icons/icon-192.png'),
             'data' => [
                 'url' => $notification->data['url'] ?? route('portal.notifications'),
+                'open_url' => route('portal.notifications.show', $notification->id),
+                'notification_id' => $notification->id,
             ],
         ]);
 

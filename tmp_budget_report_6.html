@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget Report - {{ $budget->participant->name ?? 'Participant' }}</title>
+    <title>Budget Report - Participant</title>
     <style>
         * {
             margin: 0;
@@ -304,67 +304,59 @@
             <div class="header-meta">
                 <div class="header-meta-item">
                     <span class="header-meta-label">Report Date</span>
-                    <span>{{ now()->format('d/m/Y H:i') }}</span>
+                    <span>19/07/2026 16:03</span>
                 </div>
                 <div class="header-meta-item">
                     <span class="header-meta-label">Quarter</span>
                     <span>
-                        @if ($budget->quarter_start_date && $budget->quarter_end_date)
-                            {{ date('d/m/Y', strtotime($budget->quarter_start_date)) }} - {{ date('d/m/Y', strtotime($budget->quarter_end_date)) }}
-                        @else
-                            N/A
-                        @endif
-                    </span>
+                                                    01/07/2026 - 30/09/2026
+                                            </span>
                 </div>
                 <div class="header-meta-item">
                     <span class="header-meta-label">Document ID</span>
-                    <span>BDG-{{ $budget->id }}-{{ date('Ymd') }}</span>
+                    <span>BDG-6-20260719</span>
                 </div>
             </div>
         </div>
 
         <!-- Participant Information -->
-        @if ($budget->participant)
-        <div class="section">
+                <div class="section">
             <div class="section-title">Participant Information</div>
             <div class="info-grid">
                 <div class="info-row">
                     <div class="info-cell info-label">Name</div>
-                    <div class="info-cell info-value">{{ $budget->participant->name }}</div>
+                    <div class="info-cell info-value"></div>
                 </div>
                 <div class="info-row">
                     <div class="info-cell info-label">Participant ID</div>
-                    <div class="info-cell info-value">{{ $budget->participant->id }}</div>
+                    <div class="info-cell info-value">1</div>
                 </div>
-                @if ($budget->participant->email)
-                <div class="info-row">
+                                <div class="info-row">
                     <div class="info-cell info-label">Email</div>
-                    <div class="info-cell info-value">{{ $budget->participant->email }}</div>
+                    <div class="info-cell info-value">participant@example.com</div>
                 </div>
-                @endif
-            </div>
+                            </div>
         </div>
-        @endif
-
+        
         <!-- Budget Summary -->
         <div class="section">
             <div class="section-title">Budget Summary</div>
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="summary-label">Opening Balance</div>
-                    <div class="summary-value">${{ number_format($openingBalance / 100, 2) }}</div>
+                    <div class="summary-value">$500,000.00</div>
                 </div>
                 <div class="summary-card">
                     <div class="summary-label">Carry Over</div>
-                    <div class="summary-value">${{ number_format($carryOver / 100, 2) }}</div>
+                    <div class="summary-value">$0.00</div>
                 </div>
-                <div class="summary-card {{ $remainingBalance < 0 ? 'danger' : ($remainingBalance < ($openingBalance / 4) ? 'warning' : 'success') }}">
+                <div class="summary-card success">
                     <div class="summary-label">Total Available</div>
-                    <div class="summary-value">${{ number_format($totalAvailable / 100, 2) }}</div>
+                    <div class="summary-value">$500,000.00</div>
                 </div>
-                <div class="summary-card {{ $remainingBalance < 0 ? 'danger' : 'success' }}">
+                <div class="summary-card success">
                     <div class="summary-label">Remaining Balance</div>
-                    <div class="summary-value">${{ number_format($remainingBalance / 100, 2) }}</div>
+                    <div class="summary-value">$489,000.00</div>
                 </div>
             </div>
         </div>
@@ -383,23 +375,23 @@
                 <tbody>
                     <tr>
                         <td>Committed Funds</td>
-                        <td class="text-right"><strong>${{ number_format($committed / 100, 2) }}</strong></td>
-                        <td class="text-right">{{ $totalAvailable > 0 ? number_format(($committed / $totalAvailable) * 100, 1) : 0 }}%</td>
+                        <td class="text-right"><strong>$8,000.00</strong></td>
+                        <td class="text-right">1.6%</td>
                     </tr>
                     <tr>
                         <td>Approved Spend</td>
-                        <td class="text-right"><strong>${{ number_format($approved / 100, 2) }}</strong></td>
-                        <td class="text-right">{{ $totalAvailable > 0 ? number_format(($approved / $totalAvailable) * 100, 1) : 0 }}%</td>
+                        <td class="text-right"><strong>$8,000.00</strong></td>
+                        <td class="text-right">1.6%</td>
                     </tr>
                     <tr>
                         <td>Paid Spend</td>
-                        <td class="text-right"><strong>${{ number_format($paid / 100, 2) }}</strong></td>
-                        <td class="text-right">{{ $totalAvailable > 0 ? number_format(($paid / $totalAvailable) * 100, 1) : 0 }}%</td>
+                        <td class="text-right"><strong>$3,000.00</strong></td>
+                        <td class="text-right">0.6%</td>
                     </tr>
                     <tr style="background-color: #f0f4ff; font-weight: bold;">
                         <td>Total Used</td>
-                        <td class="text-right">${{ number_format($used / 100, 2) }}</td>
-                        <td class="text-right">{{ $totalAvailable > 0 ? number_format((($used) / $totalAvailable) * 100, 1) : 0 }}%</td>
+                        <td class="text-right">$11,000.00</td>
+                        <td class="text-right">2.2%</td>
                     </tr>
                 </tbody>
             </table>
@@ -410,8 +402,8 @@
             <div class="section-title">Budget Status</div>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
                 <div class="text-center">
-                    <div class="badge {{ $remainingBalance >= 0 ? 'badge-success' : 'badge-danger' }}">
-                        {{ $remainingBalance >= 0 ? 'HEALTHY' : 'OVERCOMMITTED' }}
+                    <div class="badge badge-success">
+                        HEALTHY
                     </div>
                     <div class="text-muted" style="margin-top: 10px; font-size: 12px;">Balance Status</div>
                 </div>
@@ -420,8 +412,8 @@
                     <div class="text-muted" style="margin-top: 10px; font-size: 12px;">Active Quarter</div>
                 </div>
                 <div class="text-center">
-                    <div class="badge {{ ($committed + $approved) > 0 ? 'badge-warning' : 'badge-success' }}">
-                        {{ ($committed + $approved) > 0 ? 'IN PROGRESS' : 'AVAILABLE' }}
+                    <div class="badge badge-warning">
+                        IN PROGRESS
                     </div>
                     <div class="text-muted" style="margin-top: 10px; font-size: 12px;">Usage Status</div>
                 </div>
@@ -436,7 +428,7 @@
         <div class="footer">
             <div class="footer-note">This is an automatically generated budget report. Please retain for your records.</div>
             <div>Allegiance Heart & Home Care Portal | Quarterly Budget Management System</div>
-            <div style="margin-top: 10px; color: #ccc;">Generated on {{ now()->format('d/m/Y \a\t H:i:s') }}</div>
+            <div style="margin-top: 10px; color: #ccc;">Generated on 19/07/2026 at 16:03:30</div>
         </div>
     </div>
 </body>

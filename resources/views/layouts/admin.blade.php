@@ -2409,7 +2409,25 @@
     // ========================================
     // PWA SERVICE WORKER & INSTALL PROMPT
     // ========================================
-    const PWA_ENABLED = {!! filter_var(\App\Models\PortalSetting::where('key', 'pwa_enabled')->value('value') ?? false, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ? 'true' : 'false' !!};
+    let PWA_ENABLED = {!! filter_var(\App\Models\PortalSetting::where('key', 'pwa_enabled')->value('value') ?? false, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ? 'true' : 'false' !!};
+
+        function fetchPwaStatus() {
+            return fetch('/portal/pwa-status', {
+                cache: 'no-store',
+                headers: { 'Accept': 'application/json' }
+            }).then(function(response) {
+                if (!response.ok) {
+                    return { enabled: false };
+                }
+                return response.json();
+            }).then(function(data) {
+                PWA_ENABLED = Boolean(data && data.enabled);
+                return PWA_ENABLED;
+            }).catch(function() {
+                PWA_ENABLED = false;
+                return false;
+            });
+        }
 
         function updateOfflineState() {
             if (navigator.onLine) {
@@ -2455,21 +2473,23 @@
             window.addEventListener('load', function() {
                 updateOfflineState();
 
-                if (PWA_ENABLED) {
-                    navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function(registration) {
-                        console.log('PWA service worker registered:', registration);
-                        if (typeof initializePushSubscription === 'function') {
-                            initializePushSubscription(registration);
-                        }
-                        if (typeof setupServiceWorkerUpdates === 'function') {
-                            setupServiceWorkerUpdates(registration);
-                        }
-                    }).catch(function(error) {
-                        console.error('PWA service worker registration failed:', error);
-                    });
-                } else {
-                    unregisterServiceWorkers();
-                }
+                fetchPwaStatus().then(function(enabled) {
+                    if (enabled) {
+                        navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function(registration) {
+                            console.log('PWA service worker registered:', registration);
+                            if (typeof initializePushSubscription === 'function') {
+                                initializePushSubscription(registration);
+                            }
+                            if (typeof setupServiceWorkerUpdates === 'function') {
+                                setupServiceWorkerUpdates(registration);
+                            }
+                        }).catch(function(error) {
+                            console.error('PWA service worker registration failed:', error);
+                        });
+                    } else {
+                        unregisterServiceWorkers();
+                    }
+                });
             });
         } else {
             window.addEventListener('load', updateOfflineState);

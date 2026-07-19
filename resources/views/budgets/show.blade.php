@@ -19,14 +19,23 @@
             @endif
             <ul class="list-group mb-3">
                 <li class="list-group-item">Quarter: {{ $budget->quarter_start->format('Y-m-d') }} → {{ $budget->quarter_end->format('Y-m-d') }}</li>
+                @php
+                    $totalAvailable = isset($metrics['total_available']) ? ($metrics['total_available'] / 100) : $budget->total_available;
+                    $committed = isset($metrics['committed']) ? ($metrics['committed'] / 100) : ($budget->committed_funds ?? 0);
+                    $approved = isset($metrics['approved']) ? ($metrics['approved'] / 100) : ($budget->approved_spend ?? 0);
+                    $paid = isset($metrics['paid']) ? ($metrics['paid'] / 100) : ($budget->paid_spend ?? 0);
+                    $used = isset($metrics['used']) ? ($metrics['used'] / 100) : ($approved + $paid);
+                    $remaining = isset($metrics['remaining']) ? ($metrics['remaining'] / 100) : ($totalAvailable - $used);
+                @endphp
+
                 <li class="list-group-item">Opening Budget: ${{ number_format($budget->opening_budget,2) }}</li>
                 <li class="list-group-item">Carry Over: ${{ number_format($budget->carry_over,2) }}</li>
-                <li class="list-group-item">Total Available: ${{ number_format($budget->total_available,2) }}</li>
-                <li class="list-group-item">Committed: ${{ number_format($budget->committed_funds,2) }}</li>
-                <li class="list-group-item">Used (approved + paid): ${{ number_format($budget->approved_spend + $budget->paid_spend,2) }}</li>
-                <li class="list-group-item">Remaining: ${{ number_format($budget->remaining_balance,2) }}</li>
+                <li class="list-group-item">Total Available: ${{ number_format($totalAvailable,2) }}</li>
+                <li class="list-group-item">Committed: ${{ number_format($committed,2) }}</li>
+                <li class="list-group-item">Used (approved + paid): ${{ number_format($used,2) }}</li>
+                <li class="list-group-item">Remaining: ${{ number_format($remaining,2) }}</li>
                 <li class="list-group-item">
-                    <strong>Remaining formula</strong>: Total Available − Committed − Used
+                    <strong>Remaining formula</strong>: Total Available − Used
                 </li>
                 <li class="list-group-item">Pending Invoices: ${{ number_format($budget->pending_invoices,2) }}</li>
                 <li class="list-group-item">Approved Spend: ${{ number_format($budget->approved_spend,2) }}</li>

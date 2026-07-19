@@ -169,9 +169,18 @@ class BudgetController extends Controller
     {
         $this->authorize('view', $budget);
         $budget->load('transactions.category');
+
+        $metrics = $this->service->getBudgetMetrics($budget);
+        // Metrics are returned in cents; convert to decimal dollars for view and model compatibility
+        $budget->setAttribute('total_available', isset($metrics['total_available']) ? ($metrics['total_available'] / 100) : 0);
+        $budget->setAttribute('committed_funds', isset($metrics['committed']) ? ($metrics['committed'] / 100) : 0);
+        $budget->setAttribute('approved_spend', isset($metrics['approved']) ? ($metrics['approved'] / 100) : 0);
+        $budget->setAttribute('paid_spend', isset($metrics['paid']) ? ($metrics['paid'] / 100) : 0);
+        $budget->setAttribute('remaining_balance', isset($metrics['remaining']) ? ($metrics['remaining'] / 100) : 0);
+
         $alerts = $this->service->getAlerts($budget);
 
-        return view('budgets.show', compact('budget', 'alerts'));
+        return view('budgets.show', compact('budget', 'alerts', 'metrics'));
     }
 
     public function edit(Budget $budget)

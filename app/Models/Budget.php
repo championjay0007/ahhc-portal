@@ -103,14 +103,13 @@ class Budget extends Model
 
         if ($key === 'remaining_balance') {
             $total = $this->getAttributeValue('total_available');
-            $committed = $this->getAttributeValue('committed_funds') ?? 0;
             $approved = $this->getAttributeValue('approved_spend') ?? 0;
             $paid = $this->getAttributeValue('paid_spend') ?? 0;
 
             $usedMode = config('budget.used_mode', 'approved');
             $used = $usedMode === 'paid' ? $paid : $approved;
 
-            return $total - $committed - $used;
+            return $total - $used;
         }
 
         return parent::getAttributeValue($key);

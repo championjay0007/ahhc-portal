@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\Participant;
 use App\Models\PortalSetting;
-use App\Models\PreApprovalRequest;
 use App\Models\User;
 use App\Services\AuditLogService;
 use App\Services\NotificationService;
@@ -22,18 +21,11 @@ class InvoiceController extends Controller
         $participant = Participant::where('user_id', $user->id)->firstOrFail();
 
         $invoices = Invoice::query()
-            ->with(['preApprovalRequest'])
             ->where('participant_id', $participant->id)
             ->orderBy('invoice_date', 'desc')
             ->get();
 
-        $preApprovals = PreApprovalRequest::query()
-            ->where('participant_id', $participant->id)
-            ->whereIn('status', ['submitted', 'approved'])
-            ->orderBy('submitted_at', 'desc')
-            ->get();
-
-        return view('portal.participant.invoices', compact('invoices', 'preApprovals'));
+        return view('portal.participant.invoices', compact('invoices'));
     }
 
     public function show(Invoice $invoice)
@@ -54,34 +46,12 @@ class InvoiceController extends Controller
             'service_date' => ['required', 'date'],
             'due_date' => ['nullable', 'date', 'after_or_equal:invoice_date'],
             'amount' => ['required', 'numeric', 'min:0.01'],
-            'pre_approval_id' => ['nullable', 'integer', 'exists:pre_approval_requests,id'],
             'notes' => ['nullable', 'string', 'max:2000'],
             'attachment' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,doc,docx,xlsx,xls', 'max:10240'],
         ]);
 
         $amountCents = (int) round($validated['amount'] * 100);
-        $invoiceBudgetMode = PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
-
-        if ($invoiceBudgetMode !== 'preapproval_amount') {
-            unset($validated['pre_approval_id']);
-            $validated['committed_amount_cents'] = $amountCents;
-        } elseif (! empty($validated['pre_approval_id'])) {
-            $preApproval = PreApprovalRequest::where('id', $validated['pre_approval_id'])
-                ->where('participant_id', $participant->id)
-                ->whereIn('status', ['submitted', 'approved'])
-                ->first();
-
-            if (! $preApproval) {
-                return back()->withErrors(['pre_approval_id' => 'Selected pre-approval is invalid or unavailable.']);
-            }
-
-            if ($invoiceBudgetMode === 'preapproval_amount') {
-                $allowedAmount = $preApproval->committed_amount_cents ?? $preApproval->requested_amount_cents;
-                if ($amountCents > $allowedAmount) {
-                    return back()->withErrors(['amount' => 'Invoice amount must not exceed the linked pre-approval total.']);
-                }
-            }
-        }
+        $validated['committed_amount_cents'] = $amountCents;
 
         unset($validated['amount']);
         $validated['amount_cents'] = $amountCents;

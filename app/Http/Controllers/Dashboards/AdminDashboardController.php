@@ -81,7 +81,7 @@ class AdminDashboardController extends Controller
             $totalAvailable = (int) ($metrics['total_available'] ?? 0);
             $usedCents = (int) ($metrics['used'] ?? 0);
             $committedCents = (int) ($metrics['committed'] ?? 0);
-            $remainingCents = (int) ($metrics['remaining'] ?? ($totalAvailable - $usedCents - $committedCents));
+            $remainingCents = (int) ($metrics['remaining'] ?? ($totalAvailable - $usedCents));
 
             return [
                 'name' => trim(($participant->first_name ?? '') . ' ' . ($participant->last_name ?? '')) ?: ($participant->name ?? 'Participant'),

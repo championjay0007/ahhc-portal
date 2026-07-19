@@ -56,6 +56,12 @@ Route::get('/portal/login', function () {
 Route::get('/login', function () {
     return redirect()->route('portal.login');
 })->name('login');
+Route::get('/portal/pwa-status', function () {
+    $pwaSettingValue = \App\Models\PortalSetting::where('key', 'pwa_enabled')->value('value');
+    $pwaEnabled = filter_var($pwaSettingValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === true;
+
+    return response()->json(['enabled' => $pwaEnabled]);
+})->name('portal.pwa.status');
 Route::get('/offline', function () {
     return response()->file(public_path('offline.html'));
 })->name('offline');

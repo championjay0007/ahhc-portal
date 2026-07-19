@@ -124,22 +124,20 @@ class BudgetService
 
         $committed = max(0, (int) $committedSum - (int) $invoicedFromPre);
 
-        $invoiceBudgetMode = \App\Models\PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
-        if (in_array($invoiceBudgetMode, ['invoice_amount', 'committed_amount'], true)) {
-            try {
-                $invoiceCommitted = Invoice::query()
-                    ->where('participant_id', $budget->participant_id)
-                    ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
-                    ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
-                    ->whereIn('status', ['submitted', 'approved'])
-                    ->whereNotNull('committed_amount_cents')
-                    ->sum('committed_amount_cents');
-            } catch (\Throwable $_) {
-                $invoiceCommitted = 0;
-            }
-
-            $committed = max(0, (int) $committed + (int) $invoiceCommitted);
+        try {
+            $invoiceCommitted = Invoice::query()
+                ->where('participant_id', $budget->participant_id)
+                ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
+                ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
+                ->whereIn('status', ['submitted', 'approved'])
+                ->whereNotNull('committed_amount_cents')
+                ->where('committed_amount_cents', '>', 0)
+                ->sum('committed_amount_cents');
+        } catch (\Throwable $_) {
+            $invoiceCommitted = 0;
         }
+
+        $committed = max(0, (int) $committed + (int) $invoiceCommitted);
 
         return (int) $totalAvailable - (int) $committed - (int) $used;
     }
@@ -359,7 +357,6 @@ class BudgetService
         }
 
         if (Schema::hasColumn('budgets', 'approved_spend_cents')) {
-            $budget->committed_cents = max(0, (int) ($budget->committed_cents ?? 0) - $amountCents);
             $budget->approved_spend_cents = (int) ($budget->approved_spend_cents ?? 0) + $amountCents;
             $budget->save();
             try {
@@ -440,6 +437,9 @@ class BudgetService
         if (Schema::hasColumn('budgets', 'approved_spend_cents')) {
             $budget->approved_spend_cents = max(0, (int) ($budget->approved_spend_cents ?? 0) - $amountCents);
             $budget->paid_spend_cents = (int) ($budget->paid_spend_cents ?? 0) + $amountCents;
+            if (Schema::hasColumn('budgets', 'committed_cents')) {
+                $budget->committed_cents = max(0, (int) ($budget->committed_cents ?? 0) - $amountCents);
+            }
             $budget->save();
             try {
                 $budget->refresh();
@@ -712,22 +712,20 @@ class BudgetService
 
         $committed = max(0, (int) $committedSum - (int) $invoicedFromPre);
 
-        $invoiceBudgetMode = \App\Models\PortalSetting::where('key', 'invoice_budget_mode')->value('value') ?? 'preapproval_amount';
-        if (in_array($invoiceBudgetMode, ['invoice_amount', 'committed_amount'], true)) {
-            try {
-                $invoiceCommitted = Invoice::query()
-                    ->where('participant_id', $budget->participant_id)
-                    ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
-                    ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
-                    ->whereIn('status', ['submitted', 'approved'])
-                    ->whereNotNull('committed_amount_cents')
-                    ->sum('committed_amount_cents');
-            } catch (\Throwable $_) {
-                $invoiceCommitted = 0;
-            }
-
-            $committed = max(0, (int) $committed + (int) $invoiceCommitted);
+        try {
+            $invoiceCommitted = Invoice::query()
+                ->where('participant_id', $budget->participant_id)
+                ->whereDate('invoice_date', '>=', $period['quarter_start_date'])
+                ->whereDate('invoice_date', '<=', $period['quarter_end_date'])
+                ->whereIn('status', ['submitted', 'approved'])
+                ->whereNotNull('committed_amount_cents')
+                ->where('committed_amount_cents', '>', 0)
+                ->sum('committed_amount_cents');
+        } catch (\Throwable $_) {
+            $invoiceCommitted = 0;
         }
+
+        $committed = max(0, (int) $committed + (int) $invoiceCommitted);
 
         if ($committed === 0) {
             $committed = Schema::hasColumn('budgets', 'committed_cents')
@@ -735,8 +733,8 @@ class BudgetService
                 : (int) ($budget->committed_funds ?? 0);
         }
 
-        // Remaining = total - committed - used
-        $remaining = (int) $totalAvailable - (int) $committed - (int) $used;
+        // Remaining = total available - used
+        $remaining = (int) $totalAvailable - (int) $used;
 
         $utilization = $totalAvailable > 0 ? round((($used / $totalAvailable) * 100), 2) : 0;
 
@@ -854,38 +852,19 @@ class BudgetService
      */
     public function exportBudgetToPdf(Budget $budget)
     {
-        $openingBalance = Schema::hasColumn('budgets', 'opening_balance_cents')
-            ? ($budget->opening_balance_cents ?? 0)
-            : (int) ($budget->opening_budget * 100);
-
-        $carryOver = Schema::hasColumn('budgets', 'carry_over_cents')
-            ? ($budget->carry_over_cents ?? 0)
-            : (int) ($budget->carry_over * 100);
-
-        $committed = Schema::hasColumn('budgets', 'committed_cents')
-            ? ($budget->committed_cents ?? 0)
-            : (int) ($budget->committed_funds * 100);
-
-        $approved = Schema::hasColumn('budgets', 'approved_spend_cents')
-            ? ($budget->approved_spend_cents ?? 0)
-            : (int) ($budget->approved_spend * 100);
-
-        $paid = Schema::hasColumn('budgets', 'paid_spend_cents')
-            ? ($budget->paid_spend_cents ?? 0)
-            : (int) ($budget->paid_spend * 100);
-
-        $totalAvailable = $openingBalance + $carryOver;
-        $remainingBalance = $totalAvailable - ($committed + $approved + $paid);
+        $metrics = $this->getBudgetMetrics($budget);
 
         $data = [
             'budget' => $budget,
-            'openingBalance' => $openingBalance,
-            'carryOver' => $carryOver,
-            'committed' => $committed,
-            'approved' => $approved,
-            'paid' => $paid,
-            'totalAvailable' => $totalAvailable,
-            'remainingBalance' => $remainingBalance,
+            'openingBalance' => $metrics['opening_balance'],
+            'carryOver' => $metrics['carry_over'],
+            'committed' => $metrics['committed'],
+            'approved' => $metrics['approved'],
+            'paid' => $metrics['paid'],
+            'used' => $metrics['used'],
+            'totalAvailable' => $metrics['total_available'],
+            'remainingBalance' => $metrics['remaining'],
+            'utilization_percent' => $metrics['utilization_percent'],
         ];
 
         $pdf = \PDF::loadView('pdfs.budget-report', $data);
