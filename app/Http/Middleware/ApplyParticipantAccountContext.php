@@ -31,8 +31,20 @@ class ApplyParticipantAccountContext
         if (! in_array($actor->role, ['participant', 'manager'], true)) {
             View::share('delegateActor', $actor);
             View::share('managedParticipantAccounts', collect());
+            View::share('participantHasManagerAccess', false);
 
             return $next($request);
+        }
+
+        $participantHasManagerAccess = false;
+        if ($actor->role === 'participant' && $actor->participant) {
+            $participantHasManagerAccess = $actor->participant->accountDelegations()
+                ->whereNull('revoked_at')
+                ->where(function ($query) {
+                    $query->whereNotNull('accepted_at')
+                        ->orWhere('expires_at', '>', now());
+                })
+                ->exists();
         }
 
         $accounts = $actor->participantAccountDelegations()
@@ -54,6 +66,7 @@ class ApplyParticipantAccountContext
 
         View::share('delegateActor', $actor);
         View::share('managedParticipantAccounts', $accounts);
+        View::share('participantHasManagerAccess', $participantHasManagerAccess);
 
         try {
             return $next($request);

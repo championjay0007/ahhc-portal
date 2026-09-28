@@ -20,11 +20,17 @@ class ParticipantAccountDelegationTest extends TestCase
         Notification::fake();
         [$owner] = $this->createParticipant('Account Owner', 'owner@example.com');
 
+        $this->actingAs($owner)
+            ->get(route('portal.dashboard'))
+            ->assertOk()
+            ->assertSee('Invite a Manager');
+
         $response = $this->actingAs($owner)->post(route('portal.participant.accounts.invite'), [
             'email' => 'child@example.com',
         ]);
 
         $response->assertRedirect(route('portal.participant.accounts.index'));
+        $this->get(route('portal.dashboard'))->assertSee('Manage Account Access');
         $this->assertDatabaseHas('participant_account_delegations', [
             'participant_id' => $owner->participant->id,
             'invited_email' => 'child@example.com',
@@ -127,6 +133,13 @@ class ParticipantAccountDelegationTest extends TestCase
                 'email' => $owner->email,
             ])
             ->assertForbidden();
+
+        $this->actingAs($manager)
+            ->withSession(['participant_account_user_id' => $owner->id])
+            ->get(route('portal.dashboard'))
+            ->assertOk()
+            ->assertDontSee('Manage Account Access')
+            ->assertDontSee('Invite a Manager');
 
         $this->assertDatabaseMissing('participant_account_delegations', [
             'participant_id' => $owner->participant->id,

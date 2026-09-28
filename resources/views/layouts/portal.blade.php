@@ -1631,6 +1631,12 @@
                         </a>
 
                         <div class="nav-section-title">鈿欙笍 Account</div>
+                        @if(isset($delegateActor) && $delegateActor->role === 'participant' && (int) $delegateActor->id === (int) auth()->id())
+                            <a href="{{ route('portal.participant.accounts.index') }}" class="nav-link-custom {{ request()->routeIs('portal.participant.accounts.*') ? 'active' : '' }}">
+                                <i class="bi bi-people nav-icon"></i>
+                                <span>{{ ($participantHasManagerAccess ?? false) ? 'Manage Account Access' : 'Invite a Manager' }}</span>
+                            </a>
+                        @endif
                         <a href="{{ route('portal.profile') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.profile') ? 'active' : '' }}">
                             <i class="bi bi-person-fill nav-icon"></i>
