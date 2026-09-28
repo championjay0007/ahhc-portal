@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
-    <title>{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Participant Portal' }} · Care Hub</title>
+    <title>{{ $portalSettings['website_name'] ?? 'Allegiance Heart & Home Care Participant Portal' }} 路 Care Hub</title>
     <meta name="description" content="{{ $portalSettings['website_description'] ?? 'Participant portal for care, approvals, and documents.' }}">
     <link rel="icon" href="{{ ! empty($portalSettings['favicon_path']) ? asset('storage/' . $portalSettings['favicon_path']) : asset('favicon.ico') }}">
     @php
@@ -1471,7 +1471,7 @@
                             <span>My Dashboard</span>
                         </a>
 
-                        <div class="nav-section-title">👥 Participants</div>
+                        <div class="nav-section-title">馃懃 Participants</div>
                         <a href="{{ route('portal.worker.assigned_participants') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.worker.assigned_participants') ? 'active' : '' }}">
                             <i class="bi bi-people-fill nav-icon"></i>
@@ -1491,7 +1491,7 @@
                             <span>My Shifts</span>
                         </a>
 
-                        <div class="nav-section-title">📝 Care & Risk</div>
+                        <div class="nav-section-title">馃摑 Care & Risk</div>
                         <a href="{{ route('portal.worker.care_notes.create') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.worker.care_notes.*') ? 'active' : '' }}">
                             <i class="bi bi-journal-text nav-icon"></i>
@@ -1503,7 +1503,7 @@
                             <span>Incident / Risk Forms</span>
                         </a>
 
-                        <div class="nav-section-title">💬 Messaging</div>
+                        <div class="nav-section-title">馃挰 Messaging</div>
                         <a href="{{ route($messageRoutePrefix.'inbox') }}" 
                            class="nav-link-custom {{ request()->routeIs($messageRoutePrefix.'*') ? 'active' : '' }}">
                             <i class="bi bi-chat-left-dots-fill nav-icon"></i>
@@ -1519,7 +1519,7 @@
                             <span>Live Chat</span>
                         </a>
 
-                        <div class="nav-section-title">📁 Documents</div>
+                        <div class="nav-section-title">馃搧 Documents</div>
                         <a href="{{ route('portal.worker.documents.upload') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.worker.documents.*') ? 'active' : '' }}">
                             <i class="bi bi-cloud-upload-fill nav-icon"></i>
@@ -1541,7 +1541,7 @@
                             <span>Forms to Sign</span>
                         </a>
 
-                        <div class="nav-section-title">⚙️ Account</div>
+                        <div class="nav-section-title">鈿欙笍 Account</div>
                         <a href="{{ route('portal.worker.profile') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.worker.profile') ? 'active' : '' }}">
                             <i class="bi bi-person-fill nav-icon"></i>
@@ -1561,7 +1561,7 @@
                             <span>Dashboard</span>
                         </a>
 
-                        <div class="nav-section-title">💰 Budget & Finance</div>
+                        <div class="nav-section-title">馃挵 Budget & Finance</div>
                         <a href="{{ route('portal.participant.budget') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.participant.budget') ? 'active' : '' }}">
                             <i class="bi bi-wallet2 nav-icon"></i>
@@ -1573,7 +1573,7 @@
                             <span>Submit Invoice</span>
                         </a>
 
-                        <div class="nav-section-title">📁 Documents & Forms</div>
+                        <div class="nav-section-title">馃搧 Documents & Forms</div>
                         <a href="{{ route('portal.participant.documents.index') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.participant.documents.*') && !request()->routeIs('portal.participant.documents.pending') ? 'active' : '' }}">
                             <i class="bi bi-file-earmark-text-fill nav-icon"></i>
@@ -1590,7 +1590,7 @@
                             <span>Forms to Sign</span>
                         </a>
 
-                        <div class="nav-section-title">👥 People & Services</div>
+                        <div class="nav-section-title">馃懃 People & Services</div>
                         <a href="{{ route('portal.participant.team') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.participant.team') ? 'active' : '' }}">
                             <i class="bi bi-people-fill nav-icon"></i>
@@ -1607,7 +1607,7 @@
                             <span>Care Notes</span>
                         </a>
 
-                        <div class="nav-section-title">⚠️ Support & Reporting</div>
+                        <div class="nav-section-title">鈿狅笍 Support & Reporting</div>
                         <a href="{{ route('portal.participant.complaints.create') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.participant.complaints.*') ? 'active' : '' }}">
                             <i class="bi bi-exclamation-triangle-fill nav-icon"></i>
@@ -1620,7 +1620,7 @@
                             <span>Contact Support</span>
                         </a>
 
-                        <div class="nav-section-title">💬 Messaging</div>
+                        <div class="nav-section-title">馃挰 Messaging</div>
                         <a href="{{ route($messageRoutePrefix.'inbox') }}" 
                            class="nav-link-custom {{ request()->routeIs($messageRoutePrefix.'*') ? 'active' : '' }}">
                             <i class="bi bi-chat-left-dots-fill nav-icon"></i>
@@ -1630,7 +1630,7 @@
                             @endif
                         </a>
 
-                        <div class="nav-section-title">⚙️ Account</div>
+                        <div class="nav-section-title">鈿欙笍 Account</div>
                         <a href="{{ route('portal.profile') }}" 
                            class="nav-link-custom {{ request()->routeIs('portal.profile') ? 'active' : '' }}">
                             <i class="bi bi-person-fill nav-icon"></i>

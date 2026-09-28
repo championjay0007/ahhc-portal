@@ -22,6 +22,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    
+    
+    
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17602458563"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-17602458563');
+</script>
+
+
+<!-- Google tag (gtag.js) event -->
+<script>
+  gtag('event', 'ads_conversion_About_Us_1', {
+    // <event_parameters>
+  });
+</script>
+    
+    
     <style>
         :root {
                 --brand: {{ $portalSettings['primary_color'] ?? '#1FC7B7' }};
@@ -490,7 +513,7 @@
                 <a class="nav-link-custom" href="#support-at-home">Support at Home</a>
                 <a class="nav-link-custom" href="#who-its-for">Who It’s For</a>
                 <a class="nav-link-custom" href="#how-self-management-works">How Self-Management Works</a>
-                <a class="nav-link-custom" href="#contact">Contact Us</a>
+                <a class="nav-link-custom" href="#contact">Submit an Enquiry</a>
             </div>
 
             <div class="d-flex align-items-center gap-2">
@@ -510,7 +533,7 @@
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#support-at-home">Support at Home</a>
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#who-its-for">Who It’s For</a>
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#how-self-management-works">How Self-Management Works</a>
-                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#contact">Contact Us</a>
+                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#contact">Submit an Enquiry</a>
                 <hr class="my-2">
                 <a class="btn btn-secondary-custom w-100 mb-2" href="#contact">Apply for Self-Management</a>
                 <a class="btn btn-primary-custom w-100" href="{{ $portalUrl }}" target="_blank" rel="noopener">Login to Portal</a>
@@ -523,36 +546,36 @@
     @yield('content')
 </main>
 
-<div id="supportWidgetCard" class="support-widget-card d-none" aria-live="polite">
-    <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
-        <div>
-            <h6 class="mb-1">Need help?</h6>
-            <p class="mb-0 small text-muted">Send a message to the Allegiance Heart &amp; Home Care support team.</p>
-        </div>
-        <button type="button" class="btn btn-sm btn-light rounded-circle" onclick="toggleSupportWidget(false)" aria-label="Close support options">
-            <i class="bi bi-x-lg"></i>
-        </button>
-    </div>
-    <div id="publicSupportWidgetMessages" class="support-widget-messages mb-2 d-none"></div>
-    <form id="publicSupportWidgetForm" class="d-grid gap-2">
-        @csrf
-        <div id="publicSupportVisitorFields">
-            <input type="text" name="name" class="form-control form-control-sm" placeholder="Your name" autocomplete="name">
-            <input type="email" name="email" class="form-control form-control-sm" placeholder="Email address" autocomplete="email" required>
-        </div>
-        <textarea name="message" rows="3" class="form-control form-control-sm" placeholder="How can we help?" required></textarea>
-        <button type="submit" class="btn btn-primary-custom btn-sm">
-            <i class="bi bi-send me-2"></i><span id="publicSupportSubmitLabel">Send message</span>
-        </button>
-        <div id="publicSupportWidgetStatus" class="small text-muted"></div>
-    </form>
-</div>
+<!--<div id="supportWidgetCard" class="support-widget-card d-none" aria-live="polite">-->
+<!--    <div class="d-flex align-items-start justify-content-between gap-3 mb-3">-->
+<!--        <div>-->
+<!--            <h6 class="mb-1">Need help?</h6>-->
+<!--            <p class="mb-0 small text-muted">Send a message to the Allegiance Heart &amp; Home Care support team.</p>-->
+<!--        </div>-->
+<!--        <button type="button" class="btn btn-sm btn-light rounded-circle" onclick="toggleSupportWidget(false)" aria-label="Close support options">-->
+<!--            <i class="bi bi-x-lg"></i>-->
+<!--        </button>-->
+<!--    </div>-->
+<!--    <div id="publicSupportWidgetMessages" class="support-widget-messages mb-2 d-none"></div>-->
+<!--    <form id="publicSupportWidgetForm" class="d-grid gap-2">-->
+<!--        @csrf-->
+<!--        <div id="publicSupportVisitorFields">-->
+<!--            <input type="text" name="name" class="form-control form-control-sm" placeholder="Your name" autocomplete="name">-->
+<!--            <input type="email" name="email" class="form-control form-control-sm" placeholder="Email address" autocomplete="email" required>-->
+<!--        </div>-->
+<!--        <textarea name="message" rows="3" class="form-control form-control-sm" placeholder="How can we help?" required></textarea>-->
+<!--        <button type="submit" class="btn btn-primary-custom btn-sm">-->
+<!--            <i class="bi bi-send me-2"></i><span id="publicSupportSubmitLabel">Send message</span>-->
+<!--        </button>-->
+<!--        <div id="publicSupportWidgetStatus" class="small text-muted"></div>-->
+<!--    </form>-->
+<!--</div>-->
 
-<div class="support-widget-fab">
-    <button type="button" class="btn btn-primary-custom" onclick="toggleSupportWidget()" aria-label="Open support options">
-        <i class="bi bi-headset"></i>
-    </button>
-</div>
+<!--<div class="support-widget-fab">-->
+<!--    <button type="button" class="btn btn-primary-custom" onclick="toggleSupportWidget()" aria-label="Open support options">-->
+<!--        <i class="bi bi-headset"></i>-->
+<!--    </button>-->
+<!--</div>-->
 
 <footer class="footer-modern">
     <div class="container">

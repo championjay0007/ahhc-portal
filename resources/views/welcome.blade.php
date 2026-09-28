@@ -2012,7 +2012,7 @@
             @php
                 $steps = [
                     ['Submit Self-Management Enquiry', 'Submit a self-management enquiry so Allegiance Heart & Home Care can understand your support needs, goals and preferred self-management arrangements.', 'bi-person-check', 1],
-                    ['Suitability Review', 'Allegiance Heart & Home Care reviews your enquiry to confirm whether self-management support is suitable and appropriate.', 'bi-file-earmark-text', 2],
+                    ['Discuss Your Self-Management Needs', 'We review your enquiry, discuss how you would like to manage your services,and explain how Allegiance Heart & Home Cares self-management model works ', 'bi-file-earmark-text', 2],
                     ['Service Agreement, Consent and Responsibilities', 'Before portal access is activated, the required service agreement, consent forms and self-management responsibilities are reviewed and signed.', 'bi-laptop', 3],
                     ['Portal Setup', 'Allegiance Heart & Home Care creates your secure portal account after approval, with login security, MFA where required and role-based access.', 'bi-people-fill', 4],
                     ['Worker and Service Approval', 'Submit your chosen workers, suppliers or services for Allegiance Heart & Home Care review and approval before services commence.', 'bi-receipt', 5],
