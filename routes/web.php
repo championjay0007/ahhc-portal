@@ -9,6 +9,7 @@ use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ParticipantAccountController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\BudgetReportController;
@@ -50,6 +51,10 @@ Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');
 
 Route::get('/portal', [AuthController::class, 'showLogin'])->name('portal.login');
+Route::get('/portal/account-invitations/{token}', [ParticipantAccountController::class, 'showInvitation'])->name('portal.participant.accounts.invitation');
+Route::post('/portal/account-invitations/{token}/register', [ParticipantAccountController::class, 'registerManager'])
+    ->middleware('guest')
+    ->name('portal.participant.accounts.register');
 Route::get('/portal/login', function () {
     return redirect()->route('portal.login');
 });
@@ -266,6 +271,7 @@ Route::middleware(['auth', 'mfa', 'role:admin|system_admin'])->group(function ()
     });
 
     Route::get('/portal/admin/users', [AdminController::class, 'users'])->name('portal.admin.users');
+    Route::get('/portal/admin/managers', [AdminController::class, 'managers'])->name('portal.admin.managers');
     Route::get('/portal/admin/users/{user}', [AdminController::class, 'showUser'])->name('portal.admin.users.show');
     Route::post('/portal/admin/users/{user}/status', [AdminController::class, 'updateUserStatus'])->name('portal.admin.users.status');
     Route::post('/portal/admin/users/{user}/mfa-reset', [MfaController::class, 'resetUserMfa'])->name('portal.admin.users.mfa.reset');
@@ -652,14 +658,27 @@ Route::middleware(['auth', 'mfa', 'role:worker', 'onboarding_complete'])->prefix
     Route::put('/profile', [WorkerPortalController::class, 'updateProfile'])->name('profile.update');
 });
 
-Route::middleware(['auth', 'mfa', 'assessment_workflow'])->group(function () {
+Route::middleware(['auth', 'mfa', 'role:manager', 'participant_context'])->group(function () {
+    Route::get('/portal/manager/dashboard', [ParticipantAccountController::class, 'managerDashboard'])->name('portal.manager.dashboard');
+});
+
+Route::middleware(['auth', 'mfa', 'participant_context', 'assessment_workflow'])->group(function () {
     Route::get('/portal/gallery', [DocumentController::class, 'gallery'])->name('portal.gallery');
     Route::delete('/portal/gallery/{document}', [DocumentController::class, 'destroy'])->name('portal.gallery.destroy');
     Route::get('/portal/gallery/{document}/preview', [DocumentController::class, 'previewGallery'])->name('portal.gallery.preview');
     Route::get('/portal/gallery/{document}/download', [DocumentController::class, 'downloadGallery'])->name('portal.gallery.download');
 });
 
-Route::middleware(['auth', 'mfa', 'onboarding_complete', 'assessment_workflow'])->group(function () {
+Route::middleware(['auth', 'mfa', 'participant_context'])->group(function () {
+    Route::post('/portal/account-invitations/{token}/accept', [ParticipantAccountController::class, 'acceptInvitation'])->name('portal.participant.accounts.accept');
+});
+
+Route::middleware(['auth', 'mfa', 'participant_context', 'onboarding_complete', 'assessment_workflow'])->group(function () {
+    Route::get('/portal/participant/accounts', [ParticipantAccountController::class, 'index'])->name('portal.participant.accounts.index');
+    Route::post('/portal/participant/accounts/invitations', [ParticipantAccountController::class, 'invite'])->name('portal.participant.accounts.invite');
+    Route::post('/portal/participant/accounts/switch', [ParticipantAccountController::class, 'switchAccount'])->name('portal.participant.accounts.switch');
+    Route::delete('/portal/participant/accounts/{delegation}', [ParticipantAccountController::class, 'revoke'])->name('portal.participant.accounts.revoke');
+
     Route::get('/portal/dashboard', [AuthController::class, 'dashboard'])->name('portal.dashboard');
     Route::get('/portal/profile', [AuthController::class, 'profile'])->name('portal.profile');
     Route::put('/portal/profile', [AuthController::class, 'updateProfile'])->name('portal.profile.update');

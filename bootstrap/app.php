@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnforceAssessmentWorkflow;
+use App\Http\Middleware\ApplyParticipantAccountContext;
 use App\Http\Middleware\EnsureOnboardingComplete;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\EnsureTwoFactorEnabled;
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'mfa' => EnsureTwoFactorEnabled::class,
             'onboarding_complete' => EnsureOnboardingComplete::class,
             'assessment_workflow' => EnforceAssessmentWorkflow::class,
+            'participant_context' => ApplyParticipantAccountContext::class,
         ]);
     })
     ->withProviders([

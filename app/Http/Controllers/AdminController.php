@@ -863,6 +863,25 @@ class AdminController extends Controller
         return view('admin.users', compact('users'));
     }
 
+    public function managers()
+    {
+        $activeAssignments = fn ($query) => $query
+            ->whereNotNull('accepted_at')
+            ->whereNull('revoked_at')
+            ->whereHas('participant.user', fn ($userQuery) => $userQuery->where('status', 'active'));
+
+        $managers = User::query()
+            ->where('role', 'manager')
+            ->withCount(['participantAccountDelegations as active_assignments_count' => $activeAssignments])
+            ->with(['participantAccountDelegations' => fn ($query) => $activeAssignments($query)
+                ->with('participant.user')
+                ->latest('accepted_at')])
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        return view('admin.managers', compact('managers'));
+    }
+
     public function showUser(User $user)
     {
         $user->load(['participant', 'worker', 'auditLogs']);

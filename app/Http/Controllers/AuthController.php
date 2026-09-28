@@ -274,6 +274,10 @@ class AuthController extends Controller
             return redirect()->route('portal.worker.dashboard');
         }
 
+        if ($user->role === 'manager') {
+            return redirect()->route('portal.manager.dashboard');
+        }
+
         if ($user->role === 'participant' && $user->participant) {
             $participant = $user->participant;
 
@@ -548,6 +552,8 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
+        abort_unless((int) $request->attributes->get('delegate.actor_id') === (int) $user->id, 403);
+
         if ($user->role === 'worker') {
             return redirect()->route('portal.worker.profile');
         }
@@ -596,6 +602,10 @@ class AuthController extends Controller
 
         if ($user->role === 'worker') {
             return redirect()->route('portal.worker.dashboard');
+        }
+
+        if ($user->role === 'manager') {
+            return redirect()->route('portal.manager.dashboard');
         }
 
         $participant = null;

@@ -1431,6 +1431,8 @@
                                 Worker Portal
                             @elseif(auth()->user()->role === 'admin')
                                 Admin Portal
+                            @elseif(auth()->user()->role === 'manager')
+                                Manager Portal
                             @else
                                 Participant Portal
                             @endif
@@ -1446,6 +1448,21 @@
                 </div>
 
                 <div class="nav-menu">
+                    @if(isset($delegateActor) && in_array($delegateActor->role, ['participant', 'manager'], true))
+                        <form method="POST" action="{{ route('portal.participant.accounts.switch') }}" class="px-3 py-2">
+                            @csrf
+                            <label for="participant-account-switch" class="form-label small mb-1">{{ $delegateActor->role === 'manager' ? 'Participant account' : 'Account' }}</label>
+                            <select id="participant-account-switch" name="participant_user_id" class="form-select form-select-sm" onchange="this.form.requestSubmit()">
+                                <option value="{{ $delegateActor->id }}" @selected(auth()->id() === $delegateActor->id)>{{ $delegateActor->role === 'manager' ? 'Manager dashboard' : 'My account' }}</option>
+                                @foreach($managedParticipantAccounts ?? [] as $managedAccount)
+                                    <option value="{{ $managedAccount->participant->user_id }}" @selected(auth()->id() === $managedAccount->participant->user_id)>
+                                        {{ $managedAccount->participant->first_name }} {{ $managedAccount->participant->last_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+                    @endif
+
                     @if(auth()->user()->role === 'worker')
                         <!-- Worker Navigation -->
                         <a href="{{ route('portal.worker.dashboard') }}" 
@@ -1529,6 +1546,12 @@
                            class="nav-link-custom {{ request()->routeIs('portal.worker.profile') ? 'active' : '' }}">
                             <i class="bi bi-person-fill nav-icon"></i>
                             <span>My Profile</span>
+                        </a>
+                    @elseif(auth()->user()->role === 'manager')
+                        <a href="{{ route('portal.manager.dashboard') }}"
+                           class="nav-link-custom {{ request()->routeIs('portal.manager.dashboard') ? 'active' : '' }}">
+                            <i class="bi bi-people nav-icon"></i>
+                            <span>Assigned Participants</span>
                         </a>
                     @else
                         <!-- Participant Navigation -->

@@ -1806,6 +1806,10 @@
                         <i class="bi bi-shield-exclamation"></i>
                         <span>User Management</span>
                     </a>
+                    <a href="{{ route('portal.admin.managers') }}" class="@if(request()->routeIs('portal.admin.managers')) active @endif">
+                        <i class="bi bi-people"></i>
+                        <span>Managers</span>
+                    </a>
                     <a href="{{ route('portal.admin.system.users') }}" class="@if(request()->routeIs('portal.admin.system.users')) active @endif">
                         <i class="bi bi-people-fill"></i>
                         <span>System Users</span>

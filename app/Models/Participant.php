@@ -95,6 +95,11 @@ class Participant extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function accountDelegations(): HasMany
+    {
+        return $this->hasMany(ParticipantAccountDelegation::class);
+    }
+
     public function supportPerson(): BelongsTo
     {
         return $this->belongsTo(SupportPerson::class, 'assigned_support_person_id');

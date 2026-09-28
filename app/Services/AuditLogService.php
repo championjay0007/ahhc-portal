@@ -19,7 +19,8 @@ class AuditLogService
         $userAgent = $request?->userAgent();
         $userAgentMeta = self::parseUserAgent($userAgent);
 
-        $resolvedUserId = $userId ?? Auth::id();
+        $delegateActorId = $request?->attributes->get('delegate.actor_id');
+        $resolvedUserId = $delegateActorId ?? $userId ?? Auth::id();
 
         if ($resolvedUserId !== null && ! self::userExists($resolvedUserId)) {
             $resolvedUserId = null;

@@ -5,7 +5,7 @@
     <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
         <div>
             <h2 class="fw-bold mb-1">User Management</h2>
-            <p class="text-muted mb-0">View, search, and manage portal users across participant, worker, and admin roles.</p>
+            <p class="text-muted mb-0">View, search, and manage portal users across participant, manager, worker, and admin roles.</p>
         </div>
         <div class="d-flex flex-wrap gap-2 align-items-center">
             <a href="{{ route('portal.admin.users.create') }}" class="btn btn-primary">Create user</a>
@@ -24,6 +24,7 @@
                     <select name="role" class="form-select">
                         <option value="">All roles</option>
                         <option value="participant" {{ request('role') === 'participant' ? 'selected' : '' }}>Participant</option>
+                        <option value="manager" {{ request('role') === 'manager' ? 'selected' : '' }}>Manager</option>
                         <option value="worker" {{ request('role') === 'worker' ? 'selected' : '' }}>Worker</option>
                         <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                     </select>
