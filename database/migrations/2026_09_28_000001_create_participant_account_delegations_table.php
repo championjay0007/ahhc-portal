@@ -19,7 +19,7 @@ return new class extends Migration
             $table->dateTime('expires_at');
             $table->timestamps();
 
-            $table->index(['participant_id', 'invited_email', 'revoked_at'], 'delegations_participant_email_revoked_idx');
+            $table->index(['participant_id', 'revoked_at', 'expires_at'], 'delegations_participant_status_expiry_idx');
             $table->index(['manager_user_id', 'accepted_at', 'revoked_at'], 'delegations_manager_accepted_revoked_idx');
         });
     }
