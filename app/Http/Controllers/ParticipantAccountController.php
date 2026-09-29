@@ -6,6 +6,7 @@ use App\Models\ParticipantAccountDelegation;
 use App\Models\User;
 use App\Notifications\ParticipantAccountInvitation;
 use App\Services\AuditLogService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -139,6 +140,22 @@ class ParticipantAccountController extends Controller
             'participant_id' => $invitation->participant_id,
             'manager_user_id' => $manager->id,
         ]);
+
+        User::whereIn('role', ['admin', 'system_admin'])
+            ->where('status', 'active')
+            ->get()
+            ->each(function (User $admin) use ($invitation, $manager) {
+                NotificationService::notify([
+                    'user_id' => $admin->id,
+                    'participant_id' => $invitation->participant_id,
+                    'type' => 'info',
+                    'data' => [
+                        'title' => 'New manager registered',
+                        'message' => "{$manager->name} ({$manager->email}) registered as a manager for {$invitation->participant->user->name}.",
+                        'url' => route('portal.admin.managers'),
+                    ],
+                ]);
+            });
 
         $requireMfa = (bool) \App\Models\PortalSetting::where('key', 'require_mfa')->value('value');
         if ($requireMfa && in_array('manager', config('fortify.mfa_required_roles', []), true)) {

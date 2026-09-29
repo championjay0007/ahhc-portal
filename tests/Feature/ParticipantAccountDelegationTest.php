@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Mail\StyledEmail;
 use App\Models\Participant;
 use App\Models\ParticipantAccountDelegation;
 use App\Models\User;
 use App\Notifications\ParticipantAccountInvitation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -41,7 +43,17 @@ class ParticipantAccountDelegationTest extends TestCase
 
     public function test_invited_manager_can_register_and_open_the_owner_account(): void
     {
+        Mail::fake();
         [$owner] = $this->createParticipant('Account Owner', 'owner@example.com');
+        User::create([
+            'name' => 'Portal Admin',
+            'email' => 'admin@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => false,
+            'password' => 'Password123!',
+            'password_changed_at' => now(),
+        ]);
         $token = Str::random(64);
         $invitation = ParticipantAccountDelegation::create([
             'participant_id' => $owner->participant->id,
@@ -70,6 +82,10 @@ class ParticipantAccountDelegationTest extends TestCase
             'manager_user_id' => $manager->id,
             'token_hash' => null,
         ]);
+        Mail::assertSent(StyledEmail::class, function (StyledEmail $mail) {
+            return $mail->hasTo('admin@example.com')
+                && $mail->subjectLine === 'New manager registered';
+        });
 
         $this->get(route('portal.manager.dashboard'))
             ->assertOk()
