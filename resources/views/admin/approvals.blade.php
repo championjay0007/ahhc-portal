@@ -57,7 +57,7 @@
                                             <td><span class="badge bg-info">{{ ucfirst(str_replace('_', ' ', $approval->request_type)) }}</span></td>
                                             <td>${{ number_format($approval->amount_cents / 100, 2) }}</td>
                                             <td>{{ Str::limit($approval->description, 30) }}</td>
-                                            <td><small class="text-muted">{{ $approval->created_at->format('M d, Y') }}</small></td>
+                                            <td><small class="text-muted">{{ \App\Support\DateTimeDisplay::format($approval->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</small></td>
                                             <td><span class="badge bg-warning text-dark">{{ ucfirst($approval->status) }}</span></td>
                                             <td>
                                                 <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#approvalModal" onclick="viewApproval({{ $approval->id }})">
@@ -103,7 +103,7 @@
                                             <td class="fw-bold">#{{ $invoice->id }}</td>
                                             <td>{{ $invoice->participant->first_name ?? 'N/A' }}</td>
                                             <td>${{ number_format($invoice->amount_cents / 100, 2) }}</td>
-                                            <td><small class="text-muted">{{ $invoice->created_at->format('M d, Y') }}</small></td>
+                                            <td><small class="text-muted">{{ \App\Support\DateTimeDisplay::format($invoice->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</small></td>
                                             <td>
                                                 @if($invoice->attachments)
                                                     <span class="badge bg-primary">{{ count(json_decode($invoice->attachments, true)) }}</span>
@@ -158,7 +158,7 @@
                                             <td><small>{{ optional($note->shift_date)->format('M d, Y') }}</small></td>
                                             <td>{{ ucfirst($note->service_type ?? 'General') }}</td>
                                             <td><span class="badge bg-{{ $note->status === 'draft' ? 'secondary' : 'success' }}">{{ ucfirst($note->status) }}</span></td>
-                                            <td><small class="text-muted">{{ $note->submitted_at?->format('M d, Y') ?? 'Not submitted' }}</small></td>
+                                            <td><small class="text-muted">{{ \App\Support\DateTimeDisplay::format($note->submitted_at, 'M d, Y', $displayTimezone ?? 'UTC') ?? 'Not submitted' }}</small></td>
                                             <td>
                                                 <button class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-eye me-1"></i>View

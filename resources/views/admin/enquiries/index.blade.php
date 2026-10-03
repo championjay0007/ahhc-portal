@@ -60,7 +60,7 @@
                         <td>{{ ucwords(str_replace('_', ' ', $enquiry->role)) }}</td>
                         <td><span class="badge bg-secondary">{{ $enquiry->status }}</span></td>
                         <td>{{ $enquiry->assignedTo?->name ?? 'Unassigned' }}</td>
-                        <td>{{ $enquiry->created_at->format('d M Y') }}</td>
+                        <td>{{ \App\Support\DateTimeDisplay::format($enquiry->created_at, 'd M Y', $displayTimezone ?? 'UTC') }}</td>
                         <td class="text-end">
                             <a href="{{ route('portal.admin.enquiries.show', $enquiry) }}" class="btn btn-sm btn-outline-primary">View</a>
                             <form method="POST" action="{{ route('portal.admin.enquiries.destroy', $enquiry) }}" class="d-inline" onsubmit="return confirm('Delete this enquiry?');">

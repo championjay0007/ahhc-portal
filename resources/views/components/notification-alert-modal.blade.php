@@ -47,7 +47,7 @@
                                 <!-- Timestamp -->
                                 <small class="text-muted">
                                     <i class="bi bi-clock me-1"></i>
-                                    {{ $notification->created_at->diffForHumans() }}
+                                    {{ \App\Support\DateTimeDisplay::relative($notification->created_at, $displayTimezone ?? 'UTC') }}
                                 </small>
                             </div>
 

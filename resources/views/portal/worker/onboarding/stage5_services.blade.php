@@ -36,7 +36,7 @@
                                                         <p class="card-text small text-muted">{{ $service->description }}</p>
                                                     @endif
                                                     <small class="d-block mt-2">
-                                                        <strong>Approved:</strong> {{ $service->approved_at->format('M d, Y') }}
+                                                        <strong>Approved:</strong> {{ \App\Support\DateTimeDisplay::format($service->approved_at, 'M d, Y', $displayTimezone ?? 'UTC') }}
                                                     </small>
                                                     @if ($service->approval_end_date)
                                                         <small class="d-block text-warning">

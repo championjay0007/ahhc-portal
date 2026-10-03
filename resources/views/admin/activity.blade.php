@@ -190,12 +190,12 @@
                                             <div class="d-flex align-items-center">
                                                 <i class="far fa-calendar-alt text-muted me-2 small"></i>
                                                 <span class="text-muted small">
-                                                    {{ optional($activity->created_at)->format('M d, Y') }}
+                                                    {{ $activity->created_at?->copy()->setTimezone($displayTimezone)->format('M d, Y') }}
                                                 </span>
                                                 <span class="mx-2 text-muted">•</span>
                                                 <i class="far fa-clock text-muted me-2 small"></i>
                                                 <span class="text-muted small">
-                                                    {{ optional($activity->created_at)->format('H:i') }}
+                                                    {{ \App\Support\DateTimeDisplay::format($activity->created_at, 'H:i', $displayTimezone ?? 'UTC') }}
                                                 </span>
                                             </div>
                                         </td>

@@ -11,6 +11,7 @@ use App\Models\SupportMessage;
 use App\Policies\PreApprovalRequestPolicy;
 use App\Services\MessageService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
@@ -31,11 +32,16 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        $this->applyUserTimezone();
+     public function boot(): void
+     {
+         Blade::directive('portalDateTime', static function ($expression) {
+             return "<?php echo e(\\App\\Support\\DateTimeDisplay::format({$expression}, \$displayTimezone ?? 'UTC')); ?>";
+         });
+         Blade::directive('portalRelativeTime', static function ($expression) {
+             return "<?php echo e(\\App\\Support\\DateTimeDisplay::relative({$expression}, \$displayTimezone ?? 'UTC')); ?>";
+         });
 
-        View::composer('*', function ($view) {
+         View::composer('*', function ($view) {
             $portalNotifications = collect();
             $portalUnreadNotifications = collect();
             $portalMessages = collect();
@@ -44,6 +50,13 @@ class AppServiceProvider extends ServiceProvider
             $unreadMessageCount = 0;
             $unreadSupportConversationCount = 0;
             $portalSettings = $this->loadSettings();
+            $displayTimezone = Auth::user()?->timezone;
+            if (! is_string($displayTimezone) || ! in_array($displayTimezone, timezone_identifiers_list(), true)) {
+                $displayTimezone = $portalSettings['default_timezone'] ?? config('app.timezone', 'UTC');
+            }
+            if (! is_string($displayTimezone) || ! in_array($displayTimezone, timezone_identifiers_list(), true)) {
+                $displayTimezone = 'UTC';
+            }
 
             $messageRoutePrefix = 'portal.messages.';
             if (Auth::check()) {
@@ -89,7 +102,7 @@ class AppServiceProvider extends ServiceProvider
                     ->get();
             }
 
-            $view->with(compact('portalNotifications', 'portalUnreadNotifications', 'portalMessages', 'supportConversations', 'unreadNotificationCount', 'portalSettings', 'unreadMessageCount', 'unreadSupportConversationCount', 'messageRoutePrefix'));
+            $view->with(compact('portalNotifications', 'portalUnreadNotifications', 'portalMessages', 'supportConversations', 'unreadNotificationCount', 'portalSettings', 'unreadMessageCount', 'unreadSupportConversationCount', 'messageRoutePrefix', 'displayTimezone'));
         });
 
         $settings = $this->loadSettings();
@@ -117,32 +130,6 @@ class AppServiceProvider extends ServiceProvider
 
         // Apply portal SMTP settings globally for all mail operations
         $this->applyPortalMailConfig();
-    }
-
-    protected function applyUserTimezone(): void
-    {
-        $timezone = config('app.timezone', 'UTC');
-
-        if (! Schema::hasTable('portal_settings')) {
-            $timezone = config('app.timezone', 'UTC');
-        } else {
-            $portalTimezone = PortalSetting::where('key', 'default_timezone')->value('value');
-            if (is_string($portalTimezone) && trim($portalTimezone) !== '' && in_array($portalTimezone, timezone_identifiers_list(), true)) {
-                $timezone = $portalTimezone;
-            }
-        }
-
-        $userTimezone = Auth::user()?->timezone;
-        if (is_string($userTimezone) && trim($userTimezone) !== '' && in_array($userTimezone, timezone_identifiers_list(), true)) {
-            $timezone = $userTimezone;
-        }
-
-        if (! in_array($timezone, timezone_identifiers_list(), true)) {
-            $timezone = 'UTC';
-        }
-
-        config(['app.timezone' => $timezone]);
-        date_default_timezone_set($timezone);
     }
 
     protected function applySessionLifetime(): void

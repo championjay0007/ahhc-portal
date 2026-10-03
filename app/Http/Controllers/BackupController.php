@@ -7,6 +7,7 @@ use App\Models\DisasterRecoveryTest;
 use App\Models\RestoreRecord;
 use App\Models\User;
 use App\Services\AuditLogService;
+use App\Support\DateTimeDisplay;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -161,7 +162,7 @@ class BackupController extends Controller
         $lastSuccessfulByType = collect($this->backupTypes())->mapWithKeys(function ($type) {
             $lastBackup = BackupRecord::successful()->where('backup_type', $type)->latest('backup_date')->first();
 
-            return [$type => $lastBackup?->backup_date?->toDateTimeString() ?? 'No successful record'];
+            return [$type => DateTimeDisplay::format($lastBackup?->backup_date, 'Y-m-d H:i:s') ?? 'No successful record'];
         });
 
         $recentFailures = BackupRecord::failed()->latest('backup_date')->take(10)->get();
@@ -204,7 +205,7 @@ class BackupController extends Controller
                 'message' => sprintf(
                     'A %s backup failed on %s. Review the backup history for details.',
                     Str::title(str_replace('_', ' ', $backup->backup_type)),
-                    $backup->backup_date->format('Y-m-d H:i')
+                    DateTimeDisplay::format($backup->backup_date, 'Y-m-d H:i')
                 ),
                 'channel' => 'in_app',
                 'type' => 'critical',

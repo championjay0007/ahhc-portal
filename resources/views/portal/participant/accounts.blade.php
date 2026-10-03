@@ -60,7 +60,7 @@
                                         Invitation pending
                                     @endif
                                 </td>
-                                <td>{{ $delegation->expires_at->format('M j, Y') }}</td>
+                                <td>{{ \App\Support\DateTimeDisplay::format($delegation->expires_at, 'M j, Y', $displayTimezone ?? 'UTC') }}</td>
                                 <td class="text-end">
                                     @unless($delegation->revoked_at)
                                         <form method="POST" action="{{ route('portal.participant.accounts.revoke', $delegation) }}" onsubmit="return confirm('Revoke this invitation or access?')">

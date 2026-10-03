@@ -131,7 +131,7 @@
                                 <ul class="list-unstyled small mb-0">
                                     @foreach($request->comments as $comment)
                                         <li class="border rounded p-2 mb-2">
-                                            <div><strong>{{ optional($comment->commenter)->name ?? 'System' }}</strong> <span class="text-muted">{{ $comment->created_at->diffForHumans() }}</span></div>
+                                            <div><strong>{{ optional($comment->commenter)->name ?? 'System' }}</strong> <span class="text-muted">{{ \App\Support\DateTimeDisplay::relative($comment->created_at, $displayTimezone ?? 'UTC') }}</span></div>
                                             <div>{{ $comment->message }}</div>
                                         </li>
                                     @endforeach

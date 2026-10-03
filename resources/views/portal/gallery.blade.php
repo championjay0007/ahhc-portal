@@ -57,7 +57,7 @@
                         </div>
                         <div class="card-footer bg-transparent border-0 pt-0">
                             <div class="d-flex justify-content-between text-muted small">
-                                <span>{{ $document->created_at->format('M j, Y') }}</span>
+                                <span>{{ \App\Support\DateTimeDisplay::format($document->created_at, 'M j, Y', $displayTimezone ?? 'UTC') }}</span>
                                 <span>{{ $document->owner_label }}</span>
                             </div>
                         </div>

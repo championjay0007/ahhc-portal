@@ -28,7 +28,7 @@
                 <p class="mb-2"><strong>Status:</strong> {{ ucfirst($worker->status) }}</p>
                 <p class="mb-2"><strong>Compliance expiry:</strong> {{ optional($worker->compliance_expiry_at)->format('Y-m-d') ?? 'Not set' }}</p>
                 <p class="mb-2"><strong>Background check:</strong> {{ optional($worker->background_check_expiry_at)->format('Y-m-d') ?? 'Not set' }}</p>
-                <p class="mb-2"><strong>Suspended at:</strong> {{ optional($worker->compliance_suspended_at)->format('Y-m-d H:i') ?? 'None' }}</p>
+                <p class="mb-2"><strong>Suspended at:</strong> {{ \App\Support\DateTimeDisplay::format($worker->compliance_suspended_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') ?? 'None' }}</p>
                 <p class="mb-2"><strong>Suspension reason:</strong> {{ $worker->compliance_suspension_reason ?? 'None' }}</p>
             </div>
 
@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="text-end">
                                     <span class="badge bg-{{ $alert->alert_level === 'critical' ? 'danger' : ($alert->alert_level === 'high' ? 'warning text-dark' : 'secondary') }} mb-1">{{ ucfirst($alert->alert_level) }}</span>
-                                    <div class="small text-muted">{{ optional($alert->sent_at)->diffForHumans() }}</div>
+                                    <div class="small text-muted">{{ \App\Support\DateTimeDisplay::relative($alert->sent_at, $displayTimezone ?? 'UTC') }}</div>
                                 </div>
                             </li>
                         @endforeach

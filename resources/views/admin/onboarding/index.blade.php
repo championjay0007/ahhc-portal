@@ -56,7 +56,7 @@
                                     {{ ucfirst(str_replace('_', ' ', $submission->status)) }}
                                 </span>
                             </td>
-                            <td>{{ optional($submission->submitted_at)->format('d M Y') }}</td>
+                            <td>{{ \App\Support\DateTimeDisplay::format($submission->submitted_at, 'd M Y', $displayTimezone ?? 'UTC') }}</td>
                             <td class="text-end">
                                 <a href="{{ route('admin.onboarding.show', $submission) }}" class="btn btn-sm btn-outline-primary">Review</a>
                             </td>

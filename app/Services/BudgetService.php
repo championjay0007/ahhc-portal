@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Budget;
 use App\Models\BudgetTransaction;
+use App\Support\DateTimeDisplay;
 use App\Models\Invoice;
 use App\Models\PreApprovalRequest;
 use Illuminate\Database\QueryException;
@@ -278,7 +279,7 @@ class BudgetService
                 number_format($t->amount, 2),
                 $t->created_by,
                 json_encode($t->meta),
-                $t->created_at->toDateTimeString(),
+                DateTimeDisplay::format($t->created_at, 'Y-m-d H:i:s'),
             ];
         }
 

@@ -110,7 +110,7 @@
                         </div>
                         <div class="template-info">
                             <span class="template-info-label">Updated:</span>
-                            <span class="template-info-value">{{ $template->updated_at->format('M d') }}</span>
+                            <span class="template-info-value">{{ \App\Support\DateTimeDisplay::format($template->updated_at, 'M d', $displayTimezone ?? 'UTC') }}</span>
                         </div>
                     </div>
                     <div class="template-actions" style="padding: 1.5rem; border-top: 1px solid #e2e8f0;">

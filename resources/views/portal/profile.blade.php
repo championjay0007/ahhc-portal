@@ -191,12 +191,12 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="small text-muted">Submitted</div>
-                                <div class="fw-semibold">{{ $onboardingSubmission->submitted_at?->format('M d, Y H:i') ?? 'Not submitted' }}</div>
+                                <div class="fw-semibold">{{ \App\Support\DateTimeDisplay::format($onboardingSubmission->submitted_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') ?? 'Not submitted' }}</div>
                             </div>
                             @if($onboardingSubmission->reviewed_at)
                                 <div class="col-md-6 mb-3">
                                     <div class="small text-muted">Reviewed</div>
-                                    <div class="fw-semibold">{{ $onboardingSubmission->reviewed_at->format('M d, Y H:i') }}</div>
+                                    <div class="fw-semibold">{{ \App\Support\DateTimeDisplay::format($onboardingSubmission->reviewed_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') }}</div>
                                 </div>
                             @endif
                             @if($onboardingSubmission->admin_comments)

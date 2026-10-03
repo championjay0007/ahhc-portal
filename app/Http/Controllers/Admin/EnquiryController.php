@@ -9,6 +9,7 @@ use App\Models\Participant;
 use App\Models\User;
 use App\Services\NotificationCenterService;
 use App\Services\TemplateMailer;
+use App\Support\DateTimeDisplay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -150,7 +151,7 @@ class EnquiryController extends Controller
                     'last_name' => $participant->last_name,
                     'email' => $participant->email,
                     'onboarding_url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
-                    'expires_at' => optional($participant->onboarding_expires_at)->format('d M Y H:i') ?? now()->addDays(30)->format('d M Y H:i'),
+                    'expires_at' => DateTimeDisplay::format($participant->onboarding_expires_at ?? now()->addDays(30), 'd M Y H:i', $participant->user?->timezone),
                     'organization' => config('app.name', 'AHHC Portal'),
                 ],
                 'Complete your AHHC portal onboarding',
@@ -171,7 +172,7 @@ class EnquiryController extends Controller
 
         $enquiry->update([
             'status' => Enquiry::STATUS_APPROVED,
-            'notes' => trim(($enquiry->notes ?? '')."\nInvitation sent to {$enquiry->email} on ".now()->format('Y-m-d H:i')),
+            'notes' => trim(($enquiry->notes ?? '')."\nInvitation sent to {$enquiry->email} on ".DateTimeDisplay::format(now(), 'Y-m-d H:i')),
         ]);
 
         return back()->with('status', 'Onboarding invitation sent successfully.');
@@ -225,8 +226,8 @@ class EnquiryController extends Controller
                         $enquiry->assignedTo?->name,
                         Str::limit($enquiry->notes, 100),
                         Str::limit($enquiry->message, 300),
-                        $enquiry->created_at->toDateTimeString(),
-                        $enquiry->updated_at->toDateTimeString(),
+                        DateTimeDisplay::format($enquiry->created_at, 'Y-m-d H:i:s'),
+                        DateTimeDisplay::format($enquiry->updated_at, 'Y-m-d H:i:s'),
                     ]);
                 }
             });

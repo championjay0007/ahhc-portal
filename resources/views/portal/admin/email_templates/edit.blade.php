@@ -266,7 +266,7 @@
                                 <div class="version-label">
                                     <i class="bi bi-tag me-1" style="color: #667eea;"></i>Version {{ $version->version_number }}
                                 </div>
-                                <div class="version-time">{{ $version->created_at->diffForHumans() }}</div>
+                                <div class="version-time">{{ \App\Support\DateTimeDisplay::relative($version->created_at, $displayTimezone ?? 'UTC') }}</div>
                                 <div class="version-subject" title="{{ $version->subject }}">{{ $version->subject }}</div>
                                 <div class="version-actions">
                                     <form action="{{ route('portal.admin.messages.email_templates.versions.restore', [$emailTemplate, $version]) }}" method="POST" class="d-inline">

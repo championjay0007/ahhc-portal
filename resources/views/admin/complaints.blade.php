@@ -50,7 +50,7 @@
                             <tbody>
                                 @foreach($complaints as $complaint)
                                     <tr>
-                                        <td>{{ optional($complaint->created_at)->format('Y-m-d H:i') }}</td>
+                                        <td>{{ \App\Support\DateTimeDisplay::format($complaint->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                                         <td>{{ optional($complaint->participant)->first_name }} {{ optional($complaint->participant)->last_name }}</td>
                                         <td>{{ ucfirst($complaint->category ?? '—') }}</td>
                                         <td>

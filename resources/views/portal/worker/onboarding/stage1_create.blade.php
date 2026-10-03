@@ -12,7 +12,7 @@
                     <div class="alert alert-info mb-4">
                         <h6 class="alert-heading">Welcome to the Allegiance Heart &amp; Home Care Portal!</h6>
                         <p class="mb-2">You've been invited to join as a worker. To get started, please create your account below.</p>
-                        <small class="text-muted">Your invitation expires on <strong>{{ $worker->onboarding_expires_at->format('M d, Y') }}</strong></small>
+                        <small class="text-muted">Your invitation expires on <strong>{{ \App\Support\DateTimeDisplay::format($worker->onboarding_expires_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</strong></small>
                     </div>
 
                     <form method="POST" action="{{ route('worker.onboarding.stage1.submit', ['token' => $token]) }}">

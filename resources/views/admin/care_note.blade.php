@@ -18,9 +18,7 @@
                 : $careNote->end_time->format('H:i'))
             : '—';
         $displaySubmittedAt = $careNote->submitted_at
-            ? (is_string($careNote->submitted_at)
-                ? \Illuminate\Support\Carbon::parse($careNote->submitted_at)->format('Y-m-d H:i')
-                : $careNote->submitted_at->format('Y-m-d H:i'))
+            ? \App\Support\DateTimeDisplay::format($careNote->submitted_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC')
             : '—';
     @endphp
 

@@ -28,7 +28,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <small class="text-muted">
-                                {{ $message->created_at->format('M d, Y \a\t H:i') }}
+                                {{ \App\Support\DateTimeDisplay::format($message->created_at, 'M d, Y \a\t H:i', $displayTimezone ?? 'UTC') }}
                             </small>
                         </div>
                     </div>

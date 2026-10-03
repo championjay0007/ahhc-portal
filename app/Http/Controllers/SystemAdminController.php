@@ -7,6 +7,7 @@ use App\Models\PermissionGroup;
 use App\Models\PortalSetting;
 use App\Models\User;
 use App\Services\AuditLogService;
+use App\Support\DateTimeDisplay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -233,7 +234,7 @@ class SystemAdminController extends Controller
         $pendingCount = BackupRecord::where('status', BackupRecord::STATUS_IN_PROGRESS)->count();
 
         return [
-            'last_successful' => $lastSuccessful?->backup_date?->toDateTimeString() ?? 'Never',
+            'last_successful' => DateTimeDisplay::format($lastSuccessful?->backup_date, 'Y-m-d H:i:s') ?? 'Never',
             'failed' => $failedCount,
             'in_progress' => $pendingCount,
             'total' => BackupRecord::count(),

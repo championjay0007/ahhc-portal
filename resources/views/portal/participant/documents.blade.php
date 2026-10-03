@@ -194,7 +194,7 @@
                                         <span class="badge bg-secondary">{{ ucfirst($document->status) }}</span>
                                     @endif
                                 </td>
-                                <td>{{ $document->created_at->format('Y-m-d') }}</td>
+                                <td>{{ \App\Support\DateTimeDisplay::format($document->created_at, 'Y-m-d', $displayTimezone ?? 'UTC') }}</td>
                                 <td class="text-end">
                                     @if($document->hasStoredFilePath())
                                         <a href="{{ route('portal.participant.documents.preview', $document) }}" class="btn btn-sm btn-outline-secondary me-2">Preview</a>

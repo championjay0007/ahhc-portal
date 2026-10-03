@@ -11,6 +11,7 @@ use App\Models\Invoice;
 use App\Models\MonthlyCareReview;
 use App\Models\PreApprovalRequest;
 use App\Models\WorkerComplianceDocument;
+use App\Support\DateTimeDisplay;
 use Illuminate\Database\Eloquent\Collection;
 
 class ReportService
@@ -140,7 +141,9 @@ class ReportService
             $query->where('created_at', '<=', $filters['end_date']);
         }
 
-        return $query->get()->map(function ($note) {
+        $displayTimezone = DateTimeDisplay::timezone();
+
+        return $query->get()->map(function ($note) use ($displayTimezone) {
             return [
                 'note_id' => $note->id,
                 'participant' => $note->participant->first_name.' '.$note->participant->last_name,
@@ -149,7 +152,7 @@ class ReportService
                 'note_content' => substr($note->note_content, 0, 100).(strlen($note->note_content) > 100 ? '...' : ''),
                 'created_by' => $note->worker->name ?? 'Unknown',
                 'created_date' => $note->created_at->toDateString(),
-                'created_time' => $note->created_at->format('H:i:s'),
+                'created_time' => DateTimeDisplay::format($note->created_at, 'H:i:s', $displayTimezone),
             ];
         });
     }
@@ -401,7 +404,9 @@ class ReportService
             $query->where('created_at', '<=', $filters['end_date']);
         }
 
-        return $query->get()->map(function ($log) {
+        $displayTimezone = DateTimeDisplay::timezone();
+
+        return $query->get()->map(function ($log) use ($displayTimezone) {
             return [
                 'log_id' => $log->id,
                 'action' => $log->action,
@@ -411,7 +416,7 @@ class ReportService
                 'description' => $log->description,
                 'ip_address' => $log->ip_address,
                 'created_date' => $log->created_at->toDateString(),
-                'created_time' => $log->created_at->format('H:i:s'),
+                'created_time' => DateTimeDisplay::format($log->created_at, 'H:i:s', $displayTimezone),
             ];
         });
     }

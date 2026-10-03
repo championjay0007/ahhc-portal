@@ -41,7 +41,7 @@
                                         <span class="text-muted">No active assignments</span>
                                     @endforelse
                                 </td>
-                                <td>{{ $manager->created_at?->format('M j, Y') }}</td>
+                                <td>{{ \App\Support\DateTimeDisplay::format($manager->created_at, 'M j, Y', $displayTimezone ?? 'UTC') }}</td>
                             </tr>
                         @empty
                             <tr>

@@ -92,7 +92,7 @@
 
                         <small class="text-muted">
                             <i class="bi bi-chat"></i> {{ $conv->messages->count() }} messages •
-                            <i class="bi bi-clock"></i> {{ $conv->last_message_at?->diffForHumans() ?? 'No messages' }}
+                            <i class="bi bi-clock"></i> {{ \App\Support\DateTimeDisplay::relative($conv->last_message_at, $displayTimezone ?? 'UTC') ?? 'No messages' }}
                         </small>
 
                         <div class="mt-3">

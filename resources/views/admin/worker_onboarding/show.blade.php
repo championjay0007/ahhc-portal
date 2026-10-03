@@ -104,7 +104,7 @@
                                             <h6 class="mb-1">{{ $doc->document_type }}</h6>
                                             <p class="mb-1 small text-muted">{{ basename($doc->document_path ?? '') }}</p>
                                             <div class="small text-muted">
-                                                <div>Uploaded: {{ $doc->created_at->format('M d, Y') }}</div>
+                                                <div>Uploaded: {{ \App\Support\DateTimeDisplay::format($doc->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</div>
                                                 @if ($doc->issue_date)
                                                     <div>Issue date: {{ $doc->issue_date->format('M d, Y') }}</div>
                                                 @endif
@@ -154,7 +154,7 @@
                                             <div class="small text-muted">
                                                 <div>Status: {{ $decl->isSigned() ? 'Signed' : ($decl->isDeclined() ? 'Declined' : 'Pending') }}</div>
                                                 @if ($decl->signed_at)
-                                                    <div>Signed: {{ $decl->signed_at->format('M d, Y H:i') }}</div>
+                                                    <div>Signed: {{ \App\Support\DateTimeDisplay::format($decl->signed_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') }}</div>
                                                 @endif
                                                 @if ($decl->decline_reason)
                                                     <div>Decline reason: {{ $decl->decline_reason }}</div>
@@ -181,7 +181,7 @@
                     <div class="card-body">
                         <p><strong>Status:</strong> Awaiting account setup and MFA enrollment</p>
                         <p><strong>Invitation Token:</strong> {{ $worker->onboarding_token }}</p>
-                        <p><strong>Expires:</strong> {{ $worker->onboarding_expires_at ? $worker->onboarding_expires_at->format('M d, Y H:i') : 'N/A' }}</p>
+                        <p><strong>Expires:</strong> {{ $worker->onboarding_expires_at ? \App\Support\DateTimeDisplay::format($worker->onboarding_expires_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') : 'N/A' }}</p>
                         <p><strong>Invited By:</strong> {{ $worker->invitedBy ? $worker->invitedBy->name : 'N/A' }}</p>
                         <p><strong>Invited At:</strong> {{ $worker->invited_at ? $worker->invited_at->format('M d, Y') : 'N/A' }}</p>
                         
@@ -204,7 +204,7 @@
                     </div>
                     <div class="card-body">
                         <p><strong>Status:</strong> Awaiting compliance document submission</p>
-                        <p><strong>Submitted At:</strong> {{ $worker->stage_2_submitted_at ? $worker->stage_2_submitted_at->format('M d, Y') : 'Not submitted yet' }}</p>
+                        <p><strong>Submitted At:</strong> {{ \App\Support\DateTimeDisplay::format($worker->stage_2_submitted_at, 'M d, Y', $displayTimezone ?? 'UTC') ?? 'Not submitted yet' }}</p>
 
                         @if ($worker->complianceDocuments->isEmpty())
                             <div class="alert alert-warning">No documents submitted yet.</div>
@@ -216,7 +216,7 @@
                                             <div class="flex-grow-1">
                                                 <h6 class="mb-1">{{ $doc->document_type }}</h6>
                                                 <p class="mb-1 small text-muted">{{ basename($doc->document_path ?? '') }}</p>
-                                                <small class="text-muted">Uploaded: {{ $doc->created_at->format('M d, Y') }}</small>
+                                                <small class="text-muted">Uploaded: {{ \App\Support\DateTimeDisplay::format($doc->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</small>
                                             </div>
                                             <div class="text-end">
                                                 <span class="badge bg-{{ $doc->status === 'submitted' ? 'warning' : ($doc->status === 'active' ? 'success' : ($doc->status === 'rejected' ? 'danger' : 'secondary')) }} mb-2">
@@ -256,7 +256,7 @@
                     </div>
                     <div class="card-body">
                         <p><strong>Status:</strong> Awaiting admin review completion</p>
-                        <p><strong>Submitted At:</strong> {{ $worker->stage_3_submitted_at ? $worker->stage_3_submitted_at->format('M d, Y') : 'Not submitted' }}</p>
+                        <p><strong>Submitted At:</strong> {{ \App\Support\DateTimeDisplay::format($worker->stage_3_submitted_at, 'M d, Y', $displayTimezone ?? 'UTC') ?? 'Not submitted' }}</p>
 
                         @if ($worker->complianceDocuments->isEmpty())
                             <div class="alert alert-warning">No documents to review.</div>
@@ -276,7 +276,7 @@
                                                         <div>
                                                             <h6 class="mb-1">{{ $doc->document_type }}</h6>
                                                             <p class="mb-1 small text-muted">{{ basename($doc->document_path ?? '') }}</p>
-                                                            <small class="text-muted">Uploaded: {{ $doc->created_at->format('M d, Y') }}</small>
+                                                            <small class="text-muted">Uploaded: {{ \App\Support\DateTimeDisplay::format($doc->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</small>
                                                         </div>
                                                         <div class="text-end d-flex flex-wrap gap-2 justify-content-end">
                                                             @if ($doc->document_path)

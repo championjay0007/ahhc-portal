@@ -44,7 +44,7 @@
                                     </div>
                                     <div class="text-end">
                                         <span class="badge rounded-pill {{ $isUnread ? 'bg-primary' : 'bg-secondary' }}">{{ $isUnread ? 'New' : 'Read' }}</span>
-                                        <div class="small text-muted mt-2">{{ $notification->created_at->diffForHumans() }}</div>
+                                        <div class="small text-muted mt-2">{{ \App\Support\DateTimeDisplay::relative($notification->created_at, $displayTimezone ?? 'UTC') }}</div>
                                     </div>
                                 </div>
                             </a>

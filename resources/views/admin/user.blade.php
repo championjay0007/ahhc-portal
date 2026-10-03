@@ -57,11 +57,11 @@
                         </div>
                         <div class="col-sm-6">
                             <label class="form-label">Created</label>
-                            <div class="form-control-plaintext">{{ $user->created_at->format('M j, Y h:ia') }}</div>
+                            <div class="form-control-plaintext">{{ \App\Support\DateTimeDisplay::format($user->created_at, 'M j, Y h:ia', $displayTimezone ?? 'UTC') }}</div>
                         </div>
                         <div class="col-sm-6">
                             <label class="form-label">Last updated</label>
-                            <div class="form-control-plaintext">{{ $user->updated_at->format('M j, Y h:ia') }}</div>
+                            <div class="form-control-plaintext">{{ \App\Support\DateTimeDisplay::format($user->updated_at, 'M j, Y h:ia', $displayTimezone ?? 'UTC') }}</div>
                         </div>
                     </div>
                 </div>
@@ -133,7 +133,7 @@
                         <div class="form-control-plaintext">
                             @if($user->mfa_enabled)
                                 <span class="badge bg-success">Enabled</span>
-                                <div class="text-muted small mt-1">Enrolled at {{ optional($user->mfa_enrolled_at)->format('M j, Y h:ia') ?? 'unknown' }}</div>
+                                <div class="text-muted small mt-1">Enrolled at {{ \App\Support\DateTimeDisplay::format($user->mfa_enrolled_at, 'M j, Y h:ia', $displayTimezone ?? 'UTC') ?? 'unknown' }}</div>
                             @else
                                 <span class="badge bg-secondary">Disabled</span>
                             @endif
@@ -157,7 +157,7 @@
                         <ul class="list-group list-group-flush">
                             @foreach($user->auditLogs->take(5) as $log)
                                 <li class="list-group-item py-2">
-                                    <div class="small text-muted">{{ $log->created_at->diffForHumans() }}</div>
+                                    <div class="small text-muted">{{ \App\Support\DateTimeDisplay::relative($log->created_at, $displayTimezone ?? 'UTC') }}</div>
                                     <div>{{ \Illuminate\Support\Str::limit($log->action, 80) }}</div>
                                 </li>
                             @endforeach

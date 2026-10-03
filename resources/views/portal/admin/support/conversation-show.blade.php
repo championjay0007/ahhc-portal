@@ -153,7 +153,7 @@
                                     {{ $msg->message }}
                                 </div>
                                 <p class="admin-chat-meta">
-                                    {{ ($msg->is_admin ? 'You' : $conversation->user->name) }} • {{ $msg->created_at->format('H:i') }}
+                                    {{ ($msg->is_admin ? 'You' : $conversation->user->name) }} • {{ \App\Support\DateTimeDisplay::format($msg->created_at, 'H:i', $displayTimezone ?? 'UTC') }}
                                 </p>
                             </div>
                         </div>
@@ -242,7 +242,7 @@
                         </dd>
 
                         <dt class="col-sm-6">Started:</dt>
-                        <dd class="col-sm-6">{{ $conversation->created_at->format('M d, Y') }}</dd>
+                        <dd class="col-sm-6">{{ \App\Support\DateTimeDisplay::format($conversation->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</dd>
 
                         @if($conversation->public_token)
                             <dt class="col-sm-6">Widget chat:</dt>

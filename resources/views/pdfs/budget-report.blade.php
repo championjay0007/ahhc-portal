@@ -304,7 +304,7 @@
             <div class="header-meta">
                 <div class="header-meta-item">
                     <span class="header-meta-label">Report Date</span>
-                    <span>{{ now()->format('d/m/Y H:i') }}</span>
+                    <span>{{ \App\Support\DateTimeDisplay::format(now(), 'd/m/Y H:i', $displayTimezone ?? 'UTC') }}</span>
                 </div>
                 <div class="header-meta-item">
                     <span class="header-meta-label">Quarter</span>
@@ -436,7 +436,7 @@
         <div class="footer">
             <div class="footer-note">This is an automatically generated budget report. Please retain for your records.</div>
             <div>Allegiance Heart & Home Care Portal | Quarterly Budget Management System</div>
-            <div style="margin-top: 10px; color: #ccc;">Generated on {{ now()->format('d/m/Y \a\t H:i:s') }}</div>
+            <div style="margin-top: 10px; color: #ccc;">Generated on {{ \App\Support\DateTimeDisplay::format(now(), 'd/m/Y \a\t H:i:s', $displayTimezone ?? 'UTC') }}</div>
         </div>
     </div>
 </body>

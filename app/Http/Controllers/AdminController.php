@@ -34,7 +34,9 @@ use App\Services\OnboardingAgreementService;
 use App\Services\RiskScoringService;
 use App\Services\SignatureRequestService;
 use App\Services\TemplateMailer;
+use App\Support\DateTimeDisplay;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -422,7 +424,7 @@ class AdminController extends Controller
                         'last_name' => $participant->last_name,
                         'email' => $participant->email,
                         'onboarding_url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
-                        'expires_at' => optional($participant->onboarding_expires_at)->format('d M Y H:i') ?? now()->addDays(30)->format('d M Y H:i'),
+                        'expires_at' => DateTimeDisplay::format($participant->onboarding_expires_at ?? now()->addDays(30), 'd M Y H:i', $user->timezone),
                         'organization' => config('app.name', 'AHHC Portal'),
                     ],
                     'Complete your AHHC portal onboarding',
@@ -554,7 +556,7 @@ class AdminController extends Controller
                         'last_name' => $participant->last_name,
                         'email' => $participant->email,
                         'onboarding_url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
-                        'expires_at' => optional($participant->onboarding_expires_at)->format('d M Y H:i') ?? now()->addDays(30)->format('d M Y H:i'),
+                        'expires_at' => DateTimeDisplay::format($participant->onboarding_expires_at ?? now()->addDays(30), 'd M Y H:i', $participant->user?->timezone),
                         'organization' => config('app.name', 'AHHC Portal'),
                     ],
                     'Complete your AHHC portal onboarding',
@@ -635,7 +637,7 @@ class AdminController extends Controller
                     'last_name' => $participant->last_name,
                     'email' => $participant->email,
                     'onboarding_url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
-                    'expires_at' => optional($participant->onboarding_expires_at)->format('d M Y H:i') ?? now()->addDays(30)->format('d M Y H:i'),
+                    'expires_at' => DateTimeDisplay::format($participant->onboarding_expires_at ?? now()->addDays(30), 'd M Y H:i', $user->timezone),
                     'organization' => config('app.name', 'AHHC Portal'),
                 ],
                 'Complete your AHHC portal onboarding',
@@ -1175,12 +1177,6 @@ class AdminController extends Controller
         $settings = $this->loadSettings();
         $this->updatePwaManifest($settings);
 
-        $defaultTimezone = $settings['default_timezone'] ?? config('app.timezone', 'UTC');
-        if (is_string($defaultTimezone) && trim($defaultTimezone) !== '' && in_array($defaultTimezone, timezone_identifiers_list(), true)) {
-            config(['app.timezone' => $defaultTimezone]);
-            date_default_timezone_set($defaultTimezone);
-        }
-
         $sessionLifetime = (int) ($settings['session_lifetime'] ?? 120);
         if ($sessionLifetime > 0) {
             config(['session.lifetime' => $sessionLifetime]);
@@ -1397,7 +1393,13 @@ class AdminController extends Controller
             'terms_of_service_path' => null,
         ];
 
-        $stored = PortalSetting::query()->pluck('value', 'key')->all();
+        try {
+            $stored = PortalSetting::query()->pluck('value', 'key')->all();
+        } catch (QueryException $exception) {
+            report($exception);
+
+            return $defaults;
+        }
 
         return array_replace($defaults, $stored);
     }
@@ -1432,6 +1434,11 @@ class AdminController extends Controller
     public function activity(Request $request)
     {
         $query = AuditLog::with('user')->latest();
+        $settings = $this->loadSettings();
+        $displayTimezone = auth()->user()?->timezone ?: ($settings['default_timezone'] ?? config('app.timezone', 'UTC'));
+        if (! is_string($displayTimezone) || ! in_array($displayTimezone, timezone_identifiers_list(), true)) {
+            $displayTimezone = config('app.timezone', 'UTC');
+        }
 
         // filters
         if ($search = $request->input('search')) {
@@ -1465,14 +1472,14 @@ class AdminController extends Controller
         if ($request->input('export') === 'csv') {
             $filename = 'audit_logs_'.now()->format('YmdHis').'.csv';
 
-            $callback = function () use ($query) {
+            $callback = function () use ($query, $displayTimezone) {
                 $out = fopen('php://output', 'w');
                 fputcsv($out, ['id', 'created_at', 'user_id', 'user_name', 'action', 'model_type', 'model_id', 'ip_address', 'user_agent', 'changes']);
 
                 foreach ($query->orderBy('id')->cursor() as $log) {
                     fputcsv($out, [
                         $log->id,
-                        optional($log->created_at)->toDateTimeString(),
+                        $log->created_at?->copy()->setTimezone($displayTimezone)->toDateTimeString(),
                         $log->user_id,
                         optional($log->user)->name,
                         $log->action,
@@ -1498,7 +1505,7 @@ class AdminController extends Controller
         $users = User::orderBy('name')->get();
         $actions = AuditLog::select('action')->distinct()->orderBy('action')->pluck('action');
 
-        return view('admin.activity', compact('activities', 'users', 'actions'));
+        return view('admin.activity', compact('activities', 'users', 'actions', 'displayTimezone'));
     }
 
     public function destroyActivity(AuditLog $auditLog)

@@ -9,6 +9,7 @@ use App\Models\Participant;
 use App\Models\User;
 use App\Services\CareReviewDashboardService;
 use App\Services\CareReviewService;
+use App\Support\DateTimeDisplay;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -282,7 +283,7 @@ class CareReviewController extends Controller
                     'type' => $activity->activity_type,
                     'description' => $activity->description,
                     'user' => $activity->user?->name,
-                    'created_at' => $activity->created_at->toDateTimeString(),
+                    'created_at' => DateTimeDisplay::format($activity->created_at, 'Y-m-d H:i:s'),
                 ];
             }),
         ]);

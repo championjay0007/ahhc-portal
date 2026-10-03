@@ -28,7 +28,7 @@
                         </dd>
 
                         <dt class="col-sm-3">Uploaded</dt>
-                        <dd class="col-sm-9">{{ $document->created_at->format('Y-m-d H:i') }}</dd>
+                        <dd class="col-sm-9">{{ \App\Support\DateTimeDisplay::format($document->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</dd>
 
                         <dt class="col-sm-3">Current version</dt>
                         <dd class="col-sm-9">{{ optional($document->latestVersion)->version_number ?? 1 }}</dd>

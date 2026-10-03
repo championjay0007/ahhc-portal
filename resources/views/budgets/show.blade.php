@@ -67,7 +67,7 @@
         <tbody>
             @foreach($budget->transactions as $t)
             <tr>
-                <td>{{ $t->created_at->format('Y-m-d H:i') }}</td>
+                <td>{{ \App\Support\DateTimeDisplay::format($t->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                 <td>{{ $t->type }}</td>
                 <td>{{ optional($t->category)->name }}</td>
                 <td>${{ number_format($t->amount,2) }}</td>

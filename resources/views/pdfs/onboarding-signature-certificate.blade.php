@@ -27,7 +27,7 @@
 
         <div class="section">
             <p class="label">Signed at:</p>
-            <p>{{ $signedAt->format('Y-m-d H:i:s') }}</p>
+            <p>{{ \App\Support\DateTimeDisplay::format($signedAt, 'Y-m-d H:i:s', $displayTimezone ?? 'UTC') }}</p>
         </div>
 
         <div class="section">

@@ -7,6 +7,7 @@ use App\Models\SupportMessage;
 use App\Models\SupportResponse;
 use App\Models\SupportTicket;
 use App\Models\User;
+use App\Support\DateTimeDisplay;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -225,6 +226,7 @@ class SupportCenterController extends Controller
      */
     public function conversationMessages(SupportConversation $conversation)
     {
+        $displayTimezone = DateTimeDisplay::timezone();
         $messages = $conversation->messages()
             ->orderBy('created_at', 'asc')
             ->get()
@@ -233,7 +235,7 @@ class SupportCenterController extends Controller
                     'id' => $msg->id,
                     'message' => $msg->message,
                     'is_admin' => $msg->is_admin,
-                    'created_at' => $msg->created_at->format('H:i'),
+                    'created_at' => DateTimeDisplay::format($msg->created_at, 'H:i', $displayTimezone),
                 ];
             });
 
@@ -249,6 +251,7 @@ class SupportCenterController extends Controller
             'message' => 'required|string|min:1|max:5000',
         ]);
 
+        $displayTimezone = DateTimeDisplay::timezone();
         $message = SupportMessage::create([
             'support_conversation_id' => $conversation->id,
             'user_id' => Auth::id(),
@@ -279,7 +282,7 @@ class SupportCenterController extends Controller
                     'id' => $message->id,
                     'message' => $message->message,
                     'is_admin' => $message->is_admin,
-                    'created_at' => $message->created_at->format('H:i'),
+                    'created_at' => DateTimeDisplay::format($message->created_at, 'H:i', $displayTimezone),
                 ],
             ], 201);
         }

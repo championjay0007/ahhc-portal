@@ -25,7 +25,7 @@
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body p-4">
                     <p class="text-muted small mb-1">Last successful backup</p>
-                    <h3 class="fw-bold mb-1">{{ $lastSuccessful ? $lastSuccessful->backup_date->format('Y-m-d H:i') : 'None' }}</h3>
+                    <h3 class="fw-bold mb-1">{{ $lastSuccessful ? \App\Support\DateTimeDisplay::format($lastSuccessful->backup_date, 'Y-m-d H:i', $displayTimezone ?? 'UTC') : 'None' }}</h3>
                     <p class="mb-0 text-muted">{{ $lastSuccessful ? ucwords(str_replace('_', ' ', $lastSuccessful->backup_type)) : 'No successful backup recorded' }}</p>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                                 <tbody>
                                     @foreach($recentBackups as $backup)
                                         <tr>
-                                            <td>{{ $backup->backup_date->format('Y-m-d H:i') }}</td>
+                                            <td>{{ \App\Support\DateTimeDisplay::format($backup->backup_date, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                                             <td>{{ ucwords(str_replace('_', ' ', $backup->backup_type)) }}</td>
                                             <td>{{ $backup->status }}</td>
                                             <td>{{ number_format($backup->size / 1024 / 1024, 2) }} GB</td>

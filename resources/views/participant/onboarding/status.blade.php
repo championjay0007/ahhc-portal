@@ -79,7 +79,7 @@
                     <div class="card-body p-4">
                         <dl class="row">
                             <dt class="col-sm-4 text-muted">Submitted</dt>
-                            <dd class="col-sm-8">{{ optional($submission->submitted_at)->format('d M Y H:i') }}</dd>
+                            <dd class="col-sm-8">{{ \App\Support\DateTimeDisplay::format($submission->submitted_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}</dd>
 
                             <dt class="col-sm-4 text-muted">Status</dt>
                             <dd class="col-sm-8">{{ ucfirst(str_replace('_', ' ', $submission->status)) }}</dd>

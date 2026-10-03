@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ReportExportLog;
+use App\Support\DateTimeDisplay;
 
 class ReportDashboardService
 {
@@ -47,7 +48,7 @@ class ReportDashboardService
                 'record_count' => $log->record_count,
                 'file_size' => $this->formatFileSize($log->file_size),
                 'filters' => $log->getFiltersSummary(),
-                'exported_at' => $log->exported_at->toDateTimeString(),
+                'exported_at' => DateTimeDisplay::format($log->exported_at, 'Y-m-d H:i:s'),
             ];
         })->toArray();
     }

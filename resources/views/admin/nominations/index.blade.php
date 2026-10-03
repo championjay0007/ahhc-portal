@@ -90,7 +90,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <small class="text-muted">{{ $nomination->created_at->format('d M Y') }}</small>
+                                    <small class="text-muted">{{ \App\Support\DateTimeDisplay::format($nomination->created_at, 'd M Y', $displayTimezone ?? 'UTC') }}</small>
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">

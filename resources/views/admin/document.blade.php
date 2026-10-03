@@ -34,7 +34,7 @@
                         <dt class="col-sm-4">Expires</dt>
                         <dd class="col-sm-8">
                             @if($document->expires_at)
-                                <span>{{ $document->expires_at->format('Y-m-d') }}</span>
+                                <span>{{ \App\Support\DateTimeDisplay::format($document->expires_at, 'Y-m-d', $displayTimezone ?? 'UTC') }}</span>
                                 @if($document->isExpired())
                                     <span class="badge bg-danger ms-1">Expired</span>
                                 @endif
@@ -54,7 +54,7 @@
                         <dd class="col-sm-8">{{ optional($document->latestVersion)->version_number ?? 1 }}</dd>
 
                         <dt class="col-sm-4">Uploaded</dt>
-                        <dd class="col-sm-8">{{ $document->created_at->format('Y-m-d H:i') }}</dd>
+                        <dd class="col-sm-8">{{ \App\Support\DateTimeDisplay::format($document->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</dd>
 
                         <dt class="col-sm-4">Uploaded by</dt>
                         <dd class="col-sm-8">{{ optional($document->uploader)->name ?? 'Unknown' }}</dd>
@@ -99,7 +99,7 @@
                         <div class="list-group-item d-flex justify-content-between align-items-start gap-3">
                             <div>
                                 <strong>Version {{ $version->version_number }}</strong>
-                                <div class="small text-muted">Uploaded {{ $version->created_at->format('Y-m-d H:i') }} by {{ optional($version->uploadedBy)->name ?? 'Unknown' }}</div>
+                                <div class="small text-muted">Uploaded {{ \App\Support\DateTimeDisplay::format($version->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }} by {{ optional($version->uploadedBy)->name ?? 'Unknown' }}</div>
                                 @if($version->notes)
                                     <div class="small text-muted">Notes: {{ $version->notes }}</div>
                                 @endif
@@ -140,7 +140,7 @@
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
                                 <strong>{{ optional($signature->signedBy)->name ?? 'Unknown signer' }}</strong>
-                                <div class="small text-muted">{{ ucfirst(str_replace('_', ' ', $signature->signature_method)) }} • {{ $signature->signed_at->format('Y-m-d H:i') }}</div>
+                                <div class="small text-muted">{{ ucfirst(str_replace('_', ' ', $signature->signature_method)) }} • {{ \App\Support\DateTimeDisplay::format($signature->signed_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</div>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 @if($signature->signature_path)

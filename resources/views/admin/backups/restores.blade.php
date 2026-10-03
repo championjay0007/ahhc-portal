@@ -26,7 +26,7 @@
                     <tbody>
                         @forelse($restores as $restore)
                             <tr>
-                                <td>{{ $restore->restore_date->format('Y-m-d H:i') }}</td>
+                                <td>{{ \App\Support\DateTimeDisplay::format($restore->restore_date, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                                 <td>{{ $restore->status }}</td>
                                 <td>{{ $restore->backupRecord ? ucwords(str_replace('_', ' ', $restore->backupRecord->backup_type)) : 'n/a' }}</td>
                                 <td>{{ $restore->initiatedBy?->name ?? 'system' }}</td>

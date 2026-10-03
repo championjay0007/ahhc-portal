@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\AuditLog;
 use App\Models\PortalSetting;
 use App\Models\User;
+use App\Support\DateTimeDisplay;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
@@ -71,6 +74,65 @@ class AdminSettingsTest extends TestCase
         $followUp->assertSee('AHHC Care Services');
         $followUp->assertSee('care@ahhc.example.com');
         $followUp->assertSee('Worker');
+    }
+
+    public function test_audit_log_displays_timestamps_in_the_admin_timezone(): void
+    {
+        config(['app.timezone' => 'UTC']);
+        date_default_timezone_set('UTC');
+
+        $admin = User::create([
+            'name' => 'Admin Timezone Owner',
+            'email' => 'admin-timezone-owner@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => true,
+            'timezone' => 'Australia/Sydney',
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+
+        PortalSetting::updateOrCreate(
+            ['key' => 'default_timezone'],
+            ['value' => 'UTC']
+        );
+
+        $auditLog = AuditLog::create([
+            'user_id' => $admin->id,
+            'action' => 'Timezone display check',
+        ]);
+        $auditLog->created_at = Carbon::parse('2026-01-15 12:00:00', 'UTC');
+        $auditLog->save();
+
+        $this->actingAs($admin)
+            ->get(route('portal.admin.activity'))
+            ->assertOk()
+            ->assertSee('Jan 15, 2026')
+            ->assertSee('23:00');
+
+        $this->assertSame('UTC', config('app.timezone'));
+        $this->assertSame('2026-01-15 12:00:00', $auditLog->fresh()->getRawOriginal('created_at'));
+    }
+
+    public function test_shared_datetime_display_converts_for_the_user_without_mutating_utc_value(): void
+    {
+        $user = User::create([
+            'name' => 'Timezone Display User',
+            'email' => 'timezone-display-user@example.com',
+            'role' => 'admin',
+            'status' => 'active',
+            'mfa_enabled' => true,
+            'timezone' => 'Australia/Sydney',
+            'password' => Hash::make('Password123!'),
+            'password_changed_at' => now(),
+        ]);
+        $this->actingAs($user);
+
+        $timestamp = Carbon::parse('2026-01-15 12:00:00', 'UTC');
+
+        $this->assertSame('2026-01-15 23:00', DateTimeDisplay::format($timestamp, 'Y-m-d H:i'));
+        $this->assertSame('UTC', $timestamp->timezoneName);
+        $this->assertSame('Australia/Sydney', DateTimeDisplay::timezone());
     }
 
     public function test_admin_can_disable_pwa_service_worker(): void

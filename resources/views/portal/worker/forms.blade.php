@@ -30,7 +30,7 @@
                             <td>{{ $document->title }}</td>
                             <td>{{ ucfirst(str_replace('_', ' ', $document->document_type)) }}</td>
                             <td>{{ ucfirst($document->status) }}</td>
-                            <td>{{ optional($document->created_at)->format('d M Y') }}</td>
+                            <td>{{ \App\Support\DateTimeDisplay::format($document->created_at, 'd M Y', $displayTimezone ?? 'UTC') }}</td>
                             <td class="text-end">
                                 <a href="{{ route('portal.worker.forms.show', $document) }}" class="btn btn-sm btn-primary">Open</a>
                             </td>

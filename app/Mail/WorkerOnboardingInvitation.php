@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Worker;
+use App\Support\DateTimeDisplay;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Bus\Queueable;
 
@@ -17,15 +18,16 @@ class WorkerOnboardingInvitation extends StyledEmail
         $this->onboardingUrl = route('worker.onboarding.show', ['token' => $worker->onboarding_token]);
 
         $subject = 'AHHC Portal - Worker Onboarding Invitation';
+        $firstName = $worker->first_name ?? 'Worker';
 
-        $intro = "Hello <strong>{$worker->first_name ?? 'Worker'}</strong>,<br><br>" .
+        $intro = "Hello <strong>{$firstName}</strong>,<br><br>" .
                  "You're invited to begin your onboarding with <strong>" . config('app.name', 'AHHC Portal') . "</strong>. This helps us verify your qualifications, confirm your background checks, and prepare your portal access as a care team member.<br><br>" .
-                 "Please use the secure link below to begin. The link remains active until <strong>" . optional($worker->onboarding_expires_at)->format('d M Y H:i') . "</strong>.";
+                 "Please use the secure link below to begin. The link remains active until <strong>" . DateTimeDisplay::format($worker->onboarding_expires_at, 'd M Y H:i', $worker->user?->timezone) . "</strong>.";
 
         $details = [
             'Name' => trim(($worker->first_name ?? '') . ' ' . ($worker->last_name ?? '')),
             'Email' => $worker->email ?? '—',
-            'Expires' => '<span style="color: #eb3035; font-weight: bold;">' . optional($worker->onboarding_expires_at)->format('d M Y H:i') . '</span>',
+            'Expires' => '<span style="color: #eb3035; font-weight: bold;">' . DateTimeDisplay::format($worker->onboarding_expires_at, 'd M Y H:i', $worker->user?->timezone) . '</span>',
         ];
 
         $supportText = 'If you have any questions or did not expect this invitation, please contact our support team for assistance.';
@@ -48,4 +50,3 @@ class WorkerOnboardingInvitation extends StyledEmail
         );
     }
 }
-

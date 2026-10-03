@@ -28,7 +28,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <h5 class="card-title mb-1">{{ Str::limit($conversation->subject, 60) }}</h5>
-                                    <p class="text-muted mb-2">Last updated {{ $conversation->last_message_at?->diffForHumans() ?? 'just now' }}</p>
+                                    <p class="text-muted mb-2">Last updated {{ \App\Support\DateTimeDisplay::relative($conversation->last_message_at, $displayTimezone ?? 'UTC') ?? 'just now' }}</p>
                                 </div>
                                 <span class="badge bg-{{ $conversation->status === 'open' ? 'success' : ($conversation->status === 'waiting' ? 'warning' : ($conversation->status === 'in-progress' ? 'info' : 'secondary')) }}">
                                     {{ ucfirst($conversation->status) }}

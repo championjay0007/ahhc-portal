@@ -77,7 +77,7 @@
                                 <div class="alert alert-info alert-sm mb-2">
                                     <small>
                                         @if($nomination->status->value === 'Submitted')
-                                            Submitted on {{ $nomination->created_at->format('d M Y') }}. Allegiance Heart &amp; Home Care is reviewing your nomination.
+                                            Submitted on {{ \App\Support\DateTimeDisplay::format($nomination->created_at, 'd M Y', $displayTimezone ?? 'UTC') }}. Allegiance Heart &amp; Home Care is reviewing your nomination.
                                         @elseif($nomination->status->value === 'Under Review')
                                             Your nomination is under review by Allegiance Heart &amp; Home Care.
                                         @elseif($nomination->status->value === 'Approved')
@@ -122,7 +122,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-muted">
-                            <small>Submitted {{ $nomination->created_at->diffForHumans() }}</small>
+                            <small>Submitted {{ \App\Support\DateTimeDisplay::relative($nomination->created_at, $displayTimezone ?? 'UTC') }}</small>
                         </div>
                     </div>
                 </div>

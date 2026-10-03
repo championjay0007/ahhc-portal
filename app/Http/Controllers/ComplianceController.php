@@ -6,6 +6,7 @@ use App\Enums\ComplianceDocumentType;
 use App\Models\Worker;
 use App\Models\WorkerComplianceDocument;
 use App\Services\ComplianceDashboardService;
+use App\Support\DateTimeDisplay;
 use App\Services\ComplianceReportExporter;
 use App\Services\ComplianceService;
 use Illuminate\Http\JsonResponse;
@@ -305,7 +306,7 @@ class ComplianceController extends Controller
                         'alert_level' => $alert->alert_level,
                         'message' => $alert->message,
                         'document_type' => $alert->document_type,
-                        'sent_at' => $alert->sent_at?->toDateTimeString(),
+                        'sent_at' => DateTimeDisplay::format($alert->sent_at, 'Y-m-d H:i:s'),
                     ];
                 })->values()->toArray(),
             ]));

@@ -44,10 +44,10 @@
                                     {{ ucfirst(str_replace('_', ' ', $shift->status)) }}
                                 </span>
                                 @if($shift->started_at)
-                                    <div class="small text-muted mt-1">Started: {{ $shift->started_at->format('d M Y H:i') }}</div>
+                                    <div class="small text-muted mt-1">Started: {{ \App\Support\DateTimeDisplay::format($shift->started_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}</div>
                                 @endif
                                 @if($shift->completed_at)
-                                    <div class="small text-muted">Completed: {{ $shift->completed_at->format('d M Y H:i') }}</div>
+                                    <div class="small text-muted">Completed: {{ \App\Support\DateTimeDisplay::format($shift->completed_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}</div>
                                 @endif
                             </td>
                             <td class="text-end">

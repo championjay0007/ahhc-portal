@@ -99,7 +99,7 @@
                                                 <div class="alert alert-light p-3">
                                                     <p class="mb-1"><strong>Uploaded file:</strong> {{ basename($uploaded->document_path) }}</p>
                                                     <p class="mb-1"><strong>Status:</strong> {{ ucfirst($uploaded->status) }}</p>
-                                                    <p class="mb-0"><small>Uploaded: {{ $uploaded->created_at->format('M d, Y') }}</small></p>
+                                                    <p class="mb-0"><small>Uploaded: {{ \App\Support\DateTimeDisplay::format($uploaded->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</small></p>
 
                                                     <div class="mt-2 d-flex flex-wrap gap-2">
                                                         @if ($uploaded->document_path)

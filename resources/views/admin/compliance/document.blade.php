@@ -27,7 +27,7 @@
                 <p class="mb-2"><strong>Issue Date:</strong> {{ optional($document->issue_date)->format('Y-m-d') ?? 'Not set' }}</p>
                 <p class="mb-2"><strong>Expiry Date:</strong> {{ optional($document->expiry_date)->format('Y-m-d') ?? 'Not set' }}</p>
                 <p class="mb-2"><strong>Verified by:</strong> {{ optional($document->verifiedBy)->name ?? 'Not verified' }}</p>
-                <p class="mb-2"><strong>Last notified:</strong> {{ optional($document->last_notified_at)->format('Y-m-d H:i') ?? 'None' }}</p>
+                <p class="mb-2"><strong>Last notified:</strong> {{ \App\Support\DateTimeDisplay::format($document->last_notified_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') ?? 'None' }}</p>
                 <p class="mb-2"><strong>Rejection reason:</strong> {{ $document->rejection_reason ?? 'None' }}</p>
                 @if($document->document_path)
                     <a href="{{ route('portal.admin.compliance.documents.download', $document) }}" class="btn btn-sm btn-outline-secondary">Download file</a>

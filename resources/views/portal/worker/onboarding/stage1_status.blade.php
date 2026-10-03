@@ -38,7 +38,7 @@
                         <p><strong>Name:</strong> {{ $worker->first_name }} {{ $worker->last_name }}</p>
                         <p><strong>Email:</strong> {{ $worker->email }}</p>
                         <p><strong>Phone:</strong> {{ $worker->phone }}</p>
-                        <p><strong>Invitation Expires:</strong> {{ $worker->onboarding_expires_at?->format('M d, Y') ?? 'N/A' }}</p>
+                        <p><strong>Invitation Expires:</strong> {{ \App\Support\DateTimeDisplay::format($worker->onboarding_expires_at, 'M d, Y', $displayTimezone ?? 'UTC') ?? 'N/A' }}</p>
                     </div>
 
                     <div class="mt-4">

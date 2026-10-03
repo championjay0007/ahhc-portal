@@ -25,7 +25,7 @@
                     <tbody>
                         @forelse($tests as $test)
                             <tr>
-                                <td>{{ $test->test_date->format('Y-m-d H:i') }}</td>
+                                <td>{{ \App\Support\DateTimeDisplay::format($test->test_date, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                                 <td>{{ $test->status }}</td>
                                 <td>{{ $test->conductedBy?->name ?? 'system' }}</td>
                                 <td>{{ \Illuminate\Support\Str::limit($test->summary, 100) }}</td>

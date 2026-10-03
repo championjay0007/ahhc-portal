@@ -126,7 +126,7 @@
                         <option value="">Select a care review</option>
                         @foreach($careReviews as $careReview)
                             <option value="{{ $careReview->id }}"{{ (old('owner_type') === 'care_review') && (old('owner_ids')[0] ?? null) == $careReview->id ? ' selected' : '' }}>
-                                Review #{{ $careReview->id }} • {{ $careReview->created_at->format('Y-m-d') }}
+                                Review #{{ $careReview->id }} • {{ \App\Support\DateTimeDisplay::format($careReview->created_at, 'Y-m-d', $displayTimezone ?? 'UTC') }}
                             </option>
                         @endforeach
                     </select>

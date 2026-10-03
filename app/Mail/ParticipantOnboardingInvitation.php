@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Participant;
+use App\Support\DateTimeDisplay;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Bus\Queueable;
 
@@ -18,12 +19,12 @@ class ParticipantOnboardingInvitation extends StyledEmail
         $name = $this->participant->first_name ?? 'Participant';
         $intro = "Hello <strong>{$name}</strong>,<br><br>" .
                  "You're invited to begin your onboarding with <strong>" . config('app.name', 'AHHC Portal') . "</strong>. This helps us confirm your details, review your documentation, and prepare your portal access.<br><br>" .
-                 "Please use the secure link below to continue. The link remains active until <strong>" . optional($this->participant->onboarding_expires_at)->format('d M Y H:i') . "</strong>";
+                 "Please use the secure link below to continue. The link remains active until <strong>" . DateTimeDisplay::format($this->participant->onboarding_expires_at, 'd M Y H:i', $this->participant->user?->timezone) . "</strong>";
 
         $details = [
             'Name' => trim(($this->participant->first_name ?? '') . ' ' . ($this->participant->last_name ?? '')),
             'Email' => $this->participant->email ?? '—',
-            'Expires' => '<span style="color: #eb3035; font-weight: bold;">' . optional($this->participant->onboarding_expires_at)->format('d M Y H:i') . '</span>',
+            'Expires' => '<span style="color: #eb3035; font-weight: bold;">' . DateTimeDisplay::format($this->participant->onboarding_expires_at, 'd M Y H:i', $this->participant->user?->timezone) . '</span>',
         ];
 
         $supportText = 'If you have any questions or did not expect this invitation, please contact our support team for assistance.';
@@ -46,4 +47,3 @@ class ParticipantOnboardingInvitation extends StyledEmail
         );
     }
 }
-

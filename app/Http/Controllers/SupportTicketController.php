@@ -8,6 +8,7 @@ use App\Models\SupportResponse;
 use App\Models\SupportTicket;
 use App\Models\User;
 use App\Services\NotificationService;
+use App\Support\DateTimeDisplay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -115,7 +116,7 @@ class SupportTicketController extends Controller
                         'id' => $initialMessage->id,
                         'text' => $initialMessage->message,
                         'is_admin' => false,
-                        'created_at' => $initialMessage->created_at->format('Y-m-d H:i:s'),
+                        'created_at' => DateTimeDisplay::format($initialMessage->created_at, 'Y-m-d H:i:s'),
                         'author' => $supportUser->name,
                         'status' => $this->resolveMessageStatus($initialMessage),
                     ],
@@ -151,13 +152,13 @@ class SupportTicketController extends Controller
                 'id' => $conversation->id,
                 'subject' => $conversation->subject,
                 'status' => $conversation->status,
-                'last_message_at' => $conversation->last_message_at?->format('Y-m-d H:i:s'),
+                'last_message_at' => DateTimeDisplay::format($conversation->last_message_at, 'Y-m-d H:i:s'),
             ],
             'messages' => $messages->map(fn ($message) => [
                 'id' => $message->id,
                 'text' => $message->message,
                 'is_admin' => $message->is_admin,
-                'created_at' => $message->created_at->format('Y-m-d H:i:s'),
+                'created_at' => DateTimeDisplay::format($message->created_at, 'Y-m-d H:i:s'),
                 'author' => $message->user ? $message->user->name : 'Support',
                 'status' => $this->resolveMessageStatus($message),
             ]),
@@ -211,7 +212,7 @@ class SupportTicketController extends Controller
                 'id' => $message->id,
                 'text' => $message->message,
                 'is_admin' => $message->is_admin,
-                'created_at' => $message->created_at->format('Y-m-d H:i:s'),
+                'created_at' => DateTimeDisplay::format($message->created_at, 'Y-m-d H:i:s'),
                 'author' => $conversation->user->name ?? 'Support',
                 'status' => $this->resolveMessageStatus($message),
             ],
@@ -289,7 +290,7 @@ class SupportTicketController extends Controller
                         'id' => $initialMessage->id,
                         'text' => $initialMessage->message,
                         'is_admin' => false,
-                        'created_at' => $initialMessage->created_at->format('Y-m-d H:i:s'),
+                        'created_at' => DateTimeDisplay::format($initialMessage->created_at, 'Y-m-d H:i:s'),
                         'author' => $displayName,
                         'status' => $this->resolveMessageStatus($initialMessage),
                     ],

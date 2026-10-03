@@ -191,7 +191,7 @@
                     <div class="text-muted small">No current risk triggers.</div>
                 @endif
                 @if(!empty($currentRisk?->calculated_at))
-                    <div class="text-muted small mt-3">Calculated {{ $currentRisk->calculated_at->format('Y-m-d H:i') }}</div>
+                    <div class="text-muted small mt-3">Calculated {{ \App\Support\DateTimeDisplay::format($currentRisk->calculated_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</div>
                 @endif
             </div>
 
@@ -213,7 +213,7 @@
                             <tbody>
                                 @foreach($riskHistory as $entry)
                                     <tr>
-                                        <td>{{ optional($entry->calculated_at)->format('Y-m-d H:i') }}</td>
+                                        <td>{{ \App\Support\DateTimeDisplay::format($entry->calculated_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                                         <td>{{ $entry->level }}</td>
                                         <td>{{ $entry->score }}</td>
                                         <td>{{ implode(', ', $entry->trigger_reasons ?? []) }}</td>
@@ -397,12 +397,12 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="small text-muted">Submitted</div>
-                                <div class="fw-semibold">{{ $onboardingSubmission->submitted_at?->format('M d, Y H:i') ?? 'Not submitted' }}</div>
+                                <div class="fw-semibold">{{ \App\Support\DateTimeDisplay::format($onboardingSubmission->submitted_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') ?? 'Not submitted' }}</div>
                             </div>
                             @if($onboardingSubmission->reviewed_at)
                                 <div class="col-md-6 mb-3">
                                     <div class="small text-muted">Reviewed</div>
-                                    <div class="fw-semibold">{{ $onboardingSubmission->reviewed_at->format('M d, Y H:i') }}</div>
+                                    <div class="fw-semibold">{{ \App\Support\DateTimeDisplay::format($onboardingSubmission->reviewed_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') }}</div>
                                 </div>
                             @endif
                             @if($onboardingSubmission->admin_comments)
@@ -508,7 +508,7 @@
                         <tbody>
                             @forelse($budgetTransactions as $transaction)
                                 <tr>
-                                    <td>{{ optional($transaction->created_at)->format('Y-m-d') }}</td>
+                                    <td>{{ \App\Support\DateTimeDisplay::format($transaction->created_at, 'Y-m-d', $displayTimezone ?? 'UTC') }}</td>
                                     <td>{{ ucfirst($transaction->type) }}</td>
                                     <td>{{ $transaction->description }}</td>
                                     <td class="text-end">${{ number_format($transaction->amount_cents / 100, 2) }}</td>
@@ -555,7 +555,7 @@
                 <ul class="list-group list-group-flush">
                     @forelse($participant->participantStatusHistories->take(10) as $history)
                         <li class="list-group-item">
-                            <div class="small text-muted">{{ optional($history->created_at)->format('Y-m-d H:i') }} • {{ $history->changedBy?->name ?? 'System' }}</div>
+                            <div class="small text-muted">{{ \App\Support\DateTimeDisplay::format($history->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }} • {{ $history->changedBy?->name ?? 'System' }}</div>
                             <div>{{ ucfirst($history->previous_status ?? 'None') }} → {{ ucfirst($history->new_status) }}</div>
                             @if($history->notes)
                                 <div class="small text-muted">{{ \Illuminate\Support\Str::limit($history->notes, 100) }}</div>
@@ -572,7 +572,7 @@
                 <ul class="list-group list-group-flush">
                     @forelse($auditEntries as $entry)
                         <li class="list-group-item">
-                            <div class="small text-muted">{{ optional($entry->created_at)->format('Y-m-d H:i') }} • {{ $entry->user?->name ?? 'System' }}</div>
+                            <div class="small text-muted">{{ \App\Support\DateTimeDisplay::format($entry->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }} • {{ $entry->user?->name ?? 'System' }}</div>
                             <div>{{ $entry->action }}</div>
                             @if($entry->description)
                                 <div class="small text-muted">{{ \Illuminate\Support\Str::limit($entry->description, 100) }}</div>
@@ -604,7 +604,7 @@
                                 <div class="fw-semibold">{{ $req->request_number }}</div>
                                 <div class="small text-muted">{{ $req->service_type }} — {{ ucfirst($req->status) }}</div>
                             </div>
-                            <div class="small text-muted">{{ $req->submitted_at?->format('Y-m-d') }}</div>
+                            <div class="small text-muted">{{ \App\Support\DateTimeDisplay::format($req->submitted_at, 'Y-m-d', $displayTimezone ?? 'UTC') }}</div>
                         </li>
                     @empty
                         <li class="list-group-item text-muted">No pre-approvals</li>
@@ -615,4 +615,3 @@
     </div>
 </div>
 @endsection
-

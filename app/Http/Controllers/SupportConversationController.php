@@ -6,6 +6,7 @@ use App\Models\SupportConversation;
 use App\Models\SupportMessage;
 use App\Models\User;
 use App\Services\NotificationService;
+use App\Support\DateTimeDisplay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,6 +42,7 @@ class SupportConversationController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        $displayTimezone = DateTimeDisplay::timezone();
         $messages = $conversation->messages()->with('user')->orderBy('created_at', 'asc')->get();
 
         return response()->json([
@@ -48,7 +50,7 @@ class SupportConversationController extends Controller
                 'id' => $message->id,
                 'text' => $message->message,
                 'is_admin' => $message->is_admin,
-                'created_at' => $message->created_at->format('Y-m-d H:i:s'),
+                'created_at' => DateTimeDisplay::format($message->created_at, 'Y-m-d H:i:s', $displayTimezone),
                 'author' => $message->user ? $message->user->name : 'Support',
             ]),
         ]);

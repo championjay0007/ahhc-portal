@@ -29,7 +29,7 @@
                         <h6 class="text-muted mb-2 text-truncate" title="{{ $request->document->title }}">{{ $request->document->title }}</h6>
                         <h5 class="fw-bold mb-2">{{ ucfirst(str_replace('_', ' ', $request->document->document_type)) }}</h5>
                         <p class="text-muted small mb-3">
-                            Assigned {{ $request->assigned_at?->diffForHumans() ?? 'recently' }}
+                            Assigned {{ \App\Support\DateTimeDisplay::relative($request->assigned_at, $displayTimezone ?? 'UTC') ?? 'recently' }}
                         </p>
                         <div class="mt-auto">
                             <a href="{{ route('portal.participant.documents.show', $request->document) }}" class="btn btn-accent btn-sm w-100">

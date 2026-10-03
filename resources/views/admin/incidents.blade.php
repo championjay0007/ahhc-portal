@@ -29,7 +29,7 @@
                             <tbody>
                                 @foreach($incidents as $inc)
                                     <tr>
-                                        <td>{{ optional($inc->created_at)->format('Y-m-d H:i') }}</td>
+                                        <td>{{ \App\Support\DateTimeDisplay::format($inc->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                                         <td>{{ optional($inc->participant)->first_name }} {{ optional($inc->participant)->last_name }}</td>
                                         <td>{{ ucfirst($inc->incident_type ?? $inc->category ?? '—') }}</td>
                                         <td>

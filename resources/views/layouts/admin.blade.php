@@ -1903,7 +1903,7 @@
                                 <div class="notification-message">{{ $message }}</div>
                                 <div class="notification-meta">
                                     <i class="bi bi-clock"></i>
-                                    {{ $notification->created_at->diffForHumans() }}
+                                    {{ \App\Support\DateTimeDisplay::relative($notification->created_at, $displayTimezone ?? 'UTC') }}
                                 </div>
                             </a>
                         @empty
@@ -1949,7 +1949,7 @@
                                 <div class="notification-message">{{ Str::limit($latestMessage?->message ?? 'No messages yet', 60) }}</div>
                                 <div class="notification-meta">
                                     <i class="bi bi-chat-dots"></i>
-                                    {{ $conversation->user->name ?? 'Visitor' }} • {{ $conversation->last_message_at?->diffForHumans() ?? 'New' }}
+                                    {{ $conversation->user->name ?? 'Visitor' }} • {{ \App\Support\DateTimeDisplay::relative($conversation->last_message_at, $displayTimezone ?? 'UTC') ?? 'New' }}
                                 </div>
                             </a>
                         @empty

@@ -27,7 +27,7 @@
                     <dt class="col-sm-3">Status</dt>
                     <dd class="col-sm-9">{{ ucfirst($incident->status) }}</dd>
                     <dt class="col-sm-3">Occurred</dt>
-                    <dd class="col-sm-9">{{ optional($incident->occurred_at)->format('Y-m-d H:i') ?? optional($incident->created_at)->format('Y-m-d H:i') }}</dd>
+                    <dd class="col-sm-9">{{ \App\Support\DateTimeDisplay::format($incident->occurred_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') ?? \App\Support\DateTimeDisplay::format($incident->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</dd>
                 </dl>
 
                 <div class="mb-4">

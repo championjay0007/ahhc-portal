@@ -24,7 +24,7 @@
                                     <span>{{ $conversation->user->name }}</span>
                                     <span class="mx-2">•</span>
                                     <i class="bi bi-clock me-1"></i>
-                                    <span>{{ $conversation->created_at->diffForHumans() }}</span>
+                                    <span>{{ \App\Support\DateTimeDisplay::relative($conversation->created_at, $displayTimezone ?? 'UTC') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                             <div class="chat-divider">
                                 <span class="badge bg-light text-muted px-4 py-2 rounded-pill">
                                     <i class="bi bi-chat-dots me-1"></i>
-                                    Conversation started {{ $conversation->created_at->format('M d, Y') }}
+                                    Conversation started {{ \App\Support\DateTimeDisplay::format($conversation->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}
                                 </span>
                             </div>
                         </div>
@@ -80,8 +80,8 @@
                                             {{ $message->user->name }}
                                         </span>
                                         <span class="ms-auto small {{ $message->is_admin ? 'text-muted' : 'text-white opacity-75' }}" 
-                                              title="{{ $message->created_at->format('M d, Y H:i') }}">
-                                            {{ $message->created_at->format('H:i') }}
+                                              title="{{ \App\Support\DateTimeDisplay::format($message->created_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') }}">
+                                            {{ \App\Support\DateTimeDisplay::format($message->created_at, 'H:i', $displayTimezone ?? 'UTC') }}
                                         </span>
                                     </div>
                                     @php
@@ -200,14 +200,14 @@
                             <i class="bi bi-calendar-plus text-muted me-2"></i>
                             <div>
                                 <small class="text-muted">Created</small>
-                                <p class="mb-0 fw-medium small">{{ $conversation->created_at->format('M d, Y H:i') }}</p>
+                                <p class="mb-0 fw-medium small">{{ \App\Support\DateTimeDisplay::format($conversation->created_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') }}</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
                             <i class="bi bi-calendar-check text-muted me-2"></i>
                             <div>
                                 <small class="text-muted">Last updated</small>
-                                <p class="mb-0 fw-medium small">{{ $conversation->updated_at->format('M d, Y H:i') }}</p>
+                                <p class="mb-0 fw-medium small">{{ \App\Support\DateTimeDisplay::format($conversation->updated_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') }}</p>
                             </div>
                         </div>
                     </div>
@@ -432,9 +432,11 @@
     // Format timestamp
     function formatTime(timestamp) {
         const date = new Date(timestamp);
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
+        return date.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: @json($displayTimezone ?? 'UTC')
+        });
     }
 
     // Fetch and render messages
@@ -494,7 +496,7 @@
                     <div class="chat-divider">
                         <span class="badge bg-light text-muted px-4 py-2 rounded-pill">
                             <i class="bi bi-chat-dots me-1"></i>
-                            Conversation started {{ $conversation->created_at->format('M d, Y') }}
+                            Conversation started {{ \App\Support\DateTimeDisplay::format($conversation->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}
                         </span>
                     </div>
                 </div>

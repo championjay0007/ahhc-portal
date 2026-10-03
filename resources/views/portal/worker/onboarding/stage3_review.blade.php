@@ -37,7 +37,7 @@
                                                     </h6>
                                                     <p class="mb-1 small text-muted">{{ basename($doc->document_path ?? '') }}</p>
                                                     <small class="text-muted">
-                                                        Submitted: {{ $doc->created_at->format('M d, Y') }}
+                                                        Submitted: {{ \App\Support\DateTimeDisplay::format($doc->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}
                                                     </small>
 
                                                     @if ($doc->status === 'rejected' && $doc->rejection_reason)

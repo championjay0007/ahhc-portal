@@ -23,7 +23,7 @@
     <div class="section">
         <p><span class="label">Signed by:</span> {{ $signedByName }}</p>
         <p><span class="label">Date:</span> {{ $signedAt->format('Y-m-d') }}</p>
-        <p><span class="label">Time:</span> {{ $signedAt->format('H:i:s') }}</p>
+        <p><span class="label">Time:</span> {{ \App\Support\DateTimeDisplay::format($signedAt, 'H:i:s', $displayTimezone ?? 'UTC') }}</p>
         <p><span class="label">IP Address:</span> {{ $ipAddress }}</p>
         <p><span class="label">User agent:</span> {{ $userAgent }}</p>
     </div>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="footer">
-        <p>Generated on {{ $signedAt->format('Y-m-d H:i:s') }} by Allegiance Heart &amp; Home Care Portal.</p>
+        <p>Generated on {{ \App\Support\DateTimeDisplay::format($signedAt, 'Y-m-d H:i:s', $displayTimezone ?? 'UTC') }} by Allegiance Heart &amp; Home Care Portal.</p>
     </div>
 </body>
 </html>

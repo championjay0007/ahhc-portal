@@ -309,7 +309,7 @@ function updateNotificationUi(notification) {
 
         const notificationUrl = notification.data?.url || '#';
         const now = new Date(notification.timestamp || Date.now());
-        const timeLabel = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const timeLabel = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: @json($displayTimezone ?? 'UTC') });
 
         const item = document.createElement('a');
         item.className = 'notification-item unread';

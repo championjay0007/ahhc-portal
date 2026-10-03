@@ -55,7 +55,7 @@
                                     <td>{{ $document->owner_label }}</td>
                                     <td>
                                         @if($document->expires_at)
-                                            <span class="text-muted">{{ $document->expires_at->format('Y-m-d') }}</span>
+                                            <span class="text-muted">{{ \App\Support\DateTimeDisplay::format($document->expires_at, 'Y-m-d', $displayTimezone ?? 'UTC') }}</span>
                                             @if($document->isExpired())
                                                 <span class="badge bg-danger ms-1">Expired</span>
                                             @endif
@@ -76,7 +76,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $document->signatures->count() }}</td>
-                                    <td>{{ $document->created_at->format('Y-m-d') }}</td>
+                                    <td>{{ \App\Support\DateTimeDisplay::format($document->created_at, 'Y-m-d', $displayTimezone ?? 'UTC') }}</td>
                                     <td class="text-end">
                                         <a href="{{ route('portal.admin.documents.preview', $document) }}" class="btn btn-sm btn-outline-primary">Preview</a>
                                         <a href="{{ route('portal.admin.documents.show', $document) }}" class="btn btn-sm btn-primary">View</a>

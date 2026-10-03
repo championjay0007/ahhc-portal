@@ -156,7 +156,7 @@
                                         <div>
                                             <h6 class="mb-0">{{ $doc['name'] ?? 'Document' }}</h6>
                                             <small class="text-muted">
-                                                Uploaded {{ \Carbon\Carbon::parse($doc['uploaded_at'])->diffForHumans() }}
+                                                Uploaded {{ \App\Support\DateTimeDisplay::relative($doc['uploaded_at'], $displayTimezone ?? 'UTC') }}
                                             </small>
                                         </div>
                                     </div>
@@ -247,24 +247,24 @@
                 </div>
                 <div class="card-body">
                     <small class="text-muted d-block mb-2">
-                        <strong>Created:</strong> {{ $nomination->created_at->format('d M Y H:i') }}
+                        <strong>Created:</strong> {{ \App\Support\DateTimeDisplay::format($nomination->created_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}
                     </small>
 
                     @if($nomination->approved_at && $nomination->approvedBy)
                         <small class="text-muted d-block mb-2">
-                            <strong>Approved by:</strong> {{ $nomination->approvedBy->name }} on {{ $nomination->approved_at->format('d M Y H:i') }}
+                            <strong>Approved by:</strong> {{ $nomination->approvedBy->name }} on {{ \App\Support\DateTimeDisplay::format($nomination->approved_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}
                         </small>
                     @endif
 
                     @if($nomination->rejected_at && $nomination->rejectedBy)
                         <small class="text-muted d-block mb-2">
-                            <strong>Rejected by:</strong> {{ $nomination->rejectedBy->name }} on {{ $nomination->rejected_at->format('d M Y H:i') }}
+                            <strong>Rejected by:</strong> {{ $nomination->rejectedBy->name }} on {{ \App\Support\DateTimeDisplay::format($nomination->rejected_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}
                         </small>
                     @endif
 
                     @if($nomination->invited_at && $nomination->invitedBy)
                         <small class="text-muted d-block">
-                            <strong>Invited by:</strong> {{ $nomination->invitedBy->name }} on {{ $nomination->invited_at->format('d M Y H:i') }}
+                            <strong>Invited by:</strong> {{ $nomination->invitedBy->name }} on {{ \App\Support\DateTimeDisplay::format($nomination->invited_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}
                         </small>
                     @endif
                 </div>

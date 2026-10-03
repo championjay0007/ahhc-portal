@@ -87,7 +87,7 @@
                                     {{ ucfirst($ticket->status) }}
                                 </span>
                             </td>
-                            <td>{{ $ticket->created_at->format('M d, Y') }}</td>
+                            <td>{{ \App\Support\DateTimeDisplay::format($ticket->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</td>
                             <td class="text-end">
                                 <a href="{{ route('portal.admin.support.ticket.show', $ticket) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-eye"></i> View

@@ -27,7 +27,7 @@
                     <tbody>
                         @forelse($backups as $backup)
                             <tr>
-                                <td>{{ $backup->backup_date->format('Y-m-d H:i') }}</td>
+                                <td>{{ \App\Support\DateTimeDisplay::format($backup->backup_date, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                                 <td>{{ ucwords(str_replace('_', ' ', $backup->backup_type)) }}</td>
                                 <td>{{ $backup->status }}</td>
                                 <td>{{ number_format($backup->size / 1024 / 1024, 2) }} GB</td>

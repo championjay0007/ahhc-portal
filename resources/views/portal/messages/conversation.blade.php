@@ -20,7 +20,7 @@
                         <div class="chat-message {{ $message->sender_id === auth()->id() ? 'chat-message-right' : 'chat-message-left' }}">
                             <div class="chat-bubble {{ $message->sender_id === auth()->id() ? 'chat-bubble-right' : 'chat-bubble-left' }}">
                                 <div class="chat-meta small text-muted mb-2">
-                                    {{ $message->sender->name }} • {{ $message->created_at->format('H:i') }}
+                                    {{ $message->sender->name }} • {{ \App\Support\DateTimeDisplay::format($message->created_at, 'H:i', $displayTimezone ?? 'UTC') }}
                                 </div>
                                 @php
                                     $decodedBody = html_entity_decode($message->body);

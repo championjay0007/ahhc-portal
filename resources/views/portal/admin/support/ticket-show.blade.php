@@ -33,10 +33,10 @@
                             <strong>Category:</strong> {{ ucfirst($ticket->category) }}
                         </div>
                         <div class="col-md-3">
-                            <strong>Created:</strong> {{ $ticket->created_at->format('M d, Y H:i') }}
+                            <strong>Created:</strong> {{ \App\Support\DateTimeDisplay::format($ticket->created_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') }}
                         </div>
                         <div class="col-md-3">
-                            <strong>Last Updated:</strong> {{ $ticket->updated_at->diffForHumans() }}
+                            <strong>Last Updated:</strong> {{ \App\Support\DateTimeDisplay::relative($ticket->updated_at, $displayTimezone ?? 'UTC') }}
                         </div>
                     </div>
 
@@ -67,7 +67,7 @@
                                             <span class="badge bg-success ms-2">Support Staff</span>
                                         @endif
                                     </div>
-                                    <small class="text-muted">{{ $response->created_at->format('M d, Y H:i') }}</small>
+                                    <small class="text-muted">{{ \App\Support\DateTimeDisplay::format($response->created_at, 'M d, Y H:i', $displayTimezone ?? 'UTC') }}</small>
                                 </div>
                                 <p class="mb-0">{{ $response->message }}</p>
                             </div>

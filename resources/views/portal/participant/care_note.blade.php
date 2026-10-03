@@ -13,7 +13,7 @@
         <p class="mb-1"><strong>Worker:</strong> {{ optional($careNote->worker)->first_name }} {{ optional($careNote->worker)->last_name }}</p>
         <p class="mb-1"><strong>Status:</strong> {{ ucfirst($careNote->status) }}</p>
         @if($careNote->approved_at)
-            <p class="mb-1"><strong>Approved:</strong> {{ \Illuminate\Support\Carbon::parse($careNote->approved_at)->format('Y-m-d H:i') }}</p>
+            <p class="mb-1"><strong>Approved:</strong> {{ \App\Support\DateTimeDisplay::format($careNote->approved_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</p>
         @endif
         @if($careNote->approved_by)
             <p class="mb-1"><strong>Approved by:</strong> {{ optional($careNote->approved_by)->name ?? 'Administrator' }}</p>

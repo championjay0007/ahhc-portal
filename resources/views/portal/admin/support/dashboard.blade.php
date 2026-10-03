@@ -121,7 +121,7 @@
                                             @else
                                                 <i class="bi bi-person"></i> {{ $ticket->user->name }}
                                             @endif
-                                            • <i class="bi bi-clock"></i> {{ $ticket->created_at->diffForHumans() }}
+                                            • <i class="bi bi-clock"></i> {{ \App\Support\DateTimeDisplay::relative($ticket->created_at, $displayTimezone ?? 'UTC') }}
                                         </small>
                                     </div>
                                     <span class="badge bg-{{ $ticket->status === 'open' ? 'danger' : ($ticket->status === 'in-progress' ? 'warning' : 'success') }}">
@@ -209,7 +209,7 @@
                                     <div>
                                         <h6 class="mb-1">{{ $msg->user->name }}: {{ Str::limit($msg->conversation->subject, 50) }}</h6>
                                         <p class="mb-1 text-muted">{{ Str::limit($msg->message, 100) }}</p>
-                                        <small class="text-muted">{{ $msg->created_at->diffForHumans() }}</small>
+                                        <small class="text-muted">{{ \App\Support\DateTimeDisplay::relative($msg->created_at, $displayTimezone ?? 'UTC') }}</small>
                                     </div>
                                 </div>
                             </a>

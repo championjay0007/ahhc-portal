@@ -783,11 +783,11 @@
                             <div class="ticket-meta">
                                 <div class="ticket-meta-item">
                                     <i class="bi bi-calendar3 ticket-meta-icon"></i>
-                                    <span>{{ $ticket->created_at->format('M d, Y') }}</span>
+                                    <span>{{ \App\Support\DateTimeDisplay::format($ticket->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</span>
                                 </div>
                                 <div class="ticket-meta-item">
                                     <i class="bi bi-clock-history ticket-meta-icon"></i>
-                                    <span>{{ $ticket->updated_at->diffForHumans() }}</span>
+                                    <span>{{ \App\Support\DateTimeDisplay::relative($ticket->updated_at, $displayTimezone ?? 'UTC') }}</span>
                                 </div>
                                 @if($ticket->category)
                                     <div class="ticket-meta-item">

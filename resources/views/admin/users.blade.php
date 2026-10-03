@@ -70,7 +70,7 @@
                                 <td>
                                     <span class="badge bg-{{ $user->status === 'active' ? 'success' : 'secondary' }} text-capitalize">{{ $user->status }}</span>
                                 </td>
-                                <td>{{ $user->created_at->format('M j, Y') }}</td>
+                                <td>{{ \App\Support\DateTimeDisplay::format($user->created_at, 'M j, Y', $displayTimezone ?? 'UTC') }}</td>
                                 <td class="text-end">
                                     <a href="{{ route('portal.admin.users.show', $user) }}" class="btn btn-sm btn-outline-primary">View</a>
                                     <a href="{{ route('portal.admin.users.edit', $user) }}" class="btn btn-sm btn-outline-secondary ms-1">Edit</a>

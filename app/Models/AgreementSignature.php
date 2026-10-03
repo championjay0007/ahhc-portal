@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\DateTimeDisplay;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -43,7 +44,7 @@ class AgreementSignature extends Model
      */
     public function getSignedAtFormattedAttribute(): string
     {
-        return $this->signed_at?->format('d M Y H:i:s') ?? 'Not signed';
+        return DateTimeDisplay::format($this->signed_at, 'd M Y H:i:s') ?? 'Not signed';
     }
 
     /**

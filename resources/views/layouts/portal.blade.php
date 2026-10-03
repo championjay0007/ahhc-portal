@@ -1294,7 +1294,7 @@
                                         <div class="notification-message">{{ $message }}</div>
                                         <div class="notification-meta">
                                             <i class="bi bi-clock"></i>
-                                            {{ $notification->created_at->diffForHumans() }}
+                                            {{ \App\Support\DateTimeDisplay::relative($notification->created_at, $displayTimezone ?? 'UTC') }}
                                         </div>
                                     </a>
                                 @empty
@@ -1334,7 +1334,7 @@
                                         <div class="notification-message">{{ Str::limit($message->body ?? $message->message, 60) }}</div>
                                         <div class="notification-meta">
                                             <i class="bi bi-clock"></i>
-                                            {{ $message->created_at->diffForHumans() }}
+                                            {{ \App\Support\DateTimeDisplay::relative($message->created_at, $displayTimezone ?? 'UTC') }}
                                         </div>
                                     </a>
                                 @empty

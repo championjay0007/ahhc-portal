@@ -35,7 +35,7 @@
                                         <td>{{ $request->service_category }}</td>
                                         <td>${{ number_format(($request->requested_amount_cents ?? 0) / 100, 2) }}</td>
                                         <td>{{ ucfirst($request->status) }}</td>
-                                        <td>{{ optional($request->submitted_at)->format('Y-m-d H:i') }}</td>
+                                        <td>{{ \App\Support\DateTimeDisplay::format($request->submitted_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</td>
                                         <td>
                                             <div class="d-flex gap-2">
                                                 <a href="{{ route('portal.admin.pre_approvals.show', $request) }}" class="btn btn-sm btn-outline-secondary">View</a>

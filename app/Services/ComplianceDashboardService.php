@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\DateTimeDisplay;
 use App\Enums\ComplianceDocumentType;
 use App\Enums\ComplianceStatus;
 use App\Models\Worker;
@@ -266,7 +267,7 @@ class ComplianceDashboardService
                     'issue_date' => $doc->issue_date?->toDateString(),
                     'expiry_date' => $doc->expiry_date?->toDateString(),
                     'days_remaining' => $doc->daysUntilExpiry(),
-                    'verified_at' => $doc->verified_at?->toDateTimeString(),
+                    'verified_at' => DateTimeDisplay::format($doc->verified_at, 'Y-m-d H:i:s'),
                     'rejected_reason' => $doc->rejection_reason,
                 ];
             })->values()->toArray(),

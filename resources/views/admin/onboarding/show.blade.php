@@ -84,7 +84,7 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong class="d-block">{{ $document['name'] ?? 'Document '.$index }}</strong>
-                                        <small class="text-muted">Uploaded at: {{ $document['uploaded_at'] ? \Illuminate\Support\Carbon::parse($document['uploaded_at'])->format('d M Y H:i') : 'Unknown' }}</small>
+                                        <small class="text-muted">Uploaded at: {{ \App\Support\DateTimeDisplay::format($document['uploaded_at'], 'd M Y H:i', $displayTimezone ?? 'UTC') ?? 'Unknown' }}</small>
                                     </div>
                                     <a href="{{ route('admin.onboarding.download_document', ['submission' => $submission, 'index' => $index]) }}" class="btn btn-sm btn-outline-secondary">Download</a>
                                 </li>
@@ -155,8 +155,8 @@
                                 'signed_agreements' => $submission->signed_agreements,
                                 'status' => $submission->status,
                                 'admin_comments' => $submission->admin_comments,
-                                'submitted_at' => optional($submission->submitted_at)->toDateTimeString(),
-                                'reviewed_at' => optional($submission->reviewed_at)->toDateTimeString(),
+                                'submitted_at' => \App\Support\DateTimeDisplay::format($submission->submitted_at, 'Y-m-d H:i:s', $displayTimezone ?? 'UTC'),
+                                'reviewed_at' => \App\Support\DateTimeDisplay::format($submission->reviewed_at, 'Y-m-d H:i:s', $displayTimezone ?? 'UTC'),
                                 'reviewed_by' => $submission->reviewer?->name,
                             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) }}</pre>
                         </div>
@@ -173,7 +173,7 @@
                         <dt class="col-5 text-muted">Status</dt>
                         <dd class="col-7">{{ ucfirst(str_replace('_', ' ', $submission->status)) }}</dd>
                         <dt class="col-5 text-muted">Submitted</dt>
-                        <dd class="col-7">{{ optional($submission->submitted_at)->format('d M Y H:i') }}</dd>
+                        <dd class="col-7">{{ \App\Support\DateTimeDisplay::format($submission->submitted_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}</dd>
                         <dt class="col-5 text-muted">Review notes</dt>
                         <dd class="col-7">{{ $submission->admin_comments ?? 'None' }}</dd>
                     </dl>

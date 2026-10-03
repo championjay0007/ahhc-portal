@@ -22,7 +22,7 @@
                         <p class="mb-1"><strong>Invoice date:</strong> {{ optional($invoice->invoice_date)->format('Y-m-d') }}</p>
                         <p class="mb-1"><strong>Service date:</strong> {{ optional($invoice->service_date)->format('Y-m-d') ?? '—' }}</p>
                         <p class="mb-1"><strong>Due date:</strong> {{ optional($invoice->due_date)->format('Y-m-d') }}</p>
-                        <p class="mb-1"><strong>Approved at:</strong> {{ optional($invoice->approved_at)->format('Y-m-d H:i') ?? '—' }}</p>
+                        <p class="mb-1"><strong>Approved at:</strong> {{ \App\Support\DateTimeDisplay::format($invoice->approved_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') ?? '—' }}</p>
                         <p class="mb-1"><strong>Approved by:</strong> {{ optional($invoice->approver)->name ?? '—' }}</p>
                     </div>
                     <div class="col-md-6">
@@ -31,7 +31,7 @@
                         @if(in_array($invoice->status, ['approved', 'paid', 'rejected']) && $invoice->committed_amount_cents !== null)
                             <p class="mb-1"><strong>Committed amount:</strong> ${{ number_format($invoice->committed_amount_cents / 100, 2) }}</p>
                         @endif
-                        <p class="mb-1"><strong>Paid at:</strong> {{ optional($invoice->paid_at)->format('Y-m-d H:i') ?? '—' }}</p>
+                        <p class="mb-1"><strong>Paid at:</strong> {{ \App\Support\DateTimeDisplay::format($invoice->paid_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') ?? '—' }}</p>
                     </div>
                 </div>
 

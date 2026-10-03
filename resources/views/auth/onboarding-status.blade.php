@@ -63,7 +63,7 @@
                         <strong>Status:</strong> {{ ucfirst(str_replace('_', ' ', $participant->status)) }}
                     </small>
                     <small class="text-muted d-block">
-                        <strong>Last Updated:</strong> {{ optional($participant->updated_at)->format('d M Y H:i') ?? 'Recently' }}
+                        <strong>Last Updated:</strong> {{ \App\Support\DateTimeDisplay::format($participant->updated_at, 'd M Y H:i', $displayTimezone ?? 'UTC') ?? 'Recently' }}
                     </small>
                 </div>
             </div>

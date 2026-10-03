@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Models\User;
 use App\Models\Worker;
 use App\Services\MessageService;
+use App\Support\DateTimeDisplay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -461,6 +462,7 @@ class MessageController extends Controller
         $this->authorizeDirectChatRecipient($recipient);
 
         $userId = Auth::id();
+        $displayTimezone = DateTimeDisplay::timezone();
         $messages = Message::where(function ($query) use ($userId, $recipient) {
             $query->where('sender_id', $userId)->where('recipient_id', $recipient->id);
         })
@@ -476,7 +478,7 @@ class MessageController extends Controller
                 'id' => $message->id,
                 'text' => $message->body,
                 'is_me' => $message->sender_id === $userId,
-                'created_at' => $message->created_at->format('Y-m-d H:i:s'),
+                'created_at' => DateTimeDisplay::format($message->created_at, 'Y-m-d H:i:s', $displayTimezone),
                 'author' => $message->sender->name,
             ]),
         ]);
@@ -490,6 +492,7 @@ class MessageController extends Controller
             'message' => 'required|string|min:1|max:5000',
         ]);
 
+        $displayTimezone = DateTimeDisplay::timezone();
         $message = MessageService::sendMessage(
             Auth::id(),
             $recipient->id,
@@ -502,7 +505,7 @@ class MessageController extends Controller
                 'id' => $message->id,
                 'text' => $message->body,
                 'is_me' => true,
-                'created_at' => $message->created_at->format('Y-m-d H:i:s'),
+                'created_at' => DateTimeDisplay::format($message->created_at, 'Y-m-d H:i:s', $displayTimezone),
                 'author' => Auth::user()->name,
             ]], 201);
         }

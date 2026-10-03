@@ -26,7 +26,7 @@
             <small class="text-muted">Messages: {{ $messages->count() }}</small>
         </div>
         <div>
-            <small class="text-muted">Started: {{ $conversation->created_at->format('M d, Y') }}</small>
+            <small class="text-muted">Started: {{ \App\Support\DateTimeDisplay::format($conversation->created_at, 'M d, Y', $displayTimezone ?? 'UTC') }}</small>
         </div>
     </div>
 
@@ -35,7 +35,7 @@
             <div class="d-flex {{ $msg->is_admin ? 'justify-content-end' : 'justify-content-start' }}">
                 <div class="chat-bubble {{ $msg->is_admin ? 'admin' : 'user' }}">
                     {!! nl2br(e($msg->message)) !!}
-                    <div class="small text-muted mt-1">{{ $msg->created_at->format('H:i') }}</div>
+                    <div class="small text-muted mt-1">{{ \App\Support\DateTimeDisplay::format($msg->created_at, 'H:i', $displayTimezone ?? 'UTC') }}</div>
                 </div>
             </div>
         @endforeach

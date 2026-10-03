@@ -316,7 +316,7 @@
                                         </tr>
                                         <tr>
                                             <td class="label">Invitation Expires</td>
-                                            <td style="color:#EB3035;font-weight:700;">{{ optional($expiresAt)->format('M d, Y') ?? now()->addDays(30)->format('M d, Y') }}</td>
+                                            <td style="color:#EB3035;font-weight:700;">{{ \App\Support\DateTimeDisplay::format($expiresAt ?? now()->addDays(30), 'M d, Y', $displayTimezone ?? 'UTC') }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -350,7 +350,7 @@
                         <div class="warning-panel">
                             <div class="panel-inner">
                                 <h3>Invitation Expiry</h3>
-                                <p>Your invitation expires on <strong>{{ optional($expiresAt)->format('M d, Y') ?? now()->addDays(30)->format('M d, Y') }}</strong>. If you do not complete your onboarding before this date, you may need to request a new invitation.</p>
+                                <p>Your invitation expires on <strong>{{ \App\Support\DateTimeDisplay::format($expiresAt ?? now()->addDays(30), 'M d, Y', $displayTimezone ?? 'UTC') }}</strong>. If you do not complete your onboarding before this date, you may need to request a new invitation.</p>
                             </div>
                         </div>
 

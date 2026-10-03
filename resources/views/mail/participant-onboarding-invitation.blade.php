@@ -82,7 +82,7 @@
             <div class="body">
                 <p>Hello <strong>{{ $participant->first_name ?? 'Participant' }}</strong>,</p>
                 <p>You're invited to begin your onboarding with <strong style="color:#19B0A5;">{{ $organization ?? config('app.name', 'AHHC Portal') }}</strong>. This helps us confirm your details, review your documentation, and prepare your portal access.</p>
-                <p>Please use the secure link below to continue. The link remains active until <strong>{{ $expires_at ?? optional($participant->onboarding_expires_at)->format('d M Y H:i') }}</strong>.</p>
+                <p>Please use the secure link below to continue. The link remains active until <strong>{{ $expires_at ?? \App\Support\DateTimeDisplay::format($participant->onboarding_expires_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}</strong>.</p>
                 <div class="button-wrap">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
                         <tr>
@@ -106,7 +106,7 @@
                         <table class="panel-table">
                             <tr><td class="label">Name</td><td>{{ trim(($participant->first_name ?? '') . ' ' . ($participant->last_name ?? '')) }}</td></tr>
                             <tr><td class="label">Email</td><td>{{ $participant->email ?? '—' }}</td></tr>
-                            <tr><td class="label">Expires</td><td style="color:#EB3035;font-weight:700;">{{ $expires_at ?? optional($participant->onboarding_expires_at)->format('d M Y H:i') }}</td></tr>
+                            <tr><td class="label">Expires</td><td style="color:#EB3035;font-weight:700;">{{ $expires_at ?? \App\Support\DateTimeDisplay::format($participant->onboarding_expires_at, 'd M Y H:i', $displayTimezone ?? 'UTC') }}</td></tr>
                         </table>
                     </div>
                 </div>

@@ -62,7 +62,7 @@
                     <dd class="col-sm-9">{{ ucfirst(str_replace('_', ' ', $request->status)) }}</dd>
 
                     <dt class="col-sm-3">Submitted</dt>
-                    <dd class="col-sm-9">{{ optional($request->submitted_at)->format('Y-m-d H:i') }}</dd>
+                    <dd class="col-sm-9">{{ \App\Support\DateTimeDisplay::format($request->submitted_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</dd>
 
                     <dt class="col-sm-3">Admin reviewer</dt>
                     <dd class="col-sm-9">{{ optional($request->approver)->name ?? '—' }}</dd>
@@ -149,7 +149,7 @@
                                         <strong>{{ optional($comment->commenter)->name ?? 'System' }}</strong>
                                         <span class="text-muted">• {{ ucfirst(str_replace('_', ' ', $comment->comment_type)) }}</span>
                                     </div>
-                                    <div class="small text-muted">{{ $comment->created_at->format('Y-m-d H:i') }}</div>
+                                    <div class="small text-muted">{{ \App\Support\DateTimeDisplay::format($comment->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</div>
                                 </div>
                                 <div>{{ $comment->message }}</div>
                             </div>

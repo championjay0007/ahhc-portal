@@ -279,11 +279,11 @@
         <div class="detail-row">
             <div class="detail-item">
                 <label>Created On</label>
-                <value>{{ $ticket->created_at->format('M d, Y \a\t H:i A') }}</value>
+                <value>{{ \App\Support\DateTimeDisplay::format($ticket->created_at, 'M d, Y \a\t H:i A', $displayTimezone ?? 'UTC') }}</value>
             </div>
             <div class="detail-item">
                 <label>Last Updated</label>
-                <value>{{ $ticket->updated_at->format('M d, Y \a\t H:i A') }}</value>
+                <value>{{ \App\Support\DateTimeDisplay::format($ticket->updated_at, 'M d, Y \a\t H:i A', $displayTimezone ?? 'UTC') }}</value>
             </div>
             <div class="detail-item">
                 <label>Responses</label>
@@ -295,7 +295,7 @@
             <div class="detail-row">
                 <div class="detail-item">
                     <label>Resolved On</label>
-                    <value>{{ $ticket->resolved_at->format('M d, Y \a\t H:i A') }}</value>
+                    <value>{{ \App\Support\DateTimeDisplay::format($ticket->resolved_at, 'M d, Y \a\t H:i A', $displayTimezone ?? 'UTC') }}</value>
                 </div>
             </div>
         @endif
@@ -326,7 +326,7 @@
                                     <span class="message-badge"><i class="bi bi-shield-check"></i> Support Staff</span>
                                 @endif
                             </div>
-                            <span class="message-time">{{ $response->created_at->diffForHumans() }}</span>
+                            <span class="message-time">{{ \App\Support\DateTimeDisplay::relative($response->created_at, $displayTimezone ?? 'UTC') }}</span>
                         </div>
                         <p class="message-text">{!! nl2br(html_entity_decode($response->message)) !!}</p>
                     </div>

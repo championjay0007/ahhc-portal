@@ -41,13 +41,13 @@
                     <div class="timeline-content">
                         <h6 class="mb-0">{{ $status }}</h6>
                         @if($status === 'Submitted' && $nomination->created_at)
-                            <small class="text-muted">{{ $nomination->created_at->format('d M Y \a\t H:i') }}</small>
+                            <small class="text-muted">{{ \App\Support\DateTimeDisplay::format($nomination->created_at, 'd M Y \a\t H:i', $displayTimezone ?? 'UTC') }}</small>
                         @elseif($status === 'Approved' && $nomination->approved_at)
-                            <small class="text-muted">{{ $nomination->approved_at->format('d M Y \a\t H:i') }}</small>
+                            <small class="text-muted">{{ \App\Support\DateTimeDisplay::format($nomination->approved_at, 'd M Y \a\t H:i', $displayTimezone ?? 'UTC') }}</small>
                         @elseif($status === 'Rejected' && $nomination->rejected_at)
-                            <small class="text-muted">{{ $nomination->rejected_at->format('d M Y \a\t H:i') }}</small>
+                            <small class="text-muted">{{ \App\Support\DateTimeDisplay::format($nomination->rejected_at, 'd M Y \a\t H:i', $displayTimezone ?? 'UTC') }}</small>
                         @elseif($status === 'Worker Invited' && $nomination->invited_at)
-                            <small class="text-muted">{{ $nomination->invited_at->format('d M Y \a\t H:i') }}</small>
+                            <small class="text-muted">{{ \App\Support\DateTimeDisplay::format($nomination->invited_at, 'd M Y \a\t H:i', $displayTimezone ?? 'UTC') }}</small>
                         @endif
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                     @endif
 
                     <dt class="col-sm-4">Submitted:</dt>
-                    <dd class="col-sm-8">{{ $nomination->created_at->format('d M Y') }}</dd>
+                    <dd class="col-sm-8">{{ \App\Support\DateTimeDisplay::format($nomination->created_at, 'd M Y', $displayTimezone ?? 'UTC') }}</dd>
                 </dl>
             </div>
         </div>
@@ -149,7 +149,7 @@
                                 <i class="bi bi-file-earmark"></i> {{ $doc['name'] ?? 'Document' }}
                             </h6>
                             <small class="text-muted">
-                                Uploaded {{ \Illuminate\Support\Carbon::parse($doc['uploaded_at'])->diffForHumans() }}
+                                Uploaded {{ \App\Support\DateTimeDisplay::relative($doc['uploaded_at'], $displayTimezone ?? 'UTC') }}
                             </small>
                         </div>
                     </div>

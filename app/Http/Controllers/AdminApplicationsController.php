@@ -8,6 +8,7 @@ use App\Models\ParticipantApplication;
 use App\Models\User;
 use App\Services\NotificationCenterService;
 use App\Services\TemplateMailer;
+use App\Support\DateTimeDisplay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -113,7 +114,7 @@ class AdminApplicationsController extends Controller
                     'last_name' => $participant->last_name,
                     'email' => $participant->email,
                     'onboarding_url' => route('portal.onboarding.show', ['token' => $participant->onboarding_token]),
-                    'expires_at' => optional($participant->onboarding_expires_at)->format('d M Y H:i') ?? now()->addDays(30)->format('d M Y H:i'),
+                    'expires_at' => DateTimeDisplay::format($participant->onboarding_expires_at ?? now()->addDays(30), 'd M Y H:i', $user->timezone),
                     'organization' => config('app.name', 'AHHC Portal'),
                 ],
                 'Complete your AHHC portal onboarding',

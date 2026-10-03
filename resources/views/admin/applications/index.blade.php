@@ -58,7 +58,7 @@
                                     {{ ucfirst(str_replace('_', ' ', $application->status)) }}
                                 </span>
                             </td>
-                            <td>{{ optional($application->submitted_at)->format('d M Y') }}</td>
+                            <td>{{ \App\Support\DateTimeDisplay::format($application->submitted_at, 'd M Y', $displayTimezone ?? 'UTC') }}</td>
                             <td class="text-end">
                                 <a href="{{ route('admin.applications.show', $application) }}" class="btn btn-sm btn-outline-primary">Review</a>
                             </td>

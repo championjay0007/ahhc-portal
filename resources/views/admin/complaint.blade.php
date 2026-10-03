@@ -37,7 +37,7 @@
                     <dt class="col-sm-3">Status</dt>
                     <dd class="col-sm-9">{{ ucfirst($complaint->status) }}</dd>
                     <dt class="col-sm-3">Received</dt>
-                    <dd class="col-sm-9">{{ optional($complaint->received_at)->format('Y-m-d H:i') ?? optional($complaint->created_at)->format('Y-m-d H:i') }}</dd>
+                    <dd class="col-sm-9">{{ \App\Support\DateTimeDisplay::format($complaint->received_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') ?? \App\Support\DateTimeDisplay::format($complaint->created_at, 'Y-m-d H:i', $displayTimezone ?? 'UTC') }}</dd>
                 </dl>
 
                 <div class="mb-4">
