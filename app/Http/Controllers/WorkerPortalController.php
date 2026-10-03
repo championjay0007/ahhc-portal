@@ -650,6 +650,7 @@ class WorkerPortalController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'timezone' => ['nullable', 'string', 'timezone'],
             'notes' => ['nullable', 'string', 'max:2000'],
             'profile_photo' => ['nullable', 'image', 'max:5120'],
         ]);
@@ -673,6 +674,7 @@ class WorkerPortalController extends Controller
             'name' => $validated['first_name'].' '.$validated['last_name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'],
+            'timezone' => $validated['timezone'] ?? $user->timezone,
             'profile_photo_path' => $validated['profile_photo_path'] ?? $user->profile_photo_path,
         ]);
 

@@ -63,6 +63,20 @@
                         </div>
                     </div>
 
+                    <h5 class="mb-3">Default system timezone</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label">Default timezone for the portal</label>
+                            <select name="default_timezone" class="form-select">
+                                @foreach(timezone_identifiers_list() as $timezone)
+                                    <option value="{{ $timezone }}" {{ old('default_timezone', $settings['default_timezone'] ?? config('app.timezone', 'UTC')) === $timezone ? 'selected' : '' }}>
+                                        {{ $timezone }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
                     <h5 class="mb-3">Branding</h5>
                     <p class="text-muted small mb-3">Legal documents are managed on the dedicated Legal Documents page via the admin sidebar.</p>
                     <div class="row g-3 mb-4">

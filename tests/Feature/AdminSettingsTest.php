@@ -32,6 +32,7 @@ class AdminSettingsTest extends TestCase
                 'organization_name' => 'AHHC Care Services',
                 'support_email' => 'care@ahhc.example.com',
                 'default_user_role' => 'worker',
+                'default_timezone' => 'Australia/Sydney',
                 'require_mfa' => true,
                 'report_export_emails' => true,
                 'incident_alerts' => false,
@@ -59,6 +60,7 @@ class AdminSettingsTest extends TestCase
         $this->assertSame('AHHC Care Services', PortalSetting::where('key', 'organization_name')->value('value'));
         $this->assertSame('care@ahhc.example.com', PortalSetting::where('key', 'support_email')->value('value'));
         $this->assertSame('worker', PortalSetting::where('key', 'default_user_role')->value('value'));
+        $this->assertSame('Australia/Sydney', PortalSetting::where('key', 'default_timezone')->value('value'));
         $this->assertTrue((bool) PortalSetting::where('key', 'require_mfa')->value('value'));
         $this->assertTrue((bool) PortalSetting::where('key', 'report_export_emails')->value('value'));
         $this->assertFalse((bool) PortalSetting::where('key', 'incident_alerts')->value('value'));

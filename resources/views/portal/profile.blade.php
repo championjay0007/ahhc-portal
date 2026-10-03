@@ -45,6 +45,17 @@
             <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', auth()->user()->phone) }}">
         </div>
 
+        <div class="mb-3">
+            <label for="timezone" class="form-label">Timezone</label>
+            <select id="timezone" name="timezone" class="form-select">
+                @foreach(timezone_identifiers_list() as $timezone)
+                    <option value="{{ $timezone }}" {{ old('timezone', auth()->user()->timezone) === $timezone ? 'selected' : '' }}>
+                        {{ $timezone }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
         <button type="submit" class="btn btn-primary">Save changes</button>
     </form>
 

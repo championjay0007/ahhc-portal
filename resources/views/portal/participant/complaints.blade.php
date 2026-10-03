@@ -3,13 +3,13 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2>Complaints</h2>
-            <p class="text-muted">Submit feedback, complaints or service issues confidentially.</p>
+            <h2>Incidents</h2>
+            <p class="text-muted">Report incidents or service issues confidentially.</p>
         </div>
     </div>
 
     <div class="card portal-card mb-4 p-4">
-        <h5 class="mb-3">Submit a complaint</h5>
+        <h5 class="mb-3">Report an incident</h5>
         <form method="POST" action="{{ route('portal.participant.complaints.store') }}">
             @csrf
             <div class="row g-3">
@@ -34,14 +34,14 @@
                     <textarea name="notes" rows="3" class="form-control">{{ old('notes') }}</textarea>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Submit complaint</button>
+            <button type="submit" class="btn btn-primary mt-3">Submit incident</button>
         </form>
     </div>
 
     <div class="card portal-card p-4">
-        <h5 class="mb-3">Complaint history</h5>
+        <h5 class="mb-3">Incident history</h5>
         @if($complaints->isEmpty())
-            <p class="text-muted">No complaints submitted yet.</p>
+            <p class="text-muted">No incidents reported yet.</p>
         @else
             <div class="list-group">
                 @foreach($complaints as $complaint)

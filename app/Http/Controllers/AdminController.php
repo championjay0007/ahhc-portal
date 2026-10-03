@@ -1108,6 +1108,7 @@ class AdminController extends Controller
             'organization_name' => ['nullable', 'string', 'max:100'],
             'support_email' => ['nullable', 'email', 'max:255'],
             'default_user_role' => ['nullable', 'string', 'in:participant,worker,admin'],
+            'default_timezone' => ['nullable', 'string', 'timezone'],
             'require_mfa' => ['nullable', 'boolean'],
             'pwa_enabled' => ['nullable', 'boolean'],
             'report_export_emails' => ['nullable', 'boolean'],
@@ -1145,6 +1146,7 @@ class AdminController extends Controller
             'organization_name' => $validated['organization_name'] ?? $existingSettings['organization_name'] ?? 'AHHC Portal',
             'support_email' => $validated['support_email'] ?? $existingSettings['support_email'] ?? 'support@example.com',
             'default_user_role' => $validated['default_user_role'] ?? $existingSettings['default_user_role'] ?? 'participant',
+            'default_timezone' => $validated['default_timezone'] ?? $existingSettings['default_timezone'] ?? config('app.timezone', 'UTC'),
             'require_mfa' => (bool) ($request->boolean('require_mfa')),
             'report_export_emails' => (bool) ($request->boolean('report_export_emails')),
             'pwa_enabled' => (bool) ($request->boolean('pwa_enabled')),
@@ -1172,6 +1174,12 @@ class AdminController extends Controller
 
         $settings = $this->loadSettings();
         $this->updatePwaManifest($settings);
+
+        $defaultTimezone = $settings['default_timezone'] ?? config('app.timezone', 'UTC');
+        if (is_string($defaultTimezone) && trim($defaultTimezone) !== '' && in_array($defaultTimezone, timezone_identifiers_list(), true)) {
+            config(['app.timezone' => $defaultTimezone]);
+            date_default_timezone_set($defaultTimezone);
+        }
 
         $sessionLifetime = (int) ($settings['session_lifetime'] ?? 120);
         if ($sessionLifetime > 0) {
@@ -1374,6 +1382,7 @@ class AdminController extends Controller
             'organization_name' => 'AHHC Portal',
             'support_email' => 'support@example.com',
             'default_user_role' => 'participant',
+            'default_timezone' => 'UTC',
             'require_mfa' => false,
             'report_export_emails' => false,
             'incident_alerts' => true,

@@ -562,6 +562,7 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'phone' => ['nullable', 'string', 'max:50'],
+            'timezone' => ['nullable', 'string', 'timezone'],
             'profile_photo' => ['nullable', 'image', 'max:5120'],
         ]);
 
@@ -576,6 +577,7 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
+            'timezone' => $validated['timezone'] ?? $user->timezone,
             'profile_photo_path' => $validated['profile_photo_path'] ?? $user->profile_photo_path,
         ]);
 

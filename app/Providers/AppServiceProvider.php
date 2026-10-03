@@ -33,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->applyUserTimezone();
+
         View::composer('*', function ($view) {
             $portalNotifications = collect();
             $portalUnreadNotifications = collect();
@@ -117,6 +119,32 @@ class AppServiceProvider extends ServiceProvider
         $this->applyPortalMailConfig();
     }
 
+    protected function applyUserTimezone(): void
+    {
+        $timezone = config('app.timezone', 'UTC');
+
+        if (! Schema::hasTable('portal_settings')) {
+            $timezone = config('app.timezone', 'UTC');
+        } else {
+            $portalTimezone = PortalSetting::where('key', 'default_timezone')->value('value');
+            if (is_string($portalTimezone) && trim($portalTimezone) !== '' && in_array($portalTimezone, timezone_identifiers_list(), true)) {
+                $timezone = $portalTimezone;
+            }
+        }
+
+        $userTimezone = Auth::user()?->timezone;
+        if (is_string($userTimezone) && trim($userTimezone) !== '' && in_array($userTimezone, timezone_identifiers_list(), true)) {
+            $timezone = $userTimezone;
+        }
+
+        if (! in_array($timezone, timezone_identifiers_list(), true)) {
+            $timezone = 'UTC';
+        }
+
+        config(['app.timezone' => $timezone]);
+        date_default_timezone_set($timezone);
+    }
+
     protected function applySessionLifetime(): void
     {
         $settings = $this->loadSettings();
@@ -183,6 +211,7 @@ class AppServiceProvider extends ServiceProvider
             'organization_name' => 'AHHC Portal',
             'support_email' => 'support@example.com',
             'default_user_role' => 'participant',
+            'default_timezone' => 'UTC',
             'require_mfa' => false,
             'report_export_emails' => false,
             'incident_alerts' => true,
