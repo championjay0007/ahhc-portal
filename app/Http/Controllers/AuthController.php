@@ -551,8 +551,13 @@ class AuthController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-
-        abort_unless((int) $request->attributes->get('delegate.actor_id') === (int) $user->id, 403);
+        $actor = $request->attributes->get('delegate.actor');
+        $isOwner = $actor instanceof User && (int) $actor->id === (int) $user->id;
+        $isAssignedManager = $actor instanceof User
+            && $actor->role === 'manager'
+            && $request->attributes->get('delegate.participant_context') === true
+            && (int) $request->attributes->get('delegate.participant_id') === (int) $user->participant?->id;
+        abort_unless($isOwner || $isAssignedManager, 403);
 
         if ($user->role === 'worker') {
             return redirect()->route('portal.worker.profile');

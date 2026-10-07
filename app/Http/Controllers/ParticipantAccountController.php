@@ -32,7 +32,7 @@ class ParticipantAccountController extends Controller
 
     public function index(Request $request)
     {
-        $this->assertOwnerContext($request);
+        $this->assertParticipantAccountContext($request);
         $participant = Auth::user()->participant()->firstOrFail();
         $delegations = $participant->accountDelegations()->with('manager')->latest()->get();
 
@@ -41,14 +41,20 @@ class ParticipantAccountController extends Controller
 
     public function invite(Request $request)
     {
-        $this->assertOwnerContext($request);
+        $this->assertParticipantAccountContext($request);
         $validated = $request->validate([
             'email' => ['required', 'email', 'max:255'],
         ]);
 
         $participant = Auth::user()->participant()->firstOrFail();
         $email = mb_strtolower(trim($validated['email']));
-        abort_if($email === mb_strtolower(Auth::user()->email), 422, 'You cannot invite your own account.');
+        $actor = $request->attributes->get('delegate.actor');
+        abort_if(
+            $email === mb_strtolower(Auth::user()->email)
+                || ($actor instanceof User && $email === mb_strtolower($actor->email)),
+            422,
+            'You cannot invite your own account.'
+        );
 
         $existing = $participant->accountDelegations()
             ->whereRaw('LOWER(invited_email) = ?', [$email])
@@ -227,15 +233,21 @@ class ParticipantAccountController extends Controller
 
     public function revoke(Request $request, ParticipantAccountDelegation $delegation)
     {
-        $this->assertOwnerContext($request);
+        $this->assertParticipantAccountContext($request);
         $participant = Auth::user()->participant()->firstOrFail();
         abort_unless($delegation->participant_id === $participant->id, 404);
 
         $delegation->update(['revoked_at' => now()]);
+        $actor = $request->attributes->get('delegate.actor');
         AuditLogService::record('Participant Account Access Revoked', $delegation, [], [
             'participant_id' => $participant->id,
             'manager_user_id' => $delegation->manager_user_id,
         ]);
+
+        if ($actor instanceof User && $actor->role === 'manager' && $delegation->manager_user_id === $actor->id) {
+            return redirect()->route('portal.manager.dashboard')
+                ->with('status', 'Your access to this participant account has been revoked.');
+        }
 
         return back()->with('status', 'Invitation or delegated access has been revoked.');
     }
@@ -251,9 +263,17 @@ class ParticipantAccountController extends Controller
             ->firstOrFail();
     }
 
-    private function assertOwnerContext(Request $request): void
+    private function assertParticipantAccountContext(Request $request): void
     {
         $actor = $request->attributes->get('delegate.actor');
-        abort_unless($actor instanceof User && (int) $actor->id === (int) Auth::id(), 403);
+        $isOwner = $actor instanceof User
+            && $actor->role === 'participant'
+            && (int) $actor->id === (int) Auth::id();
+        $isAssignedManager = $actor instanceof User
+            && $actor->role === 'manager'
+            && $request->attributes->get('delegate.participant_context') === true
+            && (int) $request->attributes->get('delegate.participant_id') === (int) Auth::user()?->participant?->id;
+
+        abort_unless($isOwner || $isAssignedManager, 403);
     }
 }

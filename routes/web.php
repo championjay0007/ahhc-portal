@@ -176,7 +176,7 @@ Route::get('/worker/onboarding/{token}/assigned-document/{document}/download', [
     ->name('worker.onboarding.assigned_document.download');
 Route::post('/worker/onboarding/{token}/stage4', [WorkerOnboardingController::class, 'submitStage4'])
     ->name('worker.onboarding.stage4.submit');
-Route::middleware(['auth', 'mfa', 'onboarding_complete'])->group(function () {
+Route::middleware(['auth', 'mfa', 'participant_context', 'onboarding_complete'])->group(function () {
     Route::get('/portal/participant/documents', [DocumentController::class, 'indexForParticipant'])->name('portal.participant.documents.index');
     Route::get('/portal/participant/documents/pending', [DocumentController::class, 'pendingSignaturesForParticipant'])->name('portal.participant.documents.pending');
     Route::get('/portal/participant/documents/create', [DocumentController::class, 'indexForParticipant'])->name('portal.participant.documents.create');
@@ -587,7 +587,7 @@ if (app()->isLocal() || config('app.debug')) {
     })->name('dev.mail.preview.onboarding');
 }
 
-Route::middleware(['auth', 'mfa'])->prefix('/portal/messages')->name('portal.messages.')->group(function () {
+Route::middleware(['auth', 'mfa', 'participant_context'])->prefix('/portal/messages')->name('portal.messages.')->group(function () {
     Route::get('/compose/{recipient?}', [MessageController::class, 'compose'])
         ->where('recipient', '[0-9]+')
         ->name('compose');
@@ -610,7 +610,7 @@ Route::middleware(['auth', 'mfa'])->prefix('/portal/messages')->name('portal.mes
     Route::post('/{message}/delete', [MessageController::class, 'delete'])->name('delete');
 });
 
-Route::middleware(['auth', 'mfa'])->prefix('/portal/participant/messages')->name('portal.participant.messages.')->group(function () {
+Route::middleware(['auth', 'mfa', 'participant_context'])->prefix('/portal/participant/messages')->name('portal.participant.messages.')->group(function () {
     Route::get('/compose/{recipient?}', [MessageController::class, 'compose'])
         ->where('recipient', '[0-9]+')
         ->name('compose');

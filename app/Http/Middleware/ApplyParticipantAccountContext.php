@@ -27,11 +27,13 @@ class ApplyParticipantAccountContext
         $guard->setUser($actor);
         $request->attributes->set('delegate.actor', $actor);
         $request->attributes->set('delegate.actor_id', $actor->id);
+        $request->attributes->set('delegate.participant_context', false);
 
         if (! in_array($actor->role, ['participant', 'manager'], true)) {
             View::share('delegateActor', $actor);
             View::share('managedParticipantAccounts', collect());
             View::share('participantHasManagerAccess', false);
+            View::share('delegateParticipantContext', false);
 
             return $next($request);
         }
@@ -55,10 +57,14 @@ class ApplyParticipantAccountContext
             ->get();
 
         $selectedUserId = $request->session()->get('participant_account_user_id');
+        $delegateParticipantContext = false;
         if ($selectedUserId) {
             $delegation = $accounts->first(fn ($account) => (int) $account->participant->user_id === (int) $selectedUserId);
             if ($delegation) {
                 $guard->setUser($delegation->participant->user);
+                $delegateParticipantContext = $actor->role === 'manager';
+                $request->attributes->set('delegate.participant_context', $delegateParticipantContext);
+                $request->attributes->set('delegate.participant_id', $delegation->participant_id);
             } else {
                 $request->session()->forget('participant_account_user_id');
             }
@@ -67,6 +73,17 @@ class ApplyParticipantAccountContext
         View::share('delegateActor', $actor);
         View::share('managedParticipantAccounts', $accounts);
         View::share('participantHasManagerAccess', $participantHasManagerAccess);
+        View::share('delegateParticipantContext', $delegateParticipantContext);
+
+        if (
+            $actor->role === 'manager'
+            && $request->routeIs('portal.participant.*')
+            && ! $request->routeIs('portal.participant.accounts.accept', 'portal.participant.accounts.switch')
+            && ! $delegateParticipantContext
+        ) {
+            return redirect()->route('portal.manager.dashboard')
+                ->with('status', 'Select an assigned participant account to continue.');
+        }
 
         try {
             return $next($request);

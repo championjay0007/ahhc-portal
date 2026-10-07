@@ -117,7 +117,7 @@ class ParticipantAccountDelegationTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_delegate_cannot_invite_another_manager_or_change_the_owner_profile(): void
+    public function test_manager_can_use_all_features_of_an_attached_participant_account(): void
     {
         [$owner] = $this->createParticipant('Account Owner', 'owner@example.com');
         $manager = User::create([
@@ -137,31 +137,89 @@ class ParticipantAccountDelegationTest extends TestCase
             'expires_at' => now()->addDays(14),
         ]);
 
-        $this->actingAs($manager)
-            ->withSession(['participant_account_user_id' => $owner->id])
-            ->post(route('portal.participant.accounts.invite'), ['email' => 'another@example.com'])
-            ->assertForbidden();
+        Notification::fake();
+        $this->actingAs($manager)->withSession(['participant_account_user_id' => $owner->id]);
 
-        $this->actingAs($manager)
-            ->withSession(['participant_account_user_id' => $owner->id])
-            ->put(route('portal.profile.update'), [
+        $participantPages = [
+            route('portal.dashboard'),
+            route('portal.profile'),
+            route('portal.participant.accounts.index'),
+            route('portal.participant.budget'),
+            route('portal.participant.documents.index'),
+            route('portal.participant.documents.pending'),
+            route('portal.participant.invoices.index'),
+            route('portal.participant.pre_approvals.index'),
+            route('portal.participant.care_notes.index'),
+            route('portal.participant.complaints.create'),
+            route('portal.participant.services'),
+            route('portal.participant.team'),
+            route('portal.participant.nominations.index'),
+            route('portal.participant.messages.inbox'),
+            route('portal.notifications'),
+            route('portal.support.index'),
+            route('portal.support.conversations.index'),
+            route('portal.gallery'),
+        ];
+
+        foreach ($participantPages as $url) {
+            $this->get($url)->assertOk();
+        }
+
+        $this->put(route('portal.profile.update'), [
                 'name' => 'Changed Owner',
                 'email' => $owner->email,
+                'phone' => '0400000000',
+                'timezone' => 'Australia/Sydney',
             ])
-            ->assertForbidden();
+            ->assertRedirect();
 
         $this->actingAs($manager)
             ->withSession(['participant_account_user_id' => $owner->id])
             ->get(route('portal.dashboard'))
             ->assertOk()
-            ->assertDontSee('Manage Account Access')
-            ->assertDontSee('Invite a Manager');
+            ->assertSee('Manage Account Access');
 
-        $this->assertDatabaseMissing('participant_account_delegations', [
-            'participant_id' => $owner->participant->id,
-            'invited_email' => 'another@example.com',
+        $this->actingAs($manager)
+            ->withSession(['participant_account_user_id' => $owner->id])
+            ->post(route('portal.participant.accounts.invite'), ['email' => 'another@example.com'])
+            ->assertRedirect(route('portal.participant.accounts.index'));
+
+        $invitation = ParticipantAccountDelegation::query()
+            ->where('participant_id', $owner->participant->id)
+            ->where('invited_email', 'another@example.com')
+            ->firstOrFail();
+
+        $this->actingAs($manager)
+            ->withSession(['participant_account_user_id' => $owner->id])
+            ->delete(route('portal.participant.accounts.revoke', $invitation))
+            ->assertRedirect();
+
+        $this->assertNotNull($invitation->fresh()->revoked_at);
+        $this->assertDatabaseHas('users', ['id' => $owner->id, 'name' => 'Changed Owner']);
+        $this->assertDatabaseHas('participants', [
+            'id' => $owner->participant->id,
+            'first_name' => 'Changed',
+            'last_name' => 'Owner',
         ]);
-        $this->assertDatabaseHas('users', ['id' => $owner->id, 'name' => 'Account Owner']);
+
+        $this->actingAs($manager)
+            ->withSession(['participant_account_user_id' => null])
+            ->get(route('portal.participant.documents.index'))
+            ->assertRedirect(route('portal.manager.dashboard'));
+
+        $ownDelegation = ParticipantAccountDelegation::query()
+            ->where('participant_id', $owner->participant->id)
+            ->where('manager_user_id', $manager->id)
+            ->firstOrFail();
+
+        $this->actingAs($manager)
+            ->withSession(['participant_account_user_id' => $owner->id])
+            ->delete(route('portal.participant.accounts.revoke', $ownDelegation))
+            ->assertRedirect(route('portal.manager.dashboard'));
+
+        $this->actingAs($manager)
+            ->get(route('portal.manager.dashboard'))
+            ->assertOk();
     }
 
     public function test_admin_can_view_manager_directory_and_managers_cannot(): void
