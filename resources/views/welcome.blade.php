@@ -1360,7 +1360,7 @@
             linear-gradient(135deg, var(--surface-alt) 0%, rgba(240, 253, 255, 0.95) 48%, var(--surface) 100%);
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         color: #1e293b;
-        padding: 72px 0 64px;
+        padding: 112px 0 64px;
         overflow: hidden;
         isolation: isolate;
     }
@@ -1784,7 +1784,7 @@
     @media (max-width: 860px) {
         .ahhc-hero {
             min-height: auto;
-            padding: 72px 0 56px;
+            padding: 104px 0 56px;
         }
 
         .ahhc-hero-container {
@@ -1829,7 +1829,7 @@
 
     @media (max-width: 480px) {
         .ahhc-hero {
-            padding: 56px 0 44px;
+            padding: 96px 0 44px;
         }
 
         .ahhc-hero-container {
