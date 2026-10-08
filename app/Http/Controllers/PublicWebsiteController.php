@@ -33,6 +33,13 @@ class PublicWebsiteController extends Controller
         ]);
     }
 
+    public function enquiry()
+    {
+        return view('public.enquiry', [
+            'portalUrl' => 'https://portal.allegiancehearthomecare.com.au/',
+        ]);
+    }
+
     public function storeEnquiry(StorePublicEnquiryRequest $request)
     {
         try {
@@ -42,7 +49,7 @@ class PublicWebsiteController extends Controller
                 'phone' => $request->input('phone'),
                 'role' => $request->input('role'),
                 'support_at_home_status' => $request->input('support_status'),
-                'message' => $request->input('message'),
+                'message' => $request->input('message') ?? '',
                 'consent' => true,
                 'status' => Enquiry::STATUS_NEW,
             ]);

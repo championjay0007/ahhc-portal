@@ -48,6 +48,7 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/portal/manifest.json', [\App\Http\Controllers\ManifestController::class, 'show'])->name('portal.manifest');
 
 Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
+Route::get('/enquiry', [PublicWebsiteController::class, 'enquiry'])->name('public.enquiry');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');
 
 Route::get('/portal', [AuthController::class, 'showLogin'])->name('portal.login');

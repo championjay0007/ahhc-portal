@@ -1109,7 +1109,7 @@
             </p>
 
             <div class="ahhc-hero-actions">
-                <a href="#contact" class="ahhc-btn ahhc-btn-primary">
+                <a href="{{ route('public.enquiry') }}" class="ahhc-btn ahhc-btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <polyline points="14 2 14 8 20 8"/>
@@ -1126,7 +1126,7 @@
                     </svg>
                     Login to Self-Management Portal
                 </a>
-                <a href="#contact" class="ahhc-btn ahhc-btn-outline">
+                <a href="tel:+61287309049" class="ahhc-btn ahhc-btn-outline">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                     </svg>
@@ -2338,7 +2338,7 @@
             <h3>Still Have Questions?</h3>
             <p>Our team can explain how self-management works, what responsibilities are involved and whether it may suit you or your loved one.</p>
             <div class="ahhc-cta-buttons">
-                <a href="#contact" class="ahhc-btn ahhc-btn-primary">Talk to Our Self-Management Team</a>
+                <a href="{{ route('public.enquiry') }}" class="ahhc-btn ahhc-btn-primary">Talk to Our Self-Management Team</a>
                 <a href="/contact" class="ahhc-btn ahhc-btn-secondary">Contact Us</a>
             </div>
         </div>

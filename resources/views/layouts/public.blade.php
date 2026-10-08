@@ -509,16 +509,16 @@
             </a>
 
             <div class="d-none d-lg-flex align-items-center gap-1">
-                <a class="nav-link-custom" href="#home">Home</a>
-                <a class="nav-link-custom" href="#support-at-home">Support at Home</a>
-                <a class="nav-link-custom" href="#who-its-for">Who It’s For</a>
-                <a class="nav-link-custom" href="#how-self-management-works">How Self-Management Works</a>
-                <a class="nav-link-custom" href="#contact">Submit an Enquiry</a>
-                <a class="nav-link-custom" href="#contact">Enquire About Self-Management</a>
+                <a class="nav-link-custom" href="{{ route('public.home') }}#home">Home</a>
+                <a class="nav-link-custom" href="{{ route('public.home') }}#support-at-home">Support at Home</a>
+                <a class="nav-link-custom" href="{{ route('public.home') }}#who-its-for">Who It’s For</a>
+                <a class="nav-link-custom" href="{{ route('public.home') }}#how-self-management-works">How Self-Management Works</a>
+                <a class="nav-link-custom" href="{{ route('public.enquiry') }}">Submit an Enquiry</a>
+                <a class="nav-link-custom" href="{{ route('public.enquiry') }}">Enquire About Self-Management</a>
             </div>
 
             <div class="d-flex align-items-center gap-2">
-                <a href="#contact" class="btn-nav-outline d-none d-lg-inline-flex">Enquire About Self-Management</a>
+                <a href="{{ route('public.enquiry') }}" class="btn-nav-outline d-none d-lg-inline-flex">Enquire About Self-Management</a>
                 <a href="/portal" target="_blank" rel="noopener" class="btn-nav-primary">
                     <i class="bi bi-box-arrow-in-right me-1"></i>Portal Login
                 </a>
@@ -530,14 +530,14 @@
 
         <div class="collapse mt-3" id="mobileMenu">
             <div class="card border-0 shadow-sm rounded-4 p-3">
-                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#home">Home</a>
-                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#support-at-home">Support at Home</a>
-                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#who-its-for">Who It’s For</a>
-                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#how-self-management-works">How Self-Management Works</a>
-                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#contact">Submit an Enquiry</a>
-                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#contact">Enquire About Self-Management</a>
+                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.home') }}#home">Home</a>
+                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.home') }}#support-at-home">Support at Home</a>
+                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.home') }}#who-its-for">Who It’s For</a>
+                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.home') }}#how-self-management-works">How Self-Management Works</a>
+                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.enquiry') }}">Submit an Enquiry</a>
+                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.enquiry') }}">Enquire About Self-Management</a>
                 <hr class="my-2">
-                <a class="btn btn-secondary-custom w-100 mb-2" href="#contact">Enquire About Self-Management</a>
+                <a class="btn btn-secondary-custom w-100 mb-2" href="{{ route('public.enquiry') }}">Enquire About Self-Management</a>
                 <a class="btn btn-primary-custom w-100" href="{{ $portalUrl }}" target="_blank" rel="noopener">Portal Login</a>
             </div>
         </div>
@@ -603,11 +603,11 @@
             <div class="col-6 col-lg-2">
                 <h6>Explore</h6>
                 <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#support-at-home">Support at Home</a></li>
-                    <li><a href="#who-its-for">Who It’s For</a></li>
-                    <li><a href="#how-self-management-works">How Self-Management Works</a></li>
-                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="{{ route('public.home') }}#home">Home</a></li>
+                    <li><a href="{{ route('public.home') }}#support-at-home">Support at Home</a></li>
+                    <li><a href="{{ route('public.home') }}#who-its-for">Who It’s For</a></li>
+                    <li><a href="{{ route('public.home') }}#how-self-management-works">How Self-Management Works</a></li>
+                    <li><a href="{{ route('public.home') }}#contact">Contact Us</a></li>
                 </ul>
             </div>
             <div class="col-6 col-lg-3">
