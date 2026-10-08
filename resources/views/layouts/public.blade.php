@@ -514,10 +514,11 @@
                 <a class="nav-link-custom" href="#who-its-for">Who It’s For</a>
                 <a class="nav-link-custom" href="#how-self-management-works">How Self-Management Works</a>
                 <a class="nav-link-custom" href="#contact">Submit an Enquiry</a>
+                <a class="nav-link-custom" href="#contact">Enquire About Self-Management</a>
             </div>
 
             <div class="d-flex align-items-center gap-2">
-                <a href="#contact" class="btn-nav-outline d-none d-lg-inline-flex">Apply for Self-Management</a>
+                <a href="#contact" class="btn-nav-outline d-none d-lg-inline-flex">Enquire About Self-Management</a>
                 <a href="/portal" target="_blank" rel="noopener" class="btn-nav-primary">
                     <i class="bi bi-box-arrow-in-right me-1"></i>Portal Login
                 </a>
@@ -534,9 +535,10 @@
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#who-its-for">Who It’s For</a>
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#how-self-management-works">How Self-Management Works</a>
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#contact">Submit an Enquiry</a>
+                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="#contact">Enquire About Self-Management</a>
                 <hr class="my-2">
-                <a class="btn btn-secondary-custom w-100 mb-2" href="#contact">Apply for Self-Management</a>
-                <a class="btn btn-primary-custom w-100" href="{{ $portalUrl }}" target="_blank" rel="noopener">Login to Portal</a>
+                <a class="btn btn-secondary-custom w-100 mb-2" href="#contact">Enquire About Self-Management</a>
+                <a class="btn btn-primary-custom w-100" href="{{ $portalUrl }}" target="_blank" rel="noopener">Portal Login</a>
             </div>
         </div>
     </div>
@@ -595,7 +597,7 @@
                     </div>
                 </div>
                 <p style="color: #94a3b8; font-size: 0.95rem; max-width: 360px; line-height: 1.7;">
-                    Professional aged care support and secure portal tools for approved participants. Greater choice, provider oversight, and peace of mind.
+                    Support at Home self-management with greater choice, clear oversight and ongoing support from Allegiance Heart &amp; Home Care.
                 </p>
             </div>
             <div class="col-6 col-lg-2">
@@ -627,7 +629,7 @@
         <hr class="my-4" style="border-color: rgba(255,255,255,0.08);">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
             <p class="mb-0" style="color: #64748b; font-size: 0.85rem;">
-                &copy; {{ date('Y') }} Allegiance Heart Home Care. All rights reserved.
+                &copy; {{ date('Y') }} Allegiance Heart &amp; Home Care. All rights reserved.
             </p>
             <div class="d-flex gap-3">
                 @if(! empty($portalSettings['privacy_policy_path']))

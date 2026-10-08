@@ -1,4 +1,4 @@
-﻿@extends('layouts.public')
+@extends('layouts.public')
 
 @section('content')
 <style>
@@ -1097,11 +1097,11 @@
             </div>
             
             <h1 id="hero-heading" class="ahhc-hero-title">
-                Self-Management <span class="ahhc-hero-title-highlight">Support</span>
+                Want More Choice Over Your Support at Home Services?
             </h1>
             
             <p class="ahhc-hero-subtitle">
-                More choice and control, with provider oversight.
+                Choose preferred workers and services, have greater control over how your support is arranged, and stay supported by Allegiance Heart &amp; Home Care for care management, provider oversight and compliance.
             </p>
             
             <p class="ahhc-hero-description">
@@ -1116,7 +1116,7 @@
                         <line x1="12" y1="18" x2="12" y2="12"/>
                         <line x1="9" y1="15" x2="15" y2="15"/>
                     </svg>
-                    Apply for Self-Management Support
+                    Enquire About Self-Management
                 </a>
                 <a href="/portal" class="ahhc-btn ahhc-btn-secondary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1135,18 +1135,19 @@
             </div>
 
             <div class="ahhc-hero-trust-strip">
-                <div class="ahhc-hero-trust-item"><i class="bi bi-shield-check"></i> Secure</div>
-                <div class="ahhc-hero-trust-item"><i class="bi bi-patch-check"></i> Compliance-supported</div>
-                <div class="ahhc-hero-trust-item"><i class="bi bi-lock-fill"></i> MFA-protected</div>
+                <div class="ahhc-hero-trust-item"><i class="bi bi-sliders"></i> Choice &amp; Control</div>
+                <div class="ahhc-hero-trust-item"><i class="bi bi-eye"></i> Provider Oversight</div>
+                <div class="ahhc-hero-trust-item"><i class="bi bi-lock-fill"></i> Secure Portal</div>
             </div>
+            <p class="ahhc-hero-trust-note">More flexibility for you, with Allegiance continuing care management, quality and compliance oversight.</p>
         </div>
 
         {{-- Illustration Side --}}
         <div class="ahhc-hero-visual">
             <div class="ahhc-hero-visual-card">
                 <span class="ahhc-hero-visual-card-pill">Secure Portal Preview</span>
-                <h3>Manage your self-management support with confidence</h3>
-                <p>Keep approvals, budgets, invoices, documents and service evidence in one secure place designed for self-management support.</p>
+                <h3>Manage Your Support in One Secure Place</h3>
+                <p>View service information, submit worker or supplier details, upload invoices and documents, and track approvals through one secure portal.</p>
             </div>
             <div class="ahhc-illustration-wrapper">
                 {{-- Main Illustration SVG --}}
@@ -1902,9 +1903,9 @@
                 <span class="section-eyebrow">
                     <i class="bi bi-heart-pulse"></i> Aged Care
                 </span>
-                <h2 class="section-title">Self-management support designed for modern aged care.</h2>
+                <h2 class="section-title">More Choice, With Support Behind You</h2>
                 <p class="section-subtitle">
-                    Allegiance Heart &amp; Home Care helps approved participants maintain independence and choice while remaining supported by experienced care management, compliance oversight and secure digital tools.
+                    Self-management gives you greater say over your preferred workers, services and schedules while Allegiance Heart &amp; Home Care remains responsible for care management, provider oversight, budget monitoring, compliance and quality support.
                 </p>
                 <a href="#eligibility" class="btn-secondary-custom mt-3">
                     Learn More About Self-Management Support <i class="bi bi-arrow-right ms-2"></i>
@@ -1914,23 +1915,23 @@
                 <div class="feature-grid">
                     <div class="card-modern">
                         <div class="card-icon"><i class="bi bi-people-fill"></i></div>
-                        <h5 style="font-weight: 700; margin-bottom: 0.5rem;">Participant Choice</h5>
-                        <p class="text-muted-custom mb-0">Choose preferred workers, suppliers and services, with review and oversight from Allegiance Heart &amp; Home Care.</p>
+                        <h5 style="font-weight: 700; margin-bottom: 0.5rem;">Choose Your Workers</h5>
+                        <p class="text-muted-custom mb-0">Nominate preferred workers or suppliers, including people you already know, subject to required checks and approval.</p>
                     </div>
                     <div class="card-modern">
                         <div class="card-icon accent"><i class="bi bi-shield-check"></i></div>
-                        <h5 style="font-weight: 700; margin-bottom: 0.5rem;">Compliance Support</h5>
-                        <p class="text-muted-custom mb-0">Allegiance Heart &amp; Home Care supports required approvals, documentation checks, worker compliance and quality monitoring.</p>
+                        <h5 style="font-weight: 700; margin-bottom: 0.5rem;">More Control Over Services</h5>
+                        <p class="text-muted-custom mb-0">Have greater involvement in how approved services are arranged, including preferred schedules and service providers.</p>
                     </div>
                     <div class="card-modern">
                         <div class="card-icon warm"><i class="bi bi-wallet2"></i></div>
-                        <h5 style="font-weight: 700; margin-bottom: 0.5rem;">Service Planning and Approvals</h5>
-                        <p class="text-muted-custom mb-0">Track service requests, approvals, documents and updates through the secure portal.</p>
+                        <h5 style="font-weight: 700; margin-bottom: 0.5rem;">Allegiance Handles Oversight</h5>
+                        <p class="text-muted-custom mb-0">Allegiance continues care management, provider responsibilities, compliance checks, budget monitoring and required approvals.</p>
                     </div>
                     <div class="card-modern">
                         <div class="card-icon"><i class="bi bi-calendar-check"></i></div>
-                        <h5 style="font-weight: 700; margin-bottom: 0.5rem;">Ongoing Review</h5>
-                        <p class="text-muted-custom mb-0">Allegiance Heart &amp; Home Care completes regular reviews to monitor care arrangements, budget use, documentation, quality and safety.</p>
+                        <h5 style="font-weight: 700; margin-bottom: 0.5rem;">Ongoing Support &amp; Review</h5>
+                        <p class="text-muted-custom mb-0">Our team stays involved through regular reviews, support, monitoring and follow-up when your needs or circumstances change.</p>
                     </div>
                 </div>
             </div>
@@ -1947,9 +1948,9 @@
             <span class="section-eyebrow">
                 <i class="bi bi-patch-check"></i> Eligibility and Requirements
             </span>
-            <h2 class="section-title">Who is Self-Management Support for?</h2>
+            <h2 class="section-title">Is Self-Management Right for You?</h2>
             <p class="section-subtitle mx-auto">
-                Self-management support may suit Support at Home participants who want greater choice and control over parts of their care and services, while remaining supported by Allegiance Heart &amp; Home Care’s provider oversight, care management and compliance checks. Suitability review and approval by Allegiance Heart &amp; Home Care are required before portal access is created.
+                Self-management may suit Support at Home participants who want greater choice over their workers, services and day-to-day arrangements. Our team will talk with you about your needs, preferences and current funding, and help you understand whether self-management is a suitable option for you.
             </p>
         </div>
 
@@ -1957,22 +1958,22 @@
             <div class="bento-item fade-up">
                 <div class="card-modern">
                     <div class="card-icon"><i class="bi bi-clipboard-check"></i></div>
-                    <h5 style="font-weight: 700;">Suitability Review Required</h5>
-                    <p class="text-muted-custom mb-0">Allegiance Heart &amp; Home Care reviews each enquiry before approval. Self-management support may not be suitable for everyone.</p>
+                    <h5 style="font-weight: 700;">What Happens After You Enquire?</h5>
+                    <p class="text-muted-custom mb-0">We’ll contact you to discuss your needs, explain how self-management works and confirm whether the arrangement is suitable for you.</p>
                 </div>
             </div>
             <div class="bento-item fade-up">
                 <div class="card-modern">
                     <div class="card-icon accent"><i class="bi bi-check-circle"></i></div>
                     <h5 style="font-weight: 700;">Approval Required</h5>
-                    <p class="text-muted-custom mb-0">Portal access is created only after Allegiance Heart &amp; Home Care confirms that self-management support is suitable and the required agreement, consent and setup steps have been completed.</p>
+                    <p class="text-muted-custom mb-0">If you decide to proceed, we’ll guide you through the required agreements, worker or supplier checks and portal setup. Portal access is created after onboarding is completed.</p>
                 </div>
             </div>
             <div class="bento-item fade-up">
                 <div class="card-modern">
                     <div class="card-icon warm"><i class="bi bi-person-plus"></i></div>
                     <h5 style="font-weight: 700;">No Automatic Account</h5>
-                    <p class="text-muted-custom mb-0">Submitting an enquiry does not create a portal account. Allegiance Heart &amp; Home Care will review your enquiry and contact you about the next steps.</p>
+                    <p class="text-muted-custom mb-0">An enquiry does not create a portal account. We’ll review your situation and talk you through the next steps before onboarding begins.</p>
                 </div>
             </div>
         </div>
@@ -1982,9 +1983,8 @@
                 <i class="bi bi-info-circle-fill"></i>
             </div>
             <div>
-                <strong style="color: #92400e;">Important:</strong>
                 <span style="color: #92400e; font-size: 0.95rem;">
-                    Important: Self-management support may not be suitable for everyone. Allegiance Heart &amp; Home Care reviews each enquiry individually. Only approved participants or authorised representatives receive portal access. The enquiry form on this page does not create an account automatically.
+                    Self-management arrangements are reviewed individually to make sure they are suitable, safe and consistent with your approved Support at Home services and budget.
                 </span>
             </div>
         </div>
@@ -2000,9 +2000,9 @@
             <span class="section-eyebrow">
                 <i class="bi bi-diagram-3"></i> Step-by-Step Process
             </span>
-            <h2 class="section-title">How Self-Management Support Works</h2>
+            <h2 class="section-title">How Self-Management Works</h2>
             <p class="section-subtitle mx-auto">
-                A clear, guided process from your initial enquiry through to ongoing monthly reviews with Allegiance Heart &amp; Home Care supporting care management, compliance and provider oversight at every step.
+                Getting started is simple. We’ll guide you from your first conversation through setup and ongoing support, while Allegiance continues care management, provider oversight and compliance.
             </p>
         </div>
 
@@ -2011,13 +2011,9 @@
 
             @php
                 $steps = [
-                    ['Submit Self-Management Enquiry', 'Submit a self-management enquiry so Allegiance Heart & Home Care can understand your support needs, goals and preferred self-management arrangements.', 'bi-person-check', 1],
-                    ['Discuss Your Self-Management Needs', 'We review your enquiry, discuss how you would like to manage your services,and explain how Allegiance Heart & Home Cares self-management model works ', 'bi-file-earmark-text', 2],
-                    ['Service Agreement, Consent and Responsibilities', 'Before portal access is activated, the required service agreement, consent forms and self-management responsibilities are reviewed and signed.', 'bi-laptop', 3],
-                    ['Portal Setup', 'Allegiance Heart & Home Care creates your secure portal account after approval, with login security, MFA where required and role-based access.', 'bi-people-fill', 4],
-                    ['Worker and Service Approval', 'Submit your chosen workers, suppliers or services for Allegiance Heart & Home Care review and approval before services commence.', 'bi-receipt', 5],
-                    ['Documentation and Service Evidence', 'Upload invoices, care notes, service evidence and supporting documents through the portal for Allegiance Heart & Home Care review.', 'bi-calendar-check', 6],
-                    ['Ongoing Monthly Review', 'Allegiance Heart & Home Care reviews care arrangements, budget use, compliance, incidents, documentation and support need monthly to help maintain quality and safety.', 'bi-arrow-repeat', 7],
+                    ['Talk to Us', 'Tell us what you want more control over, the services you need and whether you already have preferred workers or suppliers.', 'bi-person-check', 1],
+                    ['Set Up Your Arrangement', 'We’ll confirm responsibilities, approved services, worker or supplier requirements, documentation and your self-management setup.', 'bi-file-earmark-text', 2],
+                    ['Start Self-Managing With Support', 'Use the portal to manage agreed day-to-day arrangements while Allegiance continues care management, approvals, budget monitoring, compliance and ongoing review.', 'bi-laptop', 3],
                 ];
             @endphp
 
@@ -2046,9 +2042,9 @@
             <span class="section-eyebrow">
                 <i class="bi bi-arrow-left-right"></i> Shared Responsibilities
             </span>
-            <h2 class="section-title">What You Manage &amp; What Allegiance Heart &amp; Home Care Oversees</h2>
+            <h2 class="section-title">What You Manage &amp; What Allegiance Supports</h2>
             <p class="section-subtitle mx-auto">
-                Self-management is a partnership. You have more choice and control over day-to-day arrangements, while Allegiance Heart &amp; Home Care provides provider oversight, care management, budget monitoring, compliance checks and quality support.
+                Self-management is a partnership. You have more choice over day-to-day arrangements, while Allegiance Heart &amp; Home Care continues care management, provider oversight, budget monitoring, compliance and quality support.
             </p>
         </div>
 
@@ -2057,8 +2053,8 @@
                 <thead>
                     <tr>
                         <th>Responsibility</th>
-                        <th style="text-align: center;">You Manage</th>
-                        <th style="text-align: center;">Allegiance Heart &amp; Home Care Oversees</th>
+                        <th style="text-align: center;">You Have More Choice Over</th>
+                        <th style="text-align: center;">Allegiance Continues to Support</th>
                         <th>Details</th>
                     </tr>
                 </thead>
@@ -2138,59 +2134,51 @@
             <span class="section-eyebrow">
                 <i class="bi bi-window-stack"></i> Portal Features
             </span>
-            <h2 class="section-title">What the Self-Management Portal Supports</h2>
+            <h2 class="section-title">What You Can Do in the Self-Management Portal</h2>
             <p class="section-subtitle mx-auto">
-                A secure dashboard for approvals, care notes, invoices, service evidence and document handling with oversight from Allegiance Heart &amp; Home Care.
+                Your secure portal gives you a clear place to manage the practical parts of your self-management arrangement and stay connected with Allegiance.
             </p>
         </div>
 
-        <div class="row g-4">
-            <div class="col-lg-8 fade-up">
-                <div class="dashboard-mockup">
-                    <div class="dashboard-header">
+        @php
+            $portalFeatures = [
+                ['bi-wallet2', 'Budget Visibility', 'View relevant budget and service information in one place.'],
+                ['bi-people', 'Worker & Supplier Requests', 'Submit preferred workers or suppliers for review and approval.'],
+                ['bi-receipt', 'Invoices & Receipts', 'Upload invoices, receipts and supporting evidence securely.'],
+                ['bi-journal-check', 'Care Notes & Service Evidence', 'Submit care notes, timesheets and service evidence where required.'],
+                ['bi-folder-lock', 'Secure Documents', 'Upload and access approved documents securely.'],
+                ['bi-check2-square', 'Updates & Approvals', 'Track requests, approvals and actions that need your attention.'],
+            ];
+            $additionalPortalFeatures = [
+                ['bi-exclamation-triangle', 'Incident and Feedback Reporting', 'Report incidents, risks, concerns, complaints or feedback through the secure portal.'],
+                ['bi-pencil-square', 'Electronic Signatures', 'Sign required documents digitally and securely.'],
+                ['bi-calendar-check', 'Review Progress', 'Track care review cycles, planning updates and required actions.'],
+                ['bi-shield-check', 'Compliance Support', 'View compliance-related updates, document requirements and support from Allegiance Heart & Home Care.'],
+            ];
+        @endphp
+
+        <div class="row g-3">
+            @foreach($portalFeatures as $feature)
+                <div class="col-md-6 col-xl-4 fade-up">
+                    <div class="portal-feature-item h-100">
+                        <div class="portal-feature-icon">
+                            <i class="bi {{ $feature[0] }}"></i>
+                        </div>
                         <div>
-                            <strong>Allegiance Heart &amp; Home Care Portal</strong>
-                            <div style="font-size: 0.75rem; opacity: 0.8;">Self-Management Dashboard</div>
-                        </div>
-                        <div style="font-size: 0.8rem;">
-                            <i class="bi bi-circle-fill" style="color: #1FC7B7; font-size: 0.5rem;"></i> Secure Access
-                        </div>
-                    </div>
-                    <div class="dashboard-nav-tabs">
-                        <span class="dash-tab active">Participant Dashboard</span>
-                        <span class="dash-tab">Worker/Supplier Dashboard</span>
-                        <span class="dash-tab">Allegiance Heart &amp; Home Care Admin Dashboard</span>
-                    </div>
-                    <div class="dashboard-body">
-                        <p style="margin-bottom: 1.5rem; max-width: 34rem; color: var(--text-muted);">
-                            A secure portal experience for approved participants and authorised representatives, showing how Allegiance Heart &amp; Home Care supports choice, approval workflows, documentation and service oversight.
-                        </p>
-                        <div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                            <div class="feature-pill">Secure Approval Requests</div>
-                            <div class="feature-pill">Care Note Sharing</div>
-                            <div class="feature-pill">Service Planning and Requests</div>
-                            <div class="feature-pill">Protected Document Upload</div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">{{ $feature[1] }}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">{{ $feature[2] }}</div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endforeach
+        </div>
 
-            <div class="col-lg-4 fade-up">
-                <div class="d-flex flex-column gap-2">
-                    @php
-                        $portalFeatures = [
-                            ['bi-send-check', 'Approval Requests', 'Request service approvals and track review outcomes'],
-                            ['bi-person-plus', 'Worker and Supplier Details', 'Submit worker or supplier details securely for Allegiance Heart &amp; Home Care review and approval'],
-                            ['bi-journal-check', 'Care Notes and Service Evidence', 'Upload care notes, invoices, receipts and related service evidence for review'],
-                            ['bi-exclamation-triangle-fill', 'Incident and Feedback Reporting', 'Report incidents, risks, concerns, complaints or feedback through the secure portal'],
-                            ['bi-pencil-square', 'Electronic Signatures', 'Sign required documents digitally and securely'],
-                            ['bi-folder-lock', 'Secure Documents', 'Upload and access approved documents through a secure workspace'],
-                            ['bi-calendar-check', 'Review Progress', 'Track care review cycles, planning updates and required actions'],
-                            ['bi-shield-check', 'Compliance Support', 'View compliance-related updates, document requirements and support from Allegiance Heart &amp; Home Care'],
-                        ];
-                    @endphp
-                    @foreach($portalFeatures as $feature)
-                        <div class="portal-feature-item">
+        <details class="mt-4">
+            <summary class="text-center text-brand fw-semibold">View More Portal Features</summary>
+            <div class="row g-3 mt-2">
+                @foreach($additionalPortalFeatures as $feature)
+                    <div class="col-md-6 col-xl-3">
+                        <div class="portal-feature-item h-100">
                             <div class="portal-feature-icon">
                                 <i class="bi {{ $feature[0] }}"></i>
                             </div>
@@ -2199,10 +2187,10 @@
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">{{ $feature[2] }}</div>
                             </div>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
             </div>
-        </div>
+        </details>
     </div>
 </section>
 
@@ -2215,41 +2203,16 @@
             <span class="section-eyebrow">
                 <i class="bi bi-shield-lock"></i> Privacy and Security
             </span>
-            <h2 class="section-title">Your information is managed securely</h2>
+            <h2 class="section-title">Your Information Is Protected</h2>
             <p class="section-subtitle mx-auto">
-                The Allegiance Heart &amp; Home Care portal is a separate secure platform, protected by login, multi-factor authentication, and role-based access controls.
+                Your self-management portal is separate from the public website and is protected with secure login, role-based access and multi-factor authentication. Approved users only see information relevant to their role and permissions.
             </p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-md-4 fade-up">
-                <div class="privacy-card">
-                    <div class="privacy-icon-large">
-                        <i class="bi bi-lock-fill"></i>
-                    </div>
-                    <h5 style="font-weight: 700; margin-bottom: 0.75rem;">Secure Login and MFA Protection</h5>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">
-                        Portal access is only available to approved users. Secure login is required, with multi-factor authentication.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4 fade-up">
-                <div class="privacy-card">
-                    <div class="privacy-icon-large success">
-                        <i class="bi bi-person-check"></i>
-                    </div>
-                    <h5 style="font-weight: 700; margin-bottom: 0.75rem;">Role-Based Access</h5>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">
-                        Access is controlled by user role. Participants, authorised representatives, workers/suppliers and Allegiance Heart &amp; Home Care staff only access information relevant to their role and approved permissions.
-                    </p>
-                </div>
-            </div>
         </div>
 
         <div class="text-center mt-5 fade-up">
             <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 700px; margin: 0 auto;">
                 <i class="bi bi-shield-check text-success me-2"></i>
-                The Allegiance Heart &amp; Home Care portal is separate from the public website. Portal login is only available to approved users who have been invited or authorised by Allegiance Heart &amp; Home Care.
+                Portal access is provided only to approved participants, authorised representatives, workers, suppliers and Allegiance staff who require access.
             </p>
         </div>
     </div>
@@ -2274,63 +2237,65 @@
             $faqs = [
                 [
                     'q' => 'Am I eligible for self-management support?',
-                    'a' => 'Self management support is available to approved support at home participants who wants more choice and control over their care management. You can register your interest through our website, and we will contact you to discuss next steps.'
+                    'a' => 'Self-management may be available to Support at Home participants who want more choice over workers, services and day-to-day arrangements. Allegiance Heart & Home Care continues care management and provider oversight. Register your interest and our team will contact you to discuss your needs and whether self-management is suitable for you.'
+                ],
+                [
+                    'q' => 'What can I choose or manage myself?',
+                    'a' => 'You can have greater involvement in choosing preferred workers or suppliers and arranging approved services, including day-to-day schedules. These arrangements must align with your approved Support at Home services and budget, and may require review and approval.'
+                ],
+                [
+                    'q' => 'Can I use my own worker or a Mable worker?',
+                    'a' => 'Yes. One of the main benefits of self-management is greater choice. You may nominate a worker or supplier you already know, including workers sourced through platforms such as Mable. Before services commence, Allegiance Heart & Home Care will review the worker or supplier and any required credentials, documentation and compliance requirements.'
                 ],
                 [
                     'q' => 'How much does self-management cost?',
-                    'a' => 'Under self-management support, you may choose your preferred workers or suppliers and agree on their service rates directly with them. These costs must fit within your approved Support at Home budget and any contribution requirements. Allegiance Heart & Home Care will review submitted workers, suppliers, quotes and invoices before approval or payment to support budget monitoring, compliance and service oversight.'
-                ],
-                [
-                    'q' => 'Can I use third-party workers or Mable workers?',
-                    'a' => 'Yes! One of the biggest benefits of self-management is choice. You can choose and arrange your own workers or suppliers, including those from marketplaces like Mable. Allegiance Heart & Home Care will approve the worker, link them to your care plan, and monitor their compliance to ensure your safety.'
+                    'a' => 'Self-management gives you greater choice over approved workers and suppliers, including the ability to agree service rates with them. All costs must fit within your available Support at Home budget and any applicable participant contribution requirements. Before you proceed, Allegiance Heart & Home Care will explain any applicable care management or provider fees and provide a clear breakdown of how your arrangement will be managed.'
                 ],
                 [
                     'q' => 'How do payments and documentation work?',
-                    'a' => 'You or your support person can submit invoices and receipts directly through the secure portal. Simply attach the invoice along with evidence (like care notes or timesheets). Allegiance Heart & Home Care reviews the submission to ensure it aligns with your care plan and budget before processing it.'
+                    'a' => 'You or your authorised representative can submit invoices, receipts and supporting evidence through the secure portal. Allegiance Heart & Home Care reviews submissions against your approved services and budget before processing.'
                 ],
                 [
-                    'q' => 'Is my information secure?',
-                    'a' => 'Absolutely. We use strict encryption, role-based access controls (so people only see what they need to), and maintain comprehensive audit logs to protect your personal and health information.'
+                    'q' => 'How long does setup take?',
+                    'a' => 'Setup time varies depending on your needs, the information and documents required, and any worker or supplier checks. Our team will guide you through the steps and keep you informed.'
                 ],
                 [
-                    'q' => 'Is two-factor authentication (2FA) required?',
-                    'a' => 'Two-Factor Authentication (2FA/MFA) is mandatory for all Allegiance Heart & Home Care staff, care managers, and registered workers/suppliers to ensure maximum security. For participants and support persons, it is strongly recommended and available to protect your account.'
-                ],
-                [
-                    'q' => 'Can I upload documents to the portal?',
-                    'a' => 'Yes. The portal includes a secure document upload feature with malware scanning. You can easily upload and manage documents like care plans, agreements, quotes, and receipts based on your access permissions.'
+                    'q' => 'What documents are required?',
+                    'a' => 'Requirements depend on your circumstances and arrangement. These may include your support plan, authority documents for an authorised representative, service agreements, consent and privacy forms, and required worker or supplier documents. Our team will confirm what is needed.'
                 ],
                 [
                     'q' => 'What happens after I submit an enquiry?',
-                    'a' => 'Submitting an enquiry does not automatically create a portal account. It sends your request to Allegiance Heart & Home Care for review. Our team will contact you to discuss your preferred self-management setup, responsibilities, worker or supplier arrangements, and next steps before portal access is created.'
+                    'a' => 'We’ll contact you to discuss your needs, explain how self-management works and confirm whether the arrangement is suitable. If you decide to proceed, we’ll guide you through onboarding. Portal access is provided after onboarding is completed.'
                 ],
                 [
                     'q' => 'What is the onboarding process?',
-                    'a' => 'The process follows 7 steps: 1) submit a self-management enquiry, 2) review your enquiry with Allegiance Heart & Home Care, 3) complete the service agreement, consent and responsibilities, 4) set up your portal access, 5) submit workers or services for approval, 6) upload documentation and service evidence, and 7) continue with ongoing monthly reviews.'
+                    'a' => 'Getting started involves three main stages: talking with our team about how you want to manage your services, setting up your self-management arrangement and required documentation, and then starting services with ongoing support from Allegiance. We’ll guide you through each step and let you know what is required from you.'
+                ],
+            ];
+            $portalSecurityFaqs = [
+                [
+                    'q' => 'Is my information secure?',
+                    'a' => 'Your self-management portal is separate from the public website and uses secure login, role-based access and multi-factor authentication. Approved users only see information relevant to their role and permissions.'
                 ],
                 [
-                    'q' => 'What documents are required for onboarding?',
-                    'a' => 'You will need to provide your referral or support plan, authority documents (if a support person is acting for you), the Self-Management Agreement, consent and privacy forms, and a handbook acknowledgement.'
+                    'q' => 'Is two-factor authentication required?',
+                    'a' => 'Multi-factor authentication is used to help protect portal accounts. Access and authentication requirements depend on the user’s role and permissions.'
                 ],
                 [
-                    'q' => 'How long does onboarding take?',
-                    'a' => 'The timeframe varies depending on how quickly documents are provided and the complexity of your care plan. Our team works efficiently to get you set up, and we will keep you informed of your progress at every step.'
+                    'q' => 'Can I upload documents to the portal?',
+                    'a' => 'You can upload and access approved documents securely through the portal, subject to your access permissions.'
                 ],
                 [
-                    'q' => 'Can I update or replace documents after uploading?',
-                    'a' => 'Yes. The system features version control, meaning you can upload updated documents or replace existing ones. The system safely maintains a history of your document uploads for auditing purposes.'
+                    'q' => 'What file formats and sizes are accepted?',
+                    'a' => 'The portal supports standard file types such as PDF, Word, Excel, JPEG and PNG. File size limits and upload requirements are shown in the portal.'
                 ],
                 [
-                    'q' => 'What happens when I complete onboarding?',
-                    'a' => 'Once approved, your personal dashboard is activated! You will receive a secure login invitation, set up your security preferences, and gain full access to your live budget, pre-approvals, worker management, and communication tools.'
-                ],
-                [
-                    'q' => 'What file formats and sizes are accepted for uploads?',
-                    'a' => 'We accept standard file types including PDF, Word, Excel, JPEG, and PNG. For security purposes, the system enforces file size limits and automatically scans all uploads for malware.'
+                    'q' => 'Can I replace documents after uploading?',
+                    'a' => 'Contact our team if you need to replace or update a document after uploading so we can help ensure the current approved version is on file.'
                 ],
                 [
                     'q' => 'How do I know which documents are missing?',
-                    'a' => 'Your dashboard is designed to keep you informed. If a mandatory document is missing, expired, or needs attention, the dashboard will display a clear, easy-to-read alert so you know exactly what needs to be uploaded.'
+                    'a' => 'The portal displays document requirements and actions that need your attention, so you can see which documents are missing or require follow-up.'
                 ],
             ];
         @endphp
@@ -2350,15 +2315,31 @@
                     </div>
                 </details>
             @endforeach
+
+            <h3 class="mt-4 mb-0">Portal &amp; Security Questions</h3>
+            <p class="text-muted-custom mb-0">The portal is designed to make document handling and communication simple while protecting your information.</p>
+            @foreach($portalSecurityFaqs as $faq)
+                <details class="ahhc-faq-item" role="listitem">
+                    <summary class="ahhc-faq-question" aria-expanded="false">
+                        <span>{{ $faq['q'] }}</span>
+                        <svg class="ahhc-faq-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </summary>
+                    <div class="ahhc-faq-answer">
+                        <p>{{ $faq['a'] }}</p>
+                    </div>
+                </details>
+            @endforeach
         </div>
 
         {{-- Call to Action --}}
         <div class="ahhc-faq-cta">
-            <h3>Still have questions?</h3>
-            <p>Our team is here to help you understand how self-management can work for you or your loved one.</p>
+            <h3>Still Have Questions?</h3>
+            <p>Our team can explain how self-management works, what responsibilities are involved and whether it may suit you or your loved one.</p>
             <div class="ahhc-cta-buttons">
-                <a href="/contact" class="ahhc-btn ahhc-btn-primary">Contact Us</a>
-                <a href="/apply" class="ahhc-btn ahhc-btn-secondary">Apply for Self-Management</a>
+                <a href="#contact" class="ahhc-btn ahhc-btn-primary">Talk to Our Self-Management Team</a>
+                <a href="/contact" class="ahhc-btn ahhc-btn-secondary">Contact Us</a>
             </div>
         </div>
 
@@ -2691,10 +2672,10 @@
                         <i class="bi bi-envelope"></i> Get in Touch
                     </span>
                     <h2 style="font-size: 2rem; font-weight: 800; color: white; letter-spacing: -0.03em; margin-bottom: 1rem; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;">
-                        Ready to take control of your care?
+                        Ready for More Choice and Control?
                     </h2>
                     <p style="color: rgba(255,255,255,0.85); font-size: 1.05rem; line-height: 1.7;">
-                        Submit an enquiry for self-management support. Our team will review your enquiry and discuss your suitability with you.
+                        Tell us what you’re looking for and our intake team will explain how self-management could work for you. There is no obligation to proceed — we’ll simply talk through your needs, preferences and next steps.
                     </p>
                 </div>
 
@@ -2740,7 +2721,7 @@
                             <a href="/portal" style="color: white; text-decoration: underline;">
                                 Portal Login
                             </a>
-                            <br><small style="opacity: 0.7;">Submitting this form does not create portal access. A team member from Allegiance Heart Home Care will contact you about your request.</small>
+                            <br><small style="opacity: 0.7;">Submitting this form does not automatically create portal access.</small>
                         </div>
                     </div>
                 </div>
@@ -2762,10 +2743,10 @@
                     @endif
 
                     <h4 style="font-weight: 700; margin-bottom: 0.35rem; font-size: 1.4rem; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;">
-                        Submit an Enquiry
+                        Self-Management Enquiry
                     </h4>
                     <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">
-                        This form creates an enquiry for Allegiance Heart & Home Care review. It does <strong>not</strong> create a portal account automatically.
+                        Share a little about your needs and our intake team will be in touch.
                     </p>
 
                     <form id="enquiryForm" method="POST" action="{{ route('public.enquiries.store') }}" novalidate>
@@ -2844,7 +2825,7 @@
                                     <option value="have_approval" {{ old('support_status') === 'have_approval' ? 'selected' : '' }}>I have Support at Home approval</option>
                                     <option value="awaiting_approval" {{ old('support_status') === 'awaiting_approval' ? 'selected' : '' }}>Awaiting approval</option>
                                     <option value="exploring" {{ old('support_status') === 'exploring' ? 'selected' : '' }}>Exploring options / Not yet applied</option>
-                                    <option value="other_program" {{ old('support_status') === 'other_program' ? 'selected' : '' }}>On a different program</option>
+                                    <option value="funding_assigned" {{ old('support_status') === 'funding_assigned' ? 'selected' : '' }}>Funding assigned</option>
                                 </select>
                                 @error('support_status')
                                     <div class="invalid-feedback-custom">{{ $message }}</div>
@@ -2852,13 +2833,12 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label-custom" for="message">Your Message <span style="color: #ef4444;">*</span></label>
+                                <label class="form-label-custom" for="message">Message <span class="text-muted">(Optional)</span></label>
                                 <textarea name="message" 
                                           id="message" 
                                           rows="5" 
                                           class="form-textarea-custom @error('message') is-invalid @enderror" 
-                                          placeholder="Tell us about your situation, needs and any questions you have about self-management support..."
-                                          required>{{ old('message') }}</textarea>
+                                          placeholder="Tell us about your situation, needs and any questions you have about self-management support...">{{ old('message') }}</textarea>
                                 @error('message')
                                     <div class="invalid-feedback-custom">{{ $message }}</div>
                                 @enderror
@@ -2873,7 +2853,7 @@
                                            {{ old('consent') ? 'checked' : '' }} 
                                            required>
                                     <span style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
-                                        I consent to Allegiance Heart Home Care contacting me about my enquiry and understand that submitting this form does <strong>not</strong> create a portal account.
+                                        I consent to Allegiance Heart &amp; Home Care contacting me about my enquiry and understand that submitting this form does not automatically create portal access.
                                         <span style="color: #ef4444;">*</span>
                                     </span>
                                 </label>
@@ -2884,14 +2864,14 @@
 
                             <div class="col-12">
                                 <button id="enquirySubmitBtn" type="submit" class="btn-primary-custom w-100" style="justify-content: center;">
-                                    <span class="submit-label"><i class="bi bi-send-fill"></i> Submit Enquiry</span>
+                                    <span class="submit-label"><i class="bi bi-send-fill"></i> Submit My Enquiry</span>
                                     <span class="submit-spinner d-none" role="status" aria-hidden="true">
                                         <span class="spinner-border spinner-border-sm me-2"></span>
                                         Submitting your enquiry...
                                     </span>
                                 </button>
-                                <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem;">
-                                    <i class="bi bi-shield-lock me-1"></i> Your information is secure and encrypted
+                                <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem;">
+                                    Our intake team will contact you to discuss your options and next steps.
                                 </p>
                             </div>
                         </div>
@@ -2907,7 +2887,7 @@
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header border-0" style="background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); color: white;">
                 <h5 class="modal-title fw-bold" id="enquirySuccessModalLabel">
-                    <i class="bi bi-check-circle-fill me-2"></i> Enquiry Submitted
+                    <i class="bi bi-check-circle-fill me-2"></i> Thank You — We’ve Received Your Enquiry
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -2915,15 +2895,14 @@
                 <div class="mb-3">
                     <i class="bi bi-envelope-check-fill" style="font-size: 2.5rem; color: #0f766e;"></i>
                 </div>
-                <h6 class="fw-bold mb-2">Thank you for getting in touch</h6>
+                <h6 class="fw-bold mb-2">Your enquiry is with our intake team</h6>
                 <p id="enquirySuccessMessage" class="mb-0" style="color: var(--text-secondary);">
-                    Thank you for your enquiry. A team member from Allegiance Heart Home care will contact you to discuss your self-management support request and next steps.
+                    A member of our intake team will contact you to discuss your Support at Home needs, your preferred self-management arrangement and the next steps.
                 </p>
+                <p class="mt-3 mb-0" style="color: var(--text-secondary);">If you would prefer to speak with us sooner, <a href="tel:+61287309049">call 02 8730 9049</a>.</p>
             </div>
             <div class="modal-footer border-0 justify-content-center pb-4">
-                <button type="button" class="btn btn-primary-custom" data-bs-dismiss="modal">
-                    Close
-                </button>
+                <a href="{{ url('/') }}" class="btn btn-primary-custom">Return to Home</a>
             </div>
         </div>
     </div>

@@ -19,7 +19,7 @@ class StorePublicEnquiryRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:50'],
             'role' => ['required', 'string', 'in:participant,family_member,representative,support_coordinator,worker,other'],
             'support_status' => ['nullable', 'string', 'max:255'],
-            'message' => ['required', 'string', 'max:2000'],
+            'message' => ['nullable', 'string', 'max:2000'],
             'consent' => ['required', 'accepted'],
         ];
     }

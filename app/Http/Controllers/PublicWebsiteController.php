@@ -84,7 +84,7 @@ class PublicWebsiteController extends Controller
                 );
             }
 
-            $message = 'Thank you for your enquiry. A team member from Allegiance Heart Home care will contact you to discuss your self-management support request and next steps.';
+            $message = 'A member of our intake team will contact you to discuss your Support at Home needs, your preferred self-management arrangement and the next steps.';
 
             if ($request->expectsJson()) {
                 return response()->json([
