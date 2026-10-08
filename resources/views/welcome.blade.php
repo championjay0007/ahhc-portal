@@ -2730,7 +2730,7 @@
             <div class="col-lg-7 fade-up">
                 <div class="contact-form-card">
                     @if(session('status'))
-                        <div class="alert alert-success rounded-3 mb-4" data-enquiry-success="true" style="background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46;">
+                        <div class="alert alert-success rounded-3 mb-4" style="background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46;">
                             <i class="bi bi-check-circle-fill me-2"></i>{{ session('status') }}
                         </div>
                     @endif
@@ -2882,32 +2882,6 @@
     </div>
 </section>
 
-<div class="modal fade" id="enquirySuccessModal" tabindex="-1" aria-labelledby="enquirySuccessModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header border-0" style="background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); color: white;">
-                <h5 class="modal-title fw-bold" id="enquirySuccessModalLabel">
-                    <i class="bi bi-check-circle-fill me-2"></i> Thank You — We’ve Received Your Enquiry
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 text-center">
-                <div class="mb-3">
-                    <i class="bi bi-envelope-check-fill" style="font-size: 2.5rem; color: #0f766e;"></i>
-                </div>
-                <h6 class="fw-bold mb-2">Your enquiry is with our intake team</h6>
-                <p id="enquirySuccessMessage" class="mb-0" style="color: var(--text-secondary);">
-                    A member of our intake team will contact you to discuss your Support at Home needs, your preferred self-management arrangement and the next steps.
-                </p>
-                <p class="mt-3 mb-0" style="color: var(--text-secondary);">If you would prefer to speak with us sooner, <a href="tel:+61287309049">call 02 8730 9049</a>.</p>
-            </div>
-            <div class="modal-footer border-0 justify-content-center pb-4">
-                <a href="{{ url('/') }}" class="btn btn-primary-custom">Return to Home</a>
-            </div>
-        </div>
-    </div>
-</div>
-
 @endsection
 
 @push('scripts')
@@ -2959,13 +2933,6 @@
 
         const enquiryForm = document.getElementById('enquiryForm');
         const enquirySubmitBtn = document.getElementById('enquirySubmitBtn');
-        const enquirySuccessModal = document.getElementById('enquirySuccessModal');
-        const enquirySuccessAlert = document.querySelector('[data-enquiry-success="true"]');
-
-        if (enquirySuccessAlert && enquirySuccessModal && typeof bootstrap !== 'undefined') {
-            const modal = new bootstrap.Modal(enquirySuccessModal, { backdrop: 'static', keyboard: false });
-            modal.show();
-        }
 
         if (enquiryForm && enquirySubmitBtn) {
             enquiryForm.addEventListener('submit', function(event) {

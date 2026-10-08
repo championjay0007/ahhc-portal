@@ -10,15 +10,23 @@ class PublicEnquiryFormTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_welcome_page_renders_enquiry_submit_ui_with_success_modal(): void
+    public function test_welcome_page_links_to_dedicated_enquiry_form(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
         $response->assertSee(route('public.enquiry'), false);
         $response->assertSee('id="enquirySubmitBtn"', false);
-        $response->assertSee('id="enquirySuccessModal"', false);
         $response->assertSee('Submitting your enquiry...', false);
+    }
+
+    public function test_thank_you_page_displays_submission_confirmation(): void
+    {
+        $this->get(route('public.enquiry.thank-you'))
+            ->assertOk()
+            ->assertSee('Thank You — We’ve Received Your Enquiry')
+            ->assertSee('A member of our intake team will contact you')
+            ->assertSee('Return to Home');
     }
 
     public function test_dedicated_enquiry_page_displays_server_validation_errors(): void
@@ -53,8 +61,7 @@ class PublicEnquiryFormTest extends TestCase
                     'consent' => '1',
                 ]);
 
-            $response->assertRedirect(route('public.enquiry'))
-                ->assertSessionHas('status');
+            $response->assertRedirect(route('public.enquiry.thank-you'));
         }
 
         $this->assertDatabaseHas('enquiries', [
@@ -65,5 +72,17 @@ class PublicEnquiryFormTest extends TestCase
             'email' => 'empty@example.com',
             'message' => '',
         ]);
+    }
+
+    public function test_homepage_enquiry_submission_redirects_to_thank_you_page(): void
+    {
+        $this->from(route('public.home'))
+            ->post(route('public.enquiries.store'), [
+                'name' => 'Taylor Homepage',
+                'email' => 'homepage@example.com',
+                'role' => 'participant',
+                'consent' => '1',
+            ])
+            ->assertRedirect(route('public.enquiry.thank-you'));
     }
 }

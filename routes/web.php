@@ -49,6 +49,7 @@ Route::get('/portal/manifest.json', [\App\Http\Controllers\ManifestController::c
 
 Route::get('/', [PublicWebsiteController::class, 'index'])->name('public.home');
 Route::get('/enquiry', [PublicWebsiteController::class, 'enquiry'])->name('public.enquiry');
+Route::get('/enquiry/thank-you', [PublicWebsiteController::class, 'enquiryThankYou'])->name('public.enquiry.thank-you');
 Route::post('/enquiries', [PublicWebsiteController::class, 'storeEnquiry'])->name('public.enquiries.store');
 
 Route::get('/portal', [AuthController::class, 'showLogin'])->name('portal.login');

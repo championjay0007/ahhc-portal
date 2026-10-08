@@ -40,6 +40,13 @@ class PublicWebsiteController extends Controller
         ]);
     }
 
+    public function enquiryThankYou()
+    {
+        return view('public.enquiry-thank-you', [
+            'portalUrl' => 'https://portal.allegiancehearthomecare.com.au/',
+        ]);
+    }
+
     public function storeEnquiry(StorePublicEnquiryRequest $request)
     {
         try {
@@ -100,7 +107,7 @@ class PublicWebsiteController extends Controller
                 ]);
             }
 
-            return redirect()->back()->with('status', $message);
+            return redirect()->route('public.enquiry.thank-you');
         } catch (ValidationException $e) {
             if ($request->expectsJson()) {
                 return response()->json([
