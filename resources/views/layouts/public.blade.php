@@ -514,7 +514,6 @@
                 <a class="nav-link-custom" href="{{ route('public.home') }}#who-its-for">Who It’s For</a>
                 <a class="nav-link-custom" href="{{ route('public.home') }}#how-self-management-works">How Self-Management Works</a>
                 <a class="nav-link-custom" href="{{ route('public.enquiry') }}">Submit an Enquiry</a>
-                <a class="nav-link-custom" href="{{ route('public.enquiry') }}">Enquire About Self-Management</a>
             </div>
 
             <div class="d-flex align-items-center gap-2">
@@ -535,7 +534,6 @@
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.home') }}#who-its-for">Who It’s For</a>
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.home') }}#how-self-management-works">How Self-Management Works</a>
                 <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.enquiry') }}">Submit an Enquiry</a>
-                <a class="d-block py-2 px-2 text-secondary text-decoration-none rounded-3" href="{{ route('public.enquiry') }}">Enquire About Self-Management</a>
                 <hr class="my-2">
                 <a class="btn btn-secondary-custom w-100 mb-2" href="{{ route('public.enquiry') }}">Enquire About Self-Management</a>
                 <a class="btn btn-primary-custom w-100" href="{{ $portalUrl }}" target="_blank" rel="noopener">Portal Login</a>
