@@ -9,8 +9,10 @@ use App\Models\Participant;
 use App\Models\ParticipantDocumentSignature;
 use App\Models\SignatureRequest;
 use App\Models\User;
+use App\Models\Worker;
 use App\Services\AuditLogService;
 use App\Services\NotificationService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -138,6 +140,14 @@ class DocumentController extends Controller
     public function destroy(Document $document)
     {
         $user = Auth::user();
+
+        if (request()->routeIs('portal.gallery.destroy')) {
+            abort_unless($user, 401);
+            $document = $this->galleryDocumentQuery($user)
+                ->whereKey($document->getKey())
+                ->firstOrFail();
+        }
+
         $canDelete = $user && $document->canBeDeletedBy($user);
 
         if (! $canDelete) {
@@ -416,7 +426,10 @@ class DocumentController extends Controller
 
     public function gallery()
     {
-        $documents = Document::query()
+        $user = Auth::user();
+        abort_unless($user, 401);
+
+        $documents = $this->galleryDocumentQuery($user)
             ->with('owner')
             ->latest()
             ->paginate(24)
@@ -427,6 +440,12 @@ class DocumentController extends Controller
 
     public function previewGallery(Document $document)
     {
+        $user = Auth::user();
+        abort_unless($user, 401);
+        $document = $this->galleryDocumentQuery($user)
+            ->whereKey($document->getKey())
+            ->firstOrFail();
+
         if (! Storage::disk($document->storage_disk)->exists($document->path)) {
             abort(404);
         }
@@ -439,11 +458,72 @@ class DocumentController extends Controller
 
     public function downloadGallery(Document $document)
     {
+        $user = Auth::user();
+        abort_unless($user, 401);
+        $document = $this->galleryDocumentQuery($user)
+            ->whereKey($document->getKey())
+            ->firstOrFail();
+
         if (! Storage::disk($document->storage_disk)->exists($document->path)) {
             abort(404);
         }
 
         return Storage::disk($document->storage_disk)->download($document->path, $document->title);
+    }
+
+    private function galleryDocumentQuery(User $user): Builder
+    {
+        $documents = Document::query();
+        $assignedUserIds = [$user->id];
+        $delegateActor = request()->attributes->get('delegate.actor');
+        if (
+            request()->attributes->get('delegate.participant_context')
+            && $delegateActor instanceof User
+            && $delegateActor->role === 'manager'
+        ) {
+            $assignedUserIds[] = $delegateActor->id;
+        }
+
+        if ($user->hasRole(['admin', 'system_admin', 'super_admin'])) {
+            return $documents;
+        }
+
+        $participant = $user->participant;
+        if ($participant) {
+            return $documents->where(function (Builder $query) use ($participant, $assignedUserIds): void {
+                $query->where(function (Builder $ownedDocuments) use ($participant): void {
+                    $ownedDocuments
+                        ->where('owner_type', Participant::class)
+                        ->where('owner_id', $participant->id);
+                })->orWhereHas('signatureRequests', function (Builder $requests) use ($assignedUserIds): void {
+                    $requests->whereIn('assigned_user_id', $assignedUserIds);
+                });
+            });
+        }
+
+        $worker = $user->worker;
+        if ($worker) {
+            $assignedParticipantIds = $worker->assignments()
+                ->where('status', 'active')
+                ->pluck('participant_id');
+
+            return $documents->where(function (Builder $query) use ($worker, $user, $assignedParticipantIds, $assignedUserIds): void {
+                $query->where(function (Builder $workerDocuments) use ($worker): void {
+                    $workerDocuments
+                        ->where('owner_type', Worker::class)
+                        ->where('owner_id', $worker->id);
+                })->orWhere(function (Builder $participantDocuments) use ($user, $assignedParticipantIds): void {
+                    $participantDocuments
+                        ->where('owner_type', Participant::class)
+                        ->whereIn('owner_id', $assignedParticipantIds)
+                        ->where('uploaded_by_id', $user->id);
+                })->orWhereHas('signatureRequests', function (Builder $requests) use ($assignedUserIds): void {
+                    $requests->whereIn('assigned_user_id', $assignedUserIds);
+                });
+            });
+        }
+
+        return $documents->whereRaw('1 = 0');
     }
 
     public function downloadSignature(DocumentSignature $signature)

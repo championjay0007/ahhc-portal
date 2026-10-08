@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2>Shared media gallery</h2>
-            <p class="text-muted">Browse all uploaded documents, images, and files available in the portal.</p>
+            <p class="text-muted">Browse documents, images, and files available to your account.</p>
         </div>
         <a href="{{ auth()->user()->role === 'worker' ? route('portal.worker.documents.upload') : route('portal.participant.documents.index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-folder2-open"></i> My Documents
@@ -14,7 +14,7 @@
     @if($documents->isEmpty())
         <div class="text-center py-5 text-muted">
             <i class="bi bi-collection-play fs-1 mb-3"></i>
-            <p class="mb-0">No shared media has been uploaded yet.</p>
+            <p class="mb-0">No documents are available for your account yet.</p>
         </div>
     @else
         <div class="row g-4">
