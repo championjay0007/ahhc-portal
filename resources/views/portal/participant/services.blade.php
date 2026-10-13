@@ -223,8 +223,8 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label" for="shift_date">Date</label>
-                                <input type="date" class="form-control" id="shift_date" name="shift_date" required>
+                                <label class="form-label" for="shift_date">Start Date</label>
+                                <input type="date" class="form-control @error('shift_date') is-invalid @enderror" id="shift_date" name="shift_date" value="{{ old('shift_date') }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="status">Status</label>
@@ -232,6 +232,114 @@
                                     <option value="scheduled">Scheduled</option>
                                     <option value="confirmed">Confirmed</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <label class="form-label" for="repeat">Repeat</label>
+                            <select class="form-select @error('repeat') is-invalid @enderror" id="repeat" name="repeat">
+                                <option value="none" @selected(old('repeat', 'none') === 'none')>Does not repeat</option>
+                                <option value="weekly" @selected(old('repeat') === 'weekly')>Weekly</option>
+                                <option value="monthly" @selected(old('repeat') === 'monthly')>Monthly</option>
+                            </select>
+                            @error('repeat')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div id="recurrenceEndDateGroup" class="mt-3 d-none">
+                            <label class="form-label" for="recurrence_end_date">End Date</label>
+                            <input type="date" class="form-control @error('recurrence_end_date') is-invalid @enderror" id="recurrence_end_date" name="recurrence_end_date" value="{{ old('recurrence_end_date') }}">
+                            <div class="form-text">The final date on which a shift can be created.</div>
+                            @error('recurrence_end_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div id="weeklyOptions" class="mt-3 d-none">
+                            <fieldset>
+                                <legend class="form-label fs-6">Repeat on</legend>
+                                <div class="d-flex flex-wrap gap-3">
+                                    @foreach([1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday'] as $day => $label)
+                                        <label class="form-check">
+                                            <input class="form-check-input weekly-day-option" type="checkbox" name="weekly_days[]" value="{{ $day }}" @checked(in_array((string) $day, old('weekly_days', []), true))>
+                                            <span class="form-check-label">{{ $label }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('weekly_days')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                                @error('weekly_days.*')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </fieldset>
+                        </div>
+                        <div id="monthlyOptions" class="mt-3 d-none">
+                            <label class="form-label" for="monthly_mode">Monthly schedule</label>
+                            <select class="form-select @error('monthly_mode') is-invalid @enderror" id="monthly_mode" name="monthly_mode">
+                                <option value="">Choose a monthly pattern</option>
+                                <option value="dates" @selected(old('monthly_mode') === 'dates')>Dates of the month</option>
+                                <option value="weekday" @selected(old('monthly_mode') === 'weekday')>Weekday pattern</option>
+                            </select>
+                            @error('monthly_mode')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+
+                            <fieldset id="monthlyDateOptions" class="mt-3 d-none">
+                                <legend class="form-label fs-6">Repeat on dates</legend>
+                                <div class="row row-cols-6 g-2">
+                                    @foreach(range(1, 31) as $day)
+                                        <div class="col">
+                                            <label class="form-check">
+                                                <input class="form-check-input monthly-date-option" type="checkbox" name="monthly_dates[]" value="{{ $day }}" @checked(in_array((string) $day, old('monthly_dates', []), true))>
+                                                <span class="form-check-label">{{ $day }}</span>
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="form-text">Dates that do not occur in a month, such as the 31st in April, are skipped.</div>
+                                @error('monthly_dates')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                                @error('monthly_dates.*')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </fieldset>
+
+                            <div id="monthlyWeekdayOptions" class="mt-3 d-none">
+                                <fieldset>
+                                    <legend class="form-label fs-6">Week of the month</legend>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        @foreach(['1' => 'First', '2' => 'Second', '3' => 'Third', '4' => 'Fourth', 'last' => 'Last'] as $ordinal => $label)
+                                            <label class="form-check">
+                                                <input class="form-check-input monthly-ordinal-option" type="checkbox" name="monthly_ordinals[]" value="{{ $ordinal }}" @checked(in_array((string) $ordinal, old('monthly_ordinals', []), true))>
+                                                <span class="form-check-label">{{ $label }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    @error('monthly_ordinals')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                    @error('monthly_ordinals.*')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                </fieldset>
+                                <fieldset class="mt-3">
+                                    <legend class="form-label fs-6">Day of the week</legend>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        @foreach([1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday'] as $day => $label)
+                                            <label class="form-check">
+                                                <input class="form-check-input monthly-weekday-option" type="checkbox" name="monthly_weekdays[]" value="{{ $day }}" @checked(in_array((string) $day, old('monthly_weekdays', []), true))>
+                                                <span class="form-check-label">{{ $label }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    @error('monthly_weekdays')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                    @error('monthly_weekdays.*')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                </fieldset>
+                                <div class="form-text">For example, choose First and Third + Monday for the first and third Monday of each month.</div>
                             </div>
                         </div>
                         <div class="row g-3 mt-1">
@@ -269,4 +377,40 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const repeatSelect = document.getElementById('repeat');
+            const endDateGroup = document.getElementById('recurrenceEndDateGroup');
+            const endDateInput = document.getElementById('recurrence_end_date');
+            const weeklyOptions = document.getElementById('weeklyOptions');
+            const monthlyOptions = document.getElementById('monthlyOptions');
+            const monthlyMode = document.getElementById('monthly_mode');
+            const monthlyDateOptions = document.getElementById('monthlyDateOptions');
+            const monthlyWeekdayOptions = document.getElementById('monthlyWeekdayOptions');
+            const shiftModal = document.getElementById('createShiftModal');
+
+            function updateRecurrenceOptions() {
+                const repeat = repeatSelect.value;
+                const hasRecurrence = repeat === 'weekly' || repeat === 'monthly';
+                endDateGroup.classList.toggle('d-none', !hasRecurrence);
+                endDateInput.required = hasRecurrence;
+                weeklyOptions.classList.toggle('d-none', repeat !== 'weekly');
+                monthlyOptions.classList.toggle('d-none', repeat !== 'monthly');
+
+                const mode = repeat === 'monthly' ? monthlyMode.value : '';
+                monthlyDateOptions.classList.toggle('d-none', mode !== 'dates');
+                monthlyWeekdayOptions.classList.toggle('d-none', mode !== 'weekday');
+            }
+
+            repeatSelect.addEventListener('change', updateRecurrenceOptions);
+            monthlyMode.addEventListener('change', updateRecurrenceOptions);
+            updateRecurrenceOptions();
+
+            @if($errors->any())
+                if (shiftModal && window.bootstrap) {
+                    bootstrap.Modal.getOrCreateInstance(shiftModal).show();
+                }
+            @endif
+        });
+    </script>
 @endsection

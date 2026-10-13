@@ -13,9 +13,12 @@ use App\Models\User;
 use App\Notifications\ComplaintSubmitted;
 use App\Services\BudgetService;
 use App\Services\NotificationService;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ParticipantPortalController extends Controller
 {
@@ -449,7 +452,13 @@ class ParticipantPortalController extends Controller
         $participant = Participant::where('user_id', $user->id)->firstOrFail();
 
         $validated = $request->validate([
-            'worker_id' => ['required', 'exists:workers,id'],
+            'worker_id' => [
+                'required',
+                'integer',
+                Rule::exists('participant_assignments', 'worker_id')
+                    ->where('participant_id', $participant->id)
+                    ->where('status', 'active'),
+            ],
             'service_type' => ['nullable', 'string', 'max:150'],
             'service_category' => ['nullable', 'string', 'max:150'],
             'shift_date' => ['required', 'date_format:Y-m-d'],
@@ -458,14 +467,115 @@ class ParticipantPortalController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string', 'max:2000'],
             'status' => ['nullable', 'in:scheduled,confirmed'],
+            'repeat' => ['nullable', 'in:none,weekly,monthly'],
+            'recurrence_end_date' => ['nullable', 'required_if:repeat,weekly,monthly', 'date_format:Y-m-d', 'after_or_equal:shift_date'],
+            'weekly_days' => ['required_if:repeat,weekly', 'array', 'min:1'],
+            'weekly_days.*' => ['integer', 'between:1,7', 'distinct'],
+            'monthly_mode' => ['nullable', 'required_if:repeat,monthly', 'in:dates,weekday'],
+            'monthly_dates' => [Rule::requiredIf($request->input('repeat') === 'monthly' && $request->input('monthly_mode') === 'dates'), 'array', 'min:1'],
+            'monthly_dates.*' => ['integer', 'between:1,31', 'distinct'],
+            'monthly_ordinals' => [Rule::requiredIf($request->input('repeat') === 'monthly' && $request->input('monthly_mode') === 'weekday'), 'array', 'min:1'],
+            'monthly_ordinals.*' => ['in:1,2,3,4,last', 'distinct'],
+            'monthly_weekdays' => [Rule::requiredIf($request->input('repeat') === 'monthly' && $request->input('monthly_mode') === 'weekday'), 'array', 'min:1'],
+            'monthly_weekdays.*' => ['integer', 'between:1,7', 'distinct'],
         ]);
 
-        $validated['participant_id'] = $participant->id;
-        $validated['status'] = $validated['status'] ?? Shift::STATUS_SCHEDULED;
+        $repeat = $validated['repeat'] ?? 'none';
+        $shiftDates = $this->shiftOccurrenceDates($validated, $repeat);
 
-        $shift = Shift::create($validated);
+        if (count($shiftDates) > 500) {
+            return back()
+                ->withErrors(['recurrence_end_date' => 'This schedule would create more than 500 shifts. Please choose an earlier end date.'])
+                ->withInput();
+        }
+        if ($shiftDates === []) {
+            return back()
+                ->withErrors(['recurrence_end_date' => 'No shifts match this recurrence between the selected start and end dates.'])
+                ->withInput();
+        }
+
+        $shiftAttributes = [
+            'participant_id' => $participant->id,
+            'worker_id' => $validated['worker_id'],
+            'service_type' => $validated['service_type'] ?? null,
+            'service_category' => $validated['service_category'] ?? null,
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'location' => $validated['location'] ?? null,
+            'notes' => $validated['notes'] ?? null,
+            'status' => $validated['status'] ?? Shift::STATUS_SCHEDULED,
+        ];
+
+        DB::transaction(function () use ($shiftAttributes, $shiftDates): void {
+            foreach ($shiftDates as $shiftDate) {
+                Shift::create($shiftAttributes + ['shift_date' => $shiftDate]);
+            }
+        });
 
         return redirect()->route('portal.participant.services')
-            ->with('status', 'Shift created successfully.');
+            ->with('status', count($shiftDates) === 1
+                ? 'Shift created successfully.'
+                : count($shiftDates).' shifts created successfully.');
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function shiftOccurrenceDates(array $validated, string $repeat): array
+    {
+        if ($repeat === 'none') {
+            return [$validated['shift_date']];
+        }
+
+        $dates = [];
+        $startDate = Carbon::parse($validated['shift_date']);
+        $endDate = Carbon::parse($validated['recurrence_end_date']);
+        $weeklyDays = array_map('intval', $validated['weekly_days'] ?? []);
+        $monthlyDates = array_map('intval', $validated['monthly_dates'] ?? []);
+        $monthlyWeekdays = array_map('intval', $validated['monthly_weekdays'] ?? []);
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            if ($repeat === 'weekly' && in_array($date->dayOfWeekIso, $weeklyDays, true)) {
+                $dates[] = $date->toDateString();
+                if (count($dates) > 500) {
+                    return $dates;
+                }
+            }
+
+            if ($repeat !== 'monthly') {
+                continue;
+            }
+
+            if (($validated['monthly_mode'] ?? null) === 'dates') {
+                if (in_array($date->day, $monthlyDates, true)) {
+                    $dates[] = $date->toDateString();
+                }
+
+                if (count($dates) > 500) {
+                    return $dates;
+                }
+
+                continue;
+            }
+
+            if (! in_array($date->dayOfWeekIso, $monthlyWeekdays, true)) {
+                continue;
+            }
+
+            $ordinal = (string) (intdiv($date->day - 1, 7) + 1);
+            $isLastOccurrence = $date->copy()->addWeek()->month !== $date->month;
+            if (
+                in_array($ordinal, $validated['monthly_ordinals'], true)
+                || ($isLastOccurrence && in_array('last', $validated['monthly_ordinals'], true))
+            ) {
+                $dates[] = $date->toDateString();
+            }
+
+            if (count($dates) > 500) {
+                return $dates;
+            }
+        }
+
+        return $dates;
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Participant;
+use App\Models\ParticipantAssignment;
 use App\Models\Shift;
 use App\Models\User;
 use App\Models\Worker;
@@ -43,6 +44,12 @@ class ParticipantShiftCreationTest extends TestCase
             'status' => 'approved',
             'role_type' => 'Independent',
         ]);
+        ParticipantAssignment::create([
+            'participant_id' => $participant->id,
+            'worker_id' => $worker->id,
+            'start_date' => '2029-01-01',
+            'status' => 'active',
+        ]);
 
         $response = $this->actingAs($participantUser)
             ->followingRedirects()
@@ -69,6 +76,135 @@ class ParticipantShiftCreationTest extends TestCase
             'service_type' => 'Personal Care',
             'status' => Shift::STATUS_SCHEDULED,
         ]);
+    }
+
+    public function test_participant_can_create_multiple_weekly_shifts_on_selected_days(): void
+    {
+        [$participantUser, $participant, $worker] = $this->createParticipantWithAssignedWorker('weekly');
+
+        $this->actingAs($participantUser)
+            ->post(route('portal.participant.services.shifts.create'), [
+                'worker_id' => $worker->id,
+                'service_type' => 'Personal Care',
+                'shift_date' => '2030-01-07',
+                'start_time' => '09:00',
+                'end_time' => '10:00',
+                'repeat' => 'weekly',
+                'monthly_mode' => '',
+                'weekly_days' => ['1', '2', '4', '6'],
+                'recurrence_end_date' => '2030-01-19',
+            ])
+            ->assertRedirect(route('portal.participant.services'));
+
+        $this->assertSame(
+            ['2030-01-07', '2030-01-08', '2030-01-10', '2030-01-12', '2030-01-14', '2030-01-15', '2030-01-17', '2030-01-19'],
+            $participant->shifts()->orderBy('shift_date')->pluck('shift_date')->map(fn ($date) => substr((string) $date, 0, 10))->all()
+        );
+    }
+
+    public function test_participant_can_create_monthly_shifts_on_selected_calendar_dates(): void
+    {
+        [$participantUser, $participant, $worker] = $this->createParticipantWithAssignedWorker('monthly-dates');
+
+        $this->actingAs($participantUser)
+            ->post(route('portal.participant.services.shifts.create'), [
+                'worker_id' => $worker->id,
+                'shift_date' => '2030-01-10',
+                'start_time' => '09:00',
+                'end_time' => '10:00',
+                'repeat' => 'monthly',
+                'recurrence_end_date' => '2030-03-31',
+                'monthly_mode' => 'dates',
+                'monthly_dates' => ['1', '15', '31'],
+            ])
+            ->assertRedirect(route('portal.participant.services'));
+
+        $this->assertSame(
+            ['2030-01-15', '2030-01-31', '2030-02-01', '2030-02-15', '2030-03-01', '2030-03-15', '2030-03-31'],
+            $participant->shifts()->orderBy('shift_date')->pluck('shift_date')->map(fn ($date) => substr((string) $date, 0, 10))->all()
+        );
+    }
+
+    public function test_participant_can_create_monthly_shifts_by_weekday_pattern(): void
+    {
+        [$participantUser, $participant, $worker] = $this->createParticipantWithAssignedWorker('monthly-weekday');
+
+        $this->actingAs($participantUser)
+            ->post(route('portal.participant.services.shifts.create'), [
+                'worker_id' => $worker->id,
+                'shift_date' => '2030-01-01',
+                'start_time' => '09:00',
+                'end_time' => '10:00',
+                'repeat' => 'monthly',
+                'recurrence_end_date' => '2030-02-28',
+                'monthly_mode' => 'weekday',
+                'monthly_ordinals' => ['1', 'last'],
+                'monthly_weekdays' => ['1'],
+            ])
+            ->assertRedirect(route('portal.participant.services'));
+
+        $this->assertSame(
+            ['2030-01-07', '2030-01-28', '2030-02-04', '2030-02-25'],
+            $participant->shifts()->orderBy('shift_date')->pluck('shift_date')->map(fn ($date) => substr((string) $date, 0, 10))->all()
+        );
+    }
+
+    public function test_recurring_shift_requires_a_schedule_and_creates_no_partial_shifts(): void
+    {
+        [$participantUser, $participant, $worker] = $this->createParticipantWithAssignedWorker('missing-schedule');
+
+        $this->actingAs($participantUser)
+            ->from(route('portal.participant.services'))
+            ->post(route('portal.participant.services.shifts.create'), [
+                'worker_id' => $worker->id,
+                'shift_date' => '2030-01-07',
+                'start_time' => '09:00',
+                'end_time' => '10:00',
+                'repeat' => 'weekly',
+                'recurrence_end_date' => '2030-02-07',
+            ])
+            ->assertRedirect(route('portal.participant.services'))
+            ->assertSessionHasErrors(['weekly_days']);
+
+        $this->assertSame(0, $participant->shifts()->count());
+    }
+
+    private function createParticipantWithAssignedWorker(string $suffix): array
+    {
+        $participantUser = User::create([
+            'name' => 'Participant '.$suffix,
+            'email' => $suffix.'-participant@example.com',
+            'role' => 'participant',
+            'status' => 'active',
+            'password' => bcrypt('Password123!'),
+        ]);
+
+        $participant = Participant::create([
+            'user_id' => $participantUser->id,
+            'participant_number' => 'P-'.strtoupper(substr(md5($suffix), 0, 8)),
+            'first_name' => 'Test',
+            'last_name' => 'Participant',
+            'email' => $participantUser->email,
+            'status' => 'active',
+        ]);
+
+        $worker = Worker::create([
+            'worker_number' => 'W-'.strtoupper(substr(md5($suffix), 0, 8)),
+            'first_name' => 'Test',
+            'last_name' => 'Worker',
+            'email' => $suffix.'-worker@example.com',
+            'status' => 'approved',
+            'role_type' => 'Independent',
+        ]);
+
+        ParticipantAssignment::create([
+            'participant_id' => $participant->id,
+            'worker_id' => $worker->id,
+            'start_date' => '2029-01-01',
+            'status' => 'active',
+        ]);
+
+        return [$participantUser, $participant, $worker];
     }
 
     public function test_created_shift_is_visible_to_worker_on_my_shifts_page(): void
